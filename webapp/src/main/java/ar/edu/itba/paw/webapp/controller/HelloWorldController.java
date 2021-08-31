@@ -8,12 +8,22 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class HelloWorldController {
+
     @Autowired
     UserService userService;
+
     @RequestMapping("/")
     public ModelAndView helloWorld() {
         final ModelAndView mav = new ModelAndView("index");
         mav.addObject("greeting", userService.list().get(0).getName());
+        return mav;
+    }
+
+    @RequestMapping("/course")
+    public ModelAndView announcements() {
+        final ModelAndView mav = new ModelAndView("course");
+        mav.addObject("greeting", userService.list().get(0).getName());
+        mav.addObject("courseName", "Materia");
         return mav;
     }
 }
