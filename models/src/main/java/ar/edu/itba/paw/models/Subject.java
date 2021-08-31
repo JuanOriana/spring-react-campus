@@ -7,14 +7,14 @@ public class Subject {
     private long id_subject;
     private Year year;
     private float code;
-    private int quarter;
+    private Quarter quarter;
     private String board, name;
     // Board = Comision
 
     public Subject() {
     }
 
-    public Subject(long id_subject, Year year, float code, int quarter, String board, String name) {
+    public Subject(long id_subject, Year year, float code, Quarter quarter, String board, String name) {
         this.id_subject = id_subject;
         this.year = year;
         this.code = code;
@@ -47,11 +47,11 @@ public class Subject {
         this.code = code;
     }
 
-    public int getQuarter() {
+    public Quarter getQuarter() {
         return quarter;
     }
 
-    public void setQuarter(int quarter) {
+    public void setQuarter(Quarter quarter) {
         this.quarter = quarter;
     }
 
@@ -69,5 +69,20 @@ public class Subject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    private enum Quarter {
+        FIRST_Q(1),
+        SECOND_Q(2);
+
+        private final int quarter_number;
+
+        Quarter(final int number) {
+            this.quarter_number = number;
+        }
+
+        public int getQuarter_number() {
+            return quarter_number;
+        }
     }
 }
