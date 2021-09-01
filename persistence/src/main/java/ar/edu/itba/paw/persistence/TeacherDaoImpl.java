@@ -26,7 +26,7 @@ public class TeacherDaoImpl implements TeacherDao {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("teachers");
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS  teachers ( "+
-                "id LONG PRIMARY KEY, "+
+                "id integer PRIMARY KEY, "+
                 "name varchar(50), "+
                 "surname varchar (50), "+
                 "email varchar (50), "+
