@@ -12,7 +12,7 @@
     </head>
     <body>
         <%@ include file="navbar.jsp" %>
-        <h2 class="course-section-name">${courseName}</h2>
+        <h2 class="course-section-name">${course.name}</h2>
         <div class="page-container" style="padding-top: 0">
             <div class="course-page-wrapper">
 

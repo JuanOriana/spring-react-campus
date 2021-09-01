@@ -71,6 +71,6 @@ public class CourseDaoImpl implements CourseDao {
     @Override
     public Optional<Course> getById(int id) {
         // Only for testing, replace with proper db implementation
-        return jdbcTemplate.query("SELECT * FROM courses", ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM courses WHERE subjectId = ?", new Object[]{id}, ROW_MAPPER).stream().findFirst();
     }
 }
