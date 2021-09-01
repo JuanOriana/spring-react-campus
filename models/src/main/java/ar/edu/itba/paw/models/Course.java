@@ -1,3 +1,4 @@
+
 package ar.edu.itba.paw.models;
 
 import java.time.Year;
@@ -5,9 +6,9 @@ import java.time.Year;
 public class Course {
 
     private long subjectId;
-    private Year year;
-    private float code;
-    private Quarter quarter;
+    private Integer year;
+    private String code;
+    private Integer quarter;
     private String board, name;
     // Board = Comision
 
@@ -20,7 +21,7 @@ public class Course {
         this.name = name;
     }
 
-    public Course(long subjectId, Year year, float code, Quarter quarter, String board, String name) {
+    public Course(long subjectId, Integer year, String code, Integer quarter, String board, String name) {
         this.subjectId = subjectId;
         this.year = year;
         this.code = code;
@@ -37,27 +38,27 @@ public class Course {
         this.subjectId = subjectId;
     }
 
-    public Year getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(Year year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
-    public float getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(float code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
-    public Quarter getQuarter() {
+    public Integer getQuarter() {
         return quarter;
     }
 
-    public void setQuarter(Quarter quarter) {
+    public void setQuarter(Integer quarter) {
         this.quarter = quarter;
     }
 
@@ -77,18 +78,5 @@ public class Course {
         this.name = name;
     }
 
-    private enum Quarter {
-        FIRST_Q(1),
-        SECOND_Q(2);
-
-        private final int quarter_number;
-
-        Quarter(final int number) {
-            this.quarter_number = number;
-        }
-
-        public int getQuarter_number() {
-            return quarter_number;
-        }
-    }
 }
+

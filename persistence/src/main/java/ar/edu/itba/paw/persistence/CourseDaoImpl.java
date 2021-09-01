@@ -2,30 +2,48 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.Course;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import javax.sql.DataSource;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class CourseDaoImpl implements CourseDao {
-    // Only for testing, replace with proper db implementation
-    private Map<Integer, Course> courses = new ConcurrentHashMap<Integer, Course>();
+    private JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
+    private static  final RowMapper<Course> ROW_MAPPER = (rs,rowNum) -> new Course(rs.getLong("subjectId"),rs.getInt("year"),rs.getString("code"),rs.getInt("quarter"),rs.getString("board"),rs.getString("name"));
 
-    public CourseDaoImpl() {
-        // Only for testing, replace with proper db implementation
-        courses.put(1, new Course(1, "Matematica Discreta"));
-        courses.put(2, new Course(2, "Formacion General I"));
-        courses.put(3, new Course(3, "Programacion Orientada a Objetos"));
-        courses.put(4, new Course(4, "Algebra"));
+    @Autowired
+    public CourseDaoImpl(final DataSource ds) {
+        jdbcTemplate = new JdbcTemplate(ds);
+        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS  courses ( "+
+                "subjectId INTEGER PRIMARY KEY, "+
+                "name varchar (50), "+
+                "code varchar(50), "+
+                "quarter INTEGER , "+
+                "board varchar(50), "+
+                "year INTEGER )");
     }
 
     @Override
     public boolean create(Course course) {
-        return false;
+        final Map<String,Object> args = new HashMap<>();
+        args.put("subjectId",course.getSubjectId());
+        args.put("name",course.getName());
+        args.put("code",course.getCode());
+        args.put("quarter", course.getQuarter());
+        args.put("board",course.getBoard());
+        args.put("year",course.getYear());
+
+        final Number rowsAffected = jdbcInsert.execute(args);
+
+        return rowsAffected.intValue() >0;
     }
 
     @Override
@@ -41,12 +59,12 @@ public class CourseDaoImpl implements CourseDao {
     @Override
     public List<Course> list() {
         // Only for testing, replace with proper db implementation
-        return new ArrayList<Course>(this.courses.values());
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM courses",ROW_MAPPER));
     }
 
     @Override
     public Optional<Course> getById(int id) {
         // Only for testing, replace with proper db implementation
-        return Optional.ofNullable(this.courses.get(id));
+        return jdbcTemplate.query("SELECT * FROM courses",ROW_MAPPER).stream().findFirst();
     }
 }
