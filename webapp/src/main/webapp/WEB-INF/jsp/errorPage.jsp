@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Campus - Error</title>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
     <link href="<c:url value = "../../resources/css/style.css" />" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
