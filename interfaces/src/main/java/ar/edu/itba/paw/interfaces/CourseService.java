@@ -23,7 +23,7 @@ public interface CourseService {
     /**
      * Attempts to delete a course
      * @param id of the course to be deleted
-     * @return true if the course was successfully updated, false otherwise
+     * @return true if the course was successfully removed, false otherwise
      */
     boolean delete(int id);
 

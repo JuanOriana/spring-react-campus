@@ -30,6 +30,11 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
+    public List<Announcement> listByCourse(int courseId) {
+        return null;
+    }
+
+    @Override
     public Announcement getById(int id) {
         return null;
     }

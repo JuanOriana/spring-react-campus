@@ -24,7 +24,7 @@ public interface AnnouncementService {
     /**
      * Attempts to delete an announcement
      * @param id of the announcement to be deleted
-     * @return true if the announcement was successfully updated, false otherwise
+     * @return true if the announcement was successfully removed, false otherwise
      */
     boolean delete(int id);
 

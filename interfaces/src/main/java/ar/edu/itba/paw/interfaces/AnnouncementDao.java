@@ -9,5 +9,6 @@ public interface AnnouncementDao {
     boolean update(int id, Announcement announcement);
     boolean delete(int id);
     List<Announcement> list();
+    List<Announcement> listByCourse(int courseId);
     Announcement getById(int id);
 }
