@@ -2,20 +2,20 @@ package ar.edu.itba.paw.models;
 
 import java.time.Year;
 
-public class Subject {
+public class Course {
 
-    private long id_subject;
+    private long subjectId;
     private Year year;
     private float code;
     private Quarter quarter;
     private String board, name;
     // Board = Comision
 
-    public Subject() {
+    public Course() {
     }
 
-    public Subject(long id_subject, Year year, float code, Quarter quarter, String board, String name) {
-        this.id_subject = id_subject;
+    public Course(long subjectId, Year year, float code, Quarter quarter, String board, String name) {
+        this.subjectId = subjectId;
         this.year = year;
         this.code = code;
         this.quarter = quarter;
@@ -23,12 +23,12 @@ public class Subject {
         this.name = name;
     }
 
-    public long getId_subject() {
-        return id_subject;
+    public long getSubjectId() {
+        return subjectId;
     }
 
-    public void setId_subject(long id_subject) {
-        this.id_subject = id_subject;
+    public void setSubjectId(long subjectId) {
+        this.subjectId = subjectId;
     }
 
     public Year getYear() {

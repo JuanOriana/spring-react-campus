@@ -4,44 +4,44 @@ import java.util.Date;
 
 public class Announcement {
 
-    private long id_announcement, id_teacher, id_subject;
+    private long announcementId, teacherId, subjectId;
     private Date date;
     private String title, content;
 
     public Announcement() {
     }
 
-    public Announcement(long id_announcement, long id_teacher, long id_subject, Date date, String title, String content) {
-        this.id_announcement = id_announcement;
-        this.id_teacher = id_teacher;
-        this.id_subject = id_subject;
+    public Announcement(long announcementId, long teacherId, long subjectId, Date date, String title, String content) {
+        this.announcementId = announcementId;
+        this.teacherId = teacherId;
+        this.subjectId = subjectId;
         this.date = date;
         this.title = title;
         this.content = content;
     }
 
-    public long getId_announcement() {
-        return id_announcement;
+    public long getAnnouncementId() {
+        return announcementId;
     }
 
-    public void setId_announcement(long id_announcement) {
-        this.id_announcement = id_announcement;
+    public void setAnnouncementId(long announcementId) {
+        this.announcementId = announcementId;
     }
 
-    public long getId_teacher() {
-        return id_teacher;
+    public long getTeacherId() {
+        return teacherId;
     }
 
-    public void setId_teacher(long id_teacher) {
-        this.id_teacher = id_teacher;
+    public void setTeacherId(long teacherId) {
+        this.teacherId = teacherId;
     }
 
-    public long getId_subject() {
-        return id_subject;
+    public long getSubjectId() {
+        return subjectId;
     }
 
-    public void setId_subject(long id_subject) {
-        this.id_subject = id_subject;
+    public void setSubjectId(long subjectId) {
+        this.subjectId = subjectId;
     }
 
     public Date getDate() {
