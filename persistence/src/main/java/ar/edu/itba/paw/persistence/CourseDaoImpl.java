@@ -48,12 +48,19 @@ public class CourseDaoImpl implements CourseDao {
 
     @Override
     public boolean update(int id, Course course) {
-        return false;
+        return jdbcTemplate.update("UPDATE courses " +
+                "SET name = ?," +
+                "year = ?," +
+                "code = ?," +
+                "quarter = ?," +
+                "board = ?," +
+                "WHERE subjectId = ?", new Object[]{course.getName(), course.getYear(), course.getCode(), course.getQuarter(), course.getBoard(), id}) == 1;
+
     }
 
     @Override
     public boolean delete(int id) {
-        return false;
+        return jdbcTemplate.update("DELETE FROM courses WHERE subjectId = ?", new Object[]{id}) == 1;
     }
 
     @Override

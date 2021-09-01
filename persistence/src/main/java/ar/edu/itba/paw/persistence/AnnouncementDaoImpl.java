@@ -22,8 +22,8 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     @Autowired
     public AnnouncementDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
-        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("announcement");
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS  announcement ( "+
+        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("announcements");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS  announcements ( "+
                 "announcementId INTEGER,"+
                 "teacherId INTEGER,"+
                 "subjectId INTEGER," +
@@ -50,31 +50,32 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
 
     @Override
     public boolean update(int id, Announcement announcement) {
-        return false;
+        return jdbcTemplate.update("UPDATE announcements " +
+                                        "SET teacherId = ?," +
+                                        "subjectId = ?," +
+                                        "date = ?," +
+                                        "title = ?," +
+                                        "content = ?," +
+                                        "WHERE announcementId = ?", new Object[]{announcement.getTeacherId(), announcement.getSubjectId(), announcement.getDate(), announcement.getTitle(), announcement.getContent(), id}) == 1;
     }
 
     @Override
     public boolean delete(int id) {
-//        final Number rowsAffected = jdbcTemplate.que;
-//
-//        final Number rowsAffected = jdbcInsert.execute(args);
-//
-//        return rowsAffected.intValue() >0;
-        return false;
+        return jdbcTemplate.update("DELETE FROM announcements WHERE announcementId = ?", new Object[]{id}) == 1;
     }
 
     @Override
     public List<Announcement> list() {
-        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcement", ROW_MAPPER));
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements", ROW_MAPPER));
     }
 
     @Override
     public List<Announcement> listByCourse(int courseId) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcement WHERE subjectId = ?",new Object[]{courseId}, ROW_MAPPER));
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements WHERE subjectId = ?",new Object[]{courseId}, ROW_MAPPER));
     }
 
     @Override
     public Optional<Announcement> getById(int id) {
-        return jdbcTemplate.query("SELECT * FROM announcement WHERE announcementId = ?",new Object[]{id},ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM announcements WHERE announcementId = ?",new Object[]{id},ROW_MAPPER).stream().findFirst();
     }
 }
