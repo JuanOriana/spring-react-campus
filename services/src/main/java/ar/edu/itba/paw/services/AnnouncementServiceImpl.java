@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AnnouncementServiceImpl implements AnnouncementService {
@@ -40,7 +41,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public Announcement getById(int id) {
+    public Optional<Announcement> getById(int id) {
         return announcementDao.getById(id);
     }
 }

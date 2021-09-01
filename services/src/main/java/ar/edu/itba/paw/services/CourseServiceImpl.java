@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -34,7 +35,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course getById(int id) {
+    public Optional<Course> getById(int id) {
         return courseDao.getById(id);
     }
 }

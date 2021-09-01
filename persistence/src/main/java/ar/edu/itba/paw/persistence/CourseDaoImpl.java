@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
@@ -44,8 +45,8 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public Course getById(int id) {
+    public Optional<Course> getById(int id) {
         // Only for testing, replace with proper db implementation
-        return this.courses.get(id);
+        return Optional.ofNullable(this.courses.get(id));
     }
 }

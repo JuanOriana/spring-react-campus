@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Course;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CourseService {
     /**
@@ -38,5 +39,5 @@ public interface CourseService {
      * @param id of the course to be retrieved
      * @return the course corresponding to the given id if it exists, null otherwise
      */
-    Course getById(int id);
+    Optional<Course> getById(int id);
 }

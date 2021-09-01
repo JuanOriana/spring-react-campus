@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Announcement;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AnnouncementDao {
     boolean create(Announcement announcement);
@@ -10,5 +11,5 @@ public interface AnnouncementDao {
     boolean delete(int id);
     List<Announcement> list();
     List<Announcement> listByCourse(int courseId);
-    Announcement getById(int id);
+    Optional<Announcement> getById(int id);
 }

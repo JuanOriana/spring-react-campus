@@ -4,6 +4,7 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Announcement;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AnnouncementService {
     /**
@@ -46,5 +47,5 @@ public interface AnnouncementService {
      * @param id of the announcement to be retrieved
      * @return the announcement corresponding to the given id if it exists, null otherwise
      */
-    Announcement getById(int id);
+    Optional<Announcement> getById(int id);
 }

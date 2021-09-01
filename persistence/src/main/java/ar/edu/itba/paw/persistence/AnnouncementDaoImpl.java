@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Announcement;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class AnnouncementDaoImpl implements AnnouncementDao {
@@ -35,7 +36,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public Announcement getById(int id) {
-        return null;
+    public Optional<Announcement> getById(int id) {
+        return Optional.empty();
     }
 }
