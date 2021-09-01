@@ -14,6 +14,12 @@ public class Course {
     public Course() {
     }
 
+    // Constructor for testing purposes, remove later
+    public Course(long subjectId, String name) {
+        this.subjectId = subjectId;
+        this.name = name;
+    }
+
     public Course(long subjectId, Year year, float code, Quarter quarter, String board, String name) {
         this.subjectId = subjectId;
         this.year = year;
