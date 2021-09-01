@@ -16,7 +16,6 @@ public class User {
     }
 
     public User() {
-
     }
 
     public User(String id, String name, String password) {
