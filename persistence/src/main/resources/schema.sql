@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS  teachers (
-                id SERIALIZABLE PRIMARY KEY,
+                id INTEGER PRIMARY KEY,
                 name varchar(50),
                 surname varchar (50),
                 email varchar (50),
