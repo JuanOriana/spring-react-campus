@@ -51,5 +51,13 @@ public class AnnouncementServiceImplTest {
         Assert.assertEquals(ANNOUNCEMENT_ID, queriedAnnouncement.get().getAnnouncementId());
     }
 
+    @Test(expected =  RuntimeException.class)
+    public void testCreateAnnouncementDuplicate() {
+        Announcement announcement = getMockAnnouncement();
+        when(mockDao.create(eq(announcement))).thenThrow(new RuntimeException());
+        boolean announcementCreateResult = announcementService.create(announcement);
+        Assert.fail("Should have thrown runtime exception for duplicate announcement creation");
+    }
+
 
 }

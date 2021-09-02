@@ -31,6 +31,7 @@ public class CourseController {
     public ModelAndView announcements(@PathVariable int courseId) {
         final ModelAndView mav;
         List<Announcement> announcements = announcementService.listByCourse(courseId);
+        courseService.create(new Course(2, "probando"));
         // Add proper handling in the future, need to check if user has permission to access this course
         Optional<Course> course = courseService.getById(courseId);
         if(course.isPresent()) {

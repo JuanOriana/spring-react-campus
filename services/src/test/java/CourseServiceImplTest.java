@@ -44,8 +44,15 @@ public class CourseServiceImplTest {
         Course course = getMockCourse();
         when(mockDao.getById(eq((int)COURSE_ID))).thenReturn(Optional.of(course));
         final Optional<Course> queriedCourse = courseService.getById((int)COURSE_ID);
-
         Assert.assertTrue(queriedCourse.isPresent());
         Assert.assertEquals(COURSE_ID, queriedCourse.get().getSubjectId());
+    }
+
+    @Test(expected =  RuntimeException.class)
+    public void testCreateCourseDuplicate() {
+        Course course = getMockCourse();
+        when(mockDao.create(eq(course))).thenThrow(new RuntimeException());
+        boolean courseCreateResult = courseService.create(course);
+        Assert.fail("Should have thrown runtime exception for duplicate course creation");
     }
 }
