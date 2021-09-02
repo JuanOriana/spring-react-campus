@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS  courses (
                 board varchar(50),
                 year INTEGER );
 
-        CREATE TABLE IF NOT EXISTS  announcement (
+        CREATE TABLE IF NOT EXISTS  announcements (
                 announcementId INTEGER,
                 teacherId INTEGER,
                 subjectId INTEGER, 

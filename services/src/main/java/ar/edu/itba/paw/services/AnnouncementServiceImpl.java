@@ -37,7 +37,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Override
     public List<Announcement> listByCourse(int courseId) {
-        return null;
+        return announcementDao.listByCourse(courseId);
     }
 
     @Override
