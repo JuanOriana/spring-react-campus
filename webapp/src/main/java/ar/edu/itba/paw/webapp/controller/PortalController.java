@@ -27,4 +27,5 @@ public class PortalController {
         mav.addObject("courseList", courses);
         return mav;
     }
+
 }

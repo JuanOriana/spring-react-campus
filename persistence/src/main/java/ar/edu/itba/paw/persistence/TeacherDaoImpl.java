@@ -54,12 +54,19 @@ public class TeacherDaoImpl implements TeacherDao {
 
     @Override
     public boolean update(int id, Teacher teacher) {
-        return false;
+        return jdbcTemplate.update("UPDATE teachers " +
+                "SET name = ?," +
+                "surname = ?," +
+                "email = ?," +
+                "username = ?," +
+                "password = ?," +
+                "WHERE id = ?", new Object[]{teacher.getName(),teacher.getSurname(),teacher.getEmail(),teacher.getUsername(),teacher.getPassword(), id}) == 1;
+
     }
 
     @Override
     public boolean delete(int id) {
-        return false;
+        return jdbcTemplate.update("DELETE FROM teachers WHERE id = ?", new Object[]{id}) == 1;
     }
 
 

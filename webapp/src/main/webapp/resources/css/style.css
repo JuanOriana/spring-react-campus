@@ -9,6 +9,7 @@
 body{
     margin: 0;
     font-family: 'Open Sans', sans-serif;
+    overflow-x: hidden;
 }
 
 *{
@@ -33,6 +34,17 @@ body{
     margin: 0 0 0 14px;
 }
 
+.nav-sections-container{
+    display: flex;
+    margin-right: 40px;
+}
+
+.nav-sections-item{
+    list-style-type: none;
+    margin: 10px 40px 0 0;
+    font-size: 16px;
+    font-weight: 700;
+}
 .user-data{
     margin-right: 14px;
     font-weight: 700;
@@ -52,6 +64,7 @@ body{
 .section-heading{
     color: var(--cyan-darkest);
     font-size: 24px;
+    margin-bottom: 4px;
 }
 
 .courses-container{
@@ -96,10 +109,12 @@ body{
 .course-sections-col{
     display: flex;
     flex-direction: column;
-    width: 350px;
+    width: 220px;
+    height: 400px;
     background: var(--cyan-darkest);
     color: var(--cyan-light);
     padding: 20px;
+    border-bottom-right-radius: 14px;
 }
 
 .course-data-container{
@@ -109,6 +124,31 @@ body{
     padding: 20px;
 }
 
+.announcement-wrapper{
+    background: white;
+    width: 95%;
+    border-radius: 12px;
+    min-height: 200px;
+    padding: 20px;
+    border-bottom: 3px solid var(--cyan-darkest);
+    margin-bottom: 5px;
+}
+
+.announcement-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.announcement-title{
+    font-size: 24px;
+}
+
+.announcement-date{
+    font-size: 12px;
+    margin: 0 0 6px 6px
+}
 .styleless-anchor {
     text-decoration: none !important;
     color: inherit;
