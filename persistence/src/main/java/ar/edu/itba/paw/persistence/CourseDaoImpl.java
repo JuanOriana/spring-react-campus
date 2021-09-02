@@ -21,13 +21,6 @@ public class CourseDaoImpl implements CourseDao {
     public CourseDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses");
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS  courses ( " +
-                "subjectId INTEGER PRIMARY KEY, " +
-                "name varchar (50), " +
-                "code varchar(50), " +
-                "quarter INTEGER , " +
-                "board varchar(50), " +
-                "year INTEGER )");
     }
 
     @Override

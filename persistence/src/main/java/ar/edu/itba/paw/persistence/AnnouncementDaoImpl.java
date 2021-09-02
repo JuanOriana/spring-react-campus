@@ -23,14 +23,6 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     public AnnouncementDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("announcements");
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS  announcements ( "+
-                "announcementId INTEGER,"+
-                "teacherId INTEGER,"+
-                "subjectId INTEGER," +
-                "title varchar (50), "+
-                "content varchar, "+
-                "date DATE, "+
-                "PRIMARY KEY(announcementId, teacherId, subjectId) )");
     }
 
     @Override
