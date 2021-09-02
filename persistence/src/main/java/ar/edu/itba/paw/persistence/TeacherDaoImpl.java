@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.TeacherDao;
 import ar.edu.itba.paw.models.Student;
 import ar.edu.itba.paw.models.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -47,7 +48,13 @@ public class TeacherDaoImpl implements TeacherDao {
         args.put("username",teacher.getUsername());
         args.put("password",teacher.getPassword());
 
-        final Number rowsAffected = jdbcInsert.execute(args);
+        Number rowsAffected = 0;
+        try {
+            rowsAffected = jdbcInsert.execute(args);
+        }
+        catch (DuplicateKeyException e){
+            return false;
+        }
 
         return  rowsAffected.intValue() > 0;
     }
