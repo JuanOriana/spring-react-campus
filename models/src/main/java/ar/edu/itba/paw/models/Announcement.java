@@ -4,17 +4,15 @@ import java.util.Date;
 
 public class Announcement {
 
-    private long announcementId, teacherId, subjectId;
+    private long announcementId, teacherId, courseId;
     private Date date;
     private String title, content;
 
-    public Announcement() {
-    }
 
-    public Announcement(long announcementId, long teacherId, long subjectId, Date date, String title, String content) {
-        this.announcementId = announcementId;
+    public Announcement(long teacherId, long courseId, Date date, String title, String content) {
+
         this.teacherId = teacherId;
-        this.subjectId = subjectId;
+        this.courseId = courseId;
         this.date = date;
         this.title = title;
         this.content = content;
@@ -36,12 +34,12 @@ public class Announcement {
         this.teacherId = teacherId;
     }
 
-    public long getSubjectId() {
-        return subjectId;
+    public long getcourseId() {
+        return courseId;
     }
 
-    public void setSubjectId(long subjectId) {
-        this.subjectId = subjectId;
+    public void setcourseId(long courseId) {
+        this.courseId = courseId;
     }
 
     public Date getDate() {
