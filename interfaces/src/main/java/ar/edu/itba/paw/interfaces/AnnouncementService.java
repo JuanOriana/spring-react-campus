@@ -20,14 +20,14 @@ public interface AnnouncementService {
      * @param announcement modified announcement
      * @return true if the announcement was successfully updated, false otherwise
      */
-    boolean update(int id, Announcement announcement);
+    boolean update(long id, Announcement announcement);
 
     /**
      * Attempts to delete an announcement
      * @param id of the announcement to be deleted
      * @return true if the announcement was successfully removed, false otherwise
      */
-    boolean delete(int id);
+    boolean delete(long id);
 
     /**
      * Gets all the current available announcements
@@ -40,12 +40,12 @@ public interface AnnouncementService {
      * @param courseId identifier of the course to get the announcements from
      * @return list containing all the current course available announcements (if any)
      */
-    List<Announcement> listByCourse(int courseId);
+    List<Announcement> listByCourse(long courseId);
 
     /**
      * Attempts to get an announcement given an id
      * @param id of the announcement to be retrieved
      * @return the announcement corresponding to the given id if it exists, null otherwise
      */
-    Optional<Announcement> getById(int id);
+    Optional<Announcement> getById(long id);
 }

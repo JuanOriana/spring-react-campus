@@ -21,12 +21,12 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public boolean update(int id, Announcement announcement) {
+    public boolean update(long id, Announcement announcement) {
         return announcementDao.update(id, announcement);
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean delete(long id) {
         return announcementDao.delete(id);
     }
 
@@ -36,12 +36,12 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public List<Announcement> listByCourse(int courseId) {
+    public List<Announcement> listByCourse(long courseId) {
         return announcementDao.listByCourse(courseId);
     }
 
     @Override
-    public Optional<Announcement> getById(int id) {
+    public Optional<Announcement> getById(long id) {
         return announcementDao.getById(id);
     }
 }

@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface AnnouncementDao {
     boolean create(Announcement announcement);
-    boolean update(int id, Announcement announcement);
-    boolean delete(int id);
+    boolean update(long id, Announcement announcement);
+    boolean delete(long id);
     List<Announcement> list();
-    List<Announcement> listByCourse(int courseId);
-    Optional<Announcement> getById(int id);
+    List<Announcement> listByCourse(long courseId);
+    Optional<Announcement> getById(long id);
 }

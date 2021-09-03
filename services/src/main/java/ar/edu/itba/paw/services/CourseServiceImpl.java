@@ -20,12 +20,12 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public boolean update(int id, Course course) {
+    public boolean update(long id, Course course) {
         return courseDao.update(id, course);
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean delete(long id) {
         return courseDao.delete(id);
     }
 
@@ -35,7 +35,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Optional<Course> getById(int id) {
+    public Optional<Course> getById(long id) {
         return courseDao.getById(id);
     }
 }
