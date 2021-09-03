@@ -16,7 +16,11 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
 
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private static  final RowMapper<Announcement> ROW_MAPPER = (rs, rowNum) -> new Announcement(rs.getLong("announcementId"),rs.getLong("teacherId"),rs.getLong("subjectId"),rs.getDate("date"),rs.getString("title"),rs.getString("content"));
+    private static final RowMapper<Announcement> ROW_MAPPER = (rs, rowNum) -> {
+        Announcement announcement = new Announcement(rs.getLong("teacherId"), rs.getLong("courseId"), rs.getDate("date"), rs.getString("title"), rs.getString("content"));
+        announcement.setAnnouncementId(rs.getLong("announcementId"));
+        return announcement;
+    };
 
     @Autowired
     public AnnouncementDaoImpl(final DataSource ds) {
@@ -26,28 +30,26 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
 
     @Override
     public boolean create(Announcement announcement) {
-        final Map<String,Object> args = new HashMap<>();
-        args.put("announcementId",announcement.getAnnouncementId());
-        args.put("subjectId",announcement.getSubjectId());
-        args.put("date",announcement.getDate());
-        args.put("title",announcement.getTitle());
-        args.put("content",announcement.getContent());
-        args.put("teacherId",announcement.getTeacherId());
+        final Map<String, Object> args = new HashMap<>();
+        args.put("date", announcement.getDate());
+        args.put("title", announcement.getTitle());
+        args.put("content", announcement.getContent());
+        args.put("teacherId", announcement.getTeacherId());
 
         final Number rowsAffected = jdbcInsert.execute(args);
 
-        return rowsAffected.intValue() >0;
+        return rowsAffected.intValue() > 0;
     }
 
     @Override
     public boolean update(long id, Announcement announcement) {
         return jdbcTemplate.update("UPDATE announcements " +
-                                        "SET teacherId = ?," +
-                                        "subjectId = ?," +
-                                        "date = ?," +
-                                        "title = ?," +
-                                        "content = ?," +
-                                        "WHERE announcementId = ?", new Object[]{announcement.getTeacherId(), announcement.getSubjectId(), announcement.getDate(), announcement.getTitle(), announcement.getContent(), id}) == 1;
+                "SET teacherId = ?," +
+                "courseId = ?," +
+                "date = ?," +
+                "title = ?," +
+                "content = ?" +
+                "WHERE announcementId = ?", new Object[]{announcement.getTeacherId(), announcement.getCourseId(), announcement.getDate(), announcement.getTitle(), announcement.getContent(), id}) == 1;
     }
 
     @Override
@@ -60,9 +62,9 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements", ROW_MAPPER));
     }
 
-    @Override
+
     public List<Announcement> listByCourse(long courseId) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements WHERE subjectId = ?",new Object[]{courseId}, ROW_MAPPER));
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements WHERE courseId = ?",new Object[]{courseId}, ROW_MAPPER));
     }
 
     @Override

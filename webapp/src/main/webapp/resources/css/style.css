@@ -64,7 +64,7 @@ body{
 .section-heading{
     color: var(--cyan-darkest);
     font-size: 24px;
-    margin-bottom: 4px;
+    margin-bottom: 20px;
 }
 
 .courses-container{
@@ -152,4 +152,8 @@ body{
 .styleless-anchor {
     text-decoration: none !important;
     color: inherit;
+}
+
+.reduced{
+    width: 90%;
 }
