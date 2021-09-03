@@ -31,7 +31,7 @@ public class TimeTableDaoImpl implements TimeTableDao {
             return false;
         }
         final Map<String,Object> args = new HashMap<>();
-        args.put("course_id", course.getSubjectId());
+        args.put("course_id", course.getCourseId());
         args.put("day_of_week", dayOfWeek);
         args.put("beginning", start);
         args.put("duration", duration);
