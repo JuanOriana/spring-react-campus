@@ -8,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -87,5 +89,13 @@ public class CourseServiceImplTest {
         Assert.assertFalse(courseUpdateResult);
     }
 
+    @Test
+    public void testList() {
+        Course course = getMockCourse();
+        when(mockDao.list()).thenReturn(new ArrayList<Course>(){{ add(course); }});
+        List<Course> courses = courseService.list();
+        Assert.assertTrue(courses.size() > 0);
+        Assert.assertEquals(course.getSubjectId(), courses.get(0).getSubjectId());
+    }
 
 }

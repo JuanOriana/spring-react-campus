@@ -1,6 +1,5 @@
 import ar.edu.itba.paw.interfaces.AnnouncementDao;
 import ar.edu.itba.paw.models.Announcement;
-import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.services.AnnouncementServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -91,5 +92,13 @@ public class AnnouncementServiceImplTest {
         Assert.assertFalse(announcementUpdateResult);
     }
 
+    @Test
+    public void testList() {
+        Announcement announcement = getMockAnnouncement();
+        when(mockDao.list()).thenReturn(new ArrayList<Announcement>(){{ add(announcement); }});
+        List<Announcement> announcements = announcementService.list();
+        Assert.assertTrue(announcements.size() > 0);
+        Assert.assertEquals(announcement.getSubjectId(), announcements.get(0).getSubjectId());
+    }
 
 }
