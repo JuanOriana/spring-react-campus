@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Teacher;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +30,9 @@ public class TeacherDaoImplTest {
     private TeacherDaoImpl teacherDao;
 
     private JdbcTemplate jdbcTemplate;
+    private final int ID = 1;
+    private final int INVALID_ID = 999;
+    private final String sqlInsertTeacherId = String.format("INSERT INTO teachers VALUES (%d,'test_name','test_surname','test_email','test_username','test_password')", ID);
 
     @Before
     public void setUp() {
@@ -41,45 +43,36 @@ public class TeacherDaoImplTest {
 
     @Test
     public void testCreate() {
-        final boolean isCreated = teacherDao.create(new Teacher(1, "name", "surname", "mail", "username", "password"));
-        assertEquals(true, isCreated);
+        final boolean isCreated = teacherDao.create(new Teacher("name", "surname", "mail", "username", "password"));
+        assertTrue(isCreated);
         assertEquals( 1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers"));
     }
 
 
     @Test
-    public void testCreateDuplicateId(){
-        final boolean isCreated1 = teacherDao.create(new Teacher(1,"name","surname","mail","username","password"));
-        final boolean isCreated2 = teacherDao.create(new Teacher(1,"name","surname","mail","username","password"));
-
-        assertEquals(true,isCreated1);
-        assertEquals(false,isCreated2);
-        assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
-    }
-
-    @Test
     public void testDelete(){
-        jdbcTemplate.execute("INSERT INTO teachers VALUES (1,'test_name','test_surname','test_email','test_username','test_password')");
+        jdbcTemplate.execute(sqlInsertTeacherId);
         assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
-        teacherDao.delete(1);
+        final boolean isDeleted = teacherDao.delete(ID);
+        assertTrue(isDeleted);
         assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
     }
 
 
     @Test
     public void testDeleteNoExist(){
-        jdbcTemplate.execute("INSERT INTO teachers VALUES (1,'test_name','test_surname','test_email','test_username','test_password')");
+        jdbcTemplate.execute(sqlInsertTeacherId);
         assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
-        assertFalse(teacherDao.delete(11)); // magic number
+        assertFalse(teacherDao.delete(INVALID_ID));
         assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
     }
 
     @Test
     public void testGetById(){
-        jdbcTemplate.execute("INSERT INTO teachers VALUES (1,'test_name','test_surname','test_email','test_username','test_password')");
-        final Optional<Teacher> teacher = teacherDao.getById(1);
+        jdbcTemplate.execute(sqlInsertTeacherId);
+        final Optional<Teacher> teacher = teacherDao.getById(ID);
         assertNotNull(teacher);
-        assertEquals(true,teacher.isPresent());
+        assertTrue(teacher.isPresent());
         assertEquals("test_name",teacher.get().getName());
         assertEquals("test_surname",teacher.get().getSurname());
         assertEquals("test_email",teacher.get().getEmail());
@@ -89,16 +82,16 @@ public class TeacherDaoImplTest {
 
     @Test
     public void testGetByIdNoExist(){
-        jdbcTemplate.execute("INSERT INTO teachers VALUES (1,'test_name','test_surname','test_email','test_username','test_password')");
-        final Optional<Teacher> teacher = teacherDao.getById(11); //magic number
+        jdbcTemplate.execute(sqlInsertTeacherId);
+        final Optional<Teacher> teacher = teacherDao.getById(INVALID_ID);
 
         assertNotNull(teacher);
-        assertEquals(false,teacher.isPresent());
+        assertFalse(teacher.isPresent());
     }
 
     @Test
     public void testList(){
-        jdbcTemplate.execute("INSERT INTO teachers VALUES (1,'test_name','test_surname','test_email','test_username','test_password')");
+        jdbcTemplate.execute(sqlInsertTeacherId);
         final List<Teacher> list = teacherDao.list();
         assertNotNull(list);
         assertEquals(1,list.size());
@@ -112,6 +105,23 @@ public class TeacherDaoImplTest {
 
         assertNotNull(list);
         assertEquals(0,list.size());
+
+    }
+
+    @Test
+    public void testUpdate(){
+        jdbcTemplate.execute(sqlInsertTeacherId);
+        final boolean isUpdated = teacherDao.update(ID,new Teacher("test_update_name","test_update_surname","test_update_email","test_update_username","test_update_password"));
+        assertTrue(isUpdated);
+        final Optional<Teacher> teacher = teacherDao.getById(ID);
+        assertNotNull(teacher);
+        assertTrue(teacher.isPresent());
+        assertEquals("test_update_name",teacher.get().getName());
+        assertEquals("test_update_surname",teacher.get().getSurname());
+        assertEquals("test_update_email",teacher.get().getEmail());
+        assertEquals("test_update_username",teacher.get().getUsername());
+        assertEquals("test_update_password",teacher.get().getPassword());
+
 
     }
 
