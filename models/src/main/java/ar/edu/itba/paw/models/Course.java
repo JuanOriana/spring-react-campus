@@ -5,26 +5,14 @@ import java.time.Year;
 
 public class Course {
 
-    private long subjectId; //
+    private long courseId; //
     private Integer year;
     private String code;
     private Integer quarter;
     private String board, name;
     // Board = Comision
 
-    public Course() {
-    }
-
-
-    // Constructor used for getting a course from the DB
-    public Course(long subjectId, Integer year, String code, Integer quarter, String board, String name) {
-        this.subjectId = subjectId;
-        this.year = year;
-        this.code = code;
-        this.quarter = quarter;
-        this.board = board;
-        this.name = name;
-    }
+    
     public Course( Integer year, String code, Integer quarter, String board, String name) {
         this.year = year;
         this.code = code;
@@ -33,12 +21,12 @@ public class Course {
         this.name = name;
     }
 
-    public long getSubjectId() {
-        return subjectId;
+    public long getcourseId() {
+        return courseId;
     }
 
-    public void setSubjectId(long subjectId) {
-        this.subjectId = subjectId;
+    public void setcourseId(long courseId) {
+        this.courseId = courseId;
     }
 
     public Integer getYear() {
