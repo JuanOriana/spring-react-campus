@@ -25,7 +25,9 @@ public class CourseServiceImplTest {
     private static String BOARD = "S1";
     private static String NAME = "Proyecto de Aplicaciones Web";
     private Course getMockCourse() {
-        return new Course(COURSE_ID,YEAR, CODE, QUARTER, BOARD, NAME);
+        Course mock = new Course(YEAR, CODE, QUARTER, BOARD, NAME);
+        mock.setCourseId(COURSE_ID);
+        return mock;
     }
 
     @InjectMocks
@@ -48,7 +50,7 @@ public class CourseServiceImplTest {
         when(mockDao.getById(eq(COURSE_ID))).thenReturn(Optional.of(course));
         final Optional<Course> queriedCourse = courseService.getById(COURSE_ID);
         Assert.assertTrue(queriedCourse.isPresent());
-        Assert.assertEquals(COURSE_ID, queriedCourse.get().getSubjectId());
+        Assert.assertEquals(COURSE_ID, queriedCourse.get().getCourseId());
     }
 
     @Test(expected =  RuntimeException.class)
@@ -95,7 +97,7 @@ public class CourseServiceImplTest {
         when(mockDao.list()).thenReturn(new ArrayList<Course>(){{ add(course); }});
         List<Course> courses = courseService.list();
         Assert.assertTrue(courses.size() > 0);
-        Assert.assertEquals(course.getSubjectId(), courses.get(0).getSubjectId());
+        Assert.assertEquals(course.getCourseId(), courses.get(0).getCourseId());
     }
 
 }

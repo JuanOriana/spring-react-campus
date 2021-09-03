@@ -18,7 +18,7 @@ public class CourseDaoImpl implements CourseDao {
     private final SimpleJdbcInsert jdbcInsert;
     private static final RowMapper<Course> ROW_MAPPER = (rs, rowNum) -> {
         Course course = new Course(rs.getInt("year"), rs.getString("code"), rs.getInt("quarter"), rs.getString("board"), rs.getString("name"));
-        course.setcourseId(rs.getLong("courseId"));
+        course.setCourseId(rs.getLong("courseId"));
         return course;
     };
 

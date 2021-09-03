@@ -101,7 +101,7 @@ public class AnnouncementDaoImplTest {
 
         assertTrue(announcementOptional.isPresent());
         assertEquals(id, announcementOptional.get().getAnnouncementId());
-        assertEquals(COURSE_ID, announcementOptional.get().getcourseId());
+        assertEquals(COURSE_ID, announcementOptional.get().getCourseId());
         assertEquals(TEACHER_ID, announcementOptional.get().getTeacherId());
         assertEquals("test_title", announcementOptional.get().getTitle());
         assertEquals("test_content", announcementOptional.get().getContent());
@@ -166,7 +166,7 @@ public class AnnouncementDaoImplTest {
 
         assertTrue(announcementOptional.isPresent());
         assertEquals(id, announcementOptional.get().getAnnouncementId());
-        assertEquals(COURSE_ID, announcementOptional.get().getcourseId());
+        assertEquals(COURSE_ID, announcementOptional.get().getCourseId());
         assertEquals(TEACHER_ID, announcementOptional.get().getTeacherId());
         assertEquals("test_update_title", announcementOptional.get().getTitle());
         assertEquals("test_update_content", announcementOptional.get().getContent());

@@ -21,11 +21,11 @@ public class Course {
         this.name = name;
     }
 
-    public long getcourseId() {
+    public long getCourseId() {
         return courseId;
     }
 
-    public void setcourseId(long courseId) {
+    public void setCourseId(long courseId) {
         this.courseId = courseId;
     }
 

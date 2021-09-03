@@ -49,7 +49,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
                 "date = ?," +
                 "title = ?," +
                 "content = ?" +
-                "WHERE announcementId = ?", new Object[]{announcement.getTeacherId(), announcement.getcourseId(), announcement.getDate(), announcement.getTitle(), announcement.getContent(), id}) == 1;
+                "WHERE announcementId = ?", new Object[]{announcement.getTeacherId(), announcement.getCourseId(), announcement.getDate(), announcement.getTitle(), announcement.getContent(), id}) == 1;
     }
 
     @Override

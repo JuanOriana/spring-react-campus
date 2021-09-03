@@ -10,7 +10,6 @@ public class Announcement {
 
 
     public Announcement(long teacherId, long courseId, Date date, String title, String content) {
-
         this.teacherId = teacherId;
         this.courseId = courseId;
         this.date = date;
@@ -34,11 +33,11 @@ public class Announcement {
         this.teacherId = teacherId;
     }
 
-    public long getcourseId() {
+    public long getCourseId() {
         return courseId;
     }
 
-    public void setcourseId(long courseId) {
+    public void setCourseId(long courseId) {
         this.courseId = courseId;
     }
 
