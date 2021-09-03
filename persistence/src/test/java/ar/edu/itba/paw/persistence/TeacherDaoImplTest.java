@@ -19,8 +19,6 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-// In this tests, we have the teacher database populated with (1,'test_name','test_surname','test_email','test_username','test_password')
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Sql("classpath:schema.sql")
@@ -33,23 +31,16 @@ public class TeacherDaoImplTest {
     private TeacherDaoImpl teacherDao;
 
     private JdbcTemplate jdbcTemplate;
-    private int totalRowsInTable;
 
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
-        totalRowsInTable = JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers");
-    }
-
-    @After
-    public void cleanDB(){
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "teachers");
     }
 
 
     @Test
     public void testCreate() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "teachers");
         final boolean isCreated = teacherDao.create(new Teacher(1, "name", "surname", "mail", "username", "password"));
         assertEquals(true, isCreated);
         assertEquals( 1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers"));
@@ -58,7 +49,6 @@ public class TeacherDaoImplTest {
 
     @Test
     public void testCreateDuplicateId(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "teachers");
         final boolean isCreated1 = teacherDao.create(new Teacher(1,"name","surname","mail","username","password"));
         final boolean isCreated2 = teacherDao.create(new Teacher(1,"name","surname","mail","username","password"));
 
@@ -69,23 +59,25 @@ public class TeacherDaoImplTest {
 
     @Test
     public void testDelete(){
-        assertEquals(totalRowsInTable,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
+        jdbcTemplate.execute("INSERT INTO teachers VALUES (1,'test_name','test_surname','test_email','test_username','test_password')");
+        assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
         teacherDao.delete(1);
-        assertEquals(totalRowsInTable-1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
+        assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
     }
 
 
     @Test
     public void testDeleteNoExist(){
-        assertEquals(totalRowsInTable,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
+        jdbcTemplate.execute("INSERT INTO teachers VALUES (1,'test_name','test_surname','test_email','test_username','test_password')");
+        assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
         assertFalse(teacherDao.delete(11)); // magic number
-        assertEquals(totalRowsInTable,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
+        assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
     }
 
     @Test
     public void testGetById(){
+        jdbcTemplate.execute("INSERT INTO teachers VALUES (1,'test_name','test_surname','test_email','test_username','test_password')");
         final Optional<Teacher> teacher = teacherDao.getById(1);
-
         assertNotNull(teacher);
         assertEquals(true,teacher.isPresent());
         assertEquals("test_name",teacher.get().getName());
@@ -97,6 +89,7 @@ public class TeacherDaoImplTest {
 
     @Test
     public void testGetByIdNoExist(){
+        jdbcTemplate.execute("INSERT INTO teachers VALUES (1,'test_name','test_surname','test_email','test_username','test_password')");
         final Optional<Teacher> teacher = teacherDao.getById(11); //magic number
 
         assertNotNull(teacher);
@@ -105,8 +98,8 @@ public class TeacherDaoImplTest {
 
     @Test
     public void testList(){
+        jdbcTemplate.execute("INSERT INTO teachers VALUES (1,'test_name','test_surname','test_email','test_username','test_password')");
         final List<Teacher> list = teacherDao.list();
-
         assertNotNull(list);
         assertEquals(1,list.size());
 
@@ -114,7 +107,7 @@ public class TeacherDaoImplTest {
 
     @Test
     public void testEmptyList(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "teachers");
+        assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
         final List<Teacher> list = teacherDao.list();
 
         assertNotNull(list);
