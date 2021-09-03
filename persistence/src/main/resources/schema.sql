@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS courses
     UNIQUE (code, quarter, board, year)
 );
 
-CREATE TABLE IF NOT EXISTS announcement
+CREATE TABLE IF NOT EXISTS announcements
 (
     announcementId SERIAL PRIMARY KEY,
     teacherId      INTEGER,
