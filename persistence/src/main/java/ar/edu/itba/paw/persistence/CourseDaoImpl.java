@@ -14,9 +14,9 @@ import java.util.*;
 
 @Repository
 public class CourseDaoImpl implements CourseDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private static final RowMapper<Course> ROW_MAPPER = (rs, rowNum) -> new Course(rs.getLong("subjectId"), rs.getInt("year"), rs.getString("code"), rs.getInt("quarter"), rs.getString("board"), rs.getString("name"));
+    private static final RowMapper<Course> ROW_MAPPER = (rs, rowNum) ->{Course course = new Course(rs.getInt("year"), rs.getString("code"), rs.getInt("quarter"), rs.getString("board"), rs.getString("name")); course.setcourseId(rs.getLong("courseId")); return course;};
 
     @Autowired
     public CourseDaoImpl(final DataSource ds) {
@@ -33,7 +33,7 @@ public class CourseDaoImpl implements CourseDao {
         args.put("board", course.getBoard());
         args.put("year", course.getYear());
 
-        Number rowsAffected = 0;
+        Number rowsAffected ;
         try {
             rowsAffected = jdbcInsert.execute(args);
         }
@@ -45,20 +45,20 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public boolean update(int id, Course course) {
+    public boolean update(long id, Course course) {
         return jdbcTemplate.update("UPDATE courses " +
                 "SET name = ?," +
                 "year = ?," +
                 "code = ?," +
                 "quarter = ?," +
-                "board = ?," +
-                "WHERE subjectId = ?", new Object[]{course.getName(), course.getYear(), course.getCode(), course.getQuarter(), course.getBoard(), id}) == 1;
+                "board = ? " +
+                "WHERE courseId = ?;", new Object[] {course.getName(), course.getYear(), course.getCode(), course.getQuarter(), course.getBoard(), id}) == 1;
 
     }
 
     @Override
-    public boolean delete(int id) {
-        return jdbcTemplate.update("DELETE FROM courses WHERE subjectId = ?", new Object[]{id}) == 1;
+    public boolean delete(long id) {
+        return jdbcTemplate.update("DELETE FROM courses WHERE courseId = ?", id) == 1;
     }
 
     @Override
@@ -68,8 +68,8 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public Optional<Course> getById(int id) {
+    public Optional<Course> getById(long id) {
         // Only for testing, replace with proper db implementation
-        return jdbcTemplate.query("SELECT * FROM courses WHERE subjectId = ?", new Object[]{id}, ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM courses WHERE courseId = ?", new Object[]{id}, ROW_MAPPER).stream().findFirst();
     }
 }
