@@ -16,7 +16,11 @@ import java.util.*;
 public class CourseDaoImpl implements CourseDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private static final RowMapper<Course> ROW_MAPPER = (rs, rowNum) ->{Course course = new Course(rs.getInt("year"), rs.getString("code"), rs.getInt("quarter"), rs.getString("board"), rs.getString("name")); course.setcourseId(rs.getLong("courseId")); return course;};
+    private static final RowMapper<Course> ROW_MAPPER = (rs, rowNum) -> {
+        Course course = new Course(rs.getInt("year"), rs.getString("code"), rs.getInt("quarter"), rs.getString("board"), rs.getString("name"));
+        course.setcourseId(rs.getLong("courseId"));
+        return course;
+    };
 
     @Autowired
     public CourseDaoImpl(final DataSource ds) {
@@ -33,13 +37,13 @@ public class CourseDaoImpl implements CourseDao {
         args.put("board", course.getBoard());
         args.put("year", course.getYear());
 
-        Number rowsAffected ;
+        Number rowsAffected;
         try {
             rowsAffected = jdbcInsert.execute(args);
-        }
-        catch (DuplicateKeyException e){
+        } catch (DuplicateKeyException e) {
             return false;
         }
+
 
         return rowsAffected.intValue() > 0;
     }
@@ -52,13 +56,13 @@ public class CourseDaoImpl implements CourseDao {
                 "code = ?," +
                 "quarter = ?," +
                 "board = ? " +
-                "WHERE courseId = ?;", new Object[] {course.getName(), course.getYear(), course.getCode(), course.getQuarter(), course.getBoard(), id}) == 1;
+                "WHERE courseId = ?;", new Object[]{course.getName(), course.getYear(), course.getCode(), course.getQuarter(), course.getBoard(), id}) == 1;
 
     }
 
     @Override
     public boolean delete(long id) {
-        return jdbcTemplate.update("DELETE FROM courses WHERE courseId = ?", id) == 1;
+        return jdbcTemplate.update("DELETE FROM courses WHERE subjectId = ?", new Object[]{id}) == 1;
     }
 
     @Override

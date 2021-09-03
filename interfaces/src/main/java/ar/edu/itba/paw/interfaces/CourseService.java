@@ -19,14 +19,14 @@ public interface CourseService {
      * @param course modified course
      * @return true if the course was successfully updated, false otherwise
      */
-    boolean update(int id, Course course);
+    boolean update(long id, Course course);
 
     /**
      * Attempts to delete a course
      * @param id of the course to be deleted
      * @return true if the course was successfully removed, false otherwise
      */
-    boolean delete(int id);
+    boolean delete(long id);
 
     /**
      * Gets all the current available courses
@@ -39,5 +39,5 @@ public interface CourseService {
      * @param id of the course to be retrieved
      * @return the course corresponding to the given id if it exists, null otherwise
      */
-    Optional<Course> getById(int id);
+    Optional<Course> getById(long id);
 }
