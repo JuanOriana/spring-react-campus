@@ -64,7 +64,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
 
 
     public List<Announcement> listByCourse(long courseId) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements WHERE subjectId = ?",new Object[]{courseId}, ROW_MAPPER));
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements WHERE courseId = ?",new Object[]{courseId}, ROW_MAPPER));
     }
 
     @Override

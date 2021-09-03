@@ -62,7 +62,7 @@ public class CourseDaoImpl implements CourseDao {
 
     @Override
     public boolean delete(long id) {
-        return jdbcTemplate.update("DELETE FROM courses WHERE subjectId = ?", new Object[]{id}) == 1;
+        return jdbcTemplate.update("DELETE FROM courses WHERE courseId = ?", new Object[]{id}) == 1;
     }
 
     @Override
