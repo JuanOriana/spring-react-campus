@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface CourseDao {
     boolean create(Course course);
-    boolean update(int id, Course course);
-    boolean delete(int id);
+    boolean update(long id, Course course);
+    boolean delete(long id);
     List<Course> list();
-    Optional<Course> getById(int id);
+    Optional<Course> getById(long id);
 }

@@ -2,7 +2,6 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.AnnouncementDao;
 import ar.edu.itba.paw.models.Announcement;
-import ar.edu.itba.paw.models.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -23,14 +22,6 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     public AnnouncementDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("announcements");
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS  announcements ( "+
-                "announcementId INTEGER,"+
-                "teacherId INTEGER,"+
-                "subjectId INTEGER," +
-                "title varchar (50), "+
-                "content varchar, "+
-                "date DATE, "+
-                "PRIMARY KEY(announcementId, teacherId, subjectId) )");
     }
 
     @Override
@@ -49,7 +40,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public boolean update(int id, Announcement announcement) {
+    public boolean update(long id, Announcement announcement) {
         return jdbcTemplate.update("UPDATE announcements " +
                                         "SET teacherId = ?," +
                                         "subjectId = ?," +
@@ -60,7 +51,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean delete(long id) {
         return jdbcTemplate.update("DELETE FROM announcements WHERE announcementId = ?", new Object[]{id}) == 1;
     }
 
@@ -70,12 +61,12 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public List<Announcement> listByCourse(int courseId) {
+    public List<Announcement> listByCourse(long courseId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements WHERE subjectId = ?",new Object[]{courseId}, ROW_MAPPER));
     }
 
     @Override
-    public Optional<Announcement> getById(int id) {
+    public Optional<Announcement> getById(long id) {
         return jdbcTemplate.query("SELECT * FROM announcements WHERE announcementId = ?",new Object[]{id},ROW_MAPPER).stream().findFirst();
     }
 }

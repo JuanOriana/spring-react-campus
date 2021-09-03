@@ -21,13 +21,6 @@ public class CourseDaoImpl implements CourseDao {
     public CourseDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses");
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS  courses ( " +
-                "subjectId INTEGER PRIMARY KEY, " +
-                "name varchar (50), " +
-                "code varchar(50), " +
-                "quarter INTEGER , " +
-                "board varchar(50), " +
-                "year INTEGER )");
     }
 
     @Override
@@ -39,14 +32,12 @@ public class CourseDaoImpl implements CourseDao {
         args.put("quarter", course.getQuarter());
         args.put("board", course.getBoard());
         args.put("year", course.getYear());
-
         final Number rowsAffected = jdbcInsert.execute(args);
-
         return rowsAffected.intValue() > 0;
     }
 
     @Override
-    public boolean update(int id, Course course) {
+    public boolean update(long id, Course course) {
         return jdbcTemplate.update("UPDATE courses " +
                 "SET name = ?," +
                 "year = ?," +
@@ -58,7 +49,7 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean delete(long id) {
         return jdbcTemplate.update("DELETE FROM courses WHERE subjectId = ?", new Object[]{id}) == 1;
     }
 
@@ -69,7 +60,7 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public Optional<Course> getById(int id) {
+    public Optional<Course> getById(long id) {
         // Only for testing, replace with proper db implementation
         return jdbcTemplate.query("SELECT * FROM courses WHERE subjectId = ?", new Object[]{id}, ROW_MAPPER).stream().findFirst();
     }
