@@ -31,8 +31,8 @@ public class TimeTableDaoImpl implements TimeTableDao {
             return false;
         }
         final Map<String,Object> args = new HashMap<>();
-        args.put("course_id", course.getCourseId());
-        args.put("day_of_week", dayOfWeek);
+        args.put("courseId", course.getCourseId());
+        args.put("dayOfWeek", dayOfWeek);
         args.put("beginning", start);
         args.put("duration", duration);
 
@@ -46,30 +46,30 @@ public class TimeTableDaoImpl implements TimeTableDao {
             return false;
         }
         return jdbcTemplate.update("UPDATE timetables " +
-                "SET day_of_week = ?," +
+                "SET dayOfWeek = ?," +
                 "beginning = ?," +
-                "duration = ?," +
-                "WHERE course_id = ?", new Object[]{dayOfWeek,start,duration,course_id}) == 1;
+                "duration = ?" +
+                "WHERE courseId = ?", new Object[]{dayOfWeek,start,duration,course_id}) == 1;
     }
 
     @Override
     public boolean delete(int course_id) {
-        return jdbcTemplate.update("DELETE FROM timetables WHERE course_id = ?", new Object[]{course_id}) == 1;
+        return jdbcTemplate.update("DELETE FROM timetables WHERE courseId = ?", new Object[]{course_id}) == 1;
     }
 
     @Override
     public Optional<Integer> getDayOfWeekOfCourseById(long course_id) {
-        return Optional.of(jdbcTemplate.queryForObject("SELECT day_of_week FROM timetables WHERE course_id = ?",new Object[]{course_id}, Integer.class));
+        return Optional.of(jdbcTemplate.queryForObject("SELECT dayOfWeek FROM timetables WHERE courseId = ?",new Object[]{course_id}, Integer.class));
     }
 
     @Override
     public Optional<Long> getStartOfCourseById(long course_id) {
-        return Optional.of(jdbcTemplate.queryForObject("SELECT beginning FROM timetables WHERE course_id = ?",new Object[]{course_id}, Long.class));
+        return Optional.of(jdbcTemplate.queryForObject("SELECT beginning FROM timetables WHERE courseId = ?",new Object[]{course_id}, Long.class));
     }
 
     @Override
     public Optional<Long> getDurationOfCourseById(long course_id) {
-        return Optional.of(jdbcTemplate.queryForObject("SELECT duration FROM timetables WHERE course_id = ?",new Object[]{course_id}, Long.class));
+        return Optional.of(jdbcTemplate.queryForObject("SELECT duration FROM timetables WHERE courseId = ?",new Object[]{course_id}, Long.class));
     }
 
     private boolean isValidTimeAndDay(int dayOfWeek, long start){

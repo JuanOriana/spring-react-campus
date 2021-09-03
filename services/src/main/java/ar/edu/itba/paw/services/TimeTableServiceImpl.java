@@ -20,27 +20,27 @@ public class TimeTableServiceImpl implements TimeTableService {
     }
 
     @Override
-    public boolean update(int course_id, int dayOfWeek, long start, long duration) {
-        return timeTableDaoDao.update(course_id, dayOfWeek, start, duration);
+    public boolean update(int courseId, int dayOfWeek, long start, long duration) {
+        return timeTableDaoDao.update(courseId, dayOfWeek, start, duration);
     }
 
     @Override
-    public boolean delete(int course_id) {
-        return timeTableDaoDao.delete(course_id);
+    public boolean delete(int courseId) {
+        return timeTableDaoDao.delete(courseId);
     }
 
     @Override
-    public Optional<Integer> getDayOfWeekOfCourseById(long course_id) {
-        return timeTableDaoDao.getDayOfWeekOfCourseById(course_id);
+    public Optional<Integer> getDayOfWeekOfCourseById(long courseId) {
+        return timeTableDaoDao.getDayOfWeekOfCourseById(courseId);
     }
 
     @Override
-    public Optional<Long> getStartOfCourseById(long course_id) {
-        return timeTableDaoDao.getStartOfCourseById(course_id);
+    public Optional<Long> getStartOfCourseById(long courseId) {
+        return timeTableDaoDao.getStartOfCourseById(courseId);
     }
 
     @Override
-    public Optional<Long> getDurationOfCourseById(long course_id) {
-        return timeTableDaoDao.getDurationOfCourseById(course_id);
+    public Optional<Long> getDurationOfCourseById(long courseId) {
+        return timeTableDaoDao.getDurationOfCourseById(courseId);
     }
 }

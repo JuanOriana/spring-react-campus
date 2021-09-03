@@ -28,10 +28,11 @@ CREATE TABLE IF NOT EXISTS  students (
                 password varchar (50) );
 
 CREATE TABLE IF NOT EXISTS  timetables (
-                course_id INTEGER FOREIGN KEY,
-                day_of_week INTEGER,
+                courseId INTEGER,
+                dayOfWeek INTEGER,
                 beginning INTEGER,
-                duration INTEGER );
+                duration INTEGER,
+                FOREIGN KEY (courseId) REFERENCES courses ON DELETE CASCADE);
 
 CREATE TABLE IF NOT EXISTS announcements
 (
