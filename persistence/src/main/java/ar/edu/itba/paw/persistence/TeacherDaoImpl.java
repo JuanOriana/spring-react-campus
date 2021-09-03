@@ -2,7 +2,6 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.TeacherDao;
-import ar.edu.itba.paw.models.Student;
 import ar.edu.itba.paw.models.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -16,9 +15,9 @@ import java.util.*;
 
 @Repository
 public class TeacherDaoImpl implements TeacherDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private static final RowMapper<Teacher> ROW_MAPPER = (rs, rowNum) -> new Teacher(rs.getLong("id"),rs.getString("name"),rs.getString("surname"),rs.getString("email"),rs.getString("username"),rs.getString("password"));
+    private static final RowMapper<Teacher> ROW_MAPPER = (rs, rowNum) -> {Teacher teacher = new Teacher(rs.getString("name"),rs.getString("surname"),rs.getString("email"),rs.getString("username"),rs.getString("password")); teacher.setId(rs.getLong("id")); return teacher;};
 
 
 
@@ -41,14 +40,13 @@ public class TeacherDaoImpl implements TeacherDao {
     @Override
     public boolean create(Teacher teacher) {
         final Map<String,Object> args = new HashMap<>();
-        args.put("id",teacher.getId());
         args.put("name",teacher.getName());
         args.put("surname",teacher.getSurname());
         args.put("mail",teacher.getEmail());
         args.put("username",teacher.getUsername());
         args.put("password",teacher.getPassword());
 
-        Number rowsAffected = 0;
+        Number rowsAffected;
         try {
             rowsAffected = jdbcInsert.execute(args);
         }
@@ -66,8 +64,8 @@ public class TeacherDaoImpl implements TeacherDao {
                 "surname = ?," +
                 "email = ?," +
                 "username = ?," +
-                "password = ?," +
-                "WHERE id = ?", new Object[]{teacher.getName(),teacher.getSurname(),teacher.getEmail(),teacher.getUsername(),teacher.getPassword(), id}) == 1;
+                "password = ?" +
+                "WHERE id = ?;", new Object[]{teacher.getName(),teacher.getSurname(),teacher.getEmail(),teacher.getUsername(),teacher.getPassword(), id}) == 1;
 
     }
 
