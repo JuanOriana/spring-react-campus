@@ -26,8 +26,10 @@ public class AnnouncementServiceImplTest {
     private static final String ANNOUNCEMENT_CONTENT = "Rocks! (or not)";
 
     private Announcement getMockAnnouncement() {
-        return new Announcement(ANNOUNCEMENT_ID, COURSE_ID, TEACHER_ID,ANNOUNCEMENT_DATE,
+        Announcement mock = new Announcement(COURSE_ID, TEACHER_ID,ANNOUNCEMENT_DATE,
                 ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT);
+        mock.setAnnouncementId(ANNOUNCEMENT_ID);
+        return mock;
     }
 
     @InjectMocks
@@ -98,7 +100,7 @@ public class AnnouncementServiceImplTest {
         when(mockDao.list()).thenReturn(new ArrayList<Announcement>(){{ add(announcement); }});
         List<Announcement> announcements = announcementService.list();
         Assert.assertTrue(announcements.size() > 0);
-        Assert.assertEquals(announcement.getSubjectId(), announcements.get(0).getSubjectId());
+        Assert.assertEquals(announcement.getCourseId(), announcements.get(0).getCourseId());
     }
 
 }

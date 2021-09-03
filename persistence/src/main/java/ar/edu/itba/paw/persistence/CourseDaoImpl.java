@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.Course;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -13,9 +14,13 @@ import java.util.*;
 
 @Repository
 public class CourseDaoImpl implements CourseDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private static final RowMapper<Course> ROW_MAPPER = (rs, rowNum) -> new Course(rs.getLong("subjectId"), rs.getInt("year"), rs.getString("code"), rs.getInt("quarter"), rs.getString("board"), rs.getString("name"));
+    private static final RowMapper<Course> ROW_MAPPER = (rs, rowNum) -> {
+        Course course = new Course(rs.getInt("year"), rs.getString("code"), rs.getInt("quarter"), rs.getString("board"), rs.getString("name"));
+        course.setCourseId(rs.getLong("courseId"));
+        return course;
+    };
 
     @Autowired
     public CourseDaoImpl(final DataSource ds) {
@@ -26,13 +31,20 @@ public class CourseDaoImpl implements CourseDao {
     @Override
     public boolean create(Course course) {
         final Map<String, Object> args = new HashMap<>();
-        args.put("subjectId", course.getSubjectId());
         args.put("name", course.getName());
         args.put("code", course.getCode());
         args.put("quarter", course.getQuarter());
         args.put("board", course.getBoard());
         args.put("year", course.getYear());
-        final Number rowsAffected = jdbcInsert.execute(args);
+
+        Number rowsAffected;
+        try {
+            rowsAffected = jdbcInsert.execute(args);
+        } catch (DuplicateKeyException e) {
+            return false;
+        }
+
+
         return rowsAffected.intValue() > 0;
     }
 
@@ -43,14 +55,14 @@ public class CourseDaoImpl implements CourseDao {
                 "year = ?," +
                 "code = ?," +
                 "quarter = ?," +
-                "board = ?," +
-                "WHERE subjectId = ?", new Object[]{course.getName(), course.getYear(), course.getCode(), course.getQuarter(), course.getBoard(), id}) == 1;
+                "board = ? " +
+                "WHERE courseId = ?;", new Object[]{course.getName(), course.getYear(), course.getCode(), course.getQuarter(), course.getBoard(), id}) == 1;
 
     }
 
     @Override
     public boolean delete(long id) {
-        return jdbcTemplate.update("DELETE FROM courses WHERE subjectId = ?", new Object[]{id}) == 1;
+        return jdbcTemplate.update("DELETE FROM courses WHERE courseId = ?", new Object[]{id}) == 1;
     }
 
     @Override
@@ -62,6 +74,6 @@ public class CourseDaoImpl implements CourseDao {
     @Override
     public Optional<Course> getById(long id) {
         // Only for testing, replace with proper db implementation
-        return jdbcTemplate.query("SELECT * FROM courses WHERE subjectId = ?", new Object[]{id}, ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM courses WHERE courseId = ?", new Object[]{id}, ROW_MAPPER).stream().findFirst();
     }
 }
