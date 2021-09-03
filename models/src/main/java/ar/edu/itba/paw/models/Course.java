@@ -5,7 +5,7 @@ import java.time.Year;
 
 public class Course {
 
-    private long subjectId;
+    private long subjectId; //
     private Integer year;
     private String code;
     private Integer quarter;
@@ -15,14 +15,17 @@ public class Course {
     public Course() {
     }
 
-    // Constructor for testing purposes, remove later
-    public Course(long subjectId, String name) {
-        this.subjectId = subjectId;
-        this.name = name;
-    }
 
+    // Constructor used for getting a course from the DB
     public Course(long subjectId, Integer year, String code, Integer quarter, String board, String name) {
         this.subjectId = subjectId;
+        this.year = year;
+        this.code = code;
+        this.quarter = quarter;
+        this.board = board;
+        this.name = name;
+    }
+    public Course( Integer year, String code, Integer quarter, String board, String name) {
         this.year = year;
         this.code = code;
         this.quarter = quarter;
