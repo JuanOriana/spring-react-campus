@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS  teachers (
-                id INTEGER PRIMARY KEY,
+                id SERIAL PRIMARY KEY,
                 name varchar(50),
                 surname varchar (50),
                 email varchar (50),
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS  teachers (
                 password varchar (50) );
 
 CREATE TABLE IF NOT EXISTS  courses (
-                subjectId SERIAL PRIMARY KEY,
+                courseId SERIAL PRIMARY KEY,
                 name varchar (50),
                 code varchar(50),
                 quarter INTEGER ,
@@ -16,10 +16,12 @@ CREATE TABLE IF NOT EXISTS  courses (
                 UNIQUE(code,quarter,board,year));
 
         CREATE TABLE IF NOT EXISTS  announcement (
-                announcementId INTEGER,
+                announcementId SERIAL,
                 teacherId INTEGER,
-                subjectId INTEGER, 
+                courseId INTEGER,
                 title varchar (50), 
                 content TEXT ,
-                date DATE, 
-                PRIMARY KEY(announcementId, teacherId, subjectId) );
+                date DATE,
+                FOREIGN KEY (teacherId) REFERENCES teachers ON DELETE CASCADE,
+                FOREIGN KEY (courseId) REFERENCES courses ON DELETE CASCADE ,
+                PRIMARY KEY(announcementId, teacherId, courseId) );
