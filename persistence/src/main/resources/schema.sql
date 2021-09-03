@@ -19,6 +19,21 @@ CREATE TABLE IF NOT EXISTS courses
     UNIQUE (code, quarter, board, year)
 );
 
+CREATE TABLE IF NOT EXISTS  students (
+                id INTEGER PRIMARY KEY,
+                name varchar(50),
+                surname varchar (50),
+                email varchar (50),
+                username varchar(50),
+                password varchar (50) );
+
+CREATE TABLE IF NOT EXISTS  timetables (
+                courseId INTEGER,
+                dayOfWeek INTEGER,
+                beginning INTEGER,
+                duration INTEGER,
+                FOREIGN KEY (courseId) REFERENCES courses ON DELETE CASCADE);
+
 CREATE TABLE IF NOT EXISTS announcements
 (
     announcementId SERIAL PRIMARY KEY,
@@ -30,3 +45,4 @@ CREATE TABLE IF NOT EXISTS announcements
     FOREIGN KEY (teacherId) REFERENCES teachers ON DELETE CASCADE,
     FOREIGN KEY (courseId) REFERENCES courses ON DELETE CASCADE
 );
+
