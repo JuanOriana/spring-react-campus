@@ -16,12 +16,11 @@ CREATE TABLE IF NOT EXISTS  courses (
                 UNIQUE(code,quarter,board,year));
 
         CREATE TABLE IF NOT EXISTS  announcement (
-                announcementId SERIAL,
+                announcementId SERIAL PRIMARY KEY ,
                 teacherId INTEGER,
                 courseId INTEGER,
                 title varchar (50), 
                 content TEXT ,
                 date DATE,
                 FOREIGN KEY (teacherId) REFERENCES teachers ON DELETE CASCADE,
-                FOREIGN KEY (courseId) REFERENCES courses ON DELETE CASCADE ,
-                PRIMARY KEY(announcementId, teacherId, courseId) );
+                FOREIGN KEY (courseId) REFERENCES courses ON DELETE CASCADE );
