@@ -40,7 +40,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public boolean update(int id, Announcement announcement) {
+    public boolean update(long id, Announcement announcement) {
         return jdbcTemplate.update("UPDATE announcements " +
                                         "SET teacherId = ?," +
                                         "subjectId = ?," +
@@ -51,7 +51,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean delete(long id) {
         return jdbcTemplate.update("DELETE FROM announcements WHERE announcementId = ?", new Object[]{id}) == 1;
     }
 
@@ -61,12 +61,12 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public List<Announcement> listByCourse(int courseId) {
+    public List<Announcement> listByCourse(long courseId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements WHERE subjectId = ?",new Object[]{courseId}, ROW_MAPPER));
     }
 
     @Override
-    public Optional<Announcement> getById(int id) {
+    public Optional<Announcement> getById(long id) {
         return jdbcTemplate.query("SELECT * FROM announcements WHERE announcementId = ?",new Object[]{id},ROW_MAPPER).stream().findFirst();
     }
 }

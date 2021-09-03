@@ -16,6 +16,7 @@ import static org.mockito.Mockito.*;
 public class CourseServiceImplTest {
 
     private static long COURSE_ID = 1;
+    private static long INVALID_COURSE_ID = 999;
     private static int YEAR = 2021;
     private static int QUARTER = 2;
     private static String CODE = "122A";
@@ -42,8 +43,8 @@ public class CourseServiceImplTest {
     @Test
     public void testFindByCourseId() {
         Course course = getMockCourse();
-        when(mockDao.getById(eq((int)COURSE_ID))).thenReturn(Optional.of(course));
-        final Optional<Course> queriedCourse = courseService.getById((int)COURSE_ID);
+        when(mockDao.getById(eq(COURSE_ID))).thenReturn(Optional.of(course));
+        final Optional<Course> queriedCourse = courseService.getById(COURSE_ID);
         Assert.assertTrue(queriedCourse.isPresent());
         Assert.assertEquals(COURSE_ID, queriedCourse.get().getSubjectId());
     }
@@ -55,4 +56,36 @@ public class CourseServiceImplTest {
         boolean courseCreateResult = courseService.create(course);
         Assert.fail("Should have thrown runtime exception for duplicate course creation");
     }
+
+    @Test
+    public void testUpdate() {
+        Course course = getMockCourse();
+        when(mockDao.update(eq(COURSE_ID), eq(course))).thenReturn(true);
+        boolean courseUpdateResult = courseService.update(COURSE_ID, course);
+        Assert.assertTrue(courseUpdateResult);
+    }
+
+    @Test
+    public void testUpdateDoesNotExist() {
+        Course course = getMockCourse();
+        when(mockDao.update(eq(INVALID_COURSE_ID), eq(course))).thenReturn(false);
+        boolean courseUpdateResult = courseService.update(INVALID_COURSE_ID, course);
+        Assert.assertFalse(courseUpdateResult);
+    }
+
+    @Test
+    public void testDelete() {
+        when(mockDao.delete(eq(COURSE_ID))).thenReturn(true);
+        boolean courseUpdateResult = courseService.delete(COURSE_ID);
+        Assert.assertTrue(courseUpdateResult);
+    }
+
+    @Test
+    public void testDeleteDoesNotExit() {
+        when(mockDao.delete(eq(INVALID_COURSE_ID))).thenReturn(false);
+        boolean courseUpdateResult = courseService.delete(INVALID_COURSE_ID);
+        Assert.assertFalse(courseUpdateResult);
+    }
+
+
 }
