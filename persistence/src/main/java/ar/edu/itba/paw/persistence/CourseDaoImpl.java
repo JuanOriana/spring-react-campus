@@ -1,7 +1,10 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
+import ar.edu.itba.paw.interfaces.TeacherDao;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Teacher;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,6 +19,7 @@ import java.util.*;
 public class CourseDaoImpl implements CourseDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
+    private final SimpleJdbcInsert jdbcInsertRoles;
     private static final RowMapper<Course> ROW_MAPPER = (rs, rowNum) -> {
         Course course = new Course(rs.getInt("year"), rs.getString("code"), rs.getInt("quarter"), rs.getString("board"), rs.getString("name"));
         course.setCourseId(rs.getLong("courseId"));
@@ -26,6 +30,7 @@ public class CourseDaoImpl implements CourseDao {
     public CourseDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses");
+        jdbcInsertRoles = new SimpleJdbcInsert(jdbcTemplate).withTableName("coursesroles");
     }
 
     @Override
@@ -76,4 +81,39 @@ public class CourseDaoImpl implements CourseDao {
         // Only for testing, replace with proper db implementation
         return jdbcTemplate.query("SELECT * FROM courses WHERE courseId = ?", new Object[]{id}, ROW_MAPPER).stream().findFirst();
     }
+
+    @Override
+    public boolean addTeacherToCourse(long teacherId, long courseId, String rol) {
+        final Map<String, Object> args = new HashMap<>();
+        args.put("teacherId", teacherId);
+        args.put("courseId", courseId);
+        args.put("rol", rol);
+
+        Number rowsAffected;
+        try {
+            rowsAffected = jdbcInsertRoles.execute(args);
+        } catch (DuplicateKeyException e) {
+            return false;
+        }
+
+        return rowsAffected.intValue() > 0;
+    }
+
+    @Override
+    public List<Pair<Teacher, String>> getTeachersFromCourse(long courseId) {
+         RowMapper<Pair<Teacher,String>> rowMapper = (rs, rowNum) -> {
+            TeacherDao teacherDao = new TeacherDaoImpl(jdbcTemplate.getDataSource());
+            Optional<Teacher> teacher = teacherDao.getById(rs.getLong("teacherId"));
+            if (teacher.isPresent()) {
+                return new Pair<>(teacher.get(), rs.getString("rol"));
+            } else {
+                throw new IllegalStateException("TeacherId not present in teachers table");
+            }
+        };
+       return new ArrayList<>(jdbcTemplate.query("SELECT * FROM coursesroles WHERE courseId = ?", new Object[]{courseId}, rowMapper));
+    }
+
+
+
+
 }
