@@ -127,6 +127,19 @@ body{
     border-bottom-right-radius: 14px;
 }
 
+.course-sections-col-title{
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: center;
+    border-bottom: 2px solid var(--cyan-light);
+}
+.course-sections-item{
+    font-weight: 700;
+    font-size: 18px;;
+    list-style-type: none;
+    margin-bottom: 5px;
+}
+
 .course-data-container{
     display: flex;
     flex-direction: column;
