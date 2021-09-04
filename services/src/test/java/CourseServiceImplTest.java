@@ -1,5 +1,6 @@
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.services.CourseServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,14 +19,15 @@ import static org.mockito.Mockito.*;
 public class CourseServiceImplTest {
 
     private static long COURSE_ID = 1;
+    private static long SUBJECT_ID = 1;
+    private static String SUBJECT_CODE = "A1";
+    private static String SUBJECT_NAME = "PAW";
     private static long INVALID_COURSE_ID = 999;
     private static int YEAR = 2021;
     private static int QUARTER = 2;
-    private static String CODE = "122A";
     private static String BOARD = "S1";
-    private static String NAME = "Proyecto de Aplicaciones Web";
     private Course getMockCourse() {
-        Course mock = new Course(YEAR, CODE, QUARTER, BOARD, NAME);
+        Course mock = new Course(YEAR, QUARTER, BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME));
         mock.setCourseId(COURSE_ID);
         return mock;
     }
@@ -39,9 +41,10 @@ public class CourseServiceImplTest {
     @Test
     public void testCreateCourse() {
         Course course = getMockCourse();
-        when(mockDao.create(eq(course))).thenReturn(true);
-        boolean courseCreateResult = courseService.create(course);
-        Assert.assertTrue(courseCreateResult);
+        when(mockDao.create(eq(course))).thenReturn(new Course(COURSE_ID, YEAR, QUARTER,
+                BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME)));
+        Course newCourse = courseService.create(course);
+        Assert.assertEquals(newCourse.getCourseId(), COURSE_ID);
     }
 
     @Test
@@ -57,7 +60,7 @@ public class CourseServiceImplTest {
     public void testCreateCourseDuplicate() {
         Course course = getMockCourse();
         when(mockDao.create(eq(course))).thenThrow(new RuntimeException());
-        boolean courseCreateResult = courseService.create(course);
+        Course newCourse = courseService.create(course);
         Assert.fail("Should have thrown runtime exception for duplicate course creation");
     }
 

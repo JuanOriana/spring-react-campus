@@ -1,24 +1,35 @@
 
 package ar.edu.itba.paw.models;
 
-import java.time.Year;
-
 public class Course {
 
-    private long courseId; //
+    private long courseId;
     private Integer year;
-    private String code;
     private Integer quarter;
-    private String board, name;
-    // Board = Comision
+    private String board;
+    Subject subject;
 
-    
-    public Course( Integer year, String code, Integer quarter, String board, String name) {
+    public Course(long courseId, Integer year, Integer quarter, String board, Subject subject) {
+        this.courseId = courseId;
         this.year = year;
-        this.code = code;
         this.quarter = quarter;
         this.board = board;
-        this.name = name;
+        this.subject = subject;
+    }
+
+    public Course(Integer year, Integer quarter, String board, Subject subject) {
+        this.year = year;
+        this.quarter = quarter;
+        this.board = board;
+        this.subject = subject;
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 
     public long getCourseId() {
@@ -37,14 +48,6 @@ public class Course {
         this.year = year;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public Integer getQuarter() {
         return quarter;
     }
@@ -59,14 +62,6 @@ public class Course {
 
     public void setBoard(String board) {
         this.board = board;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
 }

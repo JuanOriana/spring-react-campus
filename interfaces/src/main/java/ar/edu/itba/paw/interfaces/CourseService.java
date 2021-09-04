@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Subject;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,9 +10,9 @@ public interface CourseService {
     /**
      * Attempts to persist a course entry in the database
      * @param course The course to be persisted in the database
-     * @return true if the course was successfully added, false otherwise
+     * @return the course if it was successfully added
      */
-    boolean create(Course course);
+    Course create(Course course);
 
     /**
      * Attempts to update a course
@@ -36,8 +37,9 @@ public interface CourseService {
 
     /**
      * Attempts to get a course given an id
-     * @param id of the course to be retrieved
+     * @param courseId of the course to be retrieved
      * @return the course corresponding to the given id if it exists, null otherwise
      */
-    Optional<Course> getById(long id);
+    Optional<Course> getById(long courseId);
+
 }

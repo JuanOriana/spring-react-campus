@@ -10,9 +10,9 @@ public interface AnnouncementService {
     /**
      * Attempts to persist an announcement entry in the database
      * @param announcement The announcement to be persisted in the database
-     * @return true if the announcement was successfully added, false otherwise
+     * @return the announcement if it was successfully added
      */
-    boolean create(Announcement announcement);
+    Announcement create(Announcement announcement);
 
     /**
      * Attempts to update a announcement

@@ -8,7 +8,16 @@ public class Teacher {
     public Teacher() {
     }
 
-    public Teacher( String name, String surname, String email, String username, String password) {
+    public Teacher(long id, String name, String surname, String email, String username, String password) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+    }
+
+    public Teacher(String name, String surname, String email, String username, String password) {
         this.name = name;
         this.surname = surname;
         this.email = email;

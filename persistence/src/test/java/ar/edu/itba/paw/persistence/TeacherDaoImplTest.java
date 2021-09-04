@@ -32,30 +32,32 @@ public class TeacherDaoImplTest {
     private TeacherDaoImpl teacherDao;
 
     private JdbcTemplate jdbcTemplate;
-    private final int ID = 1;
+    private final int TEACHER_ID = 1;
     private final int INVALID_ID = 999;
-    private final String sqlInsertTeacherId = String.format("INSERT INTO teachers VALUES (%d,'test_name','test_surname','test_email','test_username','test_password')", ID);
+    private final String sqlInsertTeacherId = String.format("INSERT INTO teachers VALUES (%d,'test_name','test_surname','test_email','test_username','test_password')", TEACHER_ID);
 
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "teachers");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
     }
 
 
     @Test
     public void testCreate() {
-        final boolean isCreated = teacherDao.create(new Teacher("name", "surname", "mail", "username", "password"));
-        assertTrue(isCreated);
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers"));
+        final Teacher teacher = teacherDao.create(new Teacher("name", "surname", "mail", "username", "password"));
+        assertEquals("surname", teacher.getSurname());
+        assertEquals("mail", teacher.getEmail());
+        assertEquals( 1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers"));
     }
 
 
     @Test
     public void testDelete() {
         jdbcTemplate.execute(sqlInsertTeacherId);
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers"));
-        final boolean isDeleted = teacherDao.delete(ID);
+        assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"teachers"));
+        final boolean isDeleted = teacherDao.delete(TEACHER_ID);
         assertTrue(isDeleted);
         assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "teachers"));
     }
@@ -72,7 +74,7 @@ public class TeacherDaoImplTest {
     @Test
     public void testGetById() {
         jdbcTemplate.execute(sqlInsertTeacherId);
-        final Optional<Teacher> teacher = teacherDao.getById(ID);
+        final Optional<Teacher> teacher = teacherDao.getById(TEACHER_ID);
         assertNotNull(teacher);
         assertTrue(teacher.isPresent());
         assertEquals("test_name", teacher.get().getName());
@@ -113,9 +115,9 @@ public class TeacherDaoImplTest {
     @Test
     public void testUpdate() {
         jdbcTemplate.execute(sqlInsertTeacherId);
-        final boolean isUpdated = teacherDao.update(ID, new Teacher("test_update_name", "test_update_surname", "test_update_email", "test_update_username", "test_update_password"));
+        final boolean isUpdated = teacherDao.update(TEACHER_ID,new Teacher("test_update_name","test_update_surname","test_update_email","test_update_username","test_update_password"));
         assertTrue(isUpdated);
-        final Optional<Teacher> teacher = teacherDao.getById(ID);
+        final Optional<Teacher> teacher = teacherDao.getById(TEACHER_ID);
         assertNotNull(teacher);
         assertTrue(teacher.isPresent());
         assertEquals("test_update_name", teacher.get().getName());
@@ -127,16 +129,20 @@ public class TeacherDaoImplTest {
 
     @Test
     public void testGetTeacherCourses() {
-        int courseId, quarter, year;
+        int courseId, quarter, year,subjectId;
         courseId = 10;
         quarter = 1;
         year = 2021;
-        String insertCourseWithIdSql = String.format("INSERT INTO courses  VALUES (%d,'test_name','test_code',%d,'test_board',%d)", courseId, quarter, year);
-        String sqlInsertTeacher1Rol = String.format("INSERT INTO coursesroles VALUES (%d,%d,'rol');", ID, courseId);
+        subjectId=10;
+
+        String insertSubjectWithIdSql = String.format("INSERT INTO subjects  VALUES (%d,'test_code','test_name')", subjectId);
+        String insertCourseWithIdSql = String.format("INSERT INTO courses  VALUES (%d,%d,%d,'test_board',%d)", courseId,subjectId, quarter, year);
+        String sqlInsertTeacher1Rol = String.format("INSERT INTO coursesroles VALUES (%d,%d,'rol');", TEACHER_ID, courseId);
+        jdbcTemplate.execute(insertSubjectWithIdSql);
         jdbcTemplate.execute(insertCourseWithIdSql);
         jdbcTemplate.execute(sqlInsertTeacherId);
         jdbcTemplate.execute(sqlInsertTeacher1Rol);
-        List<Pair<Course,String>> list = teacherDao.getTeacherCourses(ID);
+        List<Pair<Course,String>> list = teacherDao.getTeacherCourses(TEACHER_ID);
         Course c = list.get(0).getKey();
 
         assertEquals(courseId, c.getCourseId());
