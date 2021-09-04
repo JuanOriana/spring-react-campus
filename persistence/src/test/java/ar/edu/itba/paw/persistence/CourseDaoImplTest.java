@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Teacher;
+import javafx.util.Pair;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,14 +38,16 @@ public class CourseDaoImplTest {
     private final int YEAR = 2021;
     private final int ID = 10;
     private final int INVALID_ID = 999;
-    private final String insertCourseSql = String.format("INSERT INTO courses (name,code,quarter,board,year) VALUES ('test_name','test_code',%d,'test_board',%d)", QUARTER,YEAR);
-    private final String insertCourseWithIdSql = String.format("INSERT INTO courses  VALUES (%d,'test_name','test_code',%d,'test_board',%d)", ID,QUARTER,YEAR);
+    private final String insertCourseSql = String.format("INSERT INTO courses (name,code,quarter,board,year) VALUES ('test_name','test_code',%d,'test_board',%d)", QUARTER, YEAR);
+    private final String insertCourseWithIdSql = String.format("INSERT INTO courses  VALUES (%d,'test_name','test_code',%d,'test_board',%d)", ID, QUARTER, YEAR);
 
 
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "coursesroles");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "teachers");
     }
 
     @Test
@@ -119,9 +125,9 @@ public class CourseDaoImplTest {
     }
 
     @Test
-    public void testUpdate(){
+    public void testUpdate() {
         jdbcTemplate.execute(insertCourseWithIdSql);
-        assertTrue(courseDao.update(ID,new Course(YEAR,"test_update_code",QUARTER,"test_update_board","test_update_name")));
+        assertTrue(courseDao.update(ID, new Course(YEAR, "test_update_code", QUARTER, "test_update_board", "test_update_name")));
 
         final Optional<Course> course = courseDao.getById(ID);
         assertNotNull(course);
@@ -131,8 +137,50 @@ public class CourseDaoImplTest {
         assertEquals(Optional.of(QUARTER).get(), course.get().getQuarter());
         assertEquals("test_update_board", course.get().getBoard());
         assertEquals(Optional.of(YEAR).get(), course.get().getYear());
+    }
 
+    @Test
+    public void getTeachersFromCourse() {
+        int teacher1Id = 10;
+        int teacher2Id = 11;
+        String sqlInsertTeacher1Rol = String.format("INSERT INTO coursesroles VALUES (%d,%d,'rol');", teacher1Id, ID);
+        String sqlInsertTeacher2Rol = String.format("INSERT INTO coursesroles VALUES (%d,%d,'rol');", teacher2Id, ID);
+        String sqlInsertTeacher1Id = String.format("INSERT INTO teachers VALUES (%d,'test_name1','test_surname','test_email1','test_username','test_password')", teacher1Id);
+        String sqlInsertTeacher2Id = String.format("INSERT INTO teachers VALUES (%d,'test_name2','test_surname','test_email2','test_username','test_password')", teacher2Id);
+        jdbcTemplate.execute(insertCourseWithIdSql); // Create a entry in course table
+        jdbcTemplate.execute(sqlInsertTeacher1Id);   // Create a entry in teacher table
+        jdbcTemplate.execute(sqlInsertTeacher2Id);   // Create a entry in teacher table
+        jdbcTemplate.execute(sqlInsertTeacher1Rol); //Create a entry inn coursesroles table
+        jdbcTemplate.execute(sqlInsertTeacher2Rol); //Create a entry inn coursesroles table
 
+        List<Pair<Teacher, String>> teacherAndRoles = courseDao.getTeachersFromCourse(ID);
+
+        assertEquals(2, teacherAndRoles.size());
+        Teacher teacher = teacherAndRoles.get(0).getKey();
+        String rol = teacherAndRoles.get(0).getValue();
+
+        assertEquals("test_name1", teacher.getName());
+        assertEquals("rol", rol);
+    }
+
+    @Test
+    public void addTeacherToCourseTest(){
+        int teacherId = 10;
+        String sqlInsertTeacherId = String.format("INSERT INTO teachers VALUES (%d,'test_name','test_surname','test_email1','test_username','test_password')", teacherId);
+        jdbcTemplate.execute(sqlInsertTeacherId);
+        jdbcTemplate.execute(insertCourseWithIdSql);
+        assertTrue(courseDao.addTeacherToCourse(teacherId, ID,"rol"));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void addTeacherToInexistenceCourseTest(){
+        int teacherId = 10;
+        String sqlInsertTeacherId = String.format("INSERT INTO teachers VALUES (%d,'test_name','test_surname','test_email1','test_username','test_password')", teacherId);
+        jdbcTemplate.execute(sqlInsertTeacherId);
+        jdbcTemplate.execute(insertCourseWithIdSql);
+
+        courseDao.addTeacherToCourse(teacherId, INVALID_ID,"rol");
+        Assert.fail("Should have thrown runtime exception for inexistence foreing key 'course id' ");
     }
 
 }
