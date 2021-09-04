@@ -1,8 +1,11 @@
 
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.TeacherDao;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Teacher;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,19 +20,23 @@ import java.util.*;
 public class TeacherDaoImpl implements TeacherDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private static final RowMapper<Teacher> ROW_MAPPER = (rs, rowNum) -> {Teacher teacher = new Teacher(rs.getString("name"),rs.getString("surname"),rs.getString("email"),rs.getString("username"),rs.getString("password")); teacher.setId(rs.getLong("id")); return teacher;};
-
+    private static final RowMapper<Teacher> ROW_MAPPER = (rs, rowNum) -> {
+        Teacher teacher = new Teacher(rs.getString("name"), rs.getString("surname"), rs.getString("email"), rs.getString("username"), rs.getString("password"));
+        teacher.setId(rs.getLong("id"));
+        return teacher;
+    };
 
 
     @Autowired
-    public TeacherDaoImpl(final DataSource ds){
+    public TeacherDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("teachers");
 
     }
+
     @Override
     public Optional<Teacher> getById(long id) {
-        return jdbcTemplate.query("SELECT * FROM teachers WHERE id = ?",new Object[]{id},ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM teachers WHERE id = ?", new Object[]{id}, ROW_MAPPER).stream().findFirst();
     }
 
     @Override
@@ -37,24 +44,24 @@ public class TeacherDaoImpl implements TeacherDao {
         return new ArrayList<>(jdbcTemplate.query("SELECT * FROM teachers", ROW_MAPPER));
     }
 
+
     @Override
     public boolean create(Teacher teacher) {
-        final Map<String,Object> args = new HashMap<>();
-        args.put("name",teacher.getName());
-        args.put("surname",teacher.getSurname());
-        args.put("mail",teacher.getEmail());
-        args.put("username",teacher.getUsername());
-        args.put("password",teacher.getPassword());
+        final Map<String, Object> args = new HashMap<>();
+        args.put("name", teacher.getName());
+        args.put("surname", teacher.getSurname());
+        args.put("mail", teacher.getEmail());
+        args.put("username", teacher.getUsername());
+        args.put("password", teacher.getPassword());
 
         Number rowsAffected;
         try {
             rowsAffected = jdbcInsert.execute(args);
-        }
-        catch (DuplicateKeyException e){
+        } catch (DuplicateKeyException e) {
             return false;
         }
 
-        return  rowsAffected.intValue() > 0;
+        return rowsAffected.intValue() > 0;
     }
 
     @Override
@@ -65,13 +72,27 @@ public class TeacherDaoImpl implements TeacherDao {
                 "email = ?," +
                 "username = ?," +
                 "password = ?" +
-                "WHERE id = ?;", new Object[]{teacher.getName(),teacher.getSurname(),teacher.getEmail(),teacher.getUsername(),teacher.getPassword(), id}) == 1;
+                "WHERE id = ?;", new Object[]{teacher.getName(), teacher.getSurname(), teacher.getEmail(), teacher.getUsername(), teacher.getPassword(), id}) == 1;
 
     }
 
     @Override
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM teachers WHERE id = ?", new Object[]{id}) == 1;
+    }
+
+    @Override
+    public List<Pair<Course, String>> getTeacherCourses(int teacherId) {
+        RowMapper<Pair<Course,String>> rowMapper = (rs, rowNum) -> {
+            CourseDao courseDao = new CourseDaoImpl(jdbcTemplate.getDataSource());
+            Optional<Course> course = courseDao.getById(rs.getLong("courseId"));
+            if (course.isPresent()) {
+                return new Pair<>(course.get(), rs.getString("rol"));
+            } else {
+                throw new IllegalStateException("CourseId not present in courses table");
+            }
+        };
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM coursesroles WHERE teacherId = ?", new Object[]{teacherId}, rowMapper));
     }
 
 
