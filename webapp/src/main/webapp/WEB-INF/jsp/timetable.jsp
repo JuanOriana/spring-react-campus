@@ -11,7 +11,9 @@
           rel="stylesheet">
 </head>
 <body>
-<%@ include file="navbar.jsp" %>
+<jsp:include page="navbar.jsp">
+    <jsp:param name="navItem" value="${3}"/>
+</jsp:include>
 <div class="page-container">
     <h2 class="section-heading">Mis Horarios</h2>
     <div class="tab">

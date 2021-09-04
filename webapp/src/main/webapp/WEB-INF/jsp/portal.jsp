@@ -10,7 +10,9 @@
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&family=Righteous&display=swap" rel="stylesheet">
     </head>
     <body>
-        <%@ include file="navbar.jsp" %>
+        <jsp:include page="navbar.jsp">
+            <jsp:param name="navItem" value="${1}"/>
+        </jsp:include>
         <div class="page-container">
             <h2 class="section-heading">Mis Cursos</h2>
             <div class="courses-container">

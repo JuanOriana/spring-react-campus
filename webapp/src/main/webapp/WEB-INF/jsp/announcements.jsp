@@ -11,7 +11,9 @@
           rel="stylesheet">
 </head>
 <body>
-  <%@ include file="navbar.jsp" %>
+    <jsp:include page="navbar.jsp">
+        <jsp:param name="navItem" value="${2}"/>
+    </jsp:include>
   <div class="page-container">
       <h2 class="section-heading">Mis Anuncios</h2>
       <div class="announcement-wrapper reduced">
