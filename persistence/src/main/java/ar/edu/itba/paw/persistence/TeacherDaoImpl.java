@@ -38,7 +38,7 @@ public class TeacherDaoImpl implements TeacherDao {
     }
 
     @Override
-    public boolean create(Teacher teacher) {
+    public Teacher create(Teacher teacher) {
         final Map<String,Object> args = new HashMap<>();
         args.put("name",teacher.getName());
         args.put("surname",teacher.getSurname());
@@ -46,15 +46,10 @@ public class TeacherDaoImpl implements TeacherDao {
         args.put("username",teacher.getUsername());
         args.put("password",teacher.getPassword());
 
-        Number rowsAffected;
-        try {
-            rowsAffected = jdbcInsert.execute(args);
-        }
-        catch (DuplicateKeyException e){
-            return false;
-        }
+        final int teacherId = jdbcInsert.execute(args);
 
-        return  rowsAffected.intValue() > 0;
+        return new Teacher(teacherId, teacher.getName(), teacher.getSurname(), teacher.getEmail(), teacher.getUsername(),
+                teacher.getPassword());
     }
 
     @Override

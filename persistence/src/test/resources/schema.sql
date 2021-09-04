@@ -6,14 +6,23 @@ CREATE TABLE IF NOT EXISTS  teachers (
                 username varchar(50),
                 password varchar (50) );
 
-CREATE TABLE IF NOT EXISTS  courses (
+CREATE TABLE IF NOT EXISTS subjects
+(
+    subjectId IDENTITY PRIMARY KEY,
+    code     varchar(50),
+    name     varchar(50)
+);
+
+CREATE TABLE IF NOT EXISTS courses
+(
     courseId IDENTITY PRIMARY KEY,
-    name varchar (50),
-    code varchar(50),
-    quarter INTEGER ,
-    board varchar(50),
-    year INTEGER,
-     UNIQUE(code,quarter,board,year));
+    subjectId INTEGER,
+    quarter  INTEGER,
+    board    varchar(50),
+    year     INTEGER,
+    UNIQUE (subjectId, quarter, board, year),
+    FOREIGN KEY (subjectId) REFERENCES subjects ON DELETE CASCADE
+    );
 
 CREATE TABLE IF NOT EXISTS  announcements (
                       announcementId IDENTITY PRIMARY KEY ,

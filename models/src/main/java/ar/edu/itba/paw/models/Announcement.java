@@ -8,8 +8,16 @@ public class Announcement {
     private Date date;
     private String title, content;
 
+    public Announcement(long announcementId, long teacherId, long courseId, Date date, String title, String content) {
+        this.announcementId = announcementId;
+        this.teacherId = teacherId;
+        this.courseId = courseId;
+        this.date = date;
+        this.title = title;
+        this.content = content;
+    }
 
-    public Announcement(long teacherId, long courseId, Date date, String title, String content) {
+    public Announcement(long courseId, long teacherId, Date date, String title, String content) {
         this.teacherId = teacherId;
         this.courseId = courseId;
         this.date = date;

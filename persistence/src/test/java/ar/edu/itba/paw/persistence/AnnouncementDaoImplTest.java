@@ -32,9 +32,10 @@ public class AnnouncementDaoImplTest {
     private AnnouncementDaoImpl announcementDao;
 
     private JdbcTemplate jdbcTemplate;
+    private final int ANNOUNCEMENT_ID = 1;
     private final int TEACHER_ID = 1;
     private final int COURSE_ID = 1;
-    private final Date d = new Date();
+    private final Date date = new Date();
 
     @Before
     public void setUp() {
@@ -42,29 +43,33 @@ public class AnnouncementDaoImplTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "teachers");
-        int YEAR = 2021;
-        String sqlInsertCourse = String.format("INSERT INTO courses  VALUES (%d,'test_name','test_code',1,'test_board',%d)", COURSE_ID, YEAR);
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
+        final int YEAR = 2021;
+        final int SUBJECT_ID = 1;
+        String sqlInsertSubject = String.format("INSERT INTO subjects  VALUES (%d, 'subject_name', 'code')", SUBJECT_ID);
+        String sqlInsertCourse = String.format("INSERT INTO courses  VALUES (%d, %d,1,'S1',%d)", COURSE_ID, SUBJECT_ID, YEAR);
         String sqlInsertTeacher = String.format("INSERT INTO teachers VALUES (%d,'test_name','test_surname','test_email','test_username','test_password')", TEACHER_ID);
+        jdbcTemplate.execute(sqlInsertSubject);
         jdbcTemplate.execute(sqlInsertCourse);
         jdbcTemplate.execute(sqlInsertTeacher);
     }
 
     @Test
     public void testCreate() {
-        final boolean isCreated = announcementDao.create(new Announcement(TEACHER_ID, COURSE_ID, d, "test_title", "test_content"));
-
-        assertTrue(isCreated);
+        final Announcement announcement = announcementDao.create(new Announcement(COURSE_ID, TEACHER_ID , date, "test_title", "test_content"));
+        assertEquals(announcement.getAnnouncementId(), ANNOUNCEMENT_ID);
+        assertEquals( 1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
     }
 
     @Test(expected = RuntimeException.class)
     public void testCreateInexistenceTeacherId() {
-        announcementDao.create(new Announcement(TEACHER_ID + 1, COURSE_ID, d, "test_title", "test_content"));
-        Assert.fail("Should have thrown runtime exception for inexistence foreing key 'teacher id' ");
+        announcementDao.create(new Announcement(COURSE_ID, TEACHER_ID + 1, date, "test_title", "test_content"));
+        Assert.fail("Should have thrown runtime exception for inexistence foreign key 'teacher id' ");
     }
 
     @Test(expected = AssertionError.class)
     public void testCreateInexistenceCourseId() {
-        announcementDao.create(new Announcement(TEACHER_ID, COURSE_ID + 1, d, "test_title", "test_content"));
+        announcementDao.create(new Announcement(COURSE_ID + 1, TEACHER_ID, date, "test_title", "test_content"));
         Assert.fail("Should have thrown assertion error  for inexistence foreing key 'course id' ");
     }
 

@@ -41,9 +41,10 @@ public class AnnouncementServiceImplTest {
     @Test
     public void testCreateAnnouncement() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.create(eq(announcement))).thenReturn(true);
-        final boolean announcementCreateResult = announcementService.create(announcement);
-        Assert.assertTrue(announcementCreateResult);
+        when(mockDao.create(eq(announcement))).thenReturn(new Announcement(ANNOUNCEMENT_ID, COURSE_ID, TEACHER_ID,ANNOUNCEMENT_DATE,
+                ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT));
+        final Announcement newAnnouncement = announcementService.create(announcement);
+        Assert.assertEquals(newAnnouncement.getAnnouncementId(), ANNOUNCEMENT_ID);
     }
 
     @Test
@@ -60,7 +61,7 @@ public class AnnouncementServiceImplTest {
     public void testCreateAnnouncementDuplicate() {
         Announcement announcement = getMockAnnouncement();
         when(mockDao.create(eq(announcement))).thenThrow(new RuntimeException());
-        boolean announcementCreateResult = announcementService.create(announcement);
+        Announcement announcementCreateResult = announcementService.create(announcement);
         Assert.fail("Should have thrown runtime exception for duplicate announcement creation");
     }
 

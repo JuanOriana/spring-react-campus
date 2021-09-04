@@ -15,7 +15,7 @@ public class CourseServiceImpl implements CourseService {
     private CourseDao courseDao;
 
     @Override
-    public boolean create(Course course) {
+    public Course create(Course course) {
         return courseDao.create(course);
     }
 
@@ -38,4 +38,5 @@ public class CourseServiceImpl implements CourseService {
     public Optional<Course> getById(long id) {
         return courseDao.getById(id);
     }
+
 }

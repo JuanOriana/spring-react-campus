@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AnnouncementDao {
-    boolean create(Announcement announcement);
+    Announcement create(Announcement announcement);
     boolean update(long id, Announcement announcement);
     boolean delete(long id);
     List<Announcement> list();

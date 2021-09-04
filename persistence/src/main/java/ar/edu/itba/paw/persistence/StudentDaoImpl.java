@@ -42,18 +42,18 @@ public class StudentDaoImpl implements StudentDao {
     }
 
     @Override
-    public boolean create(Student student) {
+    public Student create(Student student) {
         final Map<String,Object> args = new HashMap<>();
-        args.put("id",student.getId());
         args.put("name",student.getName());
         args.put("surname",student.getSurname());
         args.put("mail",student.getEmail());
         args.put("username",student.getUsername());
         args.put("password",student.getPassword());
 
-        final Number rowsAffected = jdbcInsert.execute(args);
+        final int studentId = jdbcInsert.execute(args);
 
-        return  rowsAffected.intValue() > 0;
+        return new Student(studentId, student.getName(), student.getSurname(), student.getEmail(), student.getUsername(),
+                student.getPassword());
     }
 
     @Override

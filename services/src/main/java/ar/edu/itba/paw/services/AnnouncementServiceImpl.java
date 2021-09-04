@@ -16,7 +16,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     private AnnouncementDao announcementDao;
 
     @Override
-    public boolean create(Announcement announcement) {
+    public Announcement create(Announcement announcement) {
         return announcementDao.create(announcement);
     }
 

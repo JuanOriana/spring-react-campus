@@ -8,16 +8,25 @@ CREATE TABLE IF NOT EXISTS teachers
     password varchar(50)
 );
 
+CREATE TABLE IF NOT EXISTS subjects
+(
+    subjectId SERIAL PRIMARY KEY,
+    code     varchar(50),
+    name     varchar(50)
+);
+
 CREATE TABLE IF NOT EXISTS courses
 (
     courseId SERIAL PRIMARY KEY,
-    name     varchar(50),
-    code     varchar(50),
+    subjectId INTEGER,
     quarter  INTEGER,
     board    varchar(50),
     year     INTEGER,
-    UNIQUE (code, quarter, board, year)
+    UNIQUE (subjectId, quarter, board, year),
+    FOREIGN KEY(subjectId) REFERENCES subjects ON DELETE CASCADE
 );
+
+
 
 CREATE TABLE IF NOT EXISTS  students (
                 id INTEGER PRIMARY KEY,

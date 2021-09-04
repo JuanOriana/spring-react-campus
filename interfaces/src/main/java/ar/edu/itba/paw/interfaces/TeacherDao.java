@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TeacherDao {
-    boolean create(Teacher teacher);
+    Teacher create(Teacher teacher);
     boolean update(int id,Teacher teacher);
     boolean delete(int id);
     Optional<Teacher> getById(long id);
