@@ -43,4 +43,18 @@ public class CourseController {
         }
         return mav;
     }
+
+    @RequestMapping("/{courseId}/professors")
+    public ModelAndView professors(@PathVariable int courseId) {
+        final ModelAndView mav;
+        Optional<Course> course = courseService.getById(courseId);
+        if(course.isPresent()) {
+            mav = new ModelAndView("professors");
+            mav.addObject("course", course.get());
+        } else {
+            mav = new ModelAndView("errorPage");
+            mav.addObject("errorMsg", "Course does not exist");
+        }
+        return mav;
+    }
 }
