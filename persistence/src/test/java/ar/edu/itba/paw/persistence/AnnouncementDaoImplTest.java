@@ -57,7 +57,12 @@ public class AnnouncementDaoImplTest {
     @Test
     public void testCreate() {
         final Announcement announcement = announcementDao.create(new Announcement(COURSE_ID, TEACHER_ID , date, "test_title", "test_content"));
-        assertEquals(announcement.getAnnouncementId(), ANNOUNCEMENT_ID);
+        assertEquals(COURSE_ID, announcement.getCourseId());
+        assertEquals(TEACHER_ID, announcement.getTeacherId());
+        assertEquals(date, announcement.getDate());
+        assertEquals("test_title", announcement.getTitle());
+
+
         assertEquals( 1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
     }
 
