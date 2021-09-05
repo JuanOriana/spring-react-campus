@@ -16,7 +16,7 @@
         <div class="page-container" style="padding-top: 0">
             <div class="course-page-wrapper">
                 <jsp:include page="courseSectionsCol.jsp">
-                    <jsp:param name="courseName" value="${course.name}"/>
+                    <jsp:param name="courseName" value="${course.subject.name}"/>
                     <jsp:param name="courseId" value="${course.courseId}"/>
                 </jsp:include>
                 <div class="course-data-container">
