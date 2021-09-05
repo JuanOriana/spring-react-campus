@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS courses
 
 CREATE TABLE IF NOT EXISTS users
 (
-    userId SERIAL NOT NULL PRIMARY KEY,
+    userId SERIAL PRIMARY KEY,
     fileNumber INTEGER UNIQUE,
     name VARCHAR(50),
     surname VARCHAR(50),

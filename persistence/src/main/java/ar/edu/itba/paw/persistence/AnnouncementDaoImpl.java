@@ -17,7 +17,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private static final RowMapper<Announcement> ROW_MAPPER = (rs, rowNum) -> {
-        Announcement announcement = new Announcement(rs.getLong("teacherId"), rs.getLong("courseId"),
+        Announcement announcement = new Announcement(rs.getLong("userId"), rs.getLong("courseId"),
                 rs.getDate("date"), rs.getString("title"), rs.getString("content"));
         announcement.setAnnouncementId(rs.getLong("announcementId"));
         return announcement;
@@ -35,21 +35,21 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         args.put("date", announcement.getDate());
         args.put("title", announcement.getTitle());
         args.put("content", announcement.getContent());
-        args.put("teacherId", announcement.getTeacherId());
+        args.put("teacherId", announcement.getUserId());
         final int announcementId = jdbcInsert.executeAndReturnKey(args).intValue();
-        return new Announcement(announcementId, announcement.getTeacherId(),
+        return new Announcement(announcementId, announcement.getUserId(),
                 announcement.getCourseId(), announcement.getDate(), announcement.getTitle(), announcement.getContent());
     }
 
     @Override
     public boolean update(long id, Announcement announcement) {
         return jdbcTemplate.update("UPDATE announcements " +
-                "SET teacherId = ?," +
+                "SET userId = ?," +
                 "courseId = ?," +
                 "date = ?," +
                 "title = ?," +
                 "content = ?" +
-                "WHERE announcementId = ?", new Object[]{announcement.getTeacherId(), announcement.getCourseId(),
+                "WHERE announcementId = ?", new Object[]{announcement.getUserId(), announcement.getCourseId(),
                 announcement.getDate(), announcement.getTitle(), announcement.getContent(), id}) == 1;
     }
 
