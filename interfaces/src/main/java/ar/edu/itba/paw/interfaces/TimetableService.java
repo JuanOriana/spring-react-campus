@@ -3,7 +3,9 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Timetable;
 
+import java.sql.Time;
 import java.util.List;
+
 
 public interface TimetableService {
     /**
@@ -11,17 +13,17 @@ public interface TimetableService {
      * @param course The course to be persisted in the database
      * @return true if the course was successfully added, false otherwise
      */
-    boolean create(Course course, int dayOfWeek, long start, long duration);
+    boolean create(Course course, int dayOfWeek, Time start, Time end);
 
     /**
      * Attempts to update a course's timetable
      * @param courseId of the courses timetable to be modified
      * @param dayOfWeek modified
      * @param start modified
-     * @param duration modified
+     * @param end modified
      * @return true if the timetable was successfully updated, false otherwise
      */
-    boolean update(int courseId, int dayOfWeek, long start, long duration);
+    boolean update(int courseId, int dayOfWeek, Time start, Time end);
 
     /**
      * Attempts to delete a course's timetable
@@ -35,6 +37,6 @@ public interface TimetableService {
      * @param courseId of the course to get the timetable from
      * @return list of timetables for the given courseId
      */
-    List<Timetable> getById(int courseId);
+    List<Timetable> getById(long courseId);
 
 }

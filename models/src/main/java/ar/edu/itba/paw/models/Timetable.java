@@ -1,20 +1,22 @@
 package ar.edu.itba.paw.models;
 
+import java.sql.Time;
+
 public class Timetable {
     private int courseId, dayOfWeek;
-    private long begins, duration;
+    private Time begins, end;
 
-    public Timetable(int courseId, int dayOfWeek, long begins, long duration) {
+    public Timetable(int courseId, int dayOfWeek, Time begins, Time end) {
         this.courseId = courseId;
         this.dayOfWeek = dayOfWeek;
         this.begins = begins;
-        this.duration = duration;
+        this.end = end;
     }
 
-    public Timetable(int dayOfWeek, long begins, long duration) {
+    public Timetable(int dayOfWeek, Time begins, Time end) {
         this.dayOfWeek = dayOfWeek;
         this.begins = begins;
-        this.duration = duration;
+        this.end = end;
     }
 
     public int getCourseId() {
@@ -33,19 +35,19 @@ public class Timetable {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public long getBegins() {
+    public Time getBegins() {
         return begins;
     }
 
-    public void setBegins(long begins) {
+    public void setBegins(Time begins) {
         this.begins = begins;
     }
 
-    public long getDuration() {
-        return duration;
+    public Time getEnd() {
+        return end;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
+    public void setEnd(Time end) {
+        this.end = end;
     }
 }

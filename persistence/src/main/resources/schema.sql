@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS teachers
     surname  varchar(50),
     email    varchar(50),
     username varchar(50),
-    password varchar(50)
+    password varchar(50),
     UNIQUE (email, username)
 );
 
@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS  students (
 CREATE TABLE IF NOT EXISTS  timetables (
    courseId INTEGER,
    dayOfWeek INTEGER,
-   beginning INTEGER,
-   duration INTEGER,
+   startTime TIME,
+   endTime TIME,
    FOREIGN KEY (courseId) REFERENCES courses ON DELETE CASCADE);
 
 CREATE TABLE IF NOT EXISTS announcements

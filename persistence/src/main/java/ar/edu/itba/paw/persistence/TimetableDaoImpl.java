@@ -10,6 +10,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +22,8 @@ public class TimetableDaoImpl implements TimetableDao {
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private static final RowMapper<Timetable> TIMETABLE_ROW_MAPPER = (rs, rowNum) -> {
-        return new Timetable(rs.getInt("courseId"), rs.getInt("dayOfWeek"), rs.getInt("beginning"),
-                rs.getInt("duration"));
+        return new Timetable(rs.getInt("courseId"), rs.getInt("dayOfWeek"), rs.getTime("startTime"),
+                rs.getTime("endTime"));
     };
 
     @Autowired
@@ -31,30 +33,24 @@ public class TimetableDaoImpl implements TimetableDao {
     }
 
     @Override
-    public boolean create(Course course, int dayOfWeek, long start, long duration) {
-        if (!isValidTimeAndDay(dayOfWeek,start)){
-            return false;
-        }
+    public boolean create(Course course, int dayOfWeek, Time start, Time end) {
         final Map<String,Object> args = new HashMap<>();
         args.put("courseId", course.getCourseId());
         args.put("dayOfWeek", dayOfWeek);
-        args.put("beginning", start);
-        args.put("duration", duration);
+        args.put("startTime", start);
+        args.put("endTime", end);
 
         final Number rowsAffected = jdbcInsert.execute(args);
         return  rowsAffected.intValue() > 0;
     }
 
     @Override
-    public boolean update(int course_id, int dayOfWeek, long start, long duration) {
-        if (!isValidTimeAndDay(dayOfWeek,start)){
-            return false;
-        }
+    public boolean update(int course_id, int dayOfWeek, Time start, Time end) {
         return jdbcTemplate.update("UPDATE timetables " +
                 "SET dayOfWeek = ?," +
-                "beginning = ?," +
-                "duration = ?" +
-                "WHERE courseId = ?", new Object[]{dayOfWeek,start,duration,course_id}) == 1;
+                "startTime = ?," +
+                "endTime = ?" +
+                "WHERE courseId = ?", new Object[]{dayOfWeek,start,end,course_id}) == 1;
     }
 
     @Override
@@ -63,12 +59,8 @@ public class TimetableDaoImpl implements TimetableDao {
     }
 
     @Override
-    public List<Timetable> getById(int courseId) {
+    public List<Timetable> getById(long courseId) {
         return jdbcTemplate.query("SELECT * FROM timetables WHERE courseId = ?",
                 new Object[]{courseId}, TIMETABLE_ROW_MAPPER);
-    }
-
-    private boolean isValidTimeAndDay(int dayOfWeek, long start){
-        return dayOfWeek <= 7 && dayOfWeek >= 1 && start < 86400000;
     }
 }

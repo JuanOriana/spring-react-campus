@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.Timetable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.util.List;
 
 @Service
@@ -16,13 +17,13 @@ public class TimetableServiceImpl implements TimetableService {
     private TimetableDao timetableDaoDao;
 
     @Override
-    public boolean create(Course course, int dayOfWeek, long start, long duration) {
-        return timetableDaoDao.create(course, dayOfWeek, start, duration);
+    public boolean create(Course course, int dayOfWeek, Time start, Time end) {
+        return timetableDaoDao.create(course, dayOfWeek, start, end);
     }
 
     @Override
-    public boolean update(int courseId, int dayOfWeek, long start, long duration) {
-        return timetableDaoDao.update(courseId, dayOfWeek, start, duration);
+    public boolean update(int courseId, int dayOfWeek, Time start, Time end) {
+        return timetableDaoDao.update(courseId, dayOfWeek, start, end);
     }
 
     @Override
@@ -31,7 +32,7 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
     @Override
-    public List<Timetable> getById(int courseId) {
+    public List<Timetable> getById(long courseId) {
         return timetableDaoDao.getById(courseId);
     }
 
