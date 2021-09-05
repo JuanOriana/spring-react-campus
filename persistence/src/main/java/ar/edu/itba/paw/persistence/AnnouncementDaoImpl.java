@@ -36,7 +36,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         args.put("title", announcement.getTitle());
         args.put("content", announcement.getContent());
         args.put("teacherId", announcement.getTeacherId());
-        final int announcementId = jdbcInsert.execute(args);
+        final int announcementId = jdbcInsert.executeAndReturnKey(args).intValue();
         return new Announcement(announcementId, announcement.getTeacherId(),
                 announcement.getCourseId(), announcement.getDate(), announcement.getTitle(), announcement.getContent());
     }

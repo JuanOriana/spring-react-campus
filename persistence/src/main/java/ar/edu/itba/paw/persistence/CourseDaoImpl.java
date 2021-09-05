@@ -36,7 +36,7 @@ public class CourseDaoImpl implements CourseDao {
         args.put("year", course.getYear());
         args.put("subjectId", course.getSubject().getSubjectId());
 
-        final int courseId = jdbcInsert.execute(args);
+        final int courseId = jdbcInsert.executeAndReturnKey(args).intValue();
         return new Course(courseId, course.getYear(), course.getQuarter(), course.getBoard(), course.getSubject());
     }
 
