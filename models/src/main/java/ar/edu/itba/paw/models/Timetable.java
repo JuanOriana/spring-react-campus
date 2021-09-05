@@ -4,19 +4,19 @@ import java.sql.Time;
 
 public class Timetable {
     private int courseId, dayOfWeek;
-    private Time begins, end;
+    private Time startTime, endTime;
 
-    public Timetable(int courseId, int dayOfWeek, Time begins, Time end) {
+    public Timetable(int courseId, int dayOfWeek, Time startTime, Time endTime) {
         this.courseId = courseId;
         this.dayOfWeek = dayOfWeek;
-        this.begins = begins;
-        this.end = end;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-    public Timetable(int dayOfWeek, Time begins, Time end) {
+    public Timetable(int dayOfWeek, Time startTime, Time endTime) {
         this.dayOfWeek = dayOfWeek;
-        this.begins = begins;
-        this.end = end;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public int getCourseId() {
@@ -36,18 +36,18 @@ public class Timetable {
     }
 
     public Time getBegins() {
-        return begins;
+        return startTime;
     }
 
-    public void setBegins(Time begins) {
-        this.begins = begins;
+    public void setBegins(Time startTime) {
+        this.startTime = startTime;
     }
 
     public Time getEnd() {
-        return end;
+        return endTime;
     }
 
-    public void setEnd(Time end) {
-        this.end = end;
+    public void setEnd(Time endTime) {
+        this.endTime = endTime;
     }
 }
