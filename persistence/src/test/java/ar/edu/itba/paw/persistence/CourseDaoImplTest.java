@@ -49,40 +49,35 @@ public class CourseDaoImplTest {
         jdbcTemplate = new JdbcTemplate(ds);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
+        jdbcTemplate.execute(insertSubjectSql);
     }
 
     @Test
     public void testCreate() {
-        jdbcTemplate.execute(insertSubjectSql);
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
         Course course = courseDao.create(new Course(COURSE_ID, YEAR, QUARTER, BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME)));
         assertNotNull(course);
-        assertEquals(course.getCourseId(), COURSE_ID);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "courses"));
     }
 
     @Test(expected = RuntimeException.class)
     public void testCreateDuplicateUniqueValues() {
-
         final Course isCreated1 = courseDao.create(new Course(YEAR, QUARTER, BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME)));
         final Course isCreated2 = courseDao.create(new Course(YEAR, QUARTER, BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME)));
-
         Assert.fail("Should have thrown Runtime Exception for duplicate constraint");
     }
 
 
     @Test
     public void testDelete() {
-        jdbcTemplate.execute(insertSubjectSql);
         jdbcTemplate.execute(insertCourseWithIdSql);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "courses"));
-
         courseDao.delete(COURSE_ID);
         assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "courses"));
     }
 
     @Test
     public void testDeleteNoExist() {
-        jdbcTemplate.execute(insertSubjectSql);
         jdbcTemplate.execute(insertCourseSql);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "courses"));
         assertFalse(courseDao.delete(INVALID_COURSE_ID)); // magic number
@@ -91,7 +86,6 @@ public class CourseDaoImplTest {
 
     @Test
     public void testGetById() {
-        jdbcTemplate.execute(insertSubjectSql);
         jdbcTemplate.execute(insertCourseWithIdSql);
         final Optional<Course> course = courseDao.getById(COURSE_ID);
         assertNotNull(course);
@@ -101,7 +95,6 @@ public class CourseDaoImplTest {
 
     @Test
     public void testGetByIdNoExist() {
-        jdbcTemplate.execute(insertSubjectSql);
         jdbcTemplate.execute(insertCourseWithIdSql);
         final Optional<Course> course = courseDao.getById(INVALID_COURSE_ID);
         assertNotNull(course);
@@ -110,7 +103,6 @@ public class CourseDaoImplTest {
 
     @Test
     public void testList() {
-        jdbcTemplate.execute(insertSubjectSql);
         jdbcTemplate.execute(insertCourseSql);
         final List<Course> list = courseDao.list();
         assertNotNull(list);
@@ -126,7 +118,6 @@ public class CourseDaoImplTest {
 
     @Test
     public void testUpdate(){
-        jdbcTemplate.execute(insertSubjectSql);
         jdbcTemplate.execute(insertCourseWithIdSql);
         assertTrue(courseDao.update(COURSE_ID, new Course(YEAR, QUARTER, BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))));
 

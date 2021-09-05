@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS  teachers (
-                id IDENTITY PRIMARY KEY,
+                id SERIAL PRIMARY KEY,
                 name varchar(50),
                 surname varchar (50),
                 email varchar (50),
@@ -8,14 +8,14 @@ CREATE TABLE IF NOT EXISTS  teachers (
 
 CREATE TABLE IF NOT EXISTS subjects
 (
-    subjectId IDENTITY PRIMARY KEY,
+    subjectId SERIAL PRIMARY KEY,
     code     varchar(50),
     name     varchar(50)
 );
 
 CREATE TABLE IF NOT EXISTS courses
 (
-    courseId IDENTITY PRIMARY KEY,
+    courseId SERIAL PRIMARY KEY,
     subjectId INTEGER,
     quarter  INTEGER,
     board    varchar(50),
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS courses
     );
 
 CREATE TABLE IF NOT EXISTS  announcements (
-                      announcementId IDENTITY PRIMARY KEY ,
+                      announcementId SERIAL PRIMARY KEY ,
                       teacherId INTEGER,
                       courseId INTEGER,
                       title varchar (50),

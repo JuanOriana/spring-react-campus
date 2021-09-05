@@ -56,8 +56,8 @@ public class AnnouncementDaoImplTest {
 
     @Test
     public void testCreate() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
         final Announcement announcement = announcementDao.create(new Announcement(COURSE_ID, TEACHER_ID , date, "test_title", "test_content"));
-        assertEquals(announcement.getAnnouncementId(), ANNOUNCEMENT_ID);
         assertEquals( 1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
     }
 
