@@ -7,6 +7,8 @@ import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -19,22 +21,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean update(int fileNumber, User user) {
-        return userDao.update(fileNumber, user);
+    public boolean update(int userId, User user) {
+        return userDao.update(userId, user);
     }
 
     @Override
-    public boolean delete(int fileNumber) {
-        return userDao.delete(fileNumber);
+    public boolean delete(int userId) {
+        return userDao.delete(userId);
     }
 
     @Override
-    public Role getRole(int fileNumber, int courseId) {
-        return userDao.getRole(fileNumber, courseId);
+    public Role getRole(int userId, int courseId) {
+        return userDao.getRole(userId, courseId);
     }
 
     @Override
-    public User getByFileNumber(int fileNumber) {
-        return userDao.getByFileNumber(fileNumber);
+    public Optional<User> findById(int userId) {
+        return userDao.findById(userId);
     }
 }

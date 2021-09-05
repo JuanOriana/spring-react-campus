@@ -62,15 +62,15 @@ public class AnnouncementDaoImplTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void testCreateInexistenceTeacherId() {
+    public void testCreateNonExistentTeacherId() {
         announcementDao.create(new Announcement(COURSE_ID, TEACHER_ID + 1, date, "test_title", "test_content"));
-        Assert.fail("Should have thrown runtime exception for inexistence foreign key 'teacher id' ");
+        Assert.fail("Should have thrown runtime exception for non-existent foreign key 'teacher id' ");
     }
 
     @Test(expected = AssertionError.class)
-    public void testCreateInexistenceCourseId() {
+    public void testCreateNonExistentCourseId() {
         announcementDao.create(new Announcement(COURSE_ID + 1, TEACHER_ID, date, "test_title", "test_content"));
-        Assert.fail("Should have thrown assertion error  for inexistence foreing key 'course id' ");
+        Assert.fail("Should have thrown assertion error  for non-existent foreign key 'course id' ");
     }
 
     @Test
@@ -86,11 +86,11 @@ public class AnnouncementDaoImplTest {
     @Test
     public void testDeleteNoExist() {
         final int id = 999;
-        final int inexistenceId = 100;
+        final int nonExistentId = 100;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,teacherId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, TEACHER_ID, COURSE_ID);
         jdbcTemplate.execute(sqlInsertAnnouncement);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
-        announcementDao.delete(inexistenceId);
+        announcementDao.delete(nonExistentId);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
     }
 
@@ -115,12 +115,12 @@ public class AnnouncementDaoImplTest {
     @Test
     public void getByIdNoExist() {
         final int id = 999;
-        final int inexistenceId = 100;
+        final int nonExistentId = 100;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,teacherId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, TEACHER_ID, COURSE_ID);
         jdbcTemplate.execute(sqlInsertAnnouncement);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
 
-        Optional<Announcement> announcementOptional = announcementDao.getById(inexistenceId);
+        Optional<Announcement> announcementOptional = announcementDao.getById(nonExistentId);
 
         assertFalse(announcementOptional.isPresent());
     }
@@ -149,7 +149,7 @@ public class AnnouncementDaoImplTest {
     }
 
     @Test
-    public void testListCourseAnnouncementsInexistenceId() {
+    public void testListCourseAnnouncementsNonExistentId() {
         final int id = 999;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,teacherId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, TEACHER_ID, COURSE_ID);
         jdbcTemplate.execute(sqlInsertAnnouncement);
@@ -159,7 +159,7 @@ public class AnnouncementDaoImplTest {
     }
 
     @Test
-    //    public Announcement(long teacherId, long courseId, Date date, String title, String content) {
+
     public void testUpdate() {
         final int id = 999;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,teacherId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, TEACHER_ID, COURSE_ID);
