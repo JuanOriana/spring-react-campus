@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface AnnouncementService {
     /**
      * Attempts to persist an announcement entry in the database
+     *
      * @param announcement The announcement to be persisted in the database
      * @return the announcement if it was successfully added
      */
@@ -17,7 +18,8 @@ public interface AnnouncementService {
 
     /**
      * Attempts to update a announcement
-     * @param id of the announcement to be modified
+     *
+     * @param id           of the announcement to be modified
      * @param announcement modified announcement
      * @return true if the announcement was successfully updated, false otherwise
      */
@@ -25,6 +27,7 @@ public interface AnnouncementService {
 
     /**
      * Attempts to delete an announcement
+     *
      * @param id of the announcement to be deleted
      * @return true if the announcement was successfully removed, false otherwise
      */
@@ -32,12 +35,14 @@ public interface AnnouncementService {
 
     /**
      * Gets all the current available announcements
+     *
      * @return list containing all the current available announcements (if any)
      */
     List<Announcement> list();
 
     /**
      * Gets all the current available announcements for a specific course
+     *
      * @param courseId identifier of the course to get the announcements from
      * @return list containing all the current course available announcements (if any)
      */
@@ -45,7 +50,8 @@ public interface AnnouncementService {
 
     /**
      * Gets all the current available announcements for a specific course
-     * @param courseId identifier of the course to get the announcements from
+     *
+     * @param courseId   identifier of the course to get the announcements from
      * @param comparator identifies the order expected in the response list
      * @return list containing all the current course available announcements (if any)
      */
@@ -53,6 +59,7 @@ public interface AnnouncementService {
 
     /**
      * Attempts to get an announcement given an id
+     *
      * @param id of the announcement to be retrieved
      * @return the announcement corresponding to the given id if it exists, null otherwise
      */
