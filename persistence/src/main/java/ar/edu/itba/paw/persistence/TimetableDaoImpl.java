@@ -1,9 +1,13 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.interfaces.TimeTableDao;
+import ar.edu.itba.paw.interfaces.ScheduleDao;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Schedule;
+import ar.edu.itba.paw.models.Subject;
+import ar.edu.itba.paw.models.Timetable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -13,14 +17,17 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class TimeTableDaoImpl implements TimeTableDao {
+public class ScheduleDaoImpl implements ScheduleDao {
 
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    //private static final RowMapper<Teacher> ROW_MAPPER;
+    private static final RowMapper<Timetable> TIMETABLE_ROW_MAPPER = (rs, rowNum) -> {
+        return new Timetable(rs.getInt("courseId"), rs.getInt("dayOfWeek"), rs.getInt("beginning"),
+                rs.getInt("duration"));
+    };
 
     @Autowired
-    public TimeTableDaoImpl(final DataSource ds){
+    public ScheduleDaoImpl(final DataSource ds){
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("timetables");
     }
@@ -58,18 +65,9 @@ public class TimeTableDaoImpl implements TimeTableDao {
     }
 
     @Override
-    public Optional<Integer> getDayOfWeekOfCourseById(long course_id) {
-        return Optional.of(jdbcTemplate.queryForObject("SELECT dayOfWeek FROM timetables WHERE courseId = ?",new Object[]{course_id}, Integer.class));
-    }
-
-    @Override
-    public Optional<Long> getStartOfCourseById(long course_id) {
-        return Optional.of(jdbcTemplate.queryForObject("SELECT beginning FROM timetables WHERE courseId = ?",new Object[]{course_id}, Long.class));
-    }
-
-    @Override
-    public Optional<Long> getDurationOfCourseById(long course_id) {
-        return Optional.of(jdbcTemplate.queryForObject("SELECT duration FROM timetables WHERE courseId = ?",new Object[]{course_id}, Long.class));
+    public Optional<Schedule> getById(int courseId) {
+        return jdbcTemplate.query("SELECT * FROM timetables NATURAL JOIN courses WHERE courseId = ?",
+                new Object[]{courseId}, TIMETABLE_ROW_MAPPER);
     }
 
     private boolean isValidTimeAndDay(int dayOfWeek, long start){

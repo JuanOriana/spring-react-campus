@@ -15,6 +15,8 @@ pipelines:
           caches:
             - maven
           script:
+            - apt update
+            - apt install openjfx -y
             - mvn -B verify --file pom.xml
           after-script:
               # Collect checkstyle results, if any, and convert to Bitbucket Code Insights.
