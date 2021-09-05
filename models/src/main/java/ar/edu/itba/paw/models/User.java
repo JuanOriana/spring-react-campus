@@ -3,8 +3,9 @@ package ar.edu.itba.paw.models;
 public class User {
     private String userId, fileNumber, name, surname, username, email, password;
     private boolean isAdmin;
+    private Role role;
 
-    public User(String userId, String fileNumber, String name, String surname, String username, String email, String password, boolean isAdmin) {
+    public User(String userId, String fileNumber, String name, String surname, String username, String email, String password, boolean isAdmin, Role role) {
         this.userId = userId;
         this.fileNumber = fileNumber;
         this.name = name;
@@ -13,9 +14,10 @@ public class User {
         this.email = email;
         this.password = password;
         this.isAdmin = isAdmin;
+        this.role = role;
     }
 
-    public User(String fileNumber, String name, String surname, String username, String email, String password, boolean isAdmin) {
+    public User(String fileNumber, String name, String surname, String username, String email, String password, boolean isAdmin, Role role) {
         this.fileNumber = fileNumber;
         this.name = name;
         this.surname = surname;
@@ -23,6 +25,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.isAdmin = isAdmin;
+        this.role = role;
     }
 
     public String getUserId() {
