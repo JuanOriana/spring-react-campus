@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.interfaces.ScheduleDao;
+import ar.edu.itba.paw.interfaces.TimetableDao;
 import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Schedule;
-import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.models.Timetable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,11 +11,11 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Repository
-public class ScheduleDaoImpl implements ScheduleDao {
+public class TimetableDaoImpl implements TimetableDao {
 
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
@@ -27,7 +25,7 @@ public class ScheduleDaoImpl implements ScheduleDao {
     };
 
     @Autowired
-    public ScheduleDaoImpl(final DataSource ds){
+    public TimetableDaoImpl(final DataSource ds){
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("timetables");
     }
@@ -65,8 +63,8 @@ public class ScheduleDaoImpl implements ScheduleDao {
     }
 
     @Override
-    public Optional<Schedule> getById(int courseId) {
-        return jdbcTemplate.query("SELECT * FROM timetables NATURAL JOIN courses WHERE courseId = ?",
+    public List<Timetable> getById(int courseId) {
+        return jdbcTemplate.query("SELECT * FROM timetables WHERE courseId = ?",
                 new Object[]{courseId}, TIMETABLE_ROW_MAPPER);
     }
 

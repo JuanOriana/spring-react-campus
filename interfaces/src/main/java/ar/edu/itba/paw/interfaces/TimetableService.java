@@ -1,12 +1,11 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Schedule;
 import ar.edu.itba.paw.models.Timetable;
 
-import java.util.Optional;
+import java.util.List;
 
-public interface ScheduleService {
+public interface TimetableService {
     /**
      * Attempts to persist a timetable entry in the database
      * @param course The course to be persisted in the database
@@ -34,8 +33,8 @@ public interface ScheduleService {
     /**
      * Attempts to get the timetable of the given id
      * @param courseId of the course to get the timetable from
-     * @return schedule containing a list of timetables for the given courseId
+     * @return list of timetables for the given courseId
      */
-    Optional<Schedule> getById(int courseId);
+    List<Timetable> getById(int courseId);
 
 }
