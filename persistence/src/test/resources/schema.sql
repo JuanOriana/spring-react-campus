@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS subjects
 (
     subjectId SERIAL PRIMARY KEY,
     code     varchar(50),
-    name     varchar(50)
+    subjectName     varchar(50)
 );
 
 CREATE TABLE IF NOT EXISTS courses

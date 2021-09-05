@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS subjects
 (
     subjectId SERIAL PRIMARY KEY,
     code     varchar(50),
-    name     varchar(50)
+    subjectName     varchar(50)
     );
 
 CREATE TABLE IF NOT EXISTS courses
@@ -36,22 +36,22 @@ CREATE TABLE IF NOT EXISTS roles
 
 CREATE TABLE IF NOT EXISTS user_to_role
 (
-    userId NOT NULL INTEGER,
-    roleId NOT NULL INTEGER,
-    FOREIGN KEY userId REFERENCES users ON DELETE CASCADE,
-    FOREIGN KEY roleId REFERENCES roles ON DELETE CASCADE
-);
+    userId INTEGER NOT NULL,
+    roleId INTEGER NOT NULL,
+    FOREIGN KEY (userId) REFERENCES users ON DELETE CASCADE,
+    FOREIGN KEY (roleId) REFERENCES roles ON DELETE CASCADE
+    );
 
 CREATE TABLE IF NOT EXISTS  announcements (
-      announcementId SERIAL PRIMARY KEY,
-      userId INTEGER,
-      courseId INTEGER,
-      title varchar (50),
+                                              announcementId SERIAL PRIMARY KEY ,
+                                              userId INTEGER,
+                                              courseId INTEGER,
+                                              title varchar (50),
     content varchar(50) ,
     date DATE,
     FOREIGN KEY (userId) references users ON DELETE CASCADE,
     FOREIGN KEY (courseId) references courses ON DELETE CASCADE
-);
+    );
 
 
 

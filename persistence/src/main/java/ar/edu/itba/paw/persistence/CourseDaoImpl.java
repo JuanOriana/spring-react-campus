@@ -19,7 +19,7 @@ public class CourseDaoImpl implements CourseDao {
     private static final RowMapper<Course> COURSE_ROW_MAPPER = (rs, rowNum) -> {
         return new Course(rs.getLong("courseId"), rs.getInt("year"),
                 rs.getInt("quarter"), rs.getString("board"),
-                new Subject(rs.getInt("subjectId"), rs.getString("code"), rs.getString("name")));
+                new Subject(rs.getInt("subjectId"), rs.getString("code"), rs.getString("subjectName")));
     };
 
     @Autowired

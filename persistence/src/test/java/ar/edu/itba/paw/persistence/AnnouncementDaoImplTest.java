@@ -2,11 +2,15 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Announcement;
 
+import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Subject;
+import ar.edu.itba.paw.models.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -14,7 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,8 +38,23 @@ public class AnnouncementDaoImplTest {
     private JdbcTemplate jdbcTemplate;
     private final int ANNOUNCEMENT_ID = 1;
     private final int USER_ID = 1;
+    private final int USER_FILE_NUMBER = 41205221;
+    private final String USER_NAME = "Paw";
+    private final String USER_SURNAME = "2021";
+    private final String USER_USERNAME = "paw2021";
+    private final String USER_EMAIL = "paw2021@itba.edu.ar";
+    private final String USER_PASSWORD = "asd123";
+
     private final int COURSE_ID = 1;
-    private final Date date = new Date();
+    private final int COURSE_YEAR = 2021;
+    private final int COURSE_QUARTER = 2;
+    private final String COURSE_BOARD = "S1";
+
+    private final int SUBJECT_ID = 1;
+    private final String SUBJECT_CODE = "A1";
+    private final String SUBJECT_NAME = "Protos";
+
+    private final Date date = new Date(8000);
 
     @Before
     public void setUp() {
@@ -54,22 +73,33 @@ public class AnnouncementDaoImplTest {
         jdbcTemplate.execute(sqlInsertCourse);
     }
 
+    private Announcement getMockAnnouncement() {
+        Subject mockSubject = new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
+        Course mockCourse = new Course(COURSE_ID, COURSE_YEAR, COURSE_QUARTER, COURSE_BOARD, mockSubject);
+        User mockUser = new User(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, true);
+        return new Announcement(date, "title", "content", mockUser, mockCourse);
+    }
+
     @Test
     public void testCreate() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
-        final Announcement announcement = announcementDao.create(new Announcement(COURSE_ID, USER_ID , date, "test_title", "test_content"));
+        final Announcement announcement = announcementDao.create(getMockAnnouncement());
         assertEquals( 1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
     }
 
 
-    @Test(expected = AssertionError.class)
+    @Test(expected = DataIntegrityViolationException.class)
     public void testCreateNonExistentCourseId() {
-        announcementDao.create(new Announcement(COURSE_ID + 1, USER_ID, date, "test_title", "test_content"));
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
+        Announcement announcement = getMockAnnouncement();
+        announcement.getCourse().setCourseId(COURSE_ID + 1);
+        announcementDao.create(announcement);
         Assert.fail("Should have thrown assertion error  for non-existent foreign key 'course id' ");
     }
 
     @Test
     public void testDelete() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
         final int id = 999;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,userId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, USER_ID, COURSE_ID);
         jdbcTemplate.execute(sqlInsertAnnouncement);
@@ -80,6 +110,7 @@ public class AnnouncementDaoImplTest {
 
     @Test
     public void testDeleteNoExist() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
         final int id = 999;
         final int nonExistentId = 100;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,userId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, USER_ID, COURSE_ID);
@@ -92,23 +123,23 @@ public class AnnouncementDaoImplTest {
 
     @Test
     public void getById() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
         final int id = 999;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,userId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, USER_ID, COURSE_ID);
         jdbcTemplate.execute(sqlInsertAnnouncement);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
-
         Optional<Announcement> announcementOptional = announcementDao.getById(id);
-
         assertTrue(announcementOptional.isPresent());
         assertEquals(id, announcementOptional.get().getAnnouncementId());
-        assertEquals(COURSE_ID, announcementOptional.get().getCourseId());
-        assertEquals(USER_ID, announcementOptional.get().getUserId());
+        assertEquals(COURSE_ID, announcementOptional.get().getCourse().getCourseId());
+        assertEquals(USER_ID, announcementOptional.get().getAuthor().getUserId());
         assertEquals("test_title", announcementOptional.get().getTitle());
         assertEquals("test_content", announcementOptional.get().getContent());
     }
 
     @Test
     public void getByIdNoExist() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
         final int id = 999;
         final int nonExistentId = 100;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,userId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, USER_ID, COURSE_ID);
@@ -122,6 +153,7 @@ public class AnnouncementDaoImplTest {
 
     @Test
     public void testList() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
         final int id = 999;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,userId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, USER_ID, COURSE_ID);
         jdbcTemplate.execute(sqlInsertAnnouncement);
@@ -134,6 +166,7 @@ public class AnnouncementDaoImplTest {
 
     @Test
     public void testListCourseAnnouncements() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
         final int id = 999;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,userId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, USER_ID, COURSE_ID);
         jdbcTemplate.execute(sqlInsertAnnouncement);
@@ -145,6 +178,7 @@ public class AnnouncementDaoImplTest {
 
     @Test
     public void testListCourseAnnouncementsNonExistentId() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
         final int id = 999;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,userId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, USER_ID, COURSE_ID);
         jdbcTemplate.execute(sqlInsertAnnouncement);
@@ -156,18 +190,21 @@ public class AnnouncementDaoImplTest {
     @Test
 
     public void testUpdate() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
         final int id = 999;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,userId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, USER_ID, COURSE_ID);
         jdbcTemplate.execute(sqlInsertAnnouncement);
-        final boolean isUpdated = announcementDao.update(id, new Announcement(USER_ID, COURSE_ID, new Date(), "test_update_title", "test_update_content"));
+        Announcement announcement = getMockAnnouncement();
+        announcement.setTitle("test_update_title");
+        announcement.setContent("test_update_content");
+        final boolean isUpdated = announcementDao.update(id, announcement);
         assertTrue(isUpdated);
 
         Optional<Announcement> announcementOptional = announcementDao.getById(id);
-
         assertTrue(announcementOptional.isPresent());
         assertEquals(id, announcementOptional.get().getAnnouncementId());
-        assertEquals(COURSE_ID, announcementOptional.get().getCourseId());
-        assertEquals(USER_ID, announcementOptional.get().getUserId());
+        assertEquals(COURSE_ID, announcementOptional.get().getCourse().getCourseId());
+        assertEquals(USER_ID, announcementOptional.get().getAuthor().getUserId());
         assertEquals("test_update_title", announcementOptional.get().getTitle());
         assertEquals("test_update_content", announcementOptional.get().getContent());
     }

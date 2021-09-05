@@ -1,5 +1,8 @@
 import ar.edu.itba.paw.interfaces.AnnouncementDao;
 import ar.edu.itba.paw.models.Announcement;
+import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Subject;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.services.AnnouncementServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,17 +22,34 @@ import static org.mockito.Mockito.*;
 public class AnnouncementServiceImplTest {
     private static final long ANNOUNCEMENT_ID = 1;
     private static final long INVALID_ANNOUNCEMENT_ID = 999;
-    private static final long COURSE_ID = 1;
-    private static final long TEACHER_ID = 1;
+    private final int USER_ID = 1;
+    private final int USER_FILE_NUMBER = 41205221;
+    private final String USER_NAME = "Paw";
+    private final String USER_SURNAME = "2021";
+    private final String USER_USERNAME = "paw2021";
+    private final String USER_EMAIL = "paw2021@itba.edu.ar";
+    private final String USER_PASSWORD = "asd123";
+
+    private final int COURSE_ID = 1;
+    private final int COURSE_YEAR = 2021;
+    private final int COURSE_QUARTER = 2;
+    private final String COURSE_BOARD = "S1";
+
+    private final int SUBJECT_ID = 1;
+    private final String SUBJECT_CODE = "A1";
+    private final String SUBJECT_NAME = "Protos";
+
     private static final Date ANNOUNCEMENT_DATE = new Date(2323223232L);
     private static final String ANNOUNCEMENT_TITLE = "Unit Testing";
     private static final String ANNOUNCEMENT_CONTENT = "Rocks! (or not)";
 
     private Announcement getMockAnnouncement() {
-        Announcement mock = new Announcement(COURSE_ID, TEACHER_ID,ANNOUNCEMENT_DATE,
-                ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT);
-        mock.setAnnouncementId(ANNOUNCEMENT_ID);
-        return mock;
+        Subject mockSubject = new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
+        Course mockCourse = new Course(COURSE_ID, COURSE_YEAR, COURSE_QUARTER, COURSE_BOARD, mockSubject);
+        User mockUser = new User(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, true);
+        Announcement mockAnnouncement = new Announcement(ANNOUNCEMENT_DATE, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, mockUser, mockCourse);
+        mockAnnouncement.setAnnouncementId(ANNOUNCEMENT_ID);
+        return mockAnnouncement;
     }
 
     @InjectMocks
@@ -41,8 +61,7 @@ public class AnnouncementServiceImplTest {
     @Test
     public void testCreateAnnouncement() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.create(eq(announcement))).thenReturn(new Announcement(ANNOUNCEMENT_ID, COURSE_ID, TEACHER_ID,ANNOUNCEMENT_DATE,
-                ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT));
+        when(mockDao.create(eq(announcement))).thenReturn(announcement);
         final Announcement newAnnouncement = announcementService.create(announcement);
         Assert.assertEquals(newAnnouncement.getAnnouncementId(), ANNOUNCEMENT_ID);
     }
@@ -101,7 +120,7 @@ public class AnnouncementServiceImplTest {
         when(mockDao.list()).thenReturn(new ArrayList<Announcement>(){{ add(announcement); }});
         List<Announcement> announcements = announcementService.list();
         Assert.assertTrue(announcements.size() > 0);
-        Assert.assertEquals(announcement.getCourseId(), announcements.get(0).getCourseId());
+        Assert.assertEquals(announcement.getCourse().getCourseId(), announcements.get(0).getCourse().getCourseId());
     }
 
 }

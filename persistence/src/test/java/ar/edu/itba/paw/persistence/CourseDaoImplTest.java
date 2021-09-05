@@ -42,7 +42,7 @@ public class CourseDaoImplTest {
     private final int INVALID_COURSE_ID = 999;
     private final String insertCourseSql = String.format("INSERT INTO courses (subjectId, quarter,board,year) VALUES (%d, %d,'S1',%d)", SUBJECT_ID, QUARTER,YEAR);
     private final String insertCourseWithIdSql = String.format("INSERT INTO courses  VALUES (%d, %d, %d, 'S1',%d)", COURSE_ID, SUBJECT_ID, QUARTER, YEAR);
-    private final String insertSubjectSql = String.format("INSERT INTO subjects (subjectId,code,name) VALUES (%d,'A1','PAW')", SUBJECT_ID);
+    private final String insertSubjectSql = String.format("INSERT INTO subjects (subjectId,code,subjectName) VALUES (%d,'A1','PAW')", SUBJECT_ID);
 
     @Before
     public void setUp() {

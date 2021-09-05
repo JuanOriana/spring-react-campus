@@ -4,25 +4,44 @@ import java.util.Date;
 
 public class Announcement {
 
-    private long announcementId, userId, courseId;
+    private long announcementId;
     private Date date;
     private String title, content;
+    private User author;
+    private Course course;
 
-    public Announcement(long announcementId, long userId, long courseId, Date date, String title, String content) {
+
+    public Announcement(long announcementId, Date date, String title, String content, User author, Course course) {
         this.announcementId = announcementId;
-        this.userId = userId;
-        this.courseId = courseId;
         this.date = date;
         this.title = title;
         this.content = content;
+        this.author = author;
+        this.course = course;
     }
 
-    public Announcement(long courseId, long userId, Date date, String title, String content) {
-        this.userId = userId;
-        this.courseId = courseId;
+    public Announcement(Date date, String title, String content, User author, Course course) {
         this.date = date;
         this.title = title;
         this.content = content;
+        this.author = author;
+        this.course = course;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public long getAnnouncementId() {
@@ -31,22 +50,6 @@ public class Announcement {
 
     public void setAnnouncementId(long announcementId) {
         this.announcementId = announcementId;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public long getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(long courseId) {
-        this.courseId = courseId;
     }
 
     public Date getDate() {
