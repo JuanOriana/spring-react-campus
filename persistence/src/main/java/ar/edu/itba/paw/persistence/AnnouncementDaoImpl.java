@@ -26,7 +26,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     @Autowired
     public AnnouncementDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
-        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("announcements");
+        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("announcements").usingGeneratedKeyColumns("announcementId");
     }
 
     @Override
@@ -36,7 +36,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         args.put("title", announcement.getTitle());
         args.put("content", announcement.getContent());
         args.put("teacherId", announcement.getTeacherId());
-        final int announcementId = jdbcInsert.execute(args);
+        final int announcementId = (int) jdbcInsert.executeAndReturnKey(args);
         return new Announcement(announcementId, announcement.getTeacherId(),
                 announcement.getCourseId(), announcement.getDate(), announcement.getTitle(), announcement.getContent());
     }
