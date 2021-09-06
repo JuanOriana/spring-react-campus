@@ -6,8 +6,10 @@ import ar.edu.itba.paw.models.Announcement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AnnouncementServiceImpl implements AnnouncementService {
@@ -38,6 +40,11 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Override
     public List<Announcement> listByCourse(long courseId) {
         return announcementDao.listByCourse(courseId);
+    }
+
+    @Override
+    public List<Announcement> listByCourse(long courseId, Comparator<Announcement> comparator) {
+        return listByCourse(courseId).stream().sorted(comparator).collect(Collectors.toList());
     }
 
     @Override
