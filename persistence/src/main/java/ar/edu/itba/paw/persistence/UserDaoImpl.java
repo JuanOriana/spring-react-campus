@@ -56,9 +56,9 @@ public class UserDaoImpl implements UserDao {
                 "SET fileNumber = ?," +
                 "name = ?," +
                 "surname = ?," +
-                "username = ? " +
-                "email = ? " +
-                "password = ? " +
+                "username = ?, " +
+                "email = ?, " +
+                "password = ? ," +
                 "isAdmin = ? " +
                 "WHERE userId = ?;", new Object[]{user.getFileNumber(), user.getName(), user.getSurname(),
                     user.getUsername(), user.getEmail(), user.getPassword(), user.isAdmin(), userId}) == 1;
