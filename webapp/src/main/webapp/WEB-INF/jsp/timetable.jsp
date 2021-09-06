@@ -24,123 +24,21 @@
                     <th>${day}</th>
                 </c:forEach>
             </tr>
-            <tr>
-                <td class="time">8.00</td>
-                <td class="active-time-td" data-tooltip="Software Engineering & Software Process">CS335 [JH1]</td>
-                <td class="active-time-td" data-tooltip="Computer Graphics">CS426 [CS1]</td>
-                <td></td>
-                <td></td>
-                <td>- </td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td class="time">9.00</td>
-                <td class="active-time-td" data-tooltip="Software Engineering & Software Process">CS335 [JH1]</td>
-                <td class="active-time-td" data-tooltip="Computer Graphics">CS426 [CS1]</td>
-                <td></td>
-                <td></td>
-                <td>- </td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td class="time">10.00</td>
-                <td></td>
-                <td class="active-time-td" data-tooltip="Software Engineering & Software Process">CS335 [Lab]</td>
-                <td class="active-time-td" data-tooltip="Multimedia Production & Management">MD352 [Kairos]</td>
-                <td></td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td class="time">11.00</td>
-                <td></td>
-                <td class="active-time-td" data-tooltip="Software Engineering & Software Process">CS335 [Lab]</td>
-                <td class="active-time-td" data-tooltip="Multimedia Production & Management">MD352 [Kairos]</td>
-                <td class="active-time-td" data-tooltip="Operating Systems">CS240 [CH]</td>
-                <td>- </td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td class="time">12.00</td>
-                <td></td>
-                <td class="active-time-td" data-tooltip="Media & Globalisation">MD303 [CS2]</td>
-                <td class="active-time-td" data-tooltip="Special Topic: Multiculturalism & Nationalism">MD313 [Iontas]</td>
-                <td></td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td class="time">13.00</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td class="time">14.00</td>
-                <td></td>
-                <td></td>
-                <td class="active-time-td" data-tooltip="Computer Graphics">CS426 [CS2]</td>
-                <td class="active-time-td" data-tooltip="Operating Systems">CS240 [TH1]</td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td class="time">15.00</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="active-time-td" data-tooltip="Operating Systems">CS240 [Lab]</td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td class="time">16.00</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="active-time-td" data-tooltip="Operating Systems">CS240 [Lab]</td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td class="time">17.00</td>
-                <td class="active-time-td" data-tooltip="Software Engineering & Software Process">CS335 [TH1]</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td class="time">18.00</td>
-                <td class="active-time-td" data-tooltip="Software Engineering & Software Process">CS335 [JH1]</td>
-                <td class="active-time-td" data-tooltip="Computer Graphics">CS426 [CS1]</td>
-                <td></td>
-                <td></td>
-                <td>- </td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td class="time">19.00</td>
-                <td class="active-time-td" data-tooltip="Software Engineering & Software Process">CS335 [JH1]</td>
-                <td class="active-time-td" data-tooltip="Computer Graphics">CS426 [CS1]</td>
-                <td></td>
-                <td></td>
-                <td>- </td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td class="time">20.00</td>
-                <td class="active-time-td" data-tooltip="Software Engineering & Software Process">CS335 [JH1]</td>
-                <td class="active-time-td" data-tooltip="Computer Graphics">CS426 [CS1]</td>
-                <td></td>
-                <td></td>
-                <td>- </td>
-                <td>-</td>
-            </tr>
+            <c:forEach items="${hours}" var="hour" varStatus="hourLoop">
+                <tr>
+                    <td class="time">${hour}</td>
+                    <c:forEach items="${days}" var="day" varStatus="dayLoop">
+                        <c:set var = "currentCourse" value = "${timeTableMatrix.get(dayLoop.index).get(hourLoop.index)}"/>
+                        <c:if test="${currentCourse != null}">
+                            <td class="active-time-td" data-tooltip="${currentCourse.subject.name}">
+                                    ${currentCourse.subject.code} [${currentCourse.board}]</td>
+                        </c:if>
+                        <c:if test="${currentCourse == null}">
+                            <td></td>
+                        </c:if>
+                    </c:forEach>
+                </tr>
+            </c:forEach>
         </table>
     </div>
 </div>
