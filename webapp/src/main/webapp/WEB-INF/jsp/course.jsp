@@ -16,9 +16,10 @@
         <div class="page-container" style="padding-top: 0">
             <div class="course-page-wrapper">
 
-                <div class="course-sections-col">
-                    Anuncios
-                </div>
+                <jsp:include page="courseSectionsCol.jsp">
+                    <jsp:param name="courseName" value="${course.subject.name}"/>
+                    <jsp:param name="courseId" value="${course.courseId}"/>
+                </jsp:include>
 
                 <div class="course-data-container">
                     <h3 class="section-heading" style="margin: 0 0 20px 20px"> Anuncios </h3>

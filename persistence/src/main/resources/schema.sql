@@ -53,5 +53,12 @@ CREATE TABLE IF NOT EXISTS  announcements (
     FOREIGN KEY (courseId) references courses ON DELETE CASCADE
     );
 
+CREATE TABLE IF NOT EXISTS  timetables (
+                                           courseId INTEGER,
+                                           dayOfWeek INTEGER,
+                                           startTime TIME,
+                                           endTime TIME,
+                                           FOREIGN KEY (courseId) REFERENCES courses ON DELETE CASCADE);
+
 
 
