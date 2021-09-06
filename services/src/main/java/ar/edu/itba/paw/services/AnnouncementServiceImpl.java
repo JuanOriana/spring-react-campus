@@ -38,6 +38,11 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
+    public List<Announcement> list(Comparator<Announcement> comparator) {
+        return list().stream().sorted(comparator).collect(Collectors.toList());
+    }
+
+    @Override
     public List<Announcement> listByCourse(long courseId) {
         return announcementDao.listByCourse(courseId);
     }
@@ -46,6 +51,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     public List<Announcement> listByCourse(long courseId, Comparator<Announcement> comparator) {
         return listByCourse(courseId).stream().sorted(comparator).collect(Collectors.toList());
     }
+
 
     @Override
     public Optional<Announcement> getById(long id) {

@@ -41,6 +41,13 @@ public interface AnnouncementService {
     List<Announcement> list();
 
     /**
+     * Gets all the current available announcements in a specific order
+     * @param comparator identifies the order expected in the response list
+     * @return order list containing all the current available announcements (if any)
+     */
+    List<Announcement> list(Comparator<Announcement> comparator);
+
+    /**
      * Gets all the current available announcements for a specific course
      *
      * @param courseId identifier of the course to get the announcements from
