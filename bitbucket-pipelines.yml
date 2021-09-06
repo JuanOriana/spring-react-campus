@@ -1,4 +1,11 @@
-image: hbongen/openjfx-maven:latest
+#  Template maven-build
+
+#  This template allows you to test and build your Java project with Maven.
+#  The workflow allows running tests, code checkstyle and security scans on the default branch.
+
+# Prerequisites: pom.xml and appropriate project structure should exist in the repository.
+
+image: maven:3.8.2-jdk-11
 
 pipelines:
   default:
@@ -8,9 +15,7 @@ pipelines:
           caches:
             - maven
           script:
-            - apt update
-            - apt install openjfx -y
-            - mvn -B verify --file pom.xml -Djavafx-location=/usr/share/java/openjfx/jre/lib/ext/jfxrt.jar
+            - mvn -B verify --file pom.xml
           after-script:
               # Collect checkstyle results, if any, and convert to Bitbucket Code Insights.
             - pipe: atlassian/checkstyle-report:0.2.0

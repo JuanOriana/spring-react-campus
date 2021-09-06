@@ -1,24 +1,13 @@
-CREATE TABLE IF NOT EXISTS teachers
-(
-    id IDENTITY PRIMARY KEY,
-    name     varchar(50),
-    surname  varchar(50),
-    email    varchar(50),
-    username varchar(50),
-    password varchar(50),
-    UNIQUE (email,username)
-);
-
 CREATE TABLE IF NOT EXISTS subjects
 (
-    subjectId IDENTITY PRIMARY KEY,
+    subjectId SERIAL PRIMARY KEY,
     code     varchar(50),
-    name     varchar(50)
+    subjectName     varchar(50)
 );
 
 CREATE TABLE IF NOT EXISTS courses
 (
-    courseId IDENTITY PRIMARY KEY,
+    courseId SERIAL PRIMARY KEY,
     subjectId INTEGER,
     quarter  INTEGER,
     board    varchar(50),
@@ -27,24 +16,42 @@ CREATE TABLE IF NOT EXISTS courses
     FOREIGN KEY (subjectId) REFERENCES subjects ON DELETE CASCADE
     );
 
-CREATE TABLE IF NOT EXISTS announcements
+CREATE TABLE IF NOT EXISTS users
 (
-    announcementId IDENTITY PRIMARY KEY,
-    teacherId INTEGER,
-    courseId  INTEGER,
-    title     varchar(50),
-    content   varchar(50),
-    date      DATE,
-    FOREIGN KEY (teacherId) references teachers ON DELETE CASCADE,
+    userId SERIAL PRIMARY KEY,
+    fileNumber INTEGER UNIQUE,
+    name VARCHAR(50),
+    surname VARCHAR(50),
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(50),
+    isAdmin BOOLEAN
+);
+
+CREATE TABLE IF NOT EXISTS roles
+(
+    roleId SERIAL NOT NULL PRIMARY KEY,
+    roleName VARCHAR(50) UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS user_to_role
+(
+    userId INTEGER NOT NULL,
+    roleId INTEGER NOT NULL,
+    FOREIGN KEY (userId) REFERENCES users ON DELETE CASCADE,
+    FOREIGN KEY (roleId) REFERENCES roles ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS  announcements (
+    announcementId SERIAL PRIMARY KEY ,
+    userId INTEGER,
+    courseId INTEGER,
+    title varchar (50),
+    content varchar(50) ,
+    date DATE,
+    FOREIGN KEY (userId) references users ON DELETE CASCADE,
     FOREIGN KEY (courseId) references courses ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS coursesroles
-(
-    teacherId   INTEGER,
-    courseId   INTEGER,
-    rol         varchar(50),
-    FOREIGN KEY (teacherId) references teachers ON DELETE CASCADE ON UPDATE RESTRICT ,
-    FOREIGN KEY (courseId) references courses ON DELETE CASCADE ON UPDATE RESTRICT,
-    PRIMARY KEY (teacherId,courseId)
-);
+
+

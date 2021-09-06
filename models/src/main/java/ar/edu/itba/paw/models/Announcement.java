@@ -4,25 +4,44 @@ import java.util.Date;
 
 public class Announcement {
 
-    private long announcementId, teacherId, courseId;
+    private long announcementId;
     private Date date;
     private String title, content;
+    private User author;
+    private Course course;
 
-    public Announcement(long announcementId, long teacherId, long courseId, Date date, String title, String content) {
+
+    public Announcement(long announcementId, Date date, String title, String content, User author, Course course) {
         this.announcementId = announcementId;
-        this.teacherId = teacherId;
-        this.courseId = courseId;
         this.date = date;
         this.title = title;
         this.content = content;
+        this.author = author;
+        this.course = course;
     }
 
-    public Announcement(long courseId, long teacherId, Date date, String title, String content) {
-        this.teacherId = teacherId;
-        this.courseId = courseId;
+    public Announcement(Date date, String title, String content, User author, Course course) {
         this.date = date;
         this.title = title;
         this.content = content;
+        this.author = author;
+        this.course = course;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public long getAnnouncementId() {
@@ -31,22 +50,6 @@ public class Announcement {
 
     public void setAnnouncementId(long announcementId) {
         this.announcementId = announcementId;
-    }
-
-    public long getTeacherId() {
-        return teacherId;
-    }
-
-    public void setTeacherId(long teacherId) {
-        this.teacherId = teacherId;
-    }
-
-    public long getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(long courseId) {
-        this.courseId = courseId;
     }
 
     public Date getDate() {
