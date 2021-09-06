@@ -34,14 +34,6 @@ CREATE TABLE IF NOT EXISTS roles
     roleName VARCHAR(50) UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS user_to_role
-(
-    userId INTEGER NOT NULL,
-    roleId INTEGER NOT NULL,
-    FOREIGN KEY (userId) REFERENCES users ON DELETE CASCADE,
-    FOREIGN KEY (roleId) REFERENCES roles ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS  announcements (
     announcementId SERIAL PRIMARY KEY ,
     userId INTEGER,
@@ -52,6 +44,17 @@ CREATE TABLE IF NOT EXISTS  announcements (
     FOREIGN KEY (userId) references users ON DELETE CASCADE,
     FOREIGN KEY (courseId) references courses ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS user_to_course
+(
+    courseId INTEGER NOT NULL,
+    userId INTEGER NOT NULL,
+    roleId INTEGER NOT NULL,
+    FOREIGN KEY (userId) REFERENCES users ON DELETE CASCADE,
+    FOREIGN KEY (courseId) references courses ON DELETE CASCADE,
+    FOREIGN KEY (roleId) references roles ON DELETE CASCADE
+    );
+
 
 
 

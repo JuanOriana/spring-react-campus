@@ -4,6 +4,8 @@ import ar.edu.itba.paw.interfaces.AnnouncementService;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -31,6 +34,7 @@ public class CourseController {
     public ModelAndView announcements(@PathVariable int courseId) {
         final ModelAndView mav;
         List<Announcement> announcements = announcementService.listByCourse(courseId);
+
         // Add proper handling in the future, need to check if user has permission to access this course
         Optional<Course> course = courseService.getById(courseId);
         if(course.isPresent()) {
@@ -47,6 +51,7 @@ public class CourseController {
     @RequestMapping("/{courseId}/professors")
     public ModelAndView professors(@PathVariable int courseId) {
         final ModelAndView mav;
+        Map<User, Role> teachers = courseService.getTeachers(courseId);
         Optional<Course> course = courseService.getById(courseId);
         if(course.isPresent()) {
             mav = new ModelAndView("professors");

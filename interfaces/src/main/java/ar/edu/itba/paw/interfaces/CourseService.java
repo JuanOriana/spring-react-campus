@@ -1,9 +1,12 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.Subject;
+import ar.edu.itba.paw.models.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface CourseService {
@@ -41,5 +44,12 @@ public interface CourseService {
      * @return the course corresponding to the given id if it exists, null otherwise
      */
     Optional<Course> getById(long courseId);
+
+    /**
+     * Gets the list of teachers for the given course
+     * @param courseId of the course to get the teachers from
+     * @return map of Users as a key where the value is the Role in that course
+     */
+    Map<User, Role> getTeachers(long courseId);
 
 }

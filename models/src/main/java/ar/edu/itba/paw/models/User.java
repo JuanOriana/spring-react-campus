@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.models;
 
-import java.util.Map;
+import java.util.Objects;
 
 public class User {
     private String name, surname, username, email, password;
@@ -89,5 +89,18 @@ public class User {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return fileNumber == user.fileNumber;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fileNumber);
     }
 }
