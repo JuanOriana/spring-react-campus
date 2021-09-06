@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS  announcements (
                                               userId INTEGER,
                                               courseId INTEGER,
                                               title varchar (50),
-    content varchar(50) ,
+    content TEXT ,
     date DATE,
     FOREIGN KEY (userId) references users ON DELETE CASCADE,
     FOREIGN KEY (courseId) references courses ON DELETE CASCADE
