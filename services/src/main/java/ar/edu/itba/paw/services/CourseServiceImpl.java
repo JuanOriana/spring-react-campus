@@ -3,10 +3,13 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -37,6 +40,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Optional<Course> getById(long id) {
         return courseDao.getById(id);
+    }
+
+    @Override
+    public Map<User, Role> getTeachers(long courseId) {
+        return courseDao.getTeachers(courseId);
     }
 
 }

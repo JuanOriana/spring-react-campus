@@ -120,15 +120,12 @@ public class CourseDaoImplTest {
     public void testUpdate(){
         jdbcTemplate.execute(insertCourseWithIdSql);
         assertTrue(courseDao.update(COURSE_ID, new Course(YEAR, QUARTER, BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))));
-
         final Optional<Course> course = courseDao.getById(COURSE_ID);
         assertNotNull(course);
         assertTrue(course.isPresent());
         assertEquals(Optional.of(QUARTER).get(), course.get().getQuarter());
         assertEquals("S1", course.get().getBoard());
         assertEquals(Optional.of(YEAR).get(), course.get().getYear());
-
-
     }
 
 }

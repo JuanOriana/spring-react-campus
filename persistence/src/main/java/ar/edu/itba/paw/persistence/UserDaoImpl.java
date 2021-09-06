@@ -71,7 +71,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Role getRole(int userId, int courseId) {
-        return jdbcTemplate.query("SELECT * FROM user_to_role NATURAL JOIN roles WHERE userId = ? AND courseId = ?",
+        return jdbcTemplate.query("SELECT * FROM user_to_course NATURAL JOIN roles WHERE userId = ? AND courseId = ?",
                 new Object[]{userId, courseId}, ROLE_ROW_MAPPER).get(0);
     }
 
