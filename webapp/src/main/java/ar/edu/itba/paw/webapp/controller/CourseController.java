@@ -54,16 +54,9 @@ public class CourseController {
 
     @RequestMapping("/{courseId}/professors")
     public ModelAndView professors(@PathVariable int courseId) {
-        final ModelAndView mav;
+        final ModelAndView mav = new ModelAndView("professors");
         Map<User, Role> teachers = courseService.getTeachers(courseId);
-        Optional<Course> course = courseService.getById(courseId);
-        if(course.isPresent()) {
-            mav = new ModelAndView("professors");
-            mav.addObject("course", course.get());
-        } else {
-            mav = new ModelAndView("errorPage");
-            mav.addObject("errorMsg", "Course does not exist");
-        }
+        mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         return mav;
     }
 }
