@@ -31,12 +31,6 @@ public class CourseDaoImpl implements CourseDao {
         public int getValue() { return id; }
     };
 
-    private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) -> {
-        return new User(rs.getInt("userId"), rs.getInt("fileNumber"), rs.getString("name"),
-                rs.getString("surname"), rs.getString("username"), rs.getString("email"), null,
-                false);
-    };
-
     @Autowired
     public CourseDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);

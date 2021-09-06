@@ -46,9 +46,9 @@ public interface CourseService {
     Optional<Course> getById(long courseId);
 
     /**
-     * Gets the list of teachers for the given course
+     * Gets the map of teachers for the given course
      * @param courseId of the course to get the teachers from
-     * @return map of Users as a key where the value is the Role in that course
+     * @return map of Users as a key where the value is the teacher Role in that course
      */
     Map<User, Role> getTeachers(long courseId);
 
