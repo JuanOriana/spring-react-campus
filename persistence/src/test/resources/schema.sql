@@ -16,6 +16,13 @@ CREATE TABLE IF NOT EXISTS courses
     FOREIGN KEY (subjectId) REFERENCES subjects ON DELETE CASCADE
     );
 
+CREATE TABLE IF NOT EXISTS  timetables (
+                                           courseId INTEGER,
+                                           dayOfWeek INTEGER,
+                                           startTime TIME,
+                                           endTime TIME,
+                                           FOREIGN KEY (courseId) REFERENCES courses ON DELETE CASCADE);
+
 CREATE TABLE IF NOT EXISTS users
 (
     userId SERIAL PRIMARY KEY,

@@ -81,7 +81,7 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testUpdate() {
-        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
+        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,'%s','%s')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
 
         Time startChangedTo = new Time(TimeUnit.HOURS.toMillis(16));
@@ -99,9 +99,9 @@ public class TimeTableDaoImplTest {
         assertEquals(endChangedTo, endTimeOfCourseIdInDB);
     }
 
-    @Test
+    @Test(expected = AssertionError.class)
     public void testUpdateNoExist() {
-        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
+        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,'%s','%s')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
 
         Time startChangedTo = new Time(TimeUnit.HOURS.toMillis(16));
@@ -114,7 +114,7 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testDelete() {
-        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
+        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,'%s','%s')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
 
         final boolean isDeleted = timetableDao.delete(COURSE_ID);
@@ -123,9 +123,9 @@ public class TimeTableDaoImplTest {
         assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "timetables"));
     }
 
-    @Test
+    @Test(expected = AssertionError.class)
     public void testDeleteNoExist() {
-        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
+        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,'%s','%s')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
 
         final boolean isDeleted = timetableDao.delete(COURSE_ID + 1);
@@ -135,7 +135,7 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testGetById() {
-        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
+        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,'%s','%s')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
 
         List<Timetable> timetableOptional = timetableDao.getById(COURSE_ID);
@@ -146,9 +146,9 @@ public class TimeTableDaoImplTest {
         assertEquals(TIME_TABLE_END_OF_COURSE, timetableOptional.get(0).getEnd());
     }
 
-    @Test
+    @Test(expected = AssertionError.class)
     public void getByIdNoExist() {
-        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
+        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,'%s','%s')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
 
         List<Timetable> timetableOptional = timetableDao.getById(COURSE_ID + 1);
