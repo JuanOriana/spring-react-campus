@@ -29,7 +29,10 @@
                                 <p>${teacher.key.name} ${teacher.key.surname}</p>
                                 <p>${teacher.key.email}</p>
                             </div>
-                            <img alt="mail icon" class="mail-icon" src="https://i.pinimg.com/originals/3a/4e/95/3a4e95aa862636d6f22c95fded897f94.jpg"/>
+                            <a class="styleless-anchor" href="mailto:${teacher.key.email}">
+                                <img alt="mail icon" class="mail-icon"
+                                     src="https://i.pinimg.com/originals/3a/4e/95/3a4e95aa862636d6f22c95fded897f94.jpg"/>
+                            </a>
                         </div>
                 </c:forEach>
             </div>
