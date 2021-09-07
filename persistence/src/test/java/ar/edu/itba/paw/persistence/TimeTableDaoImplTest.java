@@ -118,7 +118,6 @@ public class TimeTableDaoImplTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
         String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_DURATION_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "timetables"));
 
         final boolean isDeleted = timetableDao.delete(COURSE_ID);
         assertTrue(isDeleted);
@@ -128,6 +127,13 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testDeleteNoExist() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
+        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_DURATION_OF_COURSE.toString());
+        jdbcTemplate.execute(sqlInsertTimeTableEntry);
+
+        final boolean isDeleted = timetableDao.delete(COURSE_ID + 1);
+        Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
+        assertFalse(isDeleted);
     }
 
     @Test
