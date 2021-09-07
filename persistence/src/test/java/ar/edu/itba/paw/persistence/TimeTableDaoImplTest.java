@@ -156,6 +156,13 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void getByIdNoExist() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
+        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
+        jdbcTemplate.execute(sqlInsertTimeTableEntry);
+
+        List<Timetable> timetableOptional = timetableDao.getById(COURSE_ID + 1);
+        Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
+        assertEquals(0, timetableOptional.size());
     }
 
 }
