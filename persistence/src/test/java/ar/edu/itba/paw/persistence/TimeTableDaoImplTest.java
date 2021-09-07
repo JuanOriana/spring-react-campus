@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Subject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +14,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
+import java.sql.Time;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -35,6 +41,10 @@ public class TimeTableDaoImplTest {
     private final String SUBJECT_CODE = "A1";
     private final String SUBJECT_NAME = "PAW";
 
+    private final int TIME_TABLE_DAY_OF_WEEK = 1;
+    private final Time TIME_TABLE_START_OF_COURSE = new Time(TimeUnit.HOURS.toMillis(12));
+    private final Time TIME_TABLE_DURATION_OF_COURSE = new Time(TimeUnit.HOURS.toMillis(2));
+
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
@@ -46,8 +56,16 @@ public class TimeTableDaoImplTest {
         jdbcTemplate.execute(sqlInsertCourse);
     }
 
+    private Course getMockCourse(){
+        Subject mockSubject = new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
+        return new Course(COURSE_ID, COURSE_YEAR, COURSE_QUARTER, COURSE_BOARD, mockSubject);
+    }
+
     @Test
     public void testCreate() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
+        final boolean timeTableEntryInsertion = timetableDao.create(getMockCourse(), TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE, TIME_TABLE_DURATION_OF_COURSE);
+        assertEquals( 1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "timetables"));
     }
 
     @Test(expected = DataIntegrityViolationException.class)
