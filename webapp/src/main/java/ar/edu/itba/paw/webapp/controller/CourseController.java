@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/course")
@@ -56,7 +57,12 @@ public class CourseController {
     public ModelAndView professors(@PathVariable int courseId) {
         final ModelAndView mav = new ModelAndView("professors");
         Map<User, Role> teachers = courseService.getTeachers(courseId);
+        Set teacherSet = teachers.entrySet();
+//        for (Map.Entry<User,Role> entry : teacherSet){
+//            entry.getKey().
+//        }
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+        mav.addObject("teacherSet",teacherSet);
         return mav;
     }
 }
