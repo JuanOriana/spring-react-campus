@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Subject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,6 +71,11 @@ public class TimeTableDaoImplTest {
 
     @Test(expected = DataIntegrityViolationException.class)
     public void testCreateNonExistentCourseId() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
+        Course mockCourse = getMockCourse();
+        mockCourse.setCourseId(COURSE_ID + 1);
+        timetableDao.create(mockCourse, TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE, TIME_TABLE_DURATION_OF_COURSE);
+        Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
     }
 
     @Test
