@@ -18,8 +18,7 @@ import javax.sql.DataSource;
 import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -102,6 +101,16 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testUpdateNoExist() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
+        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_DURATION_OF_COURSE.toString());
+        jdbcTemplate.execute(sqlInsertTimeTableEntry);
+
+        Time startChangedTo = new Time(TimeUnit.HOURS.toMillis(16));
+        Time durationChangedTo = new Time(TimeUnit.HOURS.toMillis(3));
+
+        final boolean isUpdated = timetableDao.update(COURSE_ID + 1,TIME_TABLE_DAY_OF_WEEK,startChangedTo,durationChangedTo);
+        Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
+        assertFalse(isUpdated);
     }
 
     @Test
