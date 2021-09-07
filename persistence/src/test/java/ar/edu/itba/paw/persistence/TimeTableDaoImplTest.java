@@ -16,10 +16,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
-import javax.swing.text.html.Option;
 import java.sql.Time;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -55,8 +53,9 @@ public class TimeTableDaoImplTest {
         jdbcTemplate = new JdbcTemplate(ds);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
-        String sqlInsertSubject = String.format("INSERT INTO subjects  VALUES (%d, %s, %s)", SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
-        String sqlInsertCourse = String.format("INSERT INTO courses  VALUES (%d, %d, %d,%s, %d)", COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
+        String sqlInsertSubject = String.format("INSERT INTO subjects  VALUES (%d, '%s', '%s')", SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
+        String sqlInsertCourse = String.format("INSERT INTO courses  VALUES (%d, %d, %d,'%s', %d)", COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
         jdbcTemplate.execute(sqlInsertSubject);
         jdbcTemplate.execute(sqlInsertCourse);
     }
@@ -68,14 +67,12 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testCreate() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
         final boolean timeTableEntryInsertion = timetableDao.create(getMockCourse(), TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE, TIME_TABLE_END_OF_COURSE);
         assertEquals( 1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "timetables"));
     }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void testCreateNonExistentCourseId() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
         Course mockCourse = getMockCourse();
         mockCourse.setCourseId(COURSE_ID + 1);
         timetableDao.create(mockCourse, TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE, TIME_TABLE_END_OF_COURSE);
@@ -84,7 +81,6 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testUpdate() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
         String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
 
@@ -105,7 +101,6 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testUpdateNoExist() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
         String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
 
@@ -119,7 +114,6 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testDelete() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
         String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
 
@@ -131,7 +125,6 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testDeleteNoExist() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
         String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
 
@@ -142,7 +135,6 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testGetById() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
         String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
 
@@ -156,7 +148,6 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void getByIdNoExist() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
         String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
         jdbcTemplate.execute(sqlInsertTimeTableEntry);
 
