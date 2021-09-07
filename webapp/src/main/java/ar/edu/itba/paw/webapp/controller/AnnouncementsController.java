@@ -9,18 +9,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
 public class AnnouncementsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
+    private final Comparator<Announcement> orderByDate = (o1,o2) -> o2.getDate().compareTo(o1.getDate());
+
     @Autowired
     AnnouncementService announcementService;
 
     @RequestMapping("/announcements")
     public ModelAndView announcements() {
         ModelAndView mav = new ModelAndView("announcements");
-        List<Announcement> announcements = announcementService.list();
+        List<Announcement> announcements = announcementService.list(orderByDate);
         mav.addObject("announcementList", announcements);
         return mav;
     }

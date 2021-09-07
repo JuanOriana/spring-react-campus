@@ -20,7 +20,10 @@
           <div class="announcement-wrapper reduced">
               <div class="announcement-header">
                   <h4 class="announcement-title">${announcementItem.title}</h4>
-                  <p style="font-size: 14px">Publicado por: ${announcementItem.author.name}</p>
+                  <div style="display: flex;flex-direction: column;font-size: 14px">
+                      <p>Publicado por: ${announcementItem.author.name} ${announcementItem.author.surname}</p>
+                      <p>Para: ${announcementItem.course.subject.name}</p>
+                  </div>
               </div>
               <p class="announcement-date">${announcementItem.date}</p>
               ${announcementItem.content}

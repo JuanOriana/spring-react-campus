@@ -22,15 +22,19 @@
         <div class="course-data-container">
             <h3 class="section-heading" style="margin: 0 0 20px 20px"> Profesores </h3>
             <div class="professors-wrapper">
-                <div class="professor-unit">
-                    <img alt="professor icon" class="professor-icon" src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/user.png"/>
-                    <div style="display: flex;flex-direction: column">
-                        <p>Juan Pablo Oriana</p>
-                        <p>joriana@itba.edu.ar</p>
-                    </div>
-                    <img alt="mail icon" class="mail-icon" src="https://i.pinimg.com/originals/3a/4e/95/3a4e95aa862636d6f22c95fded897f94.jpg"/>
-
-                </div>
+                <c:forEach var="teacher" items="${teacherSet}">
+                        <div class="professor-unit">
+                            <img alt="professor icon" class="professor-icon" src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/user.png"/>
+                            <div style="display: flex; width:200px; flex-direction: column">
+                                <p>${teacher.key.name} ${teacher.key.surname}</p>
+                                <p>${teacher.key.email}</p>
+                            </div>
+                            <a class="styleless-anchor" href="mailto:${teacher.key.email}">
+                                <img alt="mail icon" class="mail-icon"
+                                     src="https://i.pinimg.com/originals/3a/4e/95/3a4e95aa862636d6f22c95fded897f94.jpg"/>
+                            </a>
+                        </div>
+                </c:forEach>
             </div>
         </div>
     </div>

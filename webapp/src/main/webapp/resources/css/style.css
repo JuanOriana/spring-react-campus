@@ -169,8 +169,8 @@ body{
 }
 
 .announcement-date{
-    font-size: 12px;
-    margin: 0 0 6px 6px
+    font-size: 14px;
+    margin: 0 0 6px 2px;
 }
 .styleless-anchor {
     text-decoration: none !important;
