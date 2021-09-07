@@ -26,7 +26,7 @@
                         <div class="professor-unit">
                             <img alt="professor icon" class="professor-icon" src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/user.png"/>
                             <div style="display: flex; width:200px; flex-direction: column">
-                                <p>${teacher.key.name}</p>
+                                <p>${teacher.key.name} ${teacher.key.surname}</p>
                                 <p>${teacher.key.email}</p>
                             </div>
                             <img alt="mail icon" class="mail-icon" src="https://i.pinimg.com/originals/3a/4e/95/3a4e95aa862636d6f22c95fded897f94.jpg"/>

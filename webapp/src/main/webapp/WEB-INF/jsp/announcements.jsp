@@ -21,7 +21,7 @@
               <div class="announcement-header">
                   <h4 class="announcement-title">${announcementItem.title}</h4>
                   <div style="display: flex;flex-direction: column;font-size: 14px">
-                      <p>Publicado por: ${announcementItem.author.name}</p>
+                      <p>Publicado por: ${announcementItem.author.name} ${announcementItem.author.surname}</p>
                       <p>Para: ${announcementItem.course.subject.name}</p>
                   </div>
               </div>
