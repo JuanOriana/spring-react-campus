@@ -14,7 +14,7 @@
             <a href="<c:url value ="/timetable"/>" class="styleless-anchor">Mis Horarios</a>
         </li>
     </ul>
-    <p class="user-data">Hola Jefe!</p>
+    <div style="width: 100px;"></div>
 </nav>
 </body>
 </html>
