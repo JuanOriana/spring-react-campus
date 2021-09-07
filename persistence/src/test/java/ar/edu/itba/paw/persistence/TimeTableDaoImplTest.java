@@ -19,6 +19,7 @@ import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -80,6 +81,23 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testUpdate() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
+        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,TIME(%s),TIME(%s)')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_DURATION_OF_COURSE.toString());
+        jdbcTemplate.execute(sqlInsertTimeTableEntry);
+
+        Time startChangedTo = new Time(TimeUnit.HOURS.toMillis(16));
+        Time durationChangedTo = new Time(TimeUnit.HOURS.toMillis(3));
+
+        final boolean isUpdated = timetableDao.update(COURSE_ID,TIME_TABLE_DAY_OF_WEEK,startChangedTo,durationChangedTo);
+        assertTrue(isUpdated);
+
+        String sqlGetStartTimeOfCourseId = String.format("SELECT startTime FROM timetables WHERE courseId = %d", COURSE_ID);
+        Time startTimeOfCourseIdInDB = jdbcTemplate.queryForObject(sqlGetStartTimeOfCourseId,Time.class);
+        assertEquals(startChangedTo, startTimeOfCourseIdInDB);
+
+        String sqlGetDurationOfCourseId = String.format("SELECT endTime FROM timetables WHERE courseId = %d", COURSE_ID);
+        Time durationOfCourseIdInDB = jdbcTemplate.queryForObject(sqlGetDurationOfCourseId,Time.class);
+        assertEquals(durationChangedTo, durationOfCourseIdInDB);
     }
 
     @Test
