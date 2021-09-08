@@ -58,7 +58,7 @@ public class TimeTableController {
                 for (int i = 0; i < hours.length; i++){
                     Time timedHour = stringToTime(hours[i]);
                     if ((begins.before(timedHour) || begins.equals(timedHour)) && ends.after(timedHour)){
-                        timeTableMatrix.get(timetable.getDayOfWeek()).add(i,entry.getKey());
+                        timeTableMatrix.get(timetable.getDayOfWeek()).set(i,entry.getKey());
                     }
                 }
             }
