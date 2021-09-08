@@ -35,17 +35,20 @@ public interface AnnouncementService {
 
     /**
      * Gets all the current available announcements
-     *
+     * @param page offset to be retrieved
+     * @param pageSize size of the page to be retrieved
      * @return list containing all the current available announcements (if any)
      */
-    List<Announcement> list();
+    List<Announcement> list(long page, long pageSize);
 
     /**
-     * Gets all the current available announcements in a specific order
+     * Returns an arbitrary ordered list of announcements with pagination
+     * @param page offset to be retrieved
+     * @param pageSize size of the page to be retrieved
      * @param comparator identifies the order expected in the response list
-     * @return order list containing all the current available announcements (if any)
+     * @return list of announcements of size pageSize (or smaller)
      */
-    List<Announcement> list(Comparator<Announcement> comparator);
+    List<Announcement> list(long page, long pageSize, Comparator<Announcement> comparator);
 
     /**
      * Gets all the current available announcements for a specific course

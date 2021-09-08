@@ -9,7 +9,7 @@ public interface AnnouncementDao {
     Announcement create(Announcement announcement);
     boolean update(long id, Announcement announcement);
     boolean delete(long id);
-    List<Announcement> list();
+    List<Announcement> list(long page, long pageSize);
     List<Announcement> listByCourse(long courseId);
     Optional<Announcement> getById(long id);
 }

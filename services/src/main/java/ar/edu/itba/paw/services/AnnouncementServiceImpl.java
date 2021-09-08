@@ -33,13 +33,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public List<Announcement> list() {
-        return announcementDao.list();
+    public List<Announcement> list(long page, long pageSize) {
+        return announcementDao.list(page, pageSize);
     }
 
     @Override
-    public List<Announcement> list(Comparator<Announcement> comparator) {
-        return list().stream().sorted(comparator).collect(Collectors.toList());
+    public List<Announcement> list(long page, long pageSize, Comparator<Announcement> comparator) {
+        return list(page, pageSize).stream().sorted(comparator).collect(Collectors.toList());
     }
 
     @Override

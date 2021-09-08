@@ -22,9 +22,10 @@ public class AnnouncementsController {
     AnnouncementService announcementService;
 
     @RequestMapping("/announcements")
-    public ModelAndView announcements(@RequestParam(value = "page", required = false, defaultValue = "0") Long page) {
+    public ModelAndView announcements(@RequestParam(value = "page", required = false, defaultValue = "1") Long page,
+                                      @RequestParam(value = "pageSize", required = false, defaultValue = "10") Long pageSize) {
         ModelAndView mav = new ModelAndView("announcements");
-        List<Announcement> announcements = announcementService.list(orderByDate);
+        List<Announcement> announcements = announcementService.list(page, pageSize, orderByDate);
         mav.addObject("announcementList", announcements);
         return mav;
     }

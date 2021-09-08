@@ -56,6 +56,9 @@ public class AnnouncementDaoImplTest {
     private final String SUBJECT_CODE = "A1";
     private final String SUBJECT_NAME = "Protos";
 
+    private final long PAGE = 1;
+    private final long PAGE_SIZE = 1;
+
     private final Date date = new Date(8000);
 
     private static final RowMapper<Announcement> ANNOUNCEMENT_ROW_MAPPER = (rs, rowNum) ->
@@ -158,7 +161,7 @@ public class AnnouncementDaoImplTest {
         final int id = 999;
         String sqlInsertAnnouncement = String.format("INSERT INTO announcements (announcementId,userId, courseId, title,content) VALUES (%d,%d,%d,'test_title','test_content')", id, USER_ID, COURSE_ID);
         jdbcTemplate.execute(sqlInsertAnnouncement);
-        List<Announcement> list = announcementDao.list();
+        List<Announcement> list = announcementDao.list(PAGE, PAGE_SIZE);
 
         assertNotNull(list);
         assertEquals(1, list.size());

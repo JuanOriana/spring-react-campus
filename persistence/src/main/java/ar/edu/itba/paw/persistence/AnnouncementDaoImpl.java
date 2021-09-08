@@ -71,10 +71,11 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public List<Announcement> list() {
+    public List<Announcement> list(long page, long pageSize) {
         return new ArrayList<>(jdbcTemplate.query("SELECT announcementId, date, title, content, userId, fileNumber, name, " +
                 "surname, isAdmin, courseId, year, quarter, board, subjectId, code, subjectName " +
-                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users", COURSE_ANNOUNCEMENT_ROW_MAPPER));
+                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
+                "LIMIT ? OFFSET ?",new Object[]{ pageSize, (page - 1)*pageSize }, COURSE_ANNOUNCEMENT_ROW_MAPPER));
     }
 
 
