@@ -334,3 +334,38 @@ body{
     font-size: 16px;
     padding: 6px;
 }
+
+.login-wrapper{
+    background: white;
+    width: 200px;
+    padding: 12px 20px 12px 20px;
+    border-radius: 12px;
+    margin-bottom: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: solid 2px var(--cyan-darkest);
+}
+
+.login-label{
+    color: var(--cyan-darkest);
+    font-size: 18px;
+}
+
+.login-input{
+    border-radius: 6px;
+    border: 1px solid var(--cyan-darkest);
+    padding: 3px;
+    color: var(--cyan-darkest);
+    margin-bottom: 4px;
+}
+
+.login-button{
+    margin: 10px 0;
+    background: var(--cyan-darkest);
+    border-radius: 10px;
+    border: 2px solid var(--cyan-dark);
+    color: var(--cyan-dark);
+    padding: 3px;
+    font-size: 22px;
+}
