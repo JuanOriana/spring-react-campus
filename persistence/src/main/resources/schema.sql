@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS  announcements (
                                               courseId INTEGER,
                                               title varchar (50),
     content TEXT ,
-    date DATE,
+    date TIMESTAMP,
     FOREIGN KEY (userId) references users ON DELETE CASCADE,
     FOREIGN KEY (courseId) references courses ON DELETE CASCADE
     );

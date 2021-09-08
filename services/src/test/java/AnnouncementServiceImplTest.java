@@ -10,9 +10,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +40,7 @@ public class AnnouncementServiceImplTest {
     private final String SUBJECT_CODE = "A1";
     private final String SUBJECT_NAME = "Protos";
 
-    private static final Date ANNOUNCEMENT_DATE = new Date(2323223232L);
+    private static final LocalDateTime ANNOUNCEMENT_DATE = LocalDateTime.now();
     private static final String ANNOUNCEMENT_TITLE = "Unit Testing";
     private static final String ANNOUNCEMENT_CONTENT = "Rocks! (or not)";
 

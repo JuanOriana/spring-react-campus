@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Timestamp;
 import java.util.*;
 
 @Repository
@@ -21,7 +22,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private static final RowMapper<Announcement> COURSE_ANNOUNCEMENT_ROW_MAPPER = (rs, rowNum) ->
-        new Announcement(rs.getInt("announcementId"), rs.getDate("date"), rs.getString("title"),
+        new Announcement(rs.getInt("announcementId"), rs.getTimestamp("date").toLocalDateTime(), rs.getString("title"),
                 rs.getString("content"), new User(rs.getInt("userId"), rs.getInt("fileNumber"),
                 rs.getString("name"), rs.getString("surname"), null, null, null, rs.getBoolean("isAdmin")),
                 new Course(rs.getInt("courseId"), rs.getInt("year"), rs.getInt("quarter"),
@@ -30,7 +31,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     ;
 
     private static final RowMapper<Announcement> ANNOUNCEMENT_ROW_MAPPER = (rs, rowNum) ->
-            new Announcement(rs.getInt("announcementId"), rs.getDate("date"), rs.getString("title"),
+            new Announcement(rs.getInt("announcementId"), rs.getTimestamp("date").toLocalDateTime(), rs.getString("title"),
                     rs.getString("content"), new User(rs.getInt("userId"), rs.getInt("fileNumber"),
                     rs.getString("name"), rs.getString("surname"), null, null,
                     null, rs.getBoolean("isAdmin")),null);
@@ -44,7 +45,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     @Override
     public Announcement create(Announcement announcement) {
         final Map<String, Object> args = new HashMap<>();
-        args.put("date", announcement.getDate());
+        args.put("date", Timestamp.valueOf(announcement.getDate()));
         args.put("title", announcement.getTitle());
         args.put("content", announcement.getContent());
         args.put("userId", announcement.getAuthor().getUserId());
@@ -63,7 +64,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
                 "title = ?," +
                 "content = ?" +
                 "WHERE announcementId = ?", new Object[]{announcement.getAuthor().getUserId(), announcement.getCourse().getCourseId(),
-                announcement.getDate(), announcement.getTitle(), announcement.getContent(), id}) == 1;
+                Timestamp.valueOf(announcement.getDate()), announcement.getTitle(), announcement.getContent(), id}) == 1;
     }
 
     @Override
