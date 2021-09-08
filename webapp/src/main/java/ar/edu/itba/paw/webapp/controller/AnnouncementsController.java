@@ -26,6 +26,8 @@ public class AnnouncementsController {
                                       @RequestParam(value = "pageSize", required = false, defaultValue = "10") Long pageSize) {
         ModelAndView mav = new ModelAndView("announcements");
         int pageCount = announcementService.getPageCount(pageSize);
+        if (page < 1) page = 1L;
+        else if (page > pageSize) page = pageSize;
         List<Announcement> announcements = announcementService.list(page, pageSize, orderByDate);
         mav.addObject("announcementList", announcements);
         mav.addObject("currentPage",page);
