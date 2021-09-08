@@ -19,7 +19,7 @@ public class TimeTableController {
 
     final String[] days = {"Lunes","Martes","Miercoles","Jueves","Viernes","Sabado"};
     final String[] hours = {"08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00",
-            "17:00","18:00","19:00","20:00"};
+            "17:00","18:00","19:00","20:00","21:00","22:00"};
 
     @Autowired
     CourseService courseService;
@@ -57,8 +57,7 @@ public class TimeTableController {
                 Time ends = timetable.getEnd();
                 for (int i = 0; i < hours.length; i++){
                     Time timedHour = stringToTime(hours[i]);
-                    if ((begins.before(timedHour) || begins.equals(timedHour)) &&
-                            (ends.after(timedHour) || ends.equals(timedHour))){
+                    if ((begins.before(timedHour) || begins.equals(timedHour)) && ends.after(timedHour)){
                         timeTableMatrix.get(timetable.getDayOfWeek()).add(i,entry.getKey());
                     }
                 }
