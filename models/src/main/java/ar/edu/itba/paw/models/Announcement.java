@@ -1,17 +1,16 @@
 package ar.edu.itba.paw.models;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Announcement {
 
     private long announcementId;
-    private Date date;
+    private LocalDateTime date;
     private String title, content;
     private User author;
     private Course course;
 
 
-    public Announcement(long announcementId, Date date, String title, String content, User author, Course course) {
+    public Announcement(long announcementId, LocalDateTime date, String title, String content, User author, Course course) {
         this.announcementId = announcementId;
         this.date = date;
         this.title = title;
@@ -20,7 +19,7 @@ public class Announcement {
         this.course = course;
     }
 
-    public Announcement(Date date, String title, String content, User author, Course course) {
+    public Announcement(LocalDateTime date, String title, String content, User author, Course course) {
         this.date = date;
         this.title = title;
         this.content = content;
@@ -52,11 +51,11 @@ public class Announcement {
         this.announcementId = announcementId;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
