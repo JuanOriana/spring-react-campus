@@ -138,6 +138,7 @@ body{
     width: 100%;
     text-align: center;
     border-bottom: 2px solid var(--cyan-light);
+    padding-bottom: 10px;
 }
 .course-sections-item{
     font-weight: 700;
