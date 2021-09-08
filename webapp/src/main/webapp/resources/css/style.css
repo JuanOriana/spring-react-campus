@@ -299,3 +299,21 @@ body{
     margin-left:10px;
     cursor:pointer;
 }
+
+.pagination-wrapper{
+    display: flex;
+    align-items: center;
+    font-size: 27px;
+    font-weight: 700;
+    margin: 20px 0;
+}
+
+.pagination-arrow{
+    cursor: pointer;
+    margin: 0 8px;
+    height: 36px;
+}
+
+.x-rotated{
+    transform: rotate(180deg);
+}

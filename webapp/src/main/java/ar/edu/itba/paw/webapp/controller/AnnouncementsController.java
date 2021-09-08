@@ -28,6 +28,8 @@ public class AnnouncementsController {
         int pageCount = announcementService.getPageCount(pageSize);
         List<Announcement> announcements = announcementService.list(page, pageSize, orderByDate);
         mav.addObject("announcementList", announcements);
+        mav.addObject("currentPage",page);
+        mav.addObject("maxPage",pageCount);
         return mav;
     }
 
