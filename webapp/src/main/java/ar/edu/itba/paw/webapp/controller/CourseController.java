@@ -56,10 +56,7 @@ public class CourseController {
     public ModelAndView professors(@PathVariable int courseId) {
         final ModelAndView mav = new ModelAndView("professors");
         Map<User, Role> teachers = courseService.getTeachers(courseId);
-        Set teacherSet = teachers.entrySet();
-//        for (Map.Entry<User,Role> entry : teacherSet){
-//            entry.getKey().
-//        }
+        Set<Map.Entry<User,Role>> teacherSet = teachers.entrySet();
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("teacherSet",teacherSet);
         return mav;

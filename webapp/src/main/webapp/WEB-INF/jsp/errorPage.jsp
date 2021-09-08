@@ -13,11 +13,11 @@
 </head>
 <body>
 <div class="page-organizer">
-    <%@ include file="navbar.jsp" %>
+    <%@ include file="components/navbar.jsp" %>
     <div class="page-container">
         <h1>${errorMsg}</h1>
     </div>
-    <jsp:include page="footer.jsp"/>
+    <jsp:include page="components/footer.jsp"/>
 </div>
 </body>
 </html>

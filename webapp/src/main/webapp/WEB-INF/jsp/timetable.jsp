@@ -2,11 +2,11 @@
 <html>
 <head>
     <title>Campus - Timetable</title>
-    <c:import url="generalHead.jsp"/>
+    <c:import url="config/generalHead.jsp"/>
 </head>
 <body>
 <div class="page-organizer">
-<jsp:include page="navbar.jsp">
+<jsp:include page="components/navbar.jsp">
     <jsp:param name="navItem" value="${3}"/>
 </jsp:include>
 <div class="page-container">
@@ -41,7 +41,7 @@
         </table>
     </div>
 </div>
-    <jsp:include page="footer.jsp"/>
+    <jsp:include page="components/footer.jsp"/>
 </div>
 
 </body>
