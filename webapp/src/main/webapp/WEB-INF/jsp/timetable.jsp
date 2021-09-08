@@ -11,6 +11,7 @@
           rel="stylesheet">
 </head>
 <body>
+<div class="page-organizer">
 <jsp:include page="navbar.jsp">
     <jsp:param name="navItem" value="${3}"/>
 </jsp:include>
@@ -45,6 +46,8 @@
             </c:forEach>
         </table>
     </div>
+</div>
+    <jsp:include page="footer.jsp"/>
 </div>
 
 </body>

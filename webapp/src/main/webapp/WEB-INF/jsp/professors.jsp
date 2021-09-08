@@ -11,6 +11,7 @@
 
 </head>
 <body>
+<div class="page-organizer">
 <%@ include file="navbar.jsp" %>
 <h2 class="course-section-name">${course.subject.name}</h2>
 <div class="page-container" style="padding-top: 0">
@@ -38,6 +39,8 @@
             </div>
         </div>
     </div>
+</div>
+    <jsp:include page="footer.jsp"/>
 </div>
 </body>
 </html>

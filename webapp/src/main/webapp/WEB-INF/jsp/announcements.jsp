@@ -11,6 +11,7 @@
           rel="stylesheet">
 </head>
 <body>
+<div class="page-organizer">
     <jsp:include page="navbar.jsp">
         <jsp:param name="navItem" value="${2}"/>
     </jsp:include>
@@ -49,6 +50,7 @@
       </div>
 
   </div>
-
+    <jsp:include page="footer.jsp"/>
+</div>
 </body>
 </html>

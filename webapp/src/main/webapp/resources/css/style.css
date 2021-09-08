@@ -61,11 +61,16 @@ body{
     font-weight: 700;
     font-size: 20px;
 }
-
+.page-organizer{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+}
 .page-container{
     background: var(--cyan-light);
     width: 100%;
-    min-height: 100vh;
+    flex:1;
     padding-top: 30px;
     display: flex;
     flex-direction: column;
@@ -316,4 +321,15 @@ body{
 
 .x-rotated{
     transform: rotate(180deg);
+}
+
+.footer-container{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cyan-dark);
+    color: white;
+    font-size: 16px;
+    padding: 6px;
 }

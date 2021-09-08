@@ -12,9 +12,12 @@
 
 </head>
 <body>
-<%@ include file="navbar.jsp" %>
-<div class="page-container">
-    <h1>${errorMsg}</h1>
+<div class="page-organizer">
+    <%@ include file="navbar.jsp" %>
+    <div class="page-container">
+        <h1>${errorMsg}</h1>
+    </div>
+    <jsp:include page="footer.jsp"/>
 </div>
 </body>
 </html>

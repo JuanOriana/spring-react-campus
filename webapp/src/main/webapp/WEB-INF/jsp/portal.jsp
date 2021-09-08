@@ -10,6 +10,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&family=Righteous&display=swap" rel="stylesheet">
     </head>
     <body>
+    <div class="page-organizer">
         <jsp:include page="navbar.jsp">
             <jsp:param name="navItem" value="${1}"/>
         </jsp:include>
@@ -29,6 +30,7 @@
 
             </div>
         </div>
-
+        <jsp:include page="footer.jsp"/>
+    </div>
     </body>
 </html>
