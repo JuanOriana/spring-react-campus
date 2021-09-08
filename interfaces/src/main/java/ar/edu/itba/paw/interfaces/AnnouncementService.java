@@ -42,6 +42,13 @@ public interface AnnouncementService {
     List<Announcement> list(long page, long pageSize);
 
     /**
+     * Gets the amount of pages based on the page size
+     * @param pageSize size of a page from a list query
+     * @return amount of pages for the given page size
+     */
+    int getPageCount(long pageSize);
+
+    /**
      * Returns an arbitrary ordered list of announcements with pagination
      * @param page offset to be retrieved
      * @param pageSize size of the page to be retrieved

@@ -39,6 +39,12 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
+    public int getPageCount(long pageSize) {
+        if(pageSize < 1) return 0;
+        return announcementDao.getPageCount(pageSize);
+    }
+
+    @Override
     public List<Announcement> list(long page, long pageSize, Comparator<Announcement> comparator) {
         if(page < 1 || pageSize < 1) return new ArrayList<>();
         return list(page, pageSize).stream().sorted(comparator).collect(Collectors.toList());
