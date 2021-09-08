@@ -34,6 +34,7 @@ public class AnnouncementsController {
         mav.addObject("announcementList", announcements);
         mav.addObject("currentPage",page);
         mav.addObject("maxPage",pageCount);
+        mav.addObject("pageSize",pageSize);
         return mav;
     }
 
