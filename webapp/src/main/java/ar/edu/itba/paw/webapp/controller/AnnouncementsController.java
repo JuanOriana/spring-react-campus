@@ -27,7 +27,7 @@ public class AnnouncementsController {
         ModelAndView mav = new ModelAndView("announcements");
         int pageCount = announcementService.getPageCount(pageSize);
         if (page < 1) page = 1L;
-        else if (page > pageSize) page = pageSize;
+        else if (page > pageCount) page = (long) pageCount;
         List<Announcement> announcements = announcementService.list(page, pageSize, orderByDate);
         mav.addObject("announcementList", announcements);
         mav.addObject("currentPage",page);
