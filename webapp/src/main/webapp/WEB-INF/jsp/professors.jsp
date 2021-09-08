@@ -26,8 +26,8 @@
                         <div class="professor-unit">
                             <img alt="professor icon" class="professor-icon" src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/user.png"/>
                             <div style="display: flex; width:200px; flex-direction: column">
-                                <p>${teacher.key.name} ${teacher.key.surname}</p>
-                                <p>${teacher.key.email}</p>
+                                <p><c:out value="${teacher.key.name} ${teacher.key.surname}"/></p>
+                                <p><c:out value="${teacher.key.email}"/></p>
                             </div>
                             <a class="styleless-anchor" href="mailto:${teacher.key.email}">
                                 <img alt="mail icon" class="mail-icon"

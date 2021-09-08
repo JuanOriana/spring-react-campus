@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
     <head>
-        <title>Campus - ${course.subject.name}</title>
+        <title>Campus - <c:out value="${course.subject.name}"/></title>
         <meta charset="UTF-8"/>
         <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
         <link href="<c:url value = "${page.Context.request.contextPath}/resources/css/style.css" />" rel="stylesheet" >
@@ -26,11 +26,12 @@
                     <c:forEach var="announcementItem" items="${announcementList}">
                         <div class="announcement-wrapper reduced">
                             <div class="announcement-header">
-                                <h4 class="announcement-title">${announcementItem.title}</h4>
-                                <p style="font-size: 14px">Publicado por: ${announcementItem.author.name} ${announcementItem.author.surname}</p>
+                                <h4 class="announcement-title"><c:out value="${announcementItem.title}"/></h4>
+                                <p style="font-size: 14px">Publicado por: <c:out value="${announcementItem.author.name}
+                                ${announcementItem.author.surname}"/></p>
                             </div>
-                            <p class="announcement-date">${announcementItem.date}</p>
-                                ${announcementItem.content}
+                            <p class="announcement-date"><c:out value="${announcementItem.date}"/></p>
+                                <c:out value="${announcementItem.content}"/>
                         </div>
                     </c:forEach>
                 </div>

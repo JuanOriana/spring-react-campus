@@ -18,8 +18,12 @@
             <div class="courses-container">
                 <c:forEach var="courseItem" items="${courseList}">
                     <div class="course">
-                        <p class="course-name"><a href="<c:url value="course/${courseItem.subject.subjectId}"/>" class="styleless-anchor"> ${courseItem.subject.name}</a></p>
-                        <p class="course-extra-info">${courseItem.year}/${courseItem.quarter}Q</p>
+                        <p class="course-name">
+                            <a href="<c:url value="course/${courseItem.subject.subjectId}"/>" class="styleless-anchor">
+                                    <c:out value="${courseItem.subject.name}"/>
+                            </a>
+                        </p>
+                        <p class="course-extra-info"><c:out value="${courseItem.year}/${courseItem.quarter}Q"/></p>
                     </div>
                 </c:forEach>
 
