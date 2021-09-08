@@ -29,6 +29,8 @@ public class AnnouncementServiceImplTest {
     private final String USER_USERNAME = "paw2021";
     private final String USER_EMAIL = "paw2021@itba.edu.ar";
     private final String USER_PASSWORD = "asd123";
+    private final long PAGE_SIZE = 1;
+    private final long PAGE = 1;
 
     private final int COURSE_ID = 1;
     private final int COURSE_YEAR = 2021;
@@ -117,8 +119,8 @@ public class AnnouncementServiceImplTest {
     @Test
     public void testList() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.list()).thenReturn(new ArrayList<Announcement>(){{ add(announcement); }});
-        List<Announcement> announcements = announcementService.list();
+        when(mockDao.list(PAGE, PAGE_SIZE)).thenReturn(new ArrayList<Announcement>(){{ add(announcement); }});
+        List<Announcement> announcements = announcementService.list(PAGE, PAGE_SIZE);
         Assert.assertTrue(announcements.size() > 0);
         Assert.assertEquals(announcement.getCourse().getCourseId(), announcements.get(0).getCourse().getCourseId());
     }

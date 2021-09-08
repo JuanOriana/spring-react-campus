@@ -42,7 +42,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Value("classpath:schema.sql")
     private Resource schemaSql;
-
     @Bean
     public DataSourceInitializer dataSourceInitializer(final DataSource ds) {
         final DataSourceInitializer dsi = new DataSourceInitializer();
@@ -63,7 +62,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ds.setDriverClass(org.postgresql.Driver.class);
 
         if(isOnDevBuild()) {
-            ds.setUrl("jdbc:postgresql://127.0.0.1:5432/postgres");
+            ds.setUrl("jdbc:postgresql://127.0.0.1:5432/");
             ds.setUsername("postgres");
             ds.setPassword("hola");
         } else {

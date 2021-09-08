@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCountCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -71,10 +72,18 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public List<Announcement> list() {
+    public int getPageCount(long pageSize) {
+        RowCountCallbackHandler countCallback = new RowCountCallbackHandler();  // not reusable
+        jdbcTemplate.query("SELECT * FROM announcements", countCallback);
+        return (int) Math.ceil((double)countCallback.getRowCount() / pageSize);
+    }
+
+    @Override
+    public List<Announcement> list(long page, long pageSize) {
         return new ArrayList<>(jdbcTemplate.query("SELECT announcementId, date, title, content, userId, fileNumber, name, " +
                 "surname, isAdmin, courseId, year, quarter, board, subjectId, code, subjectName " +
-                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users", COURSE_ANNOUNCEMENT_ROW_MAPPER));
+                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
+                "LIMIT ? OFFSET ?",new Object[]{ pageSize, (page - 1) * pageSize }, COURSE_ANNOUNCEMENT_ROW_MAPPER));
     }
 
 
