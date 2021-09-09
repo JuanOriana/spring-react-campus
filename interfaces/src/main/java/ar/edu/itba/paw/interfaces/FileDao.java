@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface FileDao {
     FileModel create(FileModel file) throws FileNotFoundException;
-    boolean update(long fileId, FileModel file);
+    boolean update(long fileId, FileModel file) throws FileNotFoundException;
     boolean delete(long fileId);
     List<FileModel> list();
     Optional<FileModel> getById(long fileId);

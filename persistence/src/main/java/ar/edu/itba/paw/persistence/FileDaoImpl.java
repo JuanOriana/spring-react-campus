@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -37,6 +38,7 @@ public class FileDaoImpl implements FileDao {
         final Map<String, Object> args = new HashMap<>();
         args.put("size", file.getFile().length());
         args.put("file", new FileReader(file.getFile()));
+        args.put("name",file.getFile().getName());
         LocalDate currentTime = java.time.LocalDate.now();
         args.put("date", currentTime);
         args.put("categoryId", file.getCategory().getCategoryId());
@@ -45,8 +47,14 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public boolean update(long fileId, FileModel file) {
-        return false;
+    public boolean update(long fileId, FileModel file) throws FileNotFoundException {
+        return jdbcTemplate.update("UPDATE files " +
+                "SET file = ?," +
+                        "name = ?," +
+                        "size = ?," +
+                        "date = ?," +
+                        "categoryId = ?," +
+                        "WHERE fileId = ?", new Object[]{new FileReader(file.getFile()), file.getFile().getName(), file.getFile().length(), java.time.LocalDate.now(), file.getCategory().getCategoryId(), fileId}) == 1;
     }
 
     @Override
