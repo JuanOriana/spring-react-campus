@@ -25,11 +25,6 @@ public class PortalController {
         return new RedirectView("portal");
     }
 
-    @RequestMapping("/login")
-    public ModelAndView login() {
-        return new ModelAndView("login");
-    }
-
     @RequestMapping("/portal")
     public ModelAndView portal() {
         LOGGER.debug("Log debug call from {}", PortalController.class.getSimpleName());
