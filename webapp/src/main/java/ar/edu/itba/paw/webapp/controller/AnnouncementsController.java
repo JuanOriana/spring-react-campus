@@ -26,10 +26,15 @@ public class AnnouncementsController {
                                       @RequestParam(value = "pageSize", required = false, defaultValue = "10") Long pageSize) {
         ModelAndView mav = new ModelAndView("announcements");
         int pageCount = announcementService.getPageCount(pageSize);
+        if (page < 1) page = 1L;
+        else if (page > pageCount) page = (long) pageCount;
+        if(pageSize < 1) pageSize = 10L;
+        else if(pageSize > 50) pageSize = 50L;
         List<Announcement> announcements = announcementService.list(page, pageSize, orderByDate);
         mav.addObject("announcementList", announcements);
         mav.addObject("currentPage",page);
-        mav.addObject("maxPage",pageCount);
+        mav.addObject("maxPage", pageCount);
+        mav.addObject("pageSize",pageSize);
         return mav;
     }
 
