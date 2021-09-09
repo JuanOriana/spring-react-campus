@@ -9,7 +9,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.apache.commons.io.*;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -27,6 +31,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
+        InputStream cookie_stream = WebAuthConfig.class.getResourceAsStream("/remember_me_key.secure");
+        String cookie_key = IOUtils.toString(Objects.requireNonNull(cookie_stream), StandardCharsets.UTF_8);
         http.sessionManagement()
                     .invalidSessionUrl("/login")
                 .and().authorizeRequests()
@@ -41,7 +47,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().rememberMe()
                     .rememberMeParameter("rememberMe")
                     .userDetailsService(userDetailsService)
-                    .key("mysupersecretketthatnobodyknowsabout") // moverla a src/main/resources
+                    .key(Objects.requireNonNull(cookie_key).toString())
                     .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
                 .and().logout()
                     .logoutUrl("/logout")
