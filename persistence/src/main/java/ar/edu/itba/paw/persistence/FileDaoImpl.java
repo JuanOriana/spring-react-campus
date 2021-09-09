@@ -13,7 +13,6 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -64,7 +63,7 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public List<FileModel> list() {
-        return null;
+        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, size, categoryId, categoryName, name, date, file FROM files NATURAL JOIN filecategories", FILE_MODEL_ROW_MAPPER));
     }
 
     @Override
