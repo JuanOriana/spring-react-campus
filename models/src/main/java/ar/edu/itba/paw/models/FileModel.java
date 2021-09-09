@@ -5,18 +5,19 @@ import java.io.File;
 
 public class FileModel {
 
-    private long fileId, size, categoryId;
+    private long fileId, size;
     private String name;
     private Date date;
     private File file;
+    private FileCategory fileCategory;
 
     public FileModel() {
     }
 
-    public FileModel(long fileId, long size, long categoryId, String name, Date date, File file) {
+    public FileModel(long fileId, long size, FileCategory fileCategory, String name, Date date, File file) {
         this.fileId = fileId;
         this.size = size;
-        this.categoryId = categoryId;
+        this.fileCategory = fileCategory;
         this.name = name;
         this.date = date;
         this.file = file;
@@ -38,12 +39,12 @@ public class FileModel {
         this.size = size;
     }
 
-    public long getCategoryId() {
-        return categoryId;
+    public FileCategory getCategory() {
+        return fileCategory;
     }
 
-    public void setCategoryId(long categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory(FileCategory fileCategory) {
+        this.fileCategory = fileCategory;
     }
 
     public String getName() {
