@@ -1,36 +1,23 @@
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: matia
-  Date: 9/9/2021
-  Time: 12:53 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Campus - Login</title>
+    <c:import url="config/generalHead.jsp"/>
+
 </head>
 <body>
-<form method="post">
-    <div>
-        <label>
-            <input name="username" placeholder="Username"/>
-        </label>
+<div class="page-organizer">
+    <div class="page-container" style="justify-content: center">
+        <form class="login-wrapper">
+            <h1 class="section-heading">Ingresar</h1>
+            <label for="email" class="login-label">Email</label>
+            <input type="text" id="email" name="email" class="login-input"/>
+            <label for="password" class="login-label">Password</label>
+            <input type="password" id="password" name="password" class="login-input"/>
+            <button class="login-button">Hola xd</button>
+        </form>
     </div>
-    <div>
-        <label>
-            <input name="password" placeholder="Password" type="password"/>
-        </label>
-    </div>
-    <div>
-        <label>
-            <input name="rememberMe" type="checkbox"/>
-        </label>
-    </div>
-    <div>
-        <input name="submit" type="submit"/>
-    </div>
-</form>
+    <jsp:include page="components/footer.jsp"/>
+</div>
 </body>
 </html>
