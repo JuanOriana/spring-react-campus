@@ -59,7 +59,7 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public boolean delete(long fileId) {
-        return false;
+        return jdbcTemplate.update("DELETE FROM files WHERE fileId = ?", new Object[]{fileId}) == 1;
     }
 
     @Override
