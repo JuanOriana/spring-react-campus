@@ -15,6 +15,10 @@
             <label for="password" class="login-label">Password</label>
             <input type="password" id="password" name="password" class="login-input"/>
             <button class="login-button">Hola xd</button>
+            <label>
+                Remember me
+                <input type="checkbox" name="rememberMe"/>
+            </label>
         </form>
     </div>
     <jsp:include page="components/footer.jsp"/>
