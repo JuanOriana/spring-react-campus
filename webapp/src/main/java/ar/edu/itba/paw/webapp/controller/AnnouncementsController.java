@@ -33,7 +33,7 @@ public class AnnouncementsController {
         List<Announcement> announcements = announcementService.list(page, pageSize, orderByDate);
         mav.addObject("announcementList", announcements);
         mav.addObject("currentPage",page);
-        mav.addObject("maxPage",pageCount);
+        mav.addObject("maxPage", pageCount);
         mav.addObject("pageSize",pageSize);
         return mav;
     }

@@ -25,7 +25,7 @@ import javax.sql.DataSource;
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebConfig.class);
-    private static final boolean devBuild = true; // Change this to a config file in the future
+    private static final boolean devBuild = false; // Change this to a config file in the future
 
     private static boolean isOnDevBuild() {
         return devBuild;
