@@ -68,6 +68,6 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public Optional<FileModel> getById(long fileId) {
-        return Optional.empty();
+        return jdbcTemplate.query("SELECT fileId, size, categoryId, categoryName, name, date, file FROM files NATURAL JOIN filecategories WHERE fileId = ?", new Object[]{fileId},FILE_MODEL_ROW_MAPPER).stream().findFirst();
     }
 }
