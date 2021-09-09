@@ -62,5 +62,20 @@ CREATE TABLE IF NOT EXISTS user_to_course
     FOREIGN KEY (roleId) references roles ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS filecategories
+(
+    categoryId SERIAL PRIMARY KEY,
+    categoryName varchar (50) NOT NULL,
+    UNIQUE (categoryName)
+);
+
+CREATE TABLE IF NOT EXISTS files (
+    fileId SERIAL PRIMARY KEY,
+    fileSize INTEGER NOT NULL,
+    categoryId INTEGER NOT NULL,
+    fileDate DATE,
+    file BYTEA NOT NULL,
+    FOREIGN KEY (categoryId) references filecategories
+);
 
 
