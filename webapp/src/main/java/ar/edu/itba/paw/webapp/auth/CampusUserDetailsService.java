@@ -8,13 +8,20 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.regex.Pattern;
 
 @Component
 public class CampusUserDetailsService implements UserDetailsService {
+
+    @Autowired
+    private PasswordEncoder encoder;
+
+    private Pattern BCRYPT_PATTERN = Pattern.compile("\\A\\$2a?\\$\\d\\d\\$[.\0-9A-Za-z]{53}");
 
     @Autowired
     private UserService userService;
@@ -25,6 +32,13 @@ public class CampusUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
         final Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
         authorities.add(new SimpleGrantedAuthority(user.isAdmin() ? "ADMIN" : "MORTAL"));
-        return new org.springframework.security.core.userdetails.User(username, user.getPassword(), authorities);
+        final String password;
+        if(user.getPassword() == null || !BCRYPT_PATTERN.matcher(user.getPassword()).matches()) {
+            // TO-DO: Add method to update password in db to be hashed
+            password = encoder.encode(user.getPassword());
+        } else {
+            password = user.getPassword();
+        }
+        return new org.springframework.security.core.userdetails.User(username, password, authorities);
     }
 }
