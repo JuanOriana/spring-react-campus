@@ -80,4 +80,10 @@ public class UserDaoImpl implements UserDao {
         return jdbcTemplate.query("SELECT * FROM users WHERE userId = ?",
                 new Object[]{userId}, USER_ROW_MAPPER).stream().findFirst();
     }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE username = ?",
+                new Object[]{username}, USER_ROW_MAPPER).stream().findFirst();
+    }
 }

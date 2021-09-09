@@ -44,4 +44,10 @@ public interface UserService {
      */
     Optional<User> findById(int userId);
 
+    /**
+     * Gets a user based on its username
+     * @param username to look for
+     * @return the user that has the given username
+     */
+    Optional<User> findByUsername(String username);
 }
