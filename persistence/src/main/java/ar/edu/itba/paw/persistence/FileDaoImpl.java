@@ -11,8 +11,11 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.io.File;
-import java.util.List;
-import java.util.Optional;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 
 @Repository
 public class FileDaoImpl implements FileDao {
@@ -26,12 +29,19 @@ public class FileDaoImpl implements FileDao {
     @Autowired
     public FileDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
-        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("files");
+        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("files").usingGeneratedKeyColumns("fileId");
     }
 
     @Override
-    public FileModel create(FileModel file) {
-        return null;
+    public FileModel create(FileModel file) throws FileNotFoundException {
+        final Map<String, Object> args = new HashMap<>();
+        args.put("size", file.getFile().length());
+        args.put("file", new FileReader(file.getFile()));
+        LocalDate currentTime = java.time.LocalDate.now();
+        args.put("date", currentTime);
+        args.put("categoryId", file.getCategory().getCategoryId());
+        final int fileId = jdbcInsert.executeAndReturnKey(args).intValue();
+        return new FileModel(fileId, file.getFile().length(), file.getCategory(), file.getFile().getName(), Date.from(currentTime.atStartOfDay(ZoneId.systemDefault()).toInstant()), file.getFile());
     }
 
     @Override
