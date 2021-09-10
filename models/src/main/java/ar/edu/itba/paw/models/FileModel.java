@@ -6,21 +6,23 @@ import java.io.File;
 public class FileModel {
 
     private long fileId, size;
+    private String extension;
     private String name;
     private Date date;
-    private File file;
+    private byte[] file;
     private FileCategory fileCategory;
 
     public FileModel() {
     }
 
-    public FileModel(long fileId, long size, FileCategory fileCategory, String name, Date date, File file) {
+    public FileModel(long fileId, long size, FileCategory fileCategory, String name, Date date, byte[] file, String extension) {
         this.fileId = fileId;
         this.size = size;
         this.fileCategory = fileCategory;
         this.name = name;
         this.date = date;
         this.file = file;
+        this.extension = extension;
     }
 
     public long getFileId() {
@@ -63,11 +65,28 @@ public class FileModel {
         this.date = date;
     }
 
-    public File getFile() {
+    public byte[] getFile() {
         return file;
     }
 
-    public void setFile(File file) {
+    public void setFile(byte[] file) {
         this.file = file;
     }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
+    public FileCategory getFileCategory() {
+        return fileCategory;
+    }
+
+    public void setFileCategory(FileCategory fileCategory) {
+        this.fileCategory = fileCategory;
+    }
 }
+
