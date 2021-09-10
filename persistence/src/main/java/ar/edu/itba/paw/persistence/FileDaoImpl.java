@@ -23,7 +23,7 @@ public class FileDaoImpl implements FileDao {
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileModel(rs.getInt("fileId"), rs.getLong("size"), new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName")), rs.getString("name"), rs.getDate("date"), rs.getObject("file", File.class));
+        return new FileModel(rs.getInt("fileId"), rs.getLong("size"), new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName")), rs.getString("name"), rs.getDate("date"), rs.getObject("file", byte[].class), rs.getString("extension"));
     };
 
     @Autowired
@@ -35,25 +35,36 @@ public class FileDaoImpl implements FileDao {
     @Override
     public FileModel create(FileModel file) throws FileNotFoundException {
         final Map<String, Object> args = new HashMap<>();
-        args.put("size", file.getFile().length());
-        args.put("file", new FileReader(file.getFile()));
-        args.put("name",file.getFile().getName());
+        args.put("size", file.getFile().length);
+        args.put("file", file.getFile());
+        args.put("name",file.getName());
         LocalDate currentTime = java.time.LocalDate.now();
         args.put("date", currentTime);
         args.put("categoryId", file.getCategory().getCategoryId());
+        String fileExtension = "";
+        int i = file.getName().lastIndexOf('.');
+        if (i > 0) {
+            fileExtension = file.getName().substring(i+1);
+        }
         final int fileId = jdbcInsert.executeAndReturnKey(args).intValue();
-        return new FileModel(fileId, file.getFile().length(), file.getCategory(), file.getFile().getName(), Date.from(currentTime.atStartOfDay(ZoneId.systemDefault()).toInstant()), file.getFile());
+        return new FileModel(fileId, file.getFile().length, file.getCategory(), file.getName(), Date.from(currentTime.atStartOfDay(ZoneId.systemDefault()).toInstant()),file.getFile(),fileExtension);
     }
 
     @Override
     public boolean update(long fileId, FileModel file) throws FileNotFoundException {
+        String fileExtension = "";
+        int i = file.getName().lastIndexOf('.');
+        if (i > 0) {
+            fileExtension = file.getName().substring(i+1);
+        }
         return jdbcTemplate.update("UPDATE files " +
                 "SET file = ?," +
                         "name = ?," +
                         "size = ?," +
                         "date = ?," +
                         "categoryId = ?," +
-                        "WHERE fileId = ?", new Object[]{new FileReader(file.getFile()), file.getFile().getName(), file.getFile().length(), java.time.LocalDate.now(), file.getCategory().getCategoryId(), fileId}) == 1;
+                        "extension = ?," +
+                        "WHERE fileId = ?", new Object[]{file.getFile(), file.getName(), file.getFile().length, java.time.LocalDate.now(), file.getCategory().getCategoryId(),fileExtension, fileId}) == 1;
     }
 
     @Override
@@ -68,6 +79,6 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public Optional<FileModel> getById(long fileId) {
-        return jdbcTemplate.query("SELECT fileId, size, categoryId, categoryName, name, date, file FROM files NATURAL JOIN filecategories WHERE fileId = ?", new Object[]{fileId},FILE_MODEL_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT fileId, size, categoryId, categoryName, name, date, file, extension FROM files NATURAL JOIN filecategories WHERE fileId = ?", new Object[]{fileId},FILE_MODEL_ROW_MAPPER).stream().findFirst();
     }
 }

@@ -74,7 +74,8 @@ CREATE TABLE IF NOT EXISTS files (
     fileSize INTEGER NOT NULL,
     categoryId INTEGER NOT NULL,
     fileDate DATE,
-    file BYTEA NOT NULL,
+    file BYTEA,
+    extension varchar (3),
     FOREIGN KEY (categoryId) references filecategories
 );
 
