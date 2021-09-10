@@ -51,11 +51,11 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public boolean update(long fileId, FileModel file) {
-        String fileExtension = "";
-        int i = file.getName().lastIndexOf('.');
-        if (i > 0) {
-            fileExtension = file.getName().substring(i+1);
-        }
+//        String fileExtension = "";
+//        int i = file.getName().lastIndexOf('.');
+//        if (i > 0) {
+//            fileExtension = file.getName().substring(i+1);
+//        }
         return jdbcTemplate.update("UPDATE files " +
                 "SET file = ?," +
                         "name = ?," +
