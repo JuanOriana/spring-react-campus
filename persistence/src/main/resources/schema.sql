@@ -80,9 +80,9 @@ CREATE TABLE IF NOT EXISTS files (
     fileSize INTEGER NOT NULL,
     categoryId INTEGER NOT NULL,
     fileDate DATE,
-    file bytea,
-    fileExtensionId INTEGER ,
-    FOREIGN KEY (categoryId) references filecategories,
+    file BYTEA,
+    fileExtensionId INTEGER,
+    FOREIGN KEY (categoryId) references file_categories,
     FOREIGN KEY (fileExtensionId) references file_extensions
 );
 

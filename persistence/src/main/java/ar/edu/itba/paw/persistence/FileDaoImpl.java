@@ -37,7 +37,8 @@ public class FileDaoImpl implements FileDao {
         args.put("file", file.getFile());
         args.put("name",file.getName());
         LocalDate currentTime = java.time.LocalDate.now();
-        args.put("date", currentTime);
+        Date currentTimeDate = Date.from(currentTime.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        args.put("date", currentTimeDate);
         args.put("categoryId", file.getCategory().getCategoryId());
         args.put("fileExtensionId", file.getExtension().getFileExtensionId());
 //        String fileExtension = "";
@@ -46,7 +47,7 @@ public class FileDaoImpl implements FileDao {
 //            fileExtension = file.getName().substring(i+1);
 //        }
         final int fileId = jdbcInsert.executeAndReturnKey(args).intValue();
-        return new FileModel(fileId, file.getFile().length, file.getCategory(), file.getName(), Date.from(currentTime.atStartOfDay(ZoneId.systemDefault()).toInstant()),file.getFile(),file.getExtension());
+        return new FileModel(fileId, file.getFile().length, file.getCategory(), file.getName(), currentTimeDate,file.getFile(),file.getExtension());
     }
 
     @Override
