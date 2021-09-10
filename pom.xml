@@ -13,7 +13,7 @@
         <jstl.version>1.2</jstl.version>
         <junit.version>4.11</junit.version>
         <mockito.version>2.25.1</mockito.version>
-        <org.hsqldb.version>2.3.1</org.hsqldb.version>
+        <org.hsqldb.version>2.5.1</org.hsqldb.version>
         <org.postgresql.version>42.2.5</org.postgresql.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>

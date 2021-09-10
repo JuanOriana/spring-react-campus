@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS file_extensions (
 
 CREATE TABLE IF NOT EXISTS files (
     fileId SERIAL PRIMARY KEY,
-    fileSize INTEGER NOT NULL,
+    fileSize INTEGER,
     categoryId INTEGER NOT NULL,
     fileDate DATE,
     file BYTEA,
