@@ -6,7 +6,7 @@ import java.io.File;
 public class FileModel {
 
     private long fileId, size;
-    private String extension;
+    private FileExtensionModel fileExtension;
     private String name;
     private Date date;
     private byte[] file;
@@ -15,14 +15,14 @@ public class FileModel {
     public FileModel() {
     }
 
-    public FileModel(long fileId, long size, FileCategory fileCategory, String name, Date date, byte[] file, String extension) {
+    public FileModel(long fileId, long size, FileCategory fileCategory, String name, Date date, byte[] file, FileExtensionModel fileExtension) {
         this.fileId = fileId;
         this.size = size;
         this.fileCategory = fileCategory;
         this.name = name;
         this.date = date;
         this.file = file;
-        this.extension = extension;
+        this.fileExtension = fileExtension;
     }
 
     public long getFileId() {
@@ -73,12 +73,12 @@ public class FileModel {
         this.file = file;
     }
 
-    public String getExtension() {
-        return extension;
+    public FileExtensionModel getExtension() {
+        return fileExtension;
     }
 
-    public void setExtension(String extension) {
-        this.extension = extension;
+    public void setExtension(FileExtensionModel fileExtension) {
+        this.fileExtension = fileExtension;
     }
 
     public FileCategory getFileCategory() {
