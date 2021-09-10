@@ -10,9 +10,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -33,7 +30,7 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public FileModel create(FileModel file) throws FileNotFoundException {
+    public FileModel create(FileModel file){
         final Map<String, Object> args = new HashMap<>();
         args.put("size", file.getFile().length);
         args.put("file", file.getFile());
@@ -51,7 +48,7 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public boolean update(long fileId, FileModel file) throws FileNotFoundException {
+    public boolean update(long fileId, FileModel file) {
         String fileExtension = "";
         int i = file.getName().lastIndexOf('.');
         if (i > 0) {
