@@ -69,14 +69,22 @@ CREATE TABLE IF NOT EXISTS filecategories
     UNIQUE (categoryName)
 );
 
+CREATE TABLE IF NOT EXISTS file_extensions (
+    fileExtensionId SERIAL PRIMARY KEY,
+    fileExtension varchar (3),
+    UNIQUE (fileExtension)
+);
+
 CREATE TABLE IF NOT EXISTS files (
     fileId SERIAL PRIMARY KEY,
     fileSize INTEGER NOT NULL,
     categoryId INTEGER NOT NULL,
     fileDate DATE,
     file BYTEA,
-    extension varchar (3),
-    FOREIGN KEY (categoryId) references filecategories
+    fileExtensionId INTEGER ,
+    FOREIGN KEY (categoryId) references filecategories,
+    FOREIGN KEY (fileExtensionId) references file_extensions
 );
+
 
 
