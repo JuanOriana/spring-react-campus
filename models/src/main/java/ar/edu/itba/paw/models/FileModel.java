@@ -10,17 +10,19 @@ public class FileModel {
     private String name;
     private Date date;
     private byte[] file;
+    private Course course;
 
     public FileModel() {
     }
 
-    public FileModel(long fileId, long size, String name, Date date, byte[] file, FileExtensionModel fileExtension) {
+    public FileModel(long fileId, long size, String name, Date date, byte[] file, FileExtensionModel fileExtension, Course course) {
         this.fileId = fileId;
         this.size = size;
         this.name = name;
         this.date = date;
         this.file = file;
         this.fileExtension = fileExtension;
+        this.course = course;
     }
 
     public long getFileId() {
@@ -69,6 +71,22 @@ public class FileModel {
 
     public void setExtension(FileExtensionModel fileExtension) {
         this.fileExtension = fileExtension;
+    }
+
+    public FileExtensionModel getFileExtension() {
+        return fileExtension;
+    }
+
+    public void setFileExtension(FileExtensionModel fileExtension) {
+        this.fileExtension = fileExtension;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     @Override

@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.FileDao;
-import ar.edu.itba.paw.models.FileCategory;
-import ar.edu.itba.paw.models.FileExtensionModel;
-import ar.edu.itba.paw.models.FileModel;
+import ar.edu.itba.paw.models.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,8 +38,20 @@ public class FileDaoImplTest {
     private SimpleJdbcInsert JdbcInsert;
 
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getDate("fileDate"), rs.getObject("file", byte[].class), new FileExtensionModel(rs.getLong("fileExtensionId"),rs.getString("fileExtension")));
+        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getDate("fileDate"), rs.getObject("file", byte[].class), new FileExtensionModel(rs.getLong("fileExtensionId"),rs.getString("fileExtension")), new Course(rs.getInt("courseId"), rs.getInt("year"), rs.getInt("quarter"),
+                rs.getString("board"), new Subject(rs.getInt("subjectId"), rs.getString("code"),
+                rs.getString("subjectName"))));
     };
+
+    // Course & Subject
+    private final int COURSE_ID = 1;
+    private final int COURSE_YEAR = 2021;
+    private final int COURSE_QUARTER = 1;
+    private final String COURSE_BOARD = "S1";
+
+    private final int SUBJECT_ID = 1;
+    private final String SUBJECT_CODE = "A1";
+    private final String SUBJECT_NAME = "Protos";
 
     // FileExtension
     private final int FILE_EXTENSION_ID = 1;
@@ -56,7 +66,10 @@ public class FileDaoImplTest {
 
     private FileModel createFileModelObject() throws FileNotFoundException {
         FileExtensionModel fExtension = new FileExtensionModel(FILE_EXTENSION_ID,FILE_EXTENSION);
+        Subject subject = new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
+        Course course = new Course(COURSE_ID, COURSE_YEAR, COURSE_QUARTER, COURSE_BOARD, subject);
         FileModel fModel = new FileModel();
+        fModel.setCourse(course);
         fModel.setExtension(fExtension);
         fModel.setFileId(FILE_ID);
 
@@ -112,7 +125,28 @@ public class FileDaoImplTest {
         args.put("fileName",fModel.getName());
         args.put("file",fModel.getFile());
         args.put("fileId", FILE_ID);
+        args.put("courseId", COURSE_ID);
         JdbcInsert.execute(args);
+    }
+
+    private void insertSubject(int subjectId, String subjectName, String code) {
+        SimpleJdbcInsert subjectJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("subjects");
+        Map<String, Object> args = new HashMap<>();
+        args.put("subjectId", subjectId);
+        args.put("subjectName", subjectName);
+        args.put("code", code);
+        subjectJdbcInsert.execute(args);
+    }
+
+    private void insertCourse(int courseId, int subjectId, int quarter, String board, int year) {
+        SimpleJdbcInsert courseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses");
+        Map<String, Object> args = new HashMap<>();
+        args.put("courseId", courseId);
+        args.put("subjectId", subjectId);
+        args.put("quarter", quarter);
+        args.put("board", board);
+        args.put("year", year);
+        courseJdbcInsert.execute(args);
     }
 
     private FileCategory creatFileCategoryObject(){
@@ -123,10 +157,14 @@ public class FileDaoImplTest {
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
         JdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("files");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "category_file_relationship");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "files");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_categories");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_extensions");
+        insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
+        insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
         jdbcTemplate.execute(String.format("INSERT INTO file_extensions VALUES (%d, '%s')",FILE_EXTENSION_ID, FILE_EXTENSION));
         jdbcTemplate.execute(String.format("INSERT INTO file_categories VALUES (%d, '%s')",FILE_CATEGORY_ID, FILE_CATEGORY));
     }
@@ -162,6 +200,7 @@ public class FileDaoImplTest {
         assertTrue(fileFromDB.isPresent());
         assertEquals(FILE_ID, fileFromDB.get().getFileId());
         assertEquals(FILE_EXTENSION_ID, fileFromDB.get().getExtension().getFileExtensionId());
+        assertEquals(COURSE_ID, fileFromDB.get().getCourse().getCourseId());
         assertEquals(fModel.getSize(), fileFromDB.get().getSize());
         assertEquals(fModel.getName(), fileFromDB.get().getName());
         assertEquals(fModel.getDate(), fileFromDB.get().getDate());
@@ -196,7 +235,7 @@ public class FileDaoImplTest {
         final boolean isUpdated = fileDao.update(FILE_ID, fModel);
         assertTrue(isUpdated);
 
-        String sqlGetFileOfId = String.format("SELECT * FROM files NATURAL JOIN file_extensions WHERE fileId = %d;", FILE_ID);
+        String sqlGetFileOfId = String.format("SELECT * FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileId = %d;", FILE_ID);
         FileModel fileDB = jdbcTemplate.query(sqlGetFileOfId,FILE_MODEL_ROW_MAPPER).get(0);
 
         assertEquals(FILE_ID, fileDB.getFileId());

@@ -75,7 +75,9 @@ CREATE TABLE IF NOT EXISTS files (
     fileDate DATE,
     file BYTEA,
     fileExtensionId INTEGER,
-    FOREIGN KEY (fileExtensionId) references file_extensions
+    courseId INTEGER,
+    FOREIGN KEY (fileExtensionId) references file_extensions,
+    FOREIGN KEY (courseId) references courses ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS file_categories
@@ -89,7 +91,7 @@ CREATE TABLE IF NOT EXISTS category_file_relationship
     categoryId INTEGER,
     fileId INTEGER,
     FOREIGN KEY (categoryId) references file_categories,
-    FOREIGN KEY (fileId) references files,
+    FOREIGN KEY (fileId) references files ON DELETE CASCADE,
     UNIQUE(categoryId,fileId)
 );
 
