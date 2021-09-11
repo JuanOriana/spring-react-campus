@@ -252,8 +252,16 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testGetFileCategories(){
+    public void testGetFileCategories() throws FileNotFoundException {
+        FileModel fModel = createFileModelObject();
+        insertFileModelToDB(fModel);
+        FileCategory fCategory = creatFileCategoryObject();
 
+        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fModel.getFileId()));
+        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
+
+        List<FileCategory> list = fileDao.getFileCategories(fModel.getFileId());
+        assertEquals(1, list.size());
     }
 
     @Test
