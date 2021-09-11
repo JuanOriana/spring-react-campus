@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS user_to_course
 
 CREATE TABLE IF NOT EXISTS file_extensions (
     fileExtensionId SERIAL PRIMARY KEY,
-    fileExtension varchar (3),
+    fileExtension varchar (4),
     UNIQUE (fileExtension)
 );
 

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.FileDao;
+import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileExtensionModel;
 import ar.edu.itba.paw.models.FileModel;
 import org.junit.Assert;
@@ -45,6 +46,10 @@ public class FileDaoImplTest {
     // FileExtension
     private final int FILE_EXTENSION_ID = 1;
     private final String FILE_EXTENSION = "pdf";
+
+    // FileCategory
+    private final int FILE_CATEGORY_ID = 1;
+    private final String FILE_CATEGORY = "TLA";
 
     // FileModel
     private final int FILE_ID = 1;
@@ -110,14 +115,20 @@ public class FileDaoImplTest {
         JdbcInsert.execute(args);
     }
 
+    private FileCategory creatFileCategoryObject(){
+        return new FileCategory(FILE_CATEGORY_ID, FILE_CATEGORY);
+    }
+
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
         JdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("files");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "category_file_relationship");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "files");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_categories");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_extensions");
         jdbcTemplate.execute(String.format("INSERT INTO file_extensions VALUES (%d, '%s')",FILE_EXTENSION_ID, FILE_EXTENSION));
+        jdbcTemplate.execute(String.format("INSERT INTO file_categories VALUES (%d, '%s')",FILE_CATEGORY_ID, FILE_CATEGORY));
     }
 
     @Test
@@ -213,6 +224,32 @@ public class FileDaoImplTest {
         assertNotNull(list);
         assertEquals(1, list.size());
         assertEquals(FILE_ID, list.get(0).getFileId());
+    }
+
+    @Test
+    public void testAddCategory() throws FileNotFoundException {
+        FileModel fModel = createFileModelObject();
+        insertFileModelToDB(fModel);
+        FileCategory fCategory = creatFileCategoryObject();
+
+        boolean categoryAdded = fileDao.addCategory(fModel.getFileId(), fCategory.getCategoryId());
+        assertTrue(categoryAdded);
+        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
+    }
+
+    @Test
+    public void testRemoveCategory(){
+
+    }
+
+    @Test
+    public void testGetFileCategories(){
+
+    }
+
+    @Test
+    public void testGetByCategory(){
+
     }
 
 }

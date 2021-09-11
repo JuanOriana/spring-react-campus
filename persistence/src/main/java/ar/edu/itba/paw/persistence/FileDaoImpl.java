@@ -88,7 +88,7 @@ public class FileDaoImpl implements FileDao {
     // TODO: test in FileDaoImplTest
     @Override
     public boolean addCategory(long fileId, long fileCategoryId) {
-        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", new Object[]{fileId,fileCategory.getCategoryId()}, Integer.class);
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", new Object[]{fileId,fileCategoryId}, Integer.class);
         if (count == 0){
             final Map<String, Object> args = new HashMap<>();
             args.put("fileId", fileId);
