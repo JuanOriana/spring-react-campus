@@ -41,5 +41,9 @@ public class FileServiceImpl implements FileService {
         return fileDao.getById(fileId);
     }
 
-    //TODO: method to get file by its name
+    @Override
+    public List<FileModel> getByName(String fileName) {
+        return fileDao.getByName(fileName);
+    }
+
 }

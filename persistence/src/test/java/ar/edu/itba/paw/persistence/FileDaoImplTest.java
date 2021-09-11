@@ -204,4 +204,15 @@ public class FileDaoImplTest {
         assertEquals("nuevoNombre", fileDB.getName());
     }
 
+    @Test
+    public void testGetByName() throws FileNotFoundException {
+        FileModel fModel = createFileModelObject();
+        insertFileModelToDB(fModel);
+
+        List<FileModel> list = fileDao.getByName("Tp04 Lenguajes Regulares Expresiones Regulares.pdf");
+        assertNotNull(list);
+        assertEquals(1, list.size());
+        assertEquals(FILE_ID, list.get(0).getFileId());
+    }
+
 }

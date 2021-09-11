@@ -71,4 +71,9 @@ public class FileDaoImpl implements FileDao {
     public Optional<FileModel> getById(long fileId) {
         return jdbcTemplate.query("SELECT fileId, fileSize, categoryId, categoryName, fileName, fileDate, file, fileExtensionId, fileExtension  FROM files NATURAL JOIN file_categories NATURAL JOIN file_extensions WHERE fileId = ?", new Object[]{fileId},FILE_MODEL_ROW_MAPPER).stream().findFirst();
     }
+
+    @Override
+    public List<FileModel> getByName(String fileName) {
+        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, categoryId, categoryName, fileName, fileDate, file, fileExtensionId, fileExtension FROM files NATURAL JOIN file_categories NATURAL JOIN file_extensions WHERE fileName = ?", new Object[]{fileName}, FILE_MODEL_ROW_MAPPER));
+    }
 }

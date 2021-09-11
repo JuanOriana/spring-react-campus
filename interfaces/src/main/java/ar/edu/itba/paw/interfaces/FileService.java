@@ -46,4 +46,12 @@ public interface FileService {
      * @return the file corresponding to the given id if it exists, null otherwise
      */
     Optional<FileModel> getById(long fileId);
+
+    /**
+     * Attempts to get a file given a name
+     *
+     * @param fileName of the file/s to be retrieved
+     * @return the file/s corresponding to the given name if it exists, null otherwise
+     */
+    List<FileModel> getByName(String fileName);
 }
