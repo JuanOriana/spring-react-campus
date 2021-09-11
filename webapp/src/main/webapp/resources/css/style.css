@@ -420,13 +420,19 @@ textarea:focus, input:focus{
     font-weight: 700;
     font-size: 14px;
 }
-
 .file-query-container{
     display: flex;
+    flex-direction: column;
     background: var(--cyan-darkest);
     padding: 12px;
-    height: 100px;
     margin-bottom: 20px;
+    border-radius: 12px;
+}
+.file-filter-container{
+    display: none;
+    height: 120px;
+    justify-content: space-between;
+    padding: 0 30px;
 }
 
 .file-select-label{
@@ -440,5 +446,14 @@ textarea:focus, input:focus{
     border-radius: 12px;
     background: var(--cyan-light);
     padding:5px;
-    border: none;
+    outline: none;
+    border:none;
+}
+
+.file-checkbox{
+    border: 1px solid var(--cyan-light);
+}
+
+.file-checkbox-label{
+    color: var(--cyan-light);
 }
