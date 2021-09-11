@@ -53,7 +53,7 @@ public class FileDaoImpl implements FileDao {
                         "fileSize = ?," +
                         "fileDate = ?," +
                         "categoryId = ?," +
-                        "fileExtensionId = ?," +
+                        "fileExtensionId = ? " +
                         "WHERE fileId = ?", new Object[]{file.getFile(), file.getName(), file.getFile().length, java.time.LocalDate.now(), file.getCategory().getCategoryId(),file.getExtension().getFileExtensionId(), fileId}) == 1;
     }
 

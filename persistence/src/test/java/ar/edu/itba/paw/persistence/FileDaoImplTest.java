@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -18,7 +19,6 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
 import java.io.*;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -38,6 +38,10 @@ public class FileDaoImplTest {
 
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert JdbcInsert;
+
+    private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
+        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName")), rs.getString("fileName"), rs.getDate("fileDate"), rs.getObject("file", byte[].class), new FileExtensionModel(rs.getLong("fileExtensionId"),rs.getString("fileExtension")));
+    };
 
     // FileCategory
     private final int CATEGORY_ID = 1;
@@ -184,7 +188,20 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testUpdate() {
+    public void testUpdate() throws FileNotFoundException {
+        FileModel fModel = createFileModelObject();
+        insertFileModelToDB(fModel);
+        fModel.setName("nuevoNombre");
+        final boolean isUpdated = fileDao.update(FILE_ID, fModel);
+        assertTrue(isUpdated);
+
+        String sqlGetFileOfId = String.format("SELECT * FROM files NATURAL JOIN file_extensions NATURAL JOIN file_categories WHERE fileId = %d;", FILE_ID);
+        FileModel fileDB = jdbcTemplate.query(sqlGetFileOfId,FILE_MODEL_ROW_MAPPER).get(0);
+
+        assertEquals(FILE_ID, fileDB.getFileId());
+        assertEquals(CATEGORY_ID, fileDB.getCategory().getCategoryId());
+        assertEquals(FILE_EXTENSION_ID, fileDB.getExtension().getFileExtensionId());
+        assertEquals("nuevoNombre", fileDB.getName());
     }
 
 }
