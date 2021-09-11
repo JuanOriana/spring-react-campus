@@ -85,7 +85,6 @@ public class FileDaoImpl implements FileDao {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension FROM files NATURAL JOIN file_extensions WHERE fileExtensionId = ?", new Object[]{extensionId}, FILE_MODEL_ROW_MAPPER));
     }
 
-    // TODO: test in FileDaoImplTest
     @Override
     public boolean addCategory(long fileId, long fileCategoryId) {
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", new Object[]{fileId,fileCategoryId}, Integer.class);
@@ -99,19 +98,16 @@ public class FileDaoImpl implements FileDao {
         return false;
     }
 
-    // TODO: test in FileDaoImplTest
     @Override
     public boolean removeCategory(long fileId, long fileCategoryId) {
         return jdbcTemplate.update("DELETE FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", new Object[]{fileId, fileCategoryId}) == 1;
     }
 
-    // TODO: test in FileDaoImplTest
     @Override
     public List<FileCategory> getFileCategories(long fileId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT categoryId, categoryName FROM category_file_relationship NATURAL JOIN file_categories WHERE fileId = ?", new Object[]{fileId}, FILE_CATEGORY_ROW_MAPPER));
     }
 
-    // TODO: test in FileDaoImplTest
     @Override
     public List<FileModel> getByCategory(long fileCategoryId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension FROM files NATURAL JOIN category_file_relationship NATURAL JOIN file_extensions WHERE categoryId = ?", new Object[]{fileCategoryId}, FILE_MODEL_ROW_MAPPER));

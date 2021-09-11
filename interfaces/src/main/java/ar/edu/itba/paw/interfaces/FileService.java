@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileModel;
 
 import java.io.FileNotFoundException;
@@ -62,4 +63,38 @@ public interface FileService {
      * @return the file/s corresponding to the given extension if it exists, null otherwise
      */
     List<FileModel> getByExtension(long extensionId);
+
+    /**
+     * Attempts to get add a category to a file
+     *
+     * @param fileId of the file/s to add a category
+     * @param fileCategoryId of the category to add
+     * @return true if the category was successfully added, false otherwise
+     */
+    boolean addCategory(long fileId, long fileCategoryId);
+
+    /**
+     * Attempts to get remove a category of a file
+     *
+     * @param fileId of the file/s to remove a category from
+     * @param fileCategoryId of the category to remove
+     * @return true if the category was successfully removed, false otherwise
+     */
+    boolean removeCategory(long fileId, long fileCategoryId);
+
+    /**
+     * Attempts to get the categories of a file
+     *
+     * @param fileId of the file
+     * @return the category/ies corresponding to the given file if it contains, null otherwise
+     */
+    List<FileCategory> getFileCategories(long fileId);
+
+    /**
+     * Attempts to get file/s given a category
+     *
+     * @param fileCategoryId of the category
+     * @return the file/s corresponding to the given category if they contain it, null otherwise
+     */
+    List<FileModel> getByCategory(long fileCategoryId);
 }

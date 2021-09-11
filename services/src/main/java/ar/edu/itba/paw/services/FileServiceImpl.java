@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.FileDao;
 import ar.edu.itba.paw.interfaces.FileService;
+import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,26 @@ public class FileServiceImpl implements FileService {
     @Override
     public List<FileModel> getByExtension(long extensionId) {
         return fileDao.getByExtension(extensionId);
+    }
+
+    @Override
+    public boolean addCategory(long fileId, long fileCategoryId) {
+        return fileDao.addCategory(fileId, fileCategoryId);
+    }
+
+    @Override
+    public boolean removeCategory(long fileId, long fileCategoryId) {
+        return fileDao.removeCategory(fileId, fileCategoryId);
+    }
+
+    @Override
+    public List<FileCategory> getFileCategories(long fileId) {
+        return fileDao.getFileCategories(fileId);
+    }
+
+    @Override
+    public List<FileModel> getByCategory(long fileCategoryId) {
+        return fileDao.getByCategory(fileCategoryId);
     }
 
 }
