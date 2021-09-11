@@ -19,7 +19,7 @@
                 <div class="course-data-container">
                     <h3 class="section-heading" style="margin: 0 0 20px 20px"> Anuncios </h3>
                     <c:forEach var="announcementItem" items="${announcementList}">
-                        <div class="announcement-wrapper reduced">
+                        <div class="announcement-wrapper">
                             <div class="announcement-header">
                                 <h4 class="announcement-title"><c:out value="${announcementItem.title}"/></h4>
                                 <p style="font-size: 14px">Publicado por: <c:out value="${announcementItem.author.name}

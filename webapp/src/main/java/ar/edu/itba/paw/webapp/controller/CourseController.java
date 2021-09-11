@@ -21,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.*;
 
 @Controller
-@RequestMapping("/course")
 public class CourseController {
 
     @Autowired
@@ -42,7 +41,7 @@ public class CourseController {
         return mav;
     }
 
-    @RequestMapping("/{courseId}")
+    @RequestMapping("/course/{courseId}")
     public ModelAndView announcements(@PathVariable int courseId) {
         final ModelAndView mav = new ModelAndView("course");
         List<Announcement> announcements = announcementService.listByCourse(courseId,orderByDate);
@@ -52,9 +51,19 @@ public class CourseController {
         return mav;
     }
 
-    @RequestMapping("/{courseId}/professors")
+    @RequestMapping("/teacher-course/{courseId}")
+    public ModelAndView teacherAnnouncements(@PathVariable int courseId) {
+        final ModelAndView mav = new ModelAndView("teacher/teacher-course");
+        List<Announcement> announcements = announcementService.listByCourse(courseId,orderByDate);
+        // Add proper handling in the future, need to check if user has permission to access this course
+        mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+        mav.addObject("announcementList", announcements);
+        return mav;
+    }
+
+    @RequestMapping("/course/{courseId}/teachers")
     public ModelAndView professors(@PathVariable int courseId) {
-        final ModelAndView mav = new ModelAndView("professors");
+        final ModelAndView mav = new ModelAndView("teachers");
         Map<User, Role> teachers = courseService.getTeachers(courseId);
         Set<Map.Entry<User,Role>> teacherSet = teachers.entrySet();
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
