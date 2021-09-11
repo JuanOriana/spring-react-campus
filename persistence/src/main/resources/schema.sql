@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS files (
     fileId SERIAL PRIMARY KEY,
     fileSize INTEGER,
     categoryId INTEGER NOT NULL,
+    fileName varchar(50),
     fileDate DATE,
     file BYTEA,
     fileExtensionId INTEGER,

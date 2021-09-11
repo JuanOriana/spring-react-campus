@@ -24,6 +24,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -104,6 +105,18 @@ public class FileDaoImplTest {
         return fModel;
     }
 
+    private void insertFileModelToDB(FileModel fModel){
+        Map<String, Object> args = new HashMap<>();
+        args.put("fileExtensionId",fModel.getExtension().getFileExtensionId());
+        args.put("categoryId",fModel.getCategory().getCategoryId());
+        args.put("fileSize",fModel.getSize());
+        args.put("fileDate",fModel.getDate());
+        args.put("fileName",fModel.getName());
+        args.put("file",fModel.getFile());
+        args.put("fileId", FILE_ID);
+        JdbcInsert.execute(args);
+    }
+
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
@@ -124,41 +137,44 @@ public class FileDaoImplTest {
 
     @Test
     public void testDelete() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
-        Map<String, Object> args = new HashMap<>();
-        args.put("fileExtensionId",fModel.getExtension().getFileExtensionId());
-        args.put("categoryId",fModel.getCategory().getCategoryId());
-        args.put("fileSize",fModel.getSize());
-        args.put("fileDate",fModel.getDate());
-        args.put("file",fModel.getFile());
-        args.put("fileId", FILE_ID);
-        JdbcInsert.execute(args);
+        insertFileModelToDB(createFileModelObject());
         fileDao.delete(FILE_ID);
         assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "files"));
     }
 
     @Test(expected = AssertionError.class)
     public void testDeleteNoExist() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
-        Map<String, Object> args = new HashMap<>();
-        args.put("fileExtensionId",fModel.getExtension().getFileExtensionId());
-        args.put("categoryId",fModel.getCategory().getCategoryId());
-        args.put("fileSize",fModel.getSize());
-        args.put("fileDate",fModel.getDate());
-        args.put("file",fModel.getFile());
-        args.put("fileId", FILE_ID);
-        JdbcInsert.execute(args);
+        insertFileModelToDB(createFileModelObject());
         final boolean isDeleted = fileDao.delete(FILE_ID + 1);
         Assert.fail("Should have thrown assertion error for non-existent key 'file id' ");
         assertFalse(isDeleted);
     }
 
     @Test
-    public void getById() {
+    public void testGetById() throws FileNotFoundException {
+        FileModel fModel = createFileModelObject();
+        insertFileModelToDB(fModel);
+
+        Optional<FileModel> fileFromDB = fileDao.getById(FILE_ID);
+        assertTrue(fileFromDB.isPresent());
+        assertEquals(FILE_ID, fileFromDB.get().getFileId());
+        assertEquals(FILE_EXTENSION_ID, fileFromDB.get().getExtension().getFileExtensionId());
+        assertEquals(CATEGORY_ID, fileFromDB.get().getCategory().getCategoryId());
+        assertEquals(fModel.getSize(), fileFromDB.get().getSize());
+        assertEquals(fModel.getName(), fileFromDB.get().getName());
+        assertEquals(fModel.getDate(), fileFromDB.get().getDate());
+        assertArrayEquals(fModel.getFile(), fileFromDB.get().getFile());
+
     }
 
-    @Test
-    public void getByIdNoExist() {
+    @Test(expected = AssertionError.class)
+    public void testGetByIdNoExist() throws FileNotFoundException {
+        FileModel fModel = createFileModelObject();
+        insertFileModelToDB(fModel);
+
+        Optional<FileModel> fileFromDB = fileDao.getById(FILE_ID+1);
+        Assert.fail("Should have thrown assertion error for non-existent key 'file id' ");
+        assertFalse(fileFromDB.isPresent());
     }
 
     @Test
