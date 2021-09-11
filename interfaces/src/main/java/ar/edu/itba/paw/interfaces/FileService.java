@@ -54,4 +54,12 @@ public interface FileService {
      * @return the file/s corresponding to the given name if it exists, null otherwise
      */
     List<FileModel> getByName(String fileName);
+
+    /**
+     * Attempts to get a file given its extension
+     *
+     * @param extensionId of the file/s to be retrieved
+     * @return the file/s corresponding to the given extension if it exists, null otherwise
+     */
+    List<FileModel> getByExtension(long extensionId);
 }

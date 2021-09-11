@@ -46,4 +46,9 @@ public class FileServiceImpl implements FileService {
         return fileDao.getByName(fileName);
     }
 
+    @Override
+    public List<FileModel> getByExtension(long extensionId) {
+        return fileDao.getByExtension(extensionId);
+    }
+
 }

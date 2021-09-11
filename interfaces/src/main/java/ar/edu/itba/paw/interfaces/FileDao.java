@@ -13,4 +13,5 @@ public interface FileDao {
     List<FileModel> list();
     Optional<FileModel> getById(long fileId);
     List<FileModel> getByName(String fileName);
+    List<FileModel> getByExtension(long extensionId);
 }

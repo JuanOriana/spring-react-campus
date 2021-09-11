@@ -215,4 +215,15 @@ public class FileDaoImplTest {
         assertEquals(FILE_ID, list.get(0).getFileId());
     }
 
+    @Test
+    public void testGetByExtension() throws FileNotFoundException {
+        FileModel fModel = createFileModelObject();
+        insertFileModelToDB(fModel);
+
+        List<FileModel> list = fileDao.getByExtension(FILE_EXTENSION_ID);
+        assertNotNull(list);
+        assertEquals(1, list.size());
+        assertEquals(FILE_ID, list.get(0).getFileId());
+    }
+
 }
