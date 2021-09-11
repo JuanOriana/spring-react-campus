@@ -298,7 +298,7 @@ body{
 }
 
 
-.professors-wrapper{
+.big-wrapper{
     background: white;
     width: 95%;
     border-radius: 12px;
@@ -392,3 +392,68 @@ textarea:focus, input:focus{
     outline: none;
 }
 
+.file-grid{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.file-unit{
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+    margin:5px;
+    background: var(--cyan-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-img{
+    width: 80px;
+    margin-bottom: 12px;
+}
+
+.file-name{
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+}
+.file-query-container{
+    display: flex;
+    flex-direction: column;
+    background: var(--cyan-darkest);
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+}
+.file-filter-container{
+    display: none;
+    height: 120px;
+    justify-content: space-between;
+    padding: 0 30px;
+}
+
+.file-select-label{
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cyan-light);
+}
+
+.file-select{
+    font-size: 18px;
+    border-radius: 12px;
+    background: var(--cyan-light);
+    padding:5px;
+    outline: none;
+    border:none;
+}
+
+.file-checkbox{
+    border: 1px solid var(--cyan-light);
+}
+
+.file-checkbox-label{
+    color: var(--cyan-light);
+}

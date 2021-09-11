@@ -3,7 +3,6 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.AnnouncementService;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.models.Announcement;
-import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
@@ -68,6 +67,13 @@ public class CourseController {
         Set<Map.Entry<User,Role>> teacherSet = teachers.entrySet();
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("teacherSet",teacherSet);
+        return mav;
+    }
+
+    @RequestMapping("/course/{courseId}/files")
+    public ModelAndView files(@PathVariable int courseId) {
+        final ModelAndView mav = new ModelAndView("course-files");
+        mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         return mav;
     }
 }

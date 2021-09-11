@@ -11,6 +11,9 @@
             <a href="<c:url value ="/announcements"/>" class="styleless-anchor">Mis Anuncios</a>
         </li>
         <li class="${param.navItem == 3? "nav-sections-item nav-sections-item-active" : "nav-sections-item" }">
+            <a href="<c:url value ="/files"/>" class="styleless-anchor">Mi Material</a>
+        </li>
+        <li class="${param.navItem == 4? "nav-sections-item nav-sections-item-active" : "nav-sections-item" }">
             <a href="<c:url value ="/timetable"/>" class="styleless-anchor">Mis Horarios</a>
         </li>
     </ul>

@@ -7,7 +7,7 @@
 <body>
 <div class="page-organizer">
 <jsp:include page="components/navbar.jsp">
-    <jsp:param name="navItem" value="${3}"/>
+    <jsp:param name="navItem" value="${4}"/>
 </jsp:include>
 <div class="page-container">
     <h2 class="section-heading">Mis Horarios</h2>
