@@ -16,7 +16,7 @@
         </jsp:include>
         <div class="course-data-container">
             <h3 class="section-heading" style="margin: 0 0 20px 20px"> Profesores </h3>
-            <div class="professors-wrapper">
+            <div class="big-wrapper">
                 <c:forEach var="teacher" items="${teacherSet}">
                         <div class="professor-unit">
                             <img alt="professor icon" class="professor-icon" src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/user.png"/>
