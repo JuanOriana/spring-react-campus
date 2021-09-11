@@ -122,9 +122,9 @@ public class FileDaoImplTest {
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
         JdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("files");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "files");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_categories");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_extensions");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "files");
         jdbcTemplate.execute(String.format("INSERT INTO file_categories VALUES (%d, '%s')",CATEGORY_ID, CATEGORY_NAME));
         jdbcTemplate.execute(String.format("INSERT INTO file_extensions VALUES (%d, '%s')",FILE_EXTENSION_ID, FILE_EXTENSION));
     }
