@@ -97,4 +97,12 @@ public interface FileService {
      * @return the file/s corresponding to the given category if they contain it, null otherwise
      */
     List<FileModel> getByCategory(long fileCategoryId);
+
+    /**
+     * Attempts to get file/s given a list of categories
+     *
+     * @param categories that the file must contain
+     * @return the file/s corresponding to the given categories if they contain it, null otherwise
+     */
+    List<FileModel> getByMultipleCategories(List<FileCategory> categories);
 }

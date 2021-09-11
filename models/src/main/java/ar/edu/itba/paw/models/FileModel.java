@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class FileModel {
 
@@ -70,5 +71,17 @@ public class FileModel {
         this.fileExtension = fileExtension;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileModel fileModel = (FileModel) o;
+        return fileId == fileModel.fileId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fileId);
+    }
 }
 

@@ -7,9 +7,8 @@ import ar.edu.itba.paw.models.FileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -70,6 +69,15 @@ public class FileServiceImpl implements FileService {
     @Override
     public List<FileModel> getByCategory(long fileCategoryId) {
         return fileDao.getByCategory(fileCategoryId);
+    }
+
+    @Override
+    public List<FileModel> getByMultipleCategories(List<FileCategory> categories) {
+        Set<FileModel> filesContainingCategories = new HashSet<>(getByCategory(categories.get(0).getCategoryId()));
+        for (FileCategory cat : categories.subList(1,categories.size())){
+            filesContainingCategories = filesContainingCategories.stream().filter(getByCategory(cat.getCategoryId())::contains).collect(Collectors.toSet());
+        }
+        return new ArrayList<>(filesContainingCategories);
     }
 
 }
