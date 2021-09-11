@@ -21,10 +21,7 @@ import java.io.*;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -178,7 +175,12 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testList() {
+    public void testList() throws FileNotFoundException {
+        insertFileModelToDB(createFileModelObject());
+        List<FileModel> list = fileDao.list();
+        assertNotNull(list);
+        assertEquals(1, list.size());
+        assertEquals(FILE_ID, list.get(0).getFileId());
     }
 
     @Test
