@@ -238,8 +238,17 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testRemoveCategory(){
+    public void testRemoveCategory() throws FileNotFoundException {
+        FileModel fModel = createFileModelObject();
+        insertFileModelToDB(fModel);
+        FileCategory fCategory = creatFileCategoryObject();
 
+        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fModel.getFileId()));
+        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
+
+        boolean categoryRemoved = fileDao.removeCategory(fModel.getFileId(), fCategory.getCategoryId());
+        assertTrue(categoryRemoved);
+        assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
     }
 
     @Test
