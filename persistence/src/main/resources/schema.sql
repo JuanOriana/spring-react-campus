@@ -82,10 +82,7 @@ CREATE TABLE IF NOT EXISTS file_categories
 (
     categoryId SERIAL PRIMARY KEY,
     categoryName varchar (50) NOT NULL,
-    fileId INTEGER,
-    FOREIGN KEY (fileId) references files ON DELETE CASCADE,
-    UNIQUE (categoryName)
-    );
+);
 
 
 
