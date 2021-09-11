@@ -4,11 +4,13 @@ import ar.edu.itba.paw.interfaces.FileDao;
 import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileExtensionModel;
 import ar.edu.itba.paw.models.FileModel;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -16,12 +18,14 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
 import java.io.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -35,6 +39,7 @@ public class FileDaoImplTest {
     private FileDao fileDao;
 
     private JdbcTemplate jdbcTemplate;
+    private SimpleJdbcInsert JdbcInsert;
 
     // FileCategory
     private final int CATEGORY_ID = 1;
@@ -102,6 +107,7 @@ public class FileDaoImplTest {
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
+        JdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("files");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_categories");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_extensions");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "files");
@@ -117,11 +123,34 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testDelete() {
+    public void testDelete() throws FileNotFoundException {
+        FileModel fModel = createFileModelObject();
+        Map<String, Object> args = new HashMap<>();
+        args.put("fileExtensionId",fModel.getExtension().getFileExtensionId());
+        args.put("categoryId",fModel.getCategory().getCategoryId());
+        args.put("fileSize",fModel.getSize());
+        args.put("fileDate",fModel.getDate());
+        args.put("file",fModel.getFile());
+        args.put("fileId", FILE_ID);
+        JdbcInsert.execute(args);
+        fileDao.delete(FILE_ID);
+        assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "files"));
     }
 
-    @Test
-    public void testDeleteNoExist() {
+    @Test(expected = AssertionError.class)
+    public void testDeleteNoExist() throws FileNotFoundException {
+        FileModel fModel = createFileModelObject();
+        Map<String, Object> args = new HashMap<>();
+        args.put("fileExtensionId",fModel.getExtension().getFileExtensionId());
+        args.put("categoryId",fModel.getCategory().getCategoryId());
+        args.put("fileSize",fModel.getSize());
+        args.put("fileDate",fModel.getDate());
+        args.put("file",fModel.getFile());
+        args.put("fileId", FILE_ID);
+        JdbcInsert.execute(args);
+        final boolean isDeleted = fileDao.delete(FILE_ID + 1);
+        Assert.fail("Should have thrown assertion error for non-existent key 'file id' ");
+        assertFalse(isDeleted);
     }
 
     @Test
