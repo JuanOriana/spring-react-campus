@@ -10,15 +10,13 @@ public class FileModel {
     private String name;
     private Date date;
     private byte[] file;
-    private FileCategory fileCategory;
 
     public FileModel() {
     }
 
-    public FileModel(long fileId, long size, FileCategory fileCategory, String name, Date date, byte[] file, FileExtensionModel fileExtension) {
+    public FileModel(long fileId, long size, String name, Date date, byte[] file, FileExtensionModel fileExtension) {
         this.fileId = fileId;
         this.size = size;
-        this.fileCategory = fileCategory;
         this.name = name;
         this.date = date;
         this.file = file;
@@ -39,14 +37,6 @@ public class FileModel {
 
     public void setSize(long size) {
         this.size = size;
-    }
-
-    public FileCategory getCategory() {
-        return fileCategory;
-    }
-
-    public void setCategory(FileCategory fileCategory) {
-        this.fileCategory = fileCategory;
     }
 
     public String getName() {
@@ -81,12 +71,5 @@ public class FileModel {
         this.fileExtension = fileExtension;
     }
 
-    public FileCategory getFileCategory() {
-        return fileCategory;
-    }
-
-    public void setFileCategory(FileCategory fileCategory) {
-        this.fileCategory = fileCategory;
-    }
 }
 

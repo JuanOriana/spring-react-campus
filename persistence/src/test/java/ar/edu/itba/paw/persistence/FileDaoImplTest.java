@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.FileDao;
-import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileExtensionModel;
 import ar.edu.itba.paw.models.FileModel;
 import org.junit.Assert;
@@ -40,12 +39,8 @@ public class FileDaoImplTest {
     private SimpleJdbcInsert JdbcInsert;
 
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName")), rs.getString("fileName"), rs.getDate("fileDate"), rs.getObject("file", byte[].class), new FileExtensionModel(rs.getLong("fileExtensionId"),rs.getString("fileExtension")));
+        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getDate("fileDate"), rs.getObject("file", byte[].class), new FileExtensionModel(rs.getLong("fileExtensionId"),rs.getString("fileExtension")));
     };
-
-    // FileCategory
-    private final int CATEGORY_ID = 1;
-    private final String CATEGORY_NAME = "Guia Practica";
 
     // FileExtension
     private final int FILE_EXTENSION_ID = 1;
@@ -55,10 +50,8 @@ public class FileDaoImplTest {
     private final int FILE_ID = 1;
 
     private FileModel createFileModelObject() throws FileNotFoundException {
-        FileCategory fCategory = new FileCategory(CATEGORY_ID,CATEGORY_NAME);
         FileExtensionModel fExtension = new FileExtensionModel(FILE_EXTENSION_ID,FILE_EXTENSION);
         FileModel fModel = new FileModel();
-        fModel.setCategory(fCategory);
         fModel.setExtension(fExtension);
         fModel.setFileId(FILE_ID);
 
@@ -109,7 +102,6 @@ public class FileDaoImplTest {
     private void insertFileModelToDB(FileModel fModel){
         Map<String, Object> args = new HashMap<>();
         args.put("fileExtensionId",fModel.getExtension().getFileExtensionId());
-        args.put("categoryId",fModel.getCategory().getCategoryId());
         args.put("fileSize",fModel.getSize());
         args.put("fileDate",fModel.getDate());
         args.put("fileName",fModel.getName());
@@ -125,7 +117,6 @@ public class FileDaoImplTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "files");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_categories");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_extensions");
-        jdbcTemplate.execute(String.format("INSERT INTO file_categories VALUES (%d, '%s')",CATEGORY_ID, CATEGORY_NAME));
         jdbcTemplate.execute(String.format("INSERT INTO file_extensions VALUES (%d, '%s')",FILE_EXTENSION_ID, FILE_EXTENSION));
     }
 
@@ -160,7 +151,6 @@ public class FileDaoImplTest {
         assertTrue(fileFromDB.isPresent());
         assertEquals(FILE_ID, fileFromDB.get().getFileId());
         assertEquals(FILE_EXTENSION_ID, fileFromDB.get().getExtension().getFileExtensionId());
-        assertEquals(CATEGORY_ID, fileFromDB.get().getCategory().getCategoryId());
         assertEquals(fModel.getSize(), fileFromDB.get().getSize());
         assertEquals(fModel.getName(), fileFromDB.get().getName());
         assertEquals(fModel.getDate(), fileFromDB.get().getDate());
@@ -195,11 +185,10 @@ public class FileDaoImplTest {
         final boolean isUpdated = fileDao.update(FILE_ID, fModel);
         assertTrue(isUpdated);
 
-        String sqlGetFileOfId = String.format("SELECT * FROM files NATURAL JOIN file_extensions NATURAL JOIN file_categories WHERE fileId = %d;", FILE_ID);
+        String sqlGetFileOfId = String.format("SELECT * FROM files NATURAL JOIN file_extensions WHERE fileId = %d;", FILE_ID);
         FileModel fileDB = jdbcTemplate.query(sqlGetFileOfId,FILE_MODEL_ROW_MAPPER).get(0);
 
         assertEquals(FILE_ID, fileDB.getFileId());
-        assertEquals(CATEGORY_ID, fileDB.getCategory().getCategoryId());
         assertEquals(FILE_EXTENSION_ID, fileDB.getExtension().getFileExtensionId());
         assertEquals("nuevoNombre", fileDB.getName());
     }

@@ -21,7 +21,7 @@ public class FileDaoImpl implements FileDao {
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName")), rs.getString("fileName"), rs.getDate("fileDate"), rs.getObject("file", byte[].class), new FileExtensionModel(rs.getLong("fileExtensionId"),rs.getString("fileExtension")));
+        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getDate("fileDate"), rs.getObject("file", byte[].class), new FileExtensionModel(rs.getLong("fileExtensionId"),rs.getString("fileExtension")));
     };
 
     @Autowired
@@ -39,10 +39,9 @@ public class FileDaoImpl implements FileDao {
         LocalDate currentTime = java.time.LocalDate.now();
         Date currentTimeDate = Date.from(currentTime.atStartOfDay(ZoneId.systemDefault()).toInstant());
         args.put("fileDate", currentTimeDate);
-        args.put("categoryId", file.getCategory().getCategoryId());
         args.put("fileExtensionId", file.getExtension().getFileExtensionId());
         final int fileId = jdbcInsert.executeAndReturnKey(args).intValue();
-        return new FileModel(fileId, file.getFile().length, file.getCategory(), file.getName(), currentTimeDate,file.getFile(),file.getExtension());
+        return new FileModel(fileId, file.getFile().length, file.getName(), currentTimeDate,file.getFile(),file.getExtension());
     }
 
     @Override
@@ -52,9 +51,8 @@ public class FileDaoImpl implements FileDao {
                         "fileName = ?," +
                         "fileSize = ?," +
                         "fileDate = ?," +
-                        "categoryId = ?," +
                         "fileExtensionId = ? " +
-                        "WHERE fileId = ?", new Object[]{file.getFile(), file.getName(), file.getFile().length, java.time.LocalDate.now(), file.getCategory().getCategoryId(),file.getExtension().getFileExtensionId(), fileId}) == 1;
+                        "WHERE fileId = ?", new Object[]{file.getFile(), file.getName(), file.getFile().length, java.time.LocalDate.now(),file.getExtension().getFileExtensionId(), fileId}) == 1;
     }
 
     @Override
@@ -64,21 +62,21 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public List<FileModel> list() {
-        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, categoryId, categoryName, fileName, fileDate, file, fileExtensionId, fileExtension FROM files NATURAL JOIN file_categories NATURAL JOIN file_extensions", FILE_MODEL_ROW_MAPPER));
+        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension FROM files NATURAL JOIN file_extensions", FILE_MODEL_ROW_MAPPER));
     }
 
     @Override
     public Optional<FileModel> getById(long fileId) {
-        return jdbcTemplate.query("SELECT fileId, fileSize, categoryId, categoryName, fileName, fileDate, file, fileExtensionId, fileExtension  FROM files NATURAL JOIN file_categories NATURAL JOIN file_extensions WHERE fileId = ?", new Object[]{fileId},FILE_MODEL_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension  FROM files NATURAL JOIN file_extensions WHERE fileId = ?", new Object[]{fileId},FILE_MODEL_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public List<FileModel> getByName(String fileName) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, categoryId, categoryName, fileName, fileDate, file, fileExtensionId, fileExtension FROM files NATURAL JOIN file_categories NATURAL JOIN file_extensions WHERE fileName = ?", new Object[]{fileName}, FILE_MODEL_ROW_MAPPER));
+        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension FROM files NATURAL JOIN file_extensions WHERE fileName = ?", new Object[]{fileName}, FILE_MODEL_ROW_MAPPER));
     }
 
     @Override
     public List<FileModel> getByExtension(long extensionId) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, categoryId, categoryName, fileName, fileDate, file, fileExtensionId, fileExtension FROM files NATURAL JOIN file_categories NATURAL JOIN file_extensions WHERE fileExtensionId = ?", new Object[]{extensionId}, FILE_MODEL_ROW_MAPPER));
+        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension FROM files NATURAL JOIN file_extensions WHERE fileExtensionId = ?", new Object[]{extensionId}, FILE_MODEL_ROW_MAPPER));
     }
 }
