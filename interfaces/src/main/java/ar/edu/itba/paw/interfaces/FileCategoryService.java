@@ -35,5 +35,5 @@ public interface FileCategoryService {
      * Gets all the current available categories
      * @return list containing all the current available categories (if any)
      */
-    List<String> getCategories();
+    List<FileCategory> getCategories();
 }

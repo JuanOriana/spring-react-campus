@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.models;
 
 import java.util.Date;
-import java.io.File;
 
 public class FileModel {
 

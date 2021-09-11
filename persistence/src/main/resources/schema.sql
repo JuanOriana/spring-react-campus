@@ -84,5 +84,13 @@ CREATE TABLE IF NOT EXISTS file_categories
     categoryName varchar (50) NOT NULL,
 );
 
+CREATE TABLE IF NOT EXISTS category_file_relationship
+(
+    categoryId INTEGER,
+    fileId INTEGER,
+    FOREIGN KEY (categoryId) references file_categories,
+    FOREIGN KEY (fileId) references files,
+    UNIQUE(categoryId,fileId)
+);
 
 
