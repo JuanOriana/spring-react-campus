@@ -83,8 +83,8 @@ CREATE TABLE IF NOT EXISTS files (
     fileDate DATE,
     file BYTEA,
     fileExtensionId INTEGER,
-    FOREIGN KEY (categoryId) references file_categories,
-    FOREIGN KEY (fileExtensionId) references file_extensions
+    FOREIGN KEY (categoryId) references file_categories ON DELETE SET NULL,
+    FOREIGN KEY (fileExtensionId) references file_extensions ON DELETE SET NULL
 );
 
 
