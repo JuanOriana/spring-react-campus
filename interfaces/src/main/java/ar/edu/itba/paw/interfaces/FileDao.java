@@ -21,4 +21,6 @@ public interface FileDao {
     boolean removeCategory(long fileId, long fileCategoryId);
     List<FileCategory> getFileCategories(long fileId);
     List<FileModel> getByCategory(long fileCategoryId);
+
+    List<FileModel> getByCourseId(long courseId);
 }

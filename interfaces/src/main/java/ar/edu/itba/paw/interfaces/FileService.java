@@ -105,4 +105,12 @@ public interface FileService {
      * @return the file/s corresponding to the given categories if they contain it, null otherwise
      */
     List<FileModel> getByMultipleCategories(List<FileCategory> categories);
+
+    /**
+     * Attempts to get file/s given a course
+     *
+     * @param courseId that the file must belong to
+     * @return the file/s corresponding to the given course if they belong to it, null otherwise
+     */
+    List<FileModel> getByCourseId(long courseId);
 }

@@ -320,4 +320,16 @@ public class FileDaoImplTest {
 
     }
 
+    @Test
+    public void testGetByCourseId() throws FileNotFoundException {
+        FileModel fModel = createFileModelObject();
+        insertFileModelToDB(fModel);
+
+        List<FileModel> list = fileDao.getByCourseId(fModel.getCourse().getCourseId());
+        assertEquals(1, list.size());
+
+        FileModel file = list.get(0);
+        assertEquals(fModel.getCourse().getCourseId(), file.getCourse().getCourseId());
+    }
+
 }

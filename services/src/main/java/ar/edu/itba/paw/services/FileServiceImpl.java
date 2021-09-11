@@ -80,4 +80,9 @@ public class FileServiceImpl implements FileService {
         return new ArrayList<>(filesContainingCategories);
     }
 
+    @Override
+    public List<FileModel> getByCourseId(long courseId) {
+        return fileDao.getByCourseId(courseId);
+    }
+
 }
