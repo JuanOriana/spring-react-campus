@@ -114,6 +114,6 @@ public class FileDaoImpl implements FileDao {
     // TODO: test in FileDaoImplTest
     @Override
     public List<FileModel> getByCategory(long fileCategoryId) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension FROM files NATURAL JOIN category_file_relationship WHERE fileCategoryId = ?", new Object[]{fileCategoryId}, FILE_MODEL_ROW_MAPPER));
+        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension FROM files NATURAL JOIN category_file_relationship NATURAL JOIN file_extensions WHERE categoryId = ?", new Object[]{fileCategoryId}, FILE_MODEL_ROW_MAPPER));
     }
 }
