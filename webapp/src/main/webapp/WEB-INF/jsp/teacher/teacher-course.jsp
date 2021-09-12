@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <html>
 <head>
   <title>Campus - <c:out value="${course.subject.name}"/></title>
@@ -18,14 +19,16 @@
 
       <div class="course-data-container">
         <h3 class="section-heading" style="margin: 0 0 20px 20px"> Anuncios </h3>
-        <form class="form-wrapper reduced" method="post">
+        <form:form modelAttribute="announcementForm" class="form-wrapper reduced" method="post">
           <h1 class="announcement-title r" style="color:#176961; align-self:center">Crear nuevo anuncio</h1>
-          <label for="title" class="form-label">Titulo</label>
-          <input id="title" name="title" class="form-input" style="font-size: 26px">
-          <label for="content" class="form-label">Contenido</label>
-          <textarea id="content" name="content" class="form-input" style="width: 100%;resize: none" cols="50" rows="10"></textarea>
+          <form:label path="title" for="title" class="form-label">Titulo</form:label>
+          <form:input type="text" path="title" class="form-input" style="font-size: 26px"/>
+          <form:errors path="title" element="p" cssStyle="color:red;margin-left: 10px"/>
+          <form:label path="content" for="content" class="form-label">Contenido</form:label>
+          <form:textarea path="content" class="form-input" style="width: 100%;resize: none" cols="50" rows="10"></form:textarea>
+            <form:errors path="content" element="p" cssStyle="color:red; margin-left: 10px"/>
           <button class="form-button">Publicar</button>
-        </form>
+        </form:form>
         <div class="separator reduced">.</div>
         <c:forEach var="announcementItem" items="${announcementList}">
           <div class="announcement-wrapper">
