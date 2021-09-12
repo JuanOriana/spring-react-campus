@@ -62,5 +62,37 @@ CREATE TABLE IF NOT EXISTS user_to_course
     FOREIGN KEY (roleId) references roles ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS file_extensions (
+    fileExtensionId SERIAL PRIMARY KEY,
+    fileExtension varchar (4),
+    UNIQUE (fileExtension)
+);
+
+CREATE TABLE IF NOT EXISTS files (
+    fileId SERIAL PRIMARY KEY,
+    fileSize INTEGER,
+    fileName varchar(50),
+    fileDate DATE,
+    file BYTEA,
+    fileExtensionId INTEGER,
+    courseId INTEGER,
+    FOREIGN KEY (fileExtensionId) references file_extensions,
+    FOREIGN KEY (courseId) references courses ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS file_categories
+(
+    categoryId SERIAL PRIMARY KEY,
+    categoryName varchar (50) NOT NULL,
+);
+
+CREATE TABLE IF NOT EXISTS category_file_relationship
+(
+    categoryId INTEGER,
+    fileId INTEGER,
+    FOREIGN KEY (categoryId) references file_categories,
+    FOREIGN KEY (fileId) references files ON DELETE CASCADE,
+    UNIQUE(categoryId,fileId)
+);
 
 
