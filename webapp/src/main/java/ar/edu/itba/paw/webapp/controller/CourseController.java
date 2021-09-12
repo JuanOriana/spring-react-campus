@@ -15,8 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -94,10 +96,20 @@ public class CourseController {
         return mav;
     }
 
-    @RequestMapping("/teacher-course/{courseId}/files")
+    @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.GET)
     public ModelAndView teacherFiles(@PathVariable int courseId) {
         final ModelAndView mav = new ModelAndView("teacher/teacher-files");
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         return mav;
+    }
+
+    @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.POST)
+    public ModelAndView teacherFiles(@PathVariable int courseId, @RequestParam String name,
+                                     @RequestParam CommonsMultipartFile file, @RequestParam String category,
+                                     HttpSession session){
+        String path=session.getServletContext().getRealPath("/");
+        String filename=file.getOriginalFilename();
+        System.out.println(path+" "+filename);
+        return teacherFiles(courseId);
     }
 }
