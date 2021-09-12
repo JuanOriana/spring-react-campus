@@ -181,7 +181,8 @@ body{
     margin: 0 0 6px 2px;
 }
 
-.announcement-form-wrapper{
+.form-wrapper{
+    align-self: center;
     background: white;
     display: flex;
     flex-direction: column;
@@ -198,7 +199,7 @@ body{
     height: 3px;
     border-top: 3px solid var(--cyan-darkest);
     border-bottom: 3px solid var(--cyan-darkest);
-    margin: 10px 0;
+    margin: 20px 0;
     color: var(--cyan-darkest);
     align-self:center;
 }

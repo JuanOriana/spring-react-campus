@@ -18,12 +18,12 @@
 
       <div class="course-data-container">
         <h3 class="section-heading" style="margin: 0 0 20px 20px"> Anuncios </h3>
-        <form class="announcement-form-wrapper">
-          <h1 class="announcement-title" style="color:#176961; align-self:center">Crear nuevo anuncio</h1>
-          <label class="form-label">Titulo</label>
-          <input class="form-input" style="font-size: 26px">
-          <label class="form-label">Contenido</label>
-          <textarea class="form-input" style="width: 100%;resize: none" cols="50" rows="10">
+        <form class="form-wrapper reduced">
+          <h1 class="announcement-title r" style="color:#176961; align-self:center">Crear nuevo anuncio</h1>
+          <label for="title" class="form-label">Titulo</label>
+          <input id="title" name="title" class="form-input" style="font-size: 26px">
+          <label for="content" class="form-label">Contenido</label>
+          <textarea id="content" name="content" class="form-input" style="width: 100%;resize: none" cols="50" rows="10">
           </textarea>
           <button class="form-button">Publicar</button>
         </form>

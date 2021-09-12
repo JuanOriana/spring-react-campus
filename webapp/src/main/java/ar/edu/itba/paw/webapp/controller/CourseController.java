@@ -76,4 +76,11 @@ public class CourseController {
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         return mav;
     }
+
+    @RequestMapping("/teacher-course/{courseId}/files")
+    public ModelAndView teacherFiles(@PathVariable int courseId) {
+        final ModelAndView mav = new ModelAndView("teacher/teacher-files");
+        mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+        return mav;
+    }
 }
