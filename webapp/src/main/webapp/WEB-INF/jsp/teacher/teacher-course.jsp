@@ -18,7 +18,7 @@
 
       <div class="course-data-container">
         <h3 class="section-heading" style="margin: 0 0 20px 20px"> Anuncios </h3>
-        <form class="form-wrapper reduced">
+        <form class="form-wrapper reduced" method="post">
           <h1 class="announcement-title r" style="color:#176961; align-self:center">Crear nuevo anuncio</h1>
           <label for="title" class="form-label">Titulo</label>
           <input id="title" name="title" class="form-input" style="font-size: 26px">

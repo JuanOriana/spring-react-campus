@@ -11,12 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -50,8 +48,24 @@ public class CourseController {
         return mav;
     }
 
-    @RequestMapping("/teacher-course/{courseId}")
+    @RequestMapping(value = "/teacher-course/{courseId}", method = RequestMethod.GET)
     public ModelAndView teacherAnnouncements(@PathVariable int courseId) {
+        final ModelAndView mav = new ModelAndView("teacher/teacher-course");
+        List<Announcement> announcements = announcementService.listByCourse(courseId,orderByDate);
+        // Add proper handling in the future, need to check if user has permission to access this course
+        mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+        mav.addObject("announcementList", announcements);
+        return mav;
+    }
+
+    @RequestMapping(value = "/teacher-course/{courseId}", method = RequestMethod.POST)
+    public ModelAndView teacherAnnouncements(@PathVariable int courseId,
+                                             @RequestParam(value = "title", required = true) final String title,
+                                             @RequestParam(value = "content", required = true) final String content){
+        //TODO: GETTING A RANDOM TEACHER CHANGE LATER
+        Set<User> teacherSet = courseService.getTeachers(courseId).keySet();
+        announcementService.create(new Announcement(LocalDateTime.now(),
+                title,content,teacherSet.iterator().next(),courseService.getById(courseId).get()));
         final ModelAndView mav = new ModelAndView("teacher/teacher-course");
         List<Announcement> announcements = announcementService.listByCourse(courseId,orderByDate);
         // Add proper handling in the future, need to check if user has permission to access this course
