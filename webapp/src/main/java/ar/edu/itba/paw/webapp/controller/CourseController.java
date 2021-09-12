@@ -20,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -109,7 +111,16 @@ public class CourseController {
                                      HttpSession session){
         String path=session.getServletContext().getRealPath("/");
         String filename=file.getOriginalFilename();
-        System.out.println(path+" "+filename);
+        try{
+            byte[] barr =file.getBytes();
+
+            BufferedOutputStream bout=new BufferedOutputStream(
+                    new FileOutputStream(path+"/"+filename));
+            bout.write(barr);
+            bout.flush();
+            bout.close();
+
+        }catch(Exception e){System.out.println(e);}
         return teacherFiles(courseId);
     }
 }
