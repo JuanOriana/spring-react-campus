@@ -6,17 +6,23 @@ import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
+import ar.edu.itba.paw.webapp.form.AnnouncementForm;
+import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -50,14 +56,29 @@ public class CourseController {
         return mav;
     }
 
-    @RequestMapping("/teacher-course/{courseId}")
-    public ModelAndView teacherAnnouncements(@PathVariable int courseId) {
+    @RequestMapping(value = "/teacher-course/{courseId}", method = RequestMethod.GET)
+    public ModelAndView teacherAnnouncements(@PathVariable int courseId, final AnnouncementForm announcementForm) {
         final ModelAndView mav = new ModelAndView("teacher/teacher-course");
         List<Announcement> announcements = announcementService.listByCourse(courseId,orderByDate);
         // Add proper handling in the future, need to check if user has permission to access this course
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("announcementList", announcements);
+        mav.addObject("announcementForm",announcementForm);
         return mav;
+    }
+
+    @RequestMapping(value = "/teacher-course/{courseId}", method = RequestMethod.POST)
+    public ModelAndView teacherAnnouncements(@PathVariable int courseId,
+                                             @Valid AnnouncementForm announcementForm, final BindingResult errors){
+        //TODO: GETTING A RANDOM TEACHER CHANGE LATER
+        if (!errors.hasErrors()){
+            Set<User> teacherSet = courseService.getTeachers(courseId).keySet();
+            announcementService.create(new Announcement(LocalDateTime.now(),
+                    announcementForm.getTitle(), announcementForm.getContent(), teacherSet.iterator().next(),courseService.getById(courseId).get()));
+            announcementForm.setContent("");
+            announcementForm.setTitle("");
+        }
+        return teacherAnnouncements(courseId,announcementForm);
     }
 
     @RequestMapping("/course/{courseId}/teachers")
@@ -77,10 +98,29 @@ public class CourseController {
         return mav;
     }
 
-    @RequestMapping("/teacher-course/{courseId}/files")
+    @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.GET)
     public ModelAndView teacherFiles(@PathVariable int courseId) {
         final ModelAndView mav = new ModelAndView("teacher/teacher-files");
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         return mav;
+    }
+
+    @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.POST)
+    public ModelAndView teacherFiles(@PathVariable int courseId, @RequestParam String name,
+                                     @RequestParam CommonsMultipartFile file, @RequestParam String category,
+                                     HttpSession session){
+        String path=session.getServletContext().getRealPath("/");
+        String filename=file.getOriginalFilename();
+        try{
+            byte[] barr =file.getBytes();
+
+            BufferedOutputStream bout=new BufferedOutputStream(
+                    new FileOutputStream(path+"/"+filename));
+            bout.write(barr);
+            bout.flush();
+            bout.close();
+
+        }catch(Exception e){System.out.println(e);}
+        return teacherFiles(courseId);
     }
 }

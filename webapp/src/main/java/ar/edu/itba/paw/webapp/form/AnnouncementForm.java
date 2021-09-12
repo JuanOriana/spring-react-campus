@@ -6,8 +6,8 @@ public class AnnouncementForm {
 
     @Size(min=2,max=50)
     private String title;
-
-    @Size(min=2)
+    
+    @Size(min=2,max=256)
     private String content;
 
     public String getTitle() {

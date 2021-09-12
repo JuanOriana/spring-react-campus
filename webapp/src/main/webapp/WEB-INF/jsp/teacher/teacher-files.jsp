@@ -39,9 +39,10 @@
                 <jsp:param name="courseName" value="${course.subject.name}"/>
                 <jsp:param name="courseId" value="${course.courseId}"/>
             </jsp:include>
+            <c:url value="/teacher-course/${courseId}/files" var="postUrl"/>
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> Material </h3>
-                <form class="form-wrapper reduced">
+                <form method="post" action="${postUrl}" enctype="multipart/form-data" class="form-wrapper reduced">
                     <h1 class="announcement-title" style="color:#176961; align-self:center">Subir nuevo archivo</h1>
                     <label for="name" class="form-label">Nombre</label>
                     <input id="name" name="name" type="text" class="form-input" style="font-size: 26px">
