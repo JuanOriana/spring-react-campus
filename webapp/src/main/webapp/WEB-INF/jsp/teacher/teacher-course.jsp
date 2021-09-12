@@ -23,8 +23,7 @@
           <label for="title" class="form-label">Titulo</label>
           <input id="title" name="title" class="form-input" style="font-size: 26px">
           <label for="content" class="form-label">Contenido</label>
-          <textarea id="content" name="content" class="form-input" style="width: 100%;resize: none" cols="50" rows="10">
-          </textarea>
+          <textarea id="content" name="content" class="form-input" style="width: 100%;resize: none" cols="50" rows="10"></textarea>
           <button class="form-button">Publicar</button>
         </form>
         <div class="separator reduced">.</div>
