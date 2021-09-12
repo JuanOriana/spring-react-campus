@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS files (
 CREATE TABLE IF NOT EXISTS file_categories
 (
     categoryId SERIAL PRIMARY KEY,
-    categoryName varchar (50) NOT NULL,
+    categoryName varchar (50) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS category_file_relationship
