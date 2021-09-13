@@ -34,6 +34,15 @@ public class FileModel {
         this.course = course;
     }
 
+    public FileModel(long fileId, long size, String name, LocalDateTime date, byte[] file, Course course) {
+        this.fileId = fileId;
+        this.size = size;
+        this.name = name;
+        this.date = date;
+        this.file = file;
+        this.course = course;
+    }
+
     public long getFileId() {
         return fileId;
     }

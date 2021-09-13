@@ -26,8 +26,11 @@ public class FileDaoImpl implements FileDao {
                 rs.getString("board"), new Subject(rs.getInt("subjectId"), rs.getString("code"),
                 rs.getString("subjectName"))));
     };
+    private static final RowMapper<FileExtensionModel> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) -> {
+      return new FileExtensionModel(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
+    };
     private static final RowMapper<FileCategory> FILE_CATEGORY_ROW_MAPPER = (rs, rowNum) -> {
-      return new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
+        return new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
     };
 
     @Autowired
@@ -39,16 +42,26 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public FileModel create(FileModel file){
+
+        String fileExtension = getExtension(file.getName());
+        FileExtensionModel fileExtensionModel;
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension}, Integer.class);
+        if (count == 0){
+            fileExtension = "other";
+        }
+        List<FileExtensionModel> list = jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension},FILE_EXTENSION_ROW_MAPPER);
+        fileExtensionModel = list.get(0);
+
         final Map<String, Object> args = new HashMap<>();
         args.put("fileSize", file.getFile().length);
         args.put("file", file.getFile());
         args.put("fileName",file.getName());
         LocalDateTime currentTimeDate = LocalDateTime.now();
         args.put("fileDate", Timestamp.valueOf(currentTimeDate));
-        args.put("fileExtensionId", file.getExtension().getFileExtensionId());
+        args.put("fileExtensionId", fileExtensionModel.getFileExtensionId());
         args.put("courseId", file.getCourse().getCourseId());
         final int fileId = jdbcInsert.executeAndReturnKey(args).intValue();
-        return new FileModel(fileId, file.getFile().length, file.getName(), currentTimeDate,file.getFile(),file.getExtension(), file.getCourse());
+        return new FileModel(fileId, file.getFile().length, file.getName(), currentTimeDate,file.getFile(),fileExtensionModel, file.getCourse());
     }
 
     @Override
@@ -119,5 +132,14 @@ public class FileDaoImpl implements FileDao {
     @Override
     public List<FileModel> getByCourseId(long courseId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE courseId = ?", new Object[]{courseId}, FILE_MODEL_ROW_MAPPER));
+    }
+
+    private String getExtension(String filename){
+        String extension = "";
+        int i = filename.lastIndexOf('.');
+        if (i > 0) {
+            extension = filename.substring(i+1);
+        }
+        return extension;
     }
 }

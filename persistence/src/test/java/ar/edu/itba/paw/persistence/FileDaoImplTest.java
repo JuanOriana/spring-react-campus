@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -18,9 +17,7 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
 import java.io.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -56,6 +53,8 @@ public class FileDaoImplTest {
     private final String SUBJECT_NAME = "Protos";
 
     // FileExtension
+    private final int FILE_EXTENSION_ID_OTHER = 0;
+    private final String FILE_EXTENSION_OTHER = "other";
     private final int FILE_EXTENSION_ID = 1;
     private final String FILE_EXTENSION = "pdf";
 
@@ -68,7 +67,7 @@ public class FileDaoImplTest {
     private final String FILE_NAME = "test.png";
 
     private FileModel createFileModelObject() throws FileNotFoundException {
-        FileExtensionModel fExtension = new FileExtensionModel(FILE_EXTENSION_ID,FILE_EXTENSION);
+        FileExtensionModel fExtension = new FileExtensionModel(FILE_EXTENSION_ID_OTHER,FILE_EXTENSION_OTHER);
         Subject subject = new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
         Course course = new Course(COURSE_ID, COURSE_YEAR, COURSE_QUARTER, COURSE_BOARD, subject);
         FileModel fModel = new FileModel();
@@ -113,7 +112,6 @@ public class FileDaoImplTest {
         fModel.setSize(buffer.length);
         fModel.setFile(buffer);
 
-        LocalDate currentTime = java.time.LocalDate.now();
         LocalDateTime currentTimeDate = LocalDateTime.now();
         fModel.setDate(currentTimeDate);
 
@@ -168,6 +166,7 @@ public class FileDaoImplTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_extensions");
         insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
+        jdbcTemplate.execute(String.format("INSERT INTO file_extensions VALUES (%d, '%s')",FILE_EXTENSION_ID_OTHER, FILE_EXTENSION_OTHER));
         jdbcTemplate.execute(String.format("INSERT INTO file_extensions VALUES (%d, '%s')",FILE_EXTENSION_ID, FILE_EXTENSION));
         jdbcTemplate.execute(String.format("INSERT INTO file_categories VALUES (%d, '%s')",FILE_CATEGORY_ID, FILE_CATEGORY));
     }
@@ -202,7 +201,7 @@ public class FileDaoImplTest {
         Optional<FileModel> fileFromDB = fileDao.getById(FILE_ID);
         assertTrue(fileFromDB.isPresent());
         assertEquals(FILE_ID, fileFromDB.get().getFileId());
-        assertEquals(FILE_EXTENSION_ID, fileFromDB.get().getExtension().getFileExtensionId());
+        assertEquals(FILE_EXTENSION_ID_OTHER, fileFromDB.get().getExtension().getFileExtensionId());
         assertEquals(COURSE_ID, fileFromDB.get().getCourse().getCourseId());
         assertEquals(fModel.getSize(), fileFromDB.get().getSize());
         assertEquals(fModel.getName(), fileFromDB.get().getName());
@@ -242,7 +241,7 @@ public class FileDaoImplTest {
         FileModel fileDB = jdbcTemplate.query(sqlGetFileOfId,FILE_MODEL_ROW_MAPPER).get(0);
 
         assertEquals(FILE_ID, fileDB.getFileId());
-        assertEquals(FILE_EXTENSION_ID, fileDB.getExtension().getFileExtensionId());
+        assertEquals(FILE_EXTENSION_ID_OTHER, fileDB.getExtension().getFileExtensionId());
         assertEquals("nuevoNombre", fileDB.getName());
     }
 
@@ -262,7 +261,7 @@ public class FileDaoImplTest {
         FileModel fModel = createFileModelObject();
         insertFileModelToDB(fModel);
 
-        List<FileModel> list = fileDao.getByExtension(FILE_EXTENSION_ID);
+        List<FileModel> list = fileDao.getByExtension(FILE_EXTENSION_ID_OTHER);
         assertNotNull(list);
         assertEquals(1, list.size());
         assertEquals(FILE_ID, list.get(0).getFileId());
