@@ -115,15 +115,24 @@ public class CourseController {
 
     @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.POST)
     public ModelAndView teacherFiles(@PathVariable int courseId, @RequestParam String name,
-                                     @RequestParam CommonsMultipartFile file, @RequestParam String category){
+                                     @RequestParam CommonsMultipartFile file, @RequestParam long category){
         String filename=file.getOriginalFilename();
+        String extension = getExtension(filename);
+        byte[] barr =file.getBytes();
+        //TODO: HANDLE NOT FOUND EXTENSIONS INTO "OTHER"
+        //TODO: FIX CREATE
+        FileModel newFile = fileService.create(new FileModel(file.getSize(),name, LocalDateTime.now(), barr,
+                new FileExtensionModel(extension), courseService.getById(courseId).orElseThrow(CourseNotFoundException::new)));
+        fileService.addCategory(newFile.getFileId(),category);
+        return teacherFiles(courseId);
+    }
+
+    private String getExtension(String filename){
         String extension = "";
         int i = filename.lastIndexOf('.');
         if (i > 0) {
             extension = filename.substring(i+1);
         }
-        byte[] barr =file.getBytes();
-        System.out.println(extension + " " + name + " " + category);
-        return teacherFiles(courseId);
+        return extension;
     }
 }
