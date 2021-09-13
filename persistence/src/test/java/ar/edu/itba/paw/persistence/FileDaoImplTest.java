@@ -268,6 +268,17 @@ public class FileDaoImplTest {
     }
 
     @Test
+    public void testGetByExtensionName() throws FileNotFoundException {
+        FileModel fModel = createFileModelObject();
+        insertFileModelToDB(fModel);
+
+        List<FileModel> list = fileDao.getByExtension(FILE_EXTENSION_OTHER);
+        assertNotNull(list);
+        assertEquals(1, list.size());
+        assertEquals(FILE_ID, list.get(0).getFileId());
+    }
+
+    @Test
     public void testAddCategory() throws FileNotFoundException {
         FileModel fModel = createFileModelObject();
         insertFileModelToDB(fModel);

@@ -52,6 +52,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public List<FileModel> getByExtension(String extension) {
+        return fileDao.getByExtension(extension);
+    }
+
+    @Override
     public boolean addCategory(long fileId, long fileCategoryId) {
         return fileDao.addCategory(fileId, fileCategoryId);
     }

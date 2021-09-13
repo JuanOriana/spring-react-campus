@@ -102,6 +102,16 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
+    public List<FileModel> getByExtension(String extension) {
+        String fileExtension = extension;
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension}, Integer.class);
+        if (count == 0){
+            fileExtension = "other";
+        }
+        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileExtension = ?", new Object[]{fileExtension},FILE_MODEL_ROW_MAPPER));
+    }
+
+    @Override
     public boolean addCategory(long fileId, long fileCategoryId) {
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", new Object[]{fileId,fileCategoryId}, Integer.class);
         if (count == 0){

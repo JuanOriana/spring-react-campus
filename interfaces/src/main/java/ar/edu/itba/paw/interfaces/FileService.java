@@ -65,6 +65,14 @@ public interface FileService {
     List<FileModel> getByExtension(long extensionId);
 
     /**
+     * Attempts to get a file given its extension
+     *
+     * @param extension of the file/s to be retrieved
+     * @return the file/s corresponding to the given extension if it exists, null otherwise
+     */
+    List<FileModel> getByExtension(String extension);
+
+    /**
      * Attempts to get add a category to a file
      *
      * @param fileId of the file/s to add a category
