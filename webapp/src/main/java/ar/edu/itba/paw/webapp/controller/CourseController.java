@@ -99,29 +99,32 @@ public class CourseController {
 
     @RequestMapping("/course/{courseId}/files")
     public ModelAndView files(@PathVariable int courseId) {
+        final List<FileModel> files = fileService.getByCourseId(courseId);
         final ModelAndView mav = new ModelAndView("course-files");
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+        mav.addObject("files",files);
         return mav;
     }
 
     @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.GET)
     public ModelAndView teacherFiles(@PathVariable int courseId) {
+        final List<FileModel> files = fileService.getByCourseId(courseId);
         List<FileCategory> categories = fileCategoryService.getCategories();
         final ModelAndView mav = new ModelAndView("teacher/teacher-files");
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("categories",categories);
+        mav.addObject("files",files);
         return mav;
     }
 
     @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.POST)
-    public ModelAndView teacherFiles(@PathVariable int courseId, @RequestParam String name,
+    public ModelAndView teacherFiles(@PathVariable int courseId,
                                      @RequestParam CommonsMultipartFile file, @RequestParam long category){
         String filename=file.getOriginalFilename();
         String extension = getExtension(filename);
-        byte[] barr =file.getBytes();
         //TODO: HANDLE NOT FOUND EXTENSIONS INTO "OTHER"
         //TODO: FIX CREATE
-        FileModel newFile = fileService.create(new FileModel(file.getSize(),name, LocalDateTime.now(), barr,
+        FileModel newFile = fileService.create(new FileModel(file.getSize(),filename, LocalDateTime.now(), file.getBytes(),
                 new FileExtensionModel(extension), courseService.getById(courseId).orElseThrow(CourseNotFoundException::new)));
         fileService.addCategory(newFile.getFileId(),category);
         return teacherFiles(courseId);
