@@ -101,8 +101,10 @@ public class CourseController {
     @RequestMapping("/course/{courseId}/files")
     public ModelAndView files(@PathVariable int courseId) {
         final List<FileModel> files = fileService.getByCourseId(courseId);
+        List<FileCategory> categories = fileCategoryService.getCategories();
         final ModelAndView mav = new ModelAndView("course-files");
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+        mav.addObject("categories",categories);
         mav.addObject("files",files);
         return mav;
     }
