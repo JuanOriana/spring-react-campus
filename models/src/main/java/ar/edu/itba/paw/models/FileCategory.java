@@ -13,6 +13,10 @@ public class FileCategory {
         this.categoryName = categoryName;
     }
 
+    public FileCategory(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     public long getCategoryId() {
         return categoryId;
     }

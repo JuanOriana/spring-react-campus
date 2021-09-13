@@ -24,6 +24,14 @@ public class FileModel {
         this.fileExtension = fileExtension;
         this.course = course;
     }
+    public FileModel( long size, String name, Date date, byte[] file, FileExtensionModel fileExtension, Course course) {
+        this.size = size;
+        this.name = name;
+        this.date = date;
+        this.file = file;
+        this.fileExtension = fileExtension;
+        this.course = course;
+    }
 
     public long getFileId() {
         return fileId;

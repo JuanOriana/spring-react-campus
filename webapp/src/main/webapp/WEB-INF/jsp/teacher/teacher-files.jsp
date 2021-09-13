@@ -50,9 +50,9 @@
                     <input id="file" name="file" type="file" class="form-input" style="font-size: 26px">
                     <label for="category" class="form-label">Categoria</label>
                     <select id="category" name="category" class="form-input" style="font-size: 26px">
-                        <option>examen</option>
-                        <option>guia</option>
-                        <option>otro</option>
+                        <c:forEach var="category" items="${categories}">
+                            <option><c:out value="${category.categoryName}"/></option>
+                        </c:forEach>
                     </select>
                     <button class="form-button">Publicar</button>
                 </form>

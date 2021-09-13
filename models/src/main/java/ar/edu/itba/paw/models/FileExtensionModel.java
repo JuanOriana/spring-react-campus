@@ -13,6 +13,10 @@ public class FileExtensionModel {
         this.fileExtension = fileExtension;
     }
 
+    public FileExtensionModel(String fileExtension) {
+        this.fileExtension = fileExtension;
+    }
+
     public long getFileExtensionId() {
         return fileExtensionId;
     }

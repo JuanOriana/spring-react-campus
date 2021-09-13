@@ -2,9 +2,9 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.AnnouncementService;
 import ar.edu.itba.paw.interfaces.CourseService;
-import ar.edu.itba.paw.models.Announcement;
-import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.interfaces.FileCategoryService;
+import ar.edu.itba.paw.interfaces.FileService;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.form.AnnouncementForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
@@ -33,6 +33,12 @@ public class CourseController {
 
     @Autowired
     CourseService courseService;
+
+    @Autowired
+    FileCategoryService fileCategoryService;
+
+    @Autowired
+    FileService fileService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
     private final Comparator<Announcement> orderByDate = (o1, o2) -> o2.getDate().compareTo(o1.getDate());
@@ -100,27 +106,24 @@ public class CourseController {
 
     @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.GET)
     public ModelAndView teacherFiles(@PathVariable int courseId) {
+        List<FileCategory> categories = fileCategoryService.getCategories();
         final ModelAndView mav = new ModelAndView("teacher/teacher-files");
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+        mav.addObject("categories",categories);
         return mav;
     }
 
     @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.POST)
     public ModelAndView teacherFiles(@PathVariable int courseId, @RequestParam String name,
-                                     @RequestParam CommonsMultipartFile file, @RequestParam String category,
-                                     HttpSession session){
-        String path=session.getServletContext().getRealPath("/");
+                                     @RequestParam CommonsMultipartFile file, @RequestParam String category){
         String filename=file.getOriginalFilename();
-        try{
-            byte[] barr =file.getBytes();
-
-            BufferedOutputStream bout=new BufferedOutputStream(
-                    new FileOutputStream(path+"/"+filename));
-            bout.write(barr);
-            bout.flush();
-            bout.close();
-
-        }catch(Exception e){System.out.println(e);}
+        String extension = "";
+        int i = filename.lastIndexOf('.');
+        if (i > 0) {
+            extension = filename.substring(i+1);
+        }
+        byte[] barr =file.getBytes();
+        System.out.println(extension + " " + name + " " + category);
         return teacherFiles(courseId);
     }
 }

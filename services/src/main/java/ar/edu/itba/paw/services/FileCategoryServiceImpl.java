@@ -4,9 +4,11 @@ import ar.edu.itba.paw.interfaces.FileCategoryDao;
 import ar.edu.itba.paw.interfaces.FileCategoryService;
 import ar.edu.itba.paw.models.FileCategory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class FileCategoryServiceImpl implements FileCategoryService {
 
     @Autowired
