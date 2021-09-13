@@ -116,7 +116,9 @@
                                  class="file-img" alt="${file.name}"/>
                             <p class="file-name"><c:out value=" ${file.name}"/></p>
                         </a>
-                        <p class="file-name"><c:out value="${file.course.subject.name}"/></p>
+                        <a href="<c:url value="/course/${file.course.courseId}"/>" class="styleless-anchor">
+                            <p class="file-name"><c:out value="${file.course.subject.name}"/></p>
+                        </a>
                     </div>
                 </c:forEach>
             </div>
