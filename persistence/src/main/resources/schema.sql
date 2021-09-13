@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS files (
     fileId SERIAL PRIMARY KEY,
     fileSize INTEGER,
     fileName varchar(50),
-    fileDate DATE,
+    fileDate TIMESTAMP,
     file BYTEA,
     fileExtensionId INTEGER,
     courseId INTEGER,

@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -8,14 +9,14 @@ public class FileModel {
     private long fileId, size;
     private FileExtensionModel fileExtension;
     private String name;
-    private Date date;
+    private LocalDateTime date;
     private byte[] file;
     private Course course;
 
     public FileModel() {
     }
 
-    public FileModel(long fileId, long size, String name, Date date, byte[] file, FileExtensionModel fileExtension, Course course) {
+    public FileModel(long fileId, long size, String name, LocalDateTime date, byte[] file, FileExtensionModel fileExtension, Course course) {
         this.fileId = fileId;
         this.size = size;
         this.name = name;
@@ -24,7 +25,7 @@ public class FileModel {
         this.fileExtension = fileExtension;
         this.course = course;
     }
-    public FileModel( long size, String name, Date date, byte[] file, FileExtensionModel fileExtension, Course course) {
+    public FileModel( long size, String name, LocalDateTime date, byte[] file, FileExtensionModel fileExtension, Course course) {
         this.size = size;
         this.name = name;
         this.date = date;
@@ -57,11 +58,11 @@ public class FileModel {
         this.name = name;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

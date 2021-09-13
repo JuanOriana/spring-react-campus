@@ -9,7 +9,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -20,7 +22,7 @@ public class FileDaoImpl implements FileDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final SimpleJdbcInsert jdbcInsertCategory;
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getDate("fileDate"), rs.getObject("file", byte[].class), new FileExtensionModel(rs.getLong("fileExtensionId"),rs.getString("fileExtension")), new Course(rs.getInt("courseId"), rs.getInt("year"), rs.getInt("quarter"),
+        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getTimestamp("fileDate").toLocalDateTime(), rs.getObject("file", byte[].class), new FileExtensionModel(rs.getLong("fileExtensionId"),rs.getString("fileExtension")), new Course(rs.getInt("courseId"), rs.getInt("year"), rs.getInt("quarter"),
                 rs.getString("board"), new Subject(rs.getInt("subjectId"), rs.getString("code"),
                 rs.getString("subjectName"))));
     };
@@ -41,9 +43,8 @@ public class FileDaoImpl implements FileDao {
         args.put("fileSize", file.getFile().length);
         args.put("file", file.getFile());
         args.put("fileName",file.getName());
-        LocalDate currentTime = java.time.LocalDate.now();
-        Date currentTimeDate = Date.from(currentTime.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        args.put("fileDate", currentTimeDate);
+        LocalDateTime currentTimeDate = LocalDateTime.now();
+        args.put("fileDate", Timestamp.valueOf(currentTimeDate));
         args.put("fileExtensionId", file.getExtension().getFileExtensionId());
         args.put("courseId", file.getCourse().getCourseId());
         final int fileId = jdbcInsert.executeAndReturnKey(args).intValue();
@@ -59,7 +60,7 @@ public class FileDaoImpl implements FileDao {
                         "fileDate = ?," +
                         "fileExtensionId = ?," +
                         "courseId = ? " +
-                        "WHERE fileId = ?", new Object[]{file.getFile(), file.getName(), file.getFile().length, java.time.LocalDate.now(),file.getExtension().getFileExtensionId(), file.getCourse().getCourseId(), fileId}) == 1;
+                        "WHERE fileId = ?", new Object[]{file.getFile(), file.getName(), file.getFile().length, Timestamp.valueOf(LocalDateTime.now()),file.getExtension().getFileExtensionId(), file.getCourse().getCourseId(), fileId}) == 1;
     }
 
     @Override
