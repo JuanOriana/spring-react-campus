@@ -44,8 +44,6 @@
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> Material </h3>
                 <form method="post" action="${postUrl}" enctype="multipart/form-data" class="form-wrapper reduced">
                     <h1 class="announcement-title" style="color:#176961; align-self:center">Subir nuevo archivo</h1>
-                    <label for="name" class="form-label">Nombre</label>
-                    <input id="name" name="name" type="text" class="form-input" style="font-size: 26px">
                     <label for="file" class="form-label">Archivo</label>
                     <input id="file" name="file" type="file" class="form-input" style="font-size: 26px">
                     <label for="category" class="form-label">Categoria</label>
@@ -137,11 +135,13 @@
                         </div>
                     </form>
                     <div class="file-grid">
-                        <div class="file-unit">
-                            <img src="<c:url value="${page.Context.request.contextPath}/resources/images/file-img.png"/>"
-                                 class="file-img" alt="archivo.txt"/>
-                            <p class="file-name">archivo.txt</p>
-                        </div>
+                        <c:forEach var="file" items="${files}">
+                            <div class="file-unit">
+                                <img src="<c:url value="${page.Context.request.contextPath}/resources/images/file-img.png"/>"
+                                     class="file-img" alt="${file.name}"/>
+                                <p class="file-name">${file.name}</p>
+                            </div>
+                        </c:forEach>
                     </div>
                 </div>
             </div>
