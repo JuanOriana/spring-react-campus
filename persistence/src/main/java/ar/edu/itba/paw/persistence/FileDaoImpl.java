@@ -22,7 +22,7 @@ public class FileDaoImpl implements FileDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final SimpleJdbcInsert jdbcInsertCategory;
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getTimestamp("fileDate").toLocalDateTime(), rs.getObject("file", byte[].class), new FileExtensionModel(rs.getLong("fileExtensionId"),rs.getString("fileExtension")), new Course(rs.getInt("courseId"), rs.getInt("year"), rs.getInt("quarter"),
+        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getTimestamp("fileDate").toLocalDateTime(), rs.getBytes("file"), new FileExtensionModel(rs.getInt("fileExtensionId"),rs.getString("fileExtension")), new Course(rs.getInt("courseId"), rs.getInt("year"), rs.getInt("quarter"),
                 rs.getString("board"), new Subject(rs.getInt("subjectId"), rs.getString("code"),
                 rs.getString("subjectName"))));
     };
