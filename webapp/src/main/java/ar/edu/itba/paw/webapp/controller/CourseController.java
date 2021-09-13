@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -133,6 +134,9 @@ public class CourseController {
     public void saveFile(@PathVariable int fileId, HttpServletResponse response){
         //TODO: CHECK IF USER HAS PERMISSIONS TO DOWNLOAD FILE AND ADD PROPER EXCEPTION
         FileModel file = fileService.getById(fileId).orElseThrow(RuntimeException::new);
+        //We dont want pdf files to download automatically as they can be nicely displayed in most browsers
+        if (!file.getFileExtension().getFileExtension().equals("pdf"))
+            response.setHeader("Content-Disposition","attachment; filename=\""+ file.getName()+"\"");
         try {
             InputStream is = new ByteArrayInputStream(file.getFile());
             org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
