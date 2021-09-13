@@ -93,34 +93,31 @@
                     <div style="display: flex; flex-direction: column; height: 80px;">
                         <label class="file-select-label">Categoria</label>
                         <span>
-                                    <input class="file-checkbox" type="checkbox" id="category-all" name="category-type"
-                                           value="all" onclick="toggleAll(this)">
-                                    <label class="file-checkbox-label" for="category-all">todos</label>
-                                </span>
+                            <input class="file-checkbox" type="checkbox" id="category-all"
+                                   name="category-type" value="all" onclick="toggleAll(this)">
+                            <label class="file-checkbox-label" for="category-all">todos</label>
+                        </span>
+                        <c:forEach var="category" items="${categories}">
                         <span>
-                                    <input class="file-checkbox" type="checkbox" id="exam" name="category-type"
-                                           value="exam" onclick="unToggle('category-all')">
-                                    <label class="file-checkbox-label" for="exam">examenes</label>
-                                </span>
-                        <span>
-                                    <input class="file-checkbox" type="checkbox" id="guide" name="category-type"
-                                           value="guide" onclick="unToggle('category-all')">
-                                    <label class="file-checkbox-label" for="guide">guias</label>
-                                </span>
-                        <span>
-                                    <input class="file-checkbox" type="checkbox" id="category-other" name="category-type"
-                                           value="other" onclick="unToggle('category-all')">
-                                    <label class="file-checkbox-label" for="category-other">otro</label>
-                                </span>
+                            <input class="file-checkbox" type="checkbox" id="category-${category.categoryId}" name="category-type"
+                                   value="${category.categoryId}" onclick="unToggle('category-all')">
+                            <label class="file-checkbox-label" for="category-${category.categoryId}"><c:out value="${category.categoryName}"/></label>
+                        </span>
+                        </c:forEach>
                     </div>
                 </div>
             </form>
             <div class="file-grid">
-                <div class="file-unit">
-                    <img src="<c:url value="${page.Context.request.contextPath}/resources/images/file-img.png"/>"
-                         class="file-img" alt="archivo.txt"/>
-                    <p class="file-name">archivo.txt</p>
-                </div>
+                <c:forEach var="file" items="${files}">
+                    <div class="file-unit">
+                        <a href="<c:url value="/savefile/${file.fileId}"/>" class="styleless-anchor"
+                           style="display: flex;margin-left: 10px; align-items: center">
+                            <img src="<c:url value="${page.Context.request.contextPath}/resources/images/extensions/${file.extension.fileExtension}.png"/>"
+                                 class="file-img" alt="${file.name}"/>
+                            <p class="file-name"><c:out value=" ${file.name}"/></p>
+                        </a>
+                    </div>
+                </c:forEach>
             </div>
         </div>
     </div>
