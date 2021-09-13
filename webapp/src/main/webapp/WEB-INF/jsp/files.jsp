@@ -116,6 +116,7 @@
                                  class="file-img" alt="${file.name}"/>
                             <p class="file-name"><c:out value=" ${file.name}"/></p>
                         </a>
+                        <p class="file-name"><c:out value="${file.course.subject.name}"/></p>
                     </div>
                 </c:forEach>
             </div>

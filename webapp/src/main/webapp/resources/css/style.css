@@ -401,13 +401,15 @@ textarea:focus, input:focus{
 }
 
 .file-unit{
-    width: 100%;
+    width: calc(100% - 40px);
     height: 150px;
     border-radius: 15px;
     margin:5px;
     background: var(--cyan-dark);
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
 }
 
 .file-img{
