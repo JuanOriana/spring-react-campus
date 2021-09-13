@@ -137,8 +137,10 @@
                     <div class="file-grid">
                         <c:forEach var="file" items="${files}">
                             <div class="file-unit">
-                                <img src="<c:url value="${page.Context.request.contextPath}/resources/images/file-img.png"/>"
-                                     class="file-img" alt="${file.name}"/>
+                                <a href="<c:url value="/savefile/${file.fileId}"/>" class="styleless-anchor">
+                                    <img src="<c:url value="${page.Context.request.contextPath}/resources/images/file-img.png"/>"
+                                         class="file-img" alt="${file.name}"/>
+                                </a>
                                 <p class="file-name">${file.name}</p>
                             </div>
                         </c:forEach>

@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -123,13 +123,25 @@ public class CourseController {
         String filename=file.getOriginalFilename();
         String extension = getExtension(filename);
         //TODO: HANDLE NOT FOUND EXTENSIONS INTO "OTHER"
-        //TODO: FIX CREATE
         FileModel newFile = fileService.create(new FileModel(file.getSize(),filename, LocalDateTime.now(), file.getBytes(),
                 new FileExtensionModel(extension), courseService.getById(courseId).orElseThrow(CourseNotFoundException::new)));
         fileService.addCategory(newFile.getFileId(),category);
         return teacherFiles(courseId);
     }
 
+    @RequestMapping(value = "/savefile/{fileId}", method = RequestMethod.GET)
+    public void saveFile(@PathVariable int fileId, HttpServletResponse response){
+        //TODO: CHECK IF USER HAS PERMISSIONS TO DOWNLOAD FILE AND ADD PROPER EXCEPTION
+        FileModel file = fileService.getById(fileId).orElseThrow(RuntimeException::new);
+        try {
+            InputStream is = new ByteArrayInputStream(file.getFile());
+            org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException ex) {
+            System.out.println("Error writing file to output stream. Filename was " + file.getName() + ex);
+            throw new RuntimeException("IOError writing file to output stream");
+        }
+    }
     private String getExtension(String filename){
         String extension = "";
         int i = filename.lastIndexOf('.');
