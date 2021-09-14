@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,6 @@ public class FileExtensionDaoImpl implements FileExtensionDao {
 
     @Override
     public List<FileExtension> getExtensions() {
-        return null;
+        return new ArrayList<>(jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions", FILE_EXTENSION_ROW_MAPPER));
     }
 }
