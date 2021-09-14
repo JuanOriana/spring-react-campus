@@ -26,7 +26,6 @@ public class CourseVoter {
     public boolean checkUserCourseRole(Authentication authentication, Integer courseId) {
         Optional<Role> currentUserRole = userService.getRole(((CampusUser)authentication.getPrincipal()).getUserId(),
                 courseId);
-
         return currentUserRole.isPresent() && currentUserRole.get().getRoleId() >= Permissions.HELPER.getValue();
     }
 }

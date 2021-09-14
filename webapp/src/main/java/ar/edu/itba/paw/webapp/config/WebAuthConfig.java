@@ -45,7 +45,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                     .antMatchers("/login").anonymous()
                     .antMatchers("/admin/**").hasRole("ADMIN")
-                    .antMatchers("/teacher-course/{courseId}").access("@courseVoter.checkUserCourseRole(authentication, #courseId)")
+                    .antMatchers("/teacher-course/{courseId}/**").access("@courseVoter.checkUserCourseRole(authentication, #courseId)")
                     .antMatchers("/course/{courseId}/**").access("@courseVoter.checkUserCourseAccess(authentication,#courseId)")
                     .antMatchers("/**").authenticated()
                 .and().formLogin()
