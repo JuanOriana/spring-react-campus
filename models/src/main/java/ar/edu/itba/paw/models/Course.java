@@ -1,42 +1,101 @@
-
 package ar.edu.itba.paw.models;
 
 public class Course {
 
-    private long courseId;
+    private Integer courseId;
     private Integer year;
     private Integer quarter;
     private String board;
-    Subject subject;
+    private Subject subject;
 
-    public Course(long courseId, Integer year, Integer quarter, String board, Subject subject) {
-        this.courseId = courseId;
-        this.year = year;
-        this.quarter = quarter;
-        this.board = board;
-        this.subject = subject;
+    public static class Builder {
+
+        private Integer courseId;
+        private Integer year;
+        private Integer quarter;
+        private String board;
+        private Subject subject;
+
+        public Builder() {
+        }
+
+        Builder(Integer courseId, Integer year, Integer quarter, String board, Subject subject) {
+            this.courseId = courseId;
+            this.year = year;
+            this.quarter = quarter;
+            this.board = board;
+            this.subject = subject;
+        }
+
+        public Builder withCourseId(Integer courseId){
+            this.courseId = courseId;
+            return Builder.this;
+        }
+
+        public Builder withYear(Integer year){
+            this.year = year;
+            return Builder.this;
+        }
+
+        public Builder withQuarter(Integer quarter){
+            this.quarter = quarter;
+            return Builder.this;
+        }
+
+        public Builder withBoard(String board){
+            this.board = board;
+            return Builder.this;
+        }
+
+        public Builder withSubject(Subject subject){
+            this.subject = subject;
+            return Builder.this;
+        }
+
+        public Course build() {
+            if(this.courseId == null){
+                throw new NullPointerException("The property \"courseId\" is null. "
+                        + "Please set the value by \"courseId()\". "
+                        + "The properties \"courseId\", \"year\", \"quarter\", \"board\" and \"subject\" are required.");
+            }
+            if(this.year == null){
+                throw new NullPointerException("The property \"year\" is null. "
+                        + "Please set the value by \"year()\". "
+                        + "The properties \"courseId\", \"year\", \"quarter\", \"board\" and \"subject\" are required.");
+            }
+            if(this.quarter == null){
+                throw new NullPointerException("The property \"quarter\" is null. "
+                        + "Please set the value by \"quarter()\". "
+                        + "The properties \"courseId\", \"year\", \"quarter\", \"board\" and \"subject\" are required.");
+            }
+            if(this.board == null){
+                throw new NullPointerException("The property \"board\" is null. "
+                        + "Please set the value by \"board()\". "
+                        + "The properties \"courseId\", \"year\", \"quarter\", \"board\" and \"subject\" are required.");
+            }
+            if(this.subject == null){
+                throw new NullPointerException("The property \"subject\" is null. "
+                        + "Please set the value by \"subject()\". "
+                        + "The properties \"courseId\", \"year\", \"quarter\", \"board\" and \"subject\" are required.");
+            }
+
+            return new Course(this);
+        }
     }
 
-    public Course(Integer year, Integer quarter, String board, Subject subject) {
-        this.year = year;
-        this.quarter = quarter;
-        this.board = board;
-        this.subject = subject;
+    private Course(Builder builder) {
+        this.courseId = builder.courseId;
+        this.year = builder.year;
+        this.quarter = builder.quarter;
+        this.board = builder.board;
+        this.subject = builder.subject;
     }
 
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
-
-    public long getCourseId() {
+    public Integer getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(long courseId) {
+    public void setCourseId(Integer courseId) {
         this.courseId = courseId;
     }
 
@@ -64,5 +123,11 @@ public class Course {
         this.board = board;
     }
 
-}
+    public Subject getSubject() {
+        return subject;
+    }
 
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+}

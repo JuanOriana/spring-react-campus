@@ -20,8 +20,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -43,37 +41,47 @@ public class AnnouncementDaoImplTest {
     private AnnouncementDaoImpl announcementDao;
 
     private JdbcTemplate jdbcTemplate;
-    private final int ANNOUNCEMENT_ID = 1;
+    private final Integer ANNOUNCEMENT_ID = 1;
     private final String ANNOUNCEMENT_CONTENT = "test_content";
     private final String ANNOUNCEMENT_TITLE = "test_title";
 
-    private final int USER_ID = 1;
-    private final int USER_FILE_NUMBER = 41205221;
+    private final Integer USER_ID = 1;
+    private final Integer USER_FILE_NUMBER = 41205221;
     private final String USER_NAME = "Paw";
     private final String USER_SURNAME = "2021";
     private final String USER_USERNAME = "paw2021";
     private final String USER_EMAIL = "paw2021@itba.edu.ar";
     private final String USER_PASSWORD = "asd123";
 
-    private final int COURSE_ID = 1;
-    private final int COURSE_YEAR = 2021;
-    private final int COURSE_QUARTER = 1;
+    private final Integer COURSE_ID = 1;
+    private final Integer COURSE_YEAR = 2021;
+    private final Integer COURSE_QUARTER = 1;
     private final String COURSE_BOARD = "S1";
 
     private final int SUBJECT_ID = 1;
     private final String SUBJECT_CODE = "A1";
     private final String SUBJECT_NAME = "Protos";
 
-    private final long PAGE = 1;
-    private final long PAGE_SIZE = 1;
+    private final Integer PAGE = 1;
+    private final Integer PAGE_SIZE = 1;
+
+    private final Integer ROLE_ID = 1;
 
     private final LocalDateTime ANNOUNCEMENT_DATE = LocalDateTime.now();
 
     private static final RowMapper<Announcement> ANNOUNCEMENT_ROW_MAPPER = (rs, rowNum) ->
             new Announcement(rs.getInt("announcementId"), rs.getTimestamp("date").toLocalDateTime(), rs.getString("title"),
-                    rs.getString("content"), new User(rs.getInt("userId"), rs.getInt("fileNumber"),
-                    rs.getString("name"), rs.getString("surname"), null, null,
-                    null, rs.getBoolean("isAdmin")),null);
+                    rs.getString("content"),
+                    new User.Builder()
+                            .withUserId(rs.getInt("userId"))
+                            .withFileNumber(rs.getInt("fileNumber"))
+                            .withName(rs.getString("name"))
+                            .withSurname(rs.getString("surname"))
+                            .withUsername(rs.getString("username"))
+                            .withEmail(rs.getString("email"))
+                            .withPassword(rs.getString("password"))
+                            .isAdmin(rs.getBoolean("isAdmin"))
+                            .build(),null);
 
     private void insertSubject(int subjectId, String subjectName, String code) {
         SimpleJdbcInsert subjectJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("subjects");
@@ -122,6 +130,23 @@ public class AnnouncementDaoImplTest {
         announcementJdbcInsert.execute(args);
     }
 
+    private void insertRole(int roleId, String roleName) {
+        SimpleJdbcInsert roleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("roles");
+        Map<String, Object> args = new HashMap<>();
+        args.put("roleId", roleId);
+        args.put("roleName", roleName);
+        roleJdbcInsert.execute(args);
+    }
+
+    private void insertUserToCourse(int userId, int courseId, int roleId) {
+        SimpleJdbcInsert userToCourseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("user_to_course");
+        Map<String, Object> args = new HashMap<>();
+        args.put("userId",userId);
+        args.put("courseId",courseId);
+        args.put("roleId",roleId);
+        userToCourseJdbcInsert.execute(args);
+    }
+
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
@@ -129,15 +154,34 @@ public class AnnouncementDaoImplTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "roles");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_to_course");
         insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
         insertUser(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, true);
+        insertRole(ROLE_ID, "Teacher");
+        insertUserToCourse(USER_ID, COURSE_ID, ROLE_ID);
     }
 
     private Announcement getMockAnnouncement() {
-        Subject mockSubject = new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
-        Course mockCourse = new Course(COURSE_ID, COURSE_YEAR, COURSE_QUARTER, COURSE_BOARD, mockSubject);
-        User mockUser = new User(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, true);
+        Course mockCourse = new Course.Builder()
+                .withCourseId(COURSE_ID)
+                .withYear(COURSE_YEAR)
+                .withQuarter(COURSE_QUARTER)
+                .withBoard(COURSE_BOARD)
+                .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
+                .build();
+
+        User mockUser = new User.Builder()
+                .withUserId(USER_ID)
+                .withFileNumber(USER_FILE_NUMBER)
+                .withName(USER_NAME)
+                .withSurname(USER_SURNAME)
+                .withUsername(USER_USERNAME)
+                .withEmail(USER_EMAIL)
+                .withPassword(USER_PASSWORD)
+                .isAdmin(true)
+                .build();
         return new Announcement(ANNOUNCEMENT_DATE, "test_title", "test_content", mockUser, mockCourse);
     }
 
@@ -199,7 +243,7 @@ public class AnnouncementDaoImplTest {
     @Test
     public void testList() {
         insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
-        List<Announcement> list = announcementDao.list(PAGE, PAGE_SIZE);
+        List<Announcement> list = announcementDao.list(USER_ID, PAGE, PAGE_SIZE);
         assertNotNull(list);
         assertEquals(1, list.size());
         assertEquals(ANNOUNCEMENT_ID, list.get(0).getAnnouncementId());

@@ -37,18 +37,26 @@ public class FileDaoImplTest {
     private SimpleJdbcInsert JdbcInsert;
 
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getTimestamp("fileDate").toLocalDateTime(), rs.getObject("file", byte[].class), new FileExtension(rs.getLong("fileExtensionId"),rs.getString("fileExtension")), new Course(rs.getInt("courseId"), rs.getInt("year"), rs.getInt("quarter"),
-                rs.getString("board"), new Subject(rs.getInt("subjectId"), rs.getString("code"),
-                rs.getString("subjectName"))));
+        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"),
+                rs.getTimestamp("fileDate").toLocalDateTime(), rs.getObject("file", byte[].class),
+                new FileExtension(rs.getLong("fileExtensionId"),rs.getString("fileExtension")),
+                new Course.Builder()
+                        .withCourseId(rs.getInt("courseId"))
+                        .withYear(rs.getInt("year"))
+                        .withQuarter(rs.getInt("quarter"))
+                        .withBoard(rs.getString("board"))
+                        .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
+                                rs.getString("subjectName")))
+                        .build());
     };
 
     // Course & Subject
-    private final int COURSE_ID = 1;
-    private final int COURSE_YEAR = 2021;
-    private final int COURSE_QUARTER = 1;
+    private final Integer COURSE_ID = 1;
+    private final Integer COURSE_YEAR = 2021;
+    private final Integer COURSE_QUARTER = 1;
     private final String COURSE_BOARD = "S1";
 
-    private final int SUBJECT_ID = 1;
+    private final Integer SUBJECT_ID = 1;
     private final String SUBJECT_CODE = "A1";
     private final String SUBJECT_NAME = "Protos";
 
@@ -68,8 +76,13 @@ public class FileDaoImplTest {
 
     private FileModel createFileModelObject() throws FileNotFoundException {
         FileExtension fExtension = new FileExtension(FILE_EXTENSION_ID_OTHER,FILE_EXTENSION_OTHER);
-        Subject subject = new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
-        Course course = new Course(COURSE_ID, COURSE_YEAR, COURSE_QUARTER, COURSE_BOARD, subject);
+        Course course = new Course.Builder()
+                .withCourseId(COURSE_ID)
+                .withYear(COURSE_YEAR)
+                .withQuarter(COURSE_QUARTER)
+                .withBoard(COURSE_BOARD)
+                .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
+                .build();
         FileModel fModel = new FileModel();
         fModel.setCourse(course);
         fModel.setExtension(fExtension);

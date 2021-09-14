@@ -10,20 +10,24 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class UserDaoImpl implements UserDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) -> {
-        return new User(rs.getInt("userId"), rs.getInt("fileNumber"), rs.getString("name"),
-                rs.getString("surname"), rs.getString("username"), rs.getString("email"),
-                rs.getString("password"), rs.getBoolean("isAdmin"));
-    };
+    private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) ->
+        new User.Builder()
+            .withUserId(rs.getInt("userId"))
+            .withFileNumber(rs.getInt("fileNumber"))
+            .withName(rs.getString("name"))
+            .withSurname(rs.getString("surname"))
+            .withUsername(rs.getString("username"))
+            .withEmail(rs.getString("email"))
+            .withPassword(rs.getString("password"))
+            .isAdmin(rs.getBoolean("isAdmin"))
+            .build();
 
     private static final RowMapper<Role> ROLE_ROW_MAPPER = (rs, rowNum) -> {
         return new Role(rs.getInt("roleId"), rs.getString("roleName"));
@@ -36,18 +40,27 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User create(User user) {
+    public User create(Integer fileNumber, String name, String surname, String username, String email, String password,
+                       boolean isAdmin) {
         final Map<String, Object> args = new HashMap<>();
-        args.put("fileNumber", user.getFileNumber());
-        args.put("name", user.getName());
-        args.put("surname", user.getSurname());
-        args.put("username", user.getUsername());
-        args.put("email", user.getEmail());
-        args.put("password", user.getPassword());
-        args.put("isAdmin", user.isAdmin());
+        args.put("fileNumber", fileNumber);
+        args.put("name",name);
+        args.put("surname", surname);
+        args.put("username", username);
+        args.put("email", email);
+        args.put("password", password);
+        args.put("isAdmin", isAdmin);
         final int userId = jdbcInsert.executeAndReturnKey(args).intValue();
-        return new User(userId, user.getFileNumber(), user.getName(), user.getSurname(), user.getUsername(),
-                user.getEmail(), user.getPassword(), user.isAdmin());
+        return new User.Builder()
+                .withUserId(userId)
+                .withFileNumber(fileNumber)
+                .withName(name)
+                .withSurname(surname)
+                .withUsername(username)
+                .withEmail(email)
+                .withPassword(password)
+                .isAdmin(isAdmin)
+                .build();
     }
 
     @Override
@@ -70,14 +83,20 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Role getRole(int userId, int courseId) {
+    public Optional<Role> getRole(int userId, int courseId) {
         return jdbcTemplate.query("SELECT * FROM user_to_course NATURAL JOIN roles WHERE userId = ? AND courseId = ?",
-                new Object[]{userId, courseId}, ROLE_ROW_MAPPER).get(0);
+                new Object[]{userId, courseId}, ROLE_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public Optional<User> findById(int userId) {
         return jdbcTemplate.query("SELECT * FROM users WHERE userId = ?",
                 new Object[]{userId}, USER_ROW_MAPPER).stream().findFirst();
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE username = ?",
+                new Object[]{username}, USER_ROW_MAPPER).stream().findFirst();
     }
 }

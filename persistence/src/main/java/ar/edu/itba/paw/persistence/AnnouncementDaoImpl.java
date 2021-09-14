@@ -23,18 +23,38 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     private final SimpleJdbcInsert jdbcInsert;
     private static final RowMapper<Announcement> COURSE_ANNOUNCEMENT_ROW_MAPPER = (rs, rowNum) ->
         new Announcement(rs.getInt("announcementid"), rs.getTimestamp("date").toLocalDateTime(), rs.getString("title"),
-                rs.getString("content"), new User(rs.getInt("userId"), rs.getInt("fileNumber"),
-                rs.getString("name"), rs.getString("surname"), null, null, null, rs.getBoolean("isAdmin")),
-                new Course(rs.getInt("courseId"), rs.getInt("year"), rs.getInt("quarter"),
-                        rs.getString("board"), new Subject(rs.getInt("subjectId"), rs.getString("code"),
-                        rs.getString("subjectName"))));
-    ;
+                rs.getString("content"),
+                new User.Builder()
+                    .withUserId(rs.getInt("userId"))
+                    .withFileNumber(rs.getInt("fileNumber"))
+                    .withName(rs.getString("name"))
+                    .withSurname(rs.getString("surname"))
+                    .withUsername(rs.getString("username"))
+                    .withEmail(rs.getString("email"))
+                    .withPassword(rs.getString("password"))
+                    .isAdmin(rs.getBoolean("isAdmin"))
+                .build(),
+                new Course.Builder()
+                    .withCourseId(rs.getInt("courseId"))
+                    .withYear(rs.getInt("year"))
+                    .withQuarter(rs.getInt("quarter"))
+                    .withBoard(rs.getString("board"))
+                    .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
+                        rs.getString("subjectName")))
+                .build());
 
     private static final RowMapper<Announcement> ANNOUNCEMENT_ROW_MAPPER = (rs, rowNum) ->
             new Announcement(rs.getInt("announcementid"), rs.getTimestamp("date").toLocalDateTime(), rs.getString("title"),
-                    rs.getString("content"), new User(rs.getInt("userId"), rs.getInt("fileNumber"),
-                    rs.getString("name"), rs.getString("surname"), null, null,
-                    null, rs.getBoolean("isAdmin")),null);
+                    rs.getString("content"), new User.Builder()
+                    .withUserId(rs.getInt("userId"))
+                    .withFileNumber(rs.getInt("fileNumber"))
+                    .withName(rs.getString("name"))
+                    .withSurname(rs.getString("surname"))
+                    .withUsername(rs.getString("username"))
+                    .withEmail(rs.getString("email"))
+                    .withPassword(rs.getString("password"))
+                    .isAdmin(rs.getBoolean("isAdmin"))
+                    .build(),null);
 
     @Autowired
     public AnnouncementDaoImpl(final DataSource ds) {
@@ -56,7 +76,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public boolean update(long id, Announcement announcement) {
+    public boolean update(Integer id, Announcement announcement) {
         return jdbcTemplate.update("UPDATE announcements " +
                 "SET userId = ?," +
                 "courseId = ?," +
@@ -68,35 +88,35 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public boolean delete(long id) {
+    public boolean delete(Integer id) {
         return jdbcTemplate.update("DELETE FROM announcements WHERE announcementId = ?", new Object[]{id}) == 1;
     }
 
     @Override
-    public int getPageCount(long pageSize) {
+    public int getPageCount(Integer pageSize) {
         RowCountCallbackHandler countCallback = new RowCountCallbackHandler();  // not reusable
         jdbcTemplate.query("SELECT * FROM announcements", countCallback);
         return (int) Math.ceil((double)countCallback.getRowCount() / pageSize);
     }
 
     @Override
-    public List<Announcement> list(long page, long pageSize) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT announcementId, date, title, content, userId, fileNumber, name, " +
-                "surname, isAdmin, courseId, year, quarter, board, subjectId, code, subjectName " +
-                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
-                "LIMIT ? OFFSET ?",new Object[]{ pageSize, (page - 1) * pageSize }, COURSE_ANNOUNCEMENT_ROW_MAPPER));
+    public List<Announcement> list(Integer userId, Integer page, Integer pageSize) {
+        return new ArrayList<>(jdbcTemplate.query(
+                "SELECT * FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
+                "NATURAL JOIN user_to_course " +
+                "WHERE courseid IN (SELECT courseid FROM user_to_course WHERE userid = ?) " +
+                "LIMIT ? OFFSET ?",new Object[]{ userId, pageSize, (page - 1) * pageSize }, COURSE_ANNOUNCEMENT_ROW_MAPPER));
     }
 
 
-    public List<Announcement> listByCourse(long courseId) {
+    public List<Announcement> listByCourse(Integer courseId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements NATURAL JOIN users WHERE courseId = ?",
                 new Object[]{courseId}, ANNOUNCEMENT_ROW_MAPPER));
     }
 
     @Override
-    public Optional<Announcement> getById(long id) {
-        return jdbcTemplate.query("SELECT announcementId, date, title, content, userId, fileNumber, name, " +
-                "surname, isAdmin, courseId, year, quarter, board, subjectId, code, subjectName " +
+    public Optional<Announcement> getById(Integer id) {
+        return jdbcTemplate.query("SELECT * " +
                 "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
                 "WHERE announcementId = ?", new Object[]{id}, COURSE_ANNOUNCEMENT_ROW_MAPPER).stream().findFirst();
     }

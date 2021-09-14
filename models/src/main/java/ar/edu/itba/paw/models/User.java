@@ -1,46 +1,131 @@
 package ar.edu.itba.paw.models;
 
-import java.util.Objects;
-
 public class User {
-    private String name, surname, username, email, password;
-    private int fileNumber, userId;
+
+    private String name;
+    private String surname;
+    private String username;
+    private String email;
+    private String password;
+    private Integer fileNumber;
+    private Integer userId;
     private boolean isAdmin;
-    public User(int userId, int fileNumber, String name, String surname, String username, String email, String password, boolean isAdmin) {
-        this.userId = userId;
-        this.fileNumber = fileNumber;
-        this.name = name;
-        this.surname = surname;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.isAdmin = isAdmin;
+
+    public static class Builder {
+
+        private String name;
+        private String surname;
+        private String username;
+        private String email;
+        private String password;
+        private Integer fileNumber;
+        private Integer userId;
+        private boolean isAdmin;
+
+        public Builder() {
+        }
+
+        Builder(String name, String surname, String username, String email, String password, Integer fileNumber, Integer userId, boolean isAdmin) {
+            this.name = name;
+            this.surname = surname;
+            this.username = username;
+            this.email = email;
+            this.password = password;
+            this.fileNumber = fileNumber;
+            this.userId = userId;
+            this.isAdmin = isAdmin;
+        }
+
+        public Builder withName(String name){
+            this.name = name;
+            return Builder.this;
+        }
+
+        public Builder withSurname(String surname){
+            this.surname = surname;
+            return Builder.this;
+        }
+
+        public Builder withUsername(String username){
+            this.username = username;
+            return Builder.this;
+        }
+
+        public Builder withEmail(String email){
+            this.email = email;
+            return Builder.this;
+        }
+
+        public Builder withPassword(String password){
+            this.password = password;
+            return Builder.this;
+        }
+
+        public Builder withFileNumber(Integer fileNumber){
+            this.fileNumber = fileNumber;
+            return Builder.this;
+        }
+
+        public Builder withUserId(Integer userId){
+            this.userId = userId;
+            return Builder.this;
+        }
+
+        public Builder isAdmin(boolean isAdmin){
+            this.isAdmin = isAdmin;
+            return Builder.this;
+        }
+
+        public User build() {
+            if(this.name == null){
+                throw new NullPointerException("The property \"name\" is null. "
+                        + "Please set the value by \"name()\". "
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+            }
+            if(this.surname == null){
+                throw new NullPointerException("The property \"surname\" is null. "
+                        + "Please set the value by \"surname()\". "
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+            }
+            if(this.username == null){
+                throw new NullPointerException("The property \"username\" is null. "
+                        + "Please set the value by \"username()\". "
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+            }
+            if(this.email == null){
+                throw new NullPointerException("The property \"email\" is null. "
+                        + "Please set the value by \"email()\". "
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+            }
+            if(this.password == null){
+                throw new NullPointerException("The property \"password\" is null. "
+                        + "Please set the value by \"password()\". "
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+            }
+            if(this.fileNumber == null){
+                throw new NullPointerException("The property \"fileNumber\" is null. "
+                        + "Please set the value by \"fileNumber()\". "
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+            }
+            if(this.userId == null){
+                throw new NullPointerException("The property \"userId\" is null. "
+                        + "Please set the value by \"userId()\". "
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+            }
+
+            return new User(this);
+        }
     }
 
-    public User(int fileNumber, String name, String surname, String username, String email, String password, boolean isAdmin) {
-        this.fileNumber = fileNumber;
-        this.name = name;
-        this.surname = surname;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.isAdmin = isAdmin;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getFileNumber() {
-        return fileNumber;
-    }
-
-    public void setFileNumber(int fileNumber) {
-        this.fileNumber = fileNumber;
+    private User(Builder builder) {
+        this.name = builder.name;
+        this.surname = builder.surname;
+        this.username = builder.username;
+        this.email = builder.email;
+        this.password = builder.password;
+        this.fileNumber = builder.fileNumber;
+        this.userId = builder.userId;
+        this.isAdmin = builder.isAdmin;
     }
 
     public String getName() {
@@ -83,24 +168,27 @@ public class User {
         this.password = password;
     }
 
+    public Integer getFileNumber() {
+        return fileNumber;
+    }
+
+    public void setFileNumber(Integer fileNumber) {
+        this.fileNumber = fileNumber;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
     public boolean isAdmin() {
         return isAdmin;
     }
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return fileNumber == user.fileNumber;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(fileNumber);
     }
 }
