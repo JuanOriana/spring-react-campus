@@ -3,16 +3,22 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
     /**
-     * Creates a user entry in the database
-     * @param user to be created
-     * @return the user created
+     * Persist a user entry in the database
+     * @param fileNumber unique real life id of the user
+     * @param name of the user
+     * @param surname of the user
+     * @param username of the user
+     * @param email of the user
+     * @param password of the user
+     * @param isAdmin determines if the user is a full-fledged admin
+     * @return the generated User instance
      */
-    User create(User user);
+    User create(Integer fileNumber, String name, String surname, String username, String email, String password,
+                boolean isAdmin);
 
     /**
      * Attempts to update the user entry
@@ -35,7 +41,7 @@ public interface UserService {
      * @param courseId of the course to get the roles from
      * @return role of the user for the specified course
      */
-    Role getRole(int userId, int courseId);
+    Optional<Role> getRole(int userId, int courseId);
 
     /**
      * Gets a User based on its userId
@@ -43,5 +49,12 @@ public interface UserService {
      * @return the user that has the given userId
      */
     Optional<User> findById(int userId);
+
+    /**
+     * Gets a user based on its username
+     * @param username to look for
+     * @return the user that has the given username
+     */
+    Optional<User> findByUsername(String username);
 
 }

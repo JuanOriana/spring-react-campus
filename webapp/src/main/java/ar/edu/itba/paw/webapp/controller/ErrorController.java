@@ -15,6 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class ErrorController {
 
+    @RequestMapping(value = "403", method = RequestMethod.GET)
+    public ModelAndView render403ErrorPage() {
+        return new ModelAndView("403");
+    }
+
     @RequestMapping(value = "error", method = RequestMethod.GET)
     public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
 

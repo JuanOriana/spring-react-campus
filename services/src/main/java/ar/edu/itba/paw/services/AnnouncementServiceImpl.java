@@ -24,45 +24,44 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public boolean update(long id, Announcement announcement) {
+    public boolean update(Integer id, Announcement announcement) {
         return announcementDao.update(id, announcement);
     }
 
     @Override
-    public boolean delete(long id) {
+    public boolean delete(Integer id) {
         return announcementDao.delete(id);
     }
 
     @Override
-    public List<Announcement> list(long page, long pageSize) {
-        return announcementDao.list(page, pageSize);
+    public List<Announcement> list(Integer userId, Integer page, Integer pageSize) {
+        return announcementDao.list(userId, page, pageSize);
     }
 
     @Override
-    public int getPageCount(long pageSize) {
+    public int getPageCount(Integer pageSize) {
         if(pageSize < 1) return 0;
         return announcementDao.getPageCount(pageSize);
     }
 
     @Override
-    public List<Announcement> list(long page, long pageSize, Comparator<Announcement> comparator) {
+    public List<Announcement> list(Integer userId, Integer page, Integer pageSize, Comparator<Announcement> comparator) {
         if(page < 1 || pageSize < 1) return new ArrayList<>();
-        return list(page, pageSize).stream().sorted(comparator).collect(Collectors.toList());
+        return list(userId, page, pageSize).stream().sorted(comparator).collect(Collectors.toList());
     }
 
     @Override
-    public List<Announcement> listByCourse(long courseId) {
+    public List<Announcement> listByCourse(Integer courseId) {
         return announcementDao.listByCourse(courseId);
     }
 
     @Override
-    public List<Announcement> listByCourse(long courseId, Comparator<Announcement> comparator) {
+    public List<Announcement> listByCourse(Integer courseId, Comparator<Announcement> comparator) {
         return listByCourse(courseId).stream().sorted(comparator).collect(Collectors.toList());
     }
 
-
     @Override
-    public Optional<Announcement> getById(long id) {
+    public Optional<Announcement> getById(Integer id) {
         return announcementDao.getById(id);
     }
 }
