@@ -37,7 +37,7 @@ public class FileDaoImplTest {
     private SimpleJdbcInsert JdbcInsert;
 
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getTimestamp("fileDate").toLocalDateTime(), rs.getObject("file", byte[].class), new FileExtensionModel(rs.getLong("fileExtensionId"),rs.getString("fileExtension")), new Course(rs.getInt("courseId"), rs.getInt("year"), rs.getInt("quarter"),
+        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getTimestamp("fileDate").toLocalDateTime(), rs.getObject("file", byte[].class), new FileExtension(rs.getLong("fileExtensionId"),rs.getString("fileExtension")), new Course(rs.getInt("courseId"), rs.getInt("year"), rs.getInt("quarter"),
                 rs.getString("board"), new Subject(rs.getInt("subjectId"), rs.getString("code"),
                 rs.getString("subjectName"))));
     };
@@ -67,7 +67,7 @@ public class FileDaoImplTest {
     private final String FILE_NAME = "test.png";
 
     private FileModel createFileModelObject() throws FileNotFoundException {
-        FileExtensionModel fExtension = new FileExtensionModel(FILE_EXTENSION_ID_OTHER,FILE_EXTENSION_OTHER);
+        FileExtension fExtension = new FileExtension(FILE_EXTENSION_ID_OTHER,FILE_EXTENSION_OTHER);
         Subject subject = new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
         Course course = new Course(COURSE_ID, COURSE_YEAR, COURSE_QUARTER, COURSE_BOARD, subject);
         FileModel fModel = new FileModel();

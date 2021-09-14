@@ -10,9 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 @Repository
@@ -22,12 +20,12 @@ public class FileDaoImpl implements FileDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final SimpleJdbcInsert jdbcInsertCategory;
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getTimestamp("fileDate").toLocalDateTime(), rs.getBytes("file"), new FileExtensionModel(rs.getInt("fileExtensionId"),rs.getString("fileExtension")), new Course(rs.getInt("courseId"), rs.getInt("year"), rs.getInt("quarter"),
+        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"), rs.getTimestamp("fileDate").toLocalDateTime(), rs.getBytes("file"), new FileExtension(rs.getInt("fileExtensionId"),rs.getString("fileExtension")), new Course(rs.getInt("courseId"), rs.getInt("year"), rs.getInt("quarter"),
                 rs.getString("board"), new Subject(rs.getInt("subjectId"), rs.getString("code"),
                 rs.getString("subjectName"))));
     };
-    private static final RowMapper<FileExtensionModel> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) -> {
-      return new FileExtensionModel(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
+    private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) -> {
+      return new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
     };
     private static final RowMapper<FileCategory> FILE_CATEGORY_ROW_MAPPER = (rs, rowNum) -> {
         return new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
@@ -44,12 +42,12 @@ public class FileDaoImpl implements FileDao {
     public FileModel create(FileModel file){
 
         String fileExtension = getExtension(file.getName());
-        FileExtensionModel fileExtensionModel;
+        FileExtension fileExtensionModel;
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension}, Integer.class);
         if (count == 0){
             fileExtension = "other";
         }
-        List<FileExtensionModel> list = jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension},FILE_EXTENSION_ROW_MAPPER);
+        List<FileExtension> list = jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension},FILE_EXTENSION_ROW_MAPPER);
         fileExtensionModel = list.get(0);
 
         final Map<String, Object> args = new HashMap<>();
