@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO: FileExtensionDaoImplTest
 @Repository
 public class FileExtensionDaoImpl implements FileExtensionDao {
 
@@ -42,7 +41,7 @@ public class FileExtensionDaoImpl implements FileExtensionDao {
     @Override
     public boolean update(long fileExtensionId, String fileExtension) {
         return jdbcTemplate.update("UPDATE file_extensions " +
-                "SET fileExtension = ?," +
+                "SET fileExtension = ?" +
                 "WHERE fileExtensionId = ?", new Object[]{fileExtension,fileExtensionId}) == 1;
     }
 
