@@ -3,14 +3,14 @@ import java.time.LocalDateTime;
 
 public class Announcement {
 
-    private long announcementId;
+    private Integer announcementId;
     private LocalDateTime date;
     private String title, content;
     private User author;
     private Course course;
 
 
-    public Announcement(long announcementId, LocalDateTime date, String title, String content, User author, Course course) {
+    public Announcement(Integer announcementId, LocalDateTime date, String title, String content, User author, Course course) {
         this.announcementId = announcementId;
         this.date = date;
         this.title = title;
@@ -43,11 +43,11 @@ public class Announcement {
         this.course = course;
     }
 
-    public long getAnnouncementId() {
+    public Integer getAnnouncementId() {
         return announcementId;
     }
 
-    public void setAnnouncementId(long announcementId) {
+    public void setAnnouncementId(Integer announcementId) {
         this.announcementId = announcementId;
     }
 

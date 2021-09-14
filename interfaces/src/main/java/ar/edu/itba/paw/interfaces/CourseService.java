@@ -38,10 +38,11 @@ public interface CourseService {
     boolean delete(Integer id);
 
     /**
-     * Gets all the current available courses
+     * Gets all the current available courses of a user
+     * @param userId of the user to retrieve the courses from
      * @return list containing all the current available courses (if any)
      */
-    List<Course> list();
+    List<Course> list(Integer userId);
 
     /**
      * Attempts to get a course given an id

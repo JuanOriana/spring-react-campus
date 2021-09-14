@@ -20,6 +20,7 @@ import static org.mockito.Mockito.*;
 public class CourseServiceImplTest {
 
     private static Integer COURSE_ID = 1;
+    private static Integer USER_ID = 1;
     private static Integer SUBJECT_ID = 1;
     private static String SUBJECT_CODE = "A1";
     private static String SUBJECT_NAME = "PAW";
@@ -106,8 +107,8 @@ public class CourseServiceImplTest {
     @Test
     public void testList() {
         Course course = getMockCourse();
-        when(mockDao.list()).thenReturn(new ArrayList<Course>(){{ add(course); }});
-        List<Course> courses = courseService.list();
+        when(mockDao.list(USER_ID)).thenReturn(new ArrayList<Course>(){{ add(course); }});
+        List<Course> courses = courseService.list(USER_ID);
         Assert.assertTrue(courses.size() > 0);
         Assert.assertEquals(course.getCourseId(), courses.get(0).getCourseId());
     }

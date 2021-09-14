@@ -13,7 +13,7 @@ public interface CourseDao {
                   String subjectCode);
     boolean update(Integer id, Course course);
     boolean delete(Integer id);
-    List<Course> list();
+    List<Course> list(Integer userId);
     Optional<Course> getById(Integer id);
     Map<User, Role> getTeachers(Integer courseId);
     public boolean belongs(Integer userId, Integer courseId);

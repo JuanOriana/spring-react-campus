@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class PortalController {
     @Autowired
     CourseService courseService;
 
+    @Autowired
+    AuthFacade authFacade;
+
     @RequestMapping("/")
     public RedirectView rootRedirect() {
         return new RedirectView("portal");
@@ -27,7 +31,7 @@ public class PortalController {
     public ModelAndView portal() {
         LOGGER.debug("Log debug call from {}", PortalController.class.getSimpleName());
         ModelAndView mav = new ModelAndView("portal");
-        List<Course> courses = courseService.list();
+        List<Course> courses = courseService.list(authFacade.getCurrentUser().getUserId());
         mav.addObject("courseList", courses);
         return mav;
     }

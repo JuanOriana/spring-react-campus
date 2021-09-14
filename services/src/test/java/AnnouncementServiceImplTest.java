@@ -19,8 +19,8 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AnnouncementServiceImplTest {
-    private static final long ANNOUNCEMENT_ID = 1;
-    private static final long INVALID_ANNOUNCEMENT_ID = 999;
+    private static final Integer ANNOUNCEMENT_ID = 1;
+    private static final Integer INVALID_ANNOUNCEMENT_ID = 999;
     private final int USER_ID = 1;
     private final int USER_FILE_NUMBER = 41205221;
     private final String USER_NAME = "Paw";
@@ -28,8 +28,8 @@ public class AnnouncementServiceImplTest {
     private final String USER_USERNAME = "paw2021";
     private final String USER_EMAIL = "paw2021@itba.edu.ar";
     private final String USER_PASSWORD = "asd123";
-    private final long PAGE_SIZE = 1;
-    private final long PAGE = 1;
+    private final Integer PAGE_SIZE = 1;
+    private final Integer PAGE = 1;
 
     private final int COURSE_ID = 1;
     private final int COURSE_YEAR = 2021;
@@ -132,8 +132,8 @@ public class AnnouncementServiceImplTest {
     @Test
     public void testList() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.list(PAGE, PAGE_SIZE)).thenReturn(new ArrayList<Announcement>(){{ add(announcement); }});
-        List<Announcement> announcements = announcementService.list(PAGE, PAGE_SIZE);
+        when(mockDao.list(USER_ID, PAGE, PAGE_SIZE)).thenReturn(new ArrayList<Announcement>(){{ add(announcement); }});
+        List<Announcement> announcements = announcementService.list(USER_ID, PAGE, PAGE_SIZE);
         Assert.assertTrue(announcements.size() > 0);
         Assert.assertEquals(announcement.getCourse().getCourseId(), announcements.get(0).getCourse().getCourseId());
     }

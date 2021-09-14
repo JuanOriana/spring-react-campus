@@ -76,7 +76,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public boolean update(long id, Announcement announcement) {
+    public boolean update(Integer id, Announcement announcement) {
         return jdbcTemplate.update("UPDATE announcements " +
                 "SET userId = ?," +
                 "courseId = ?," +
@@ -88,32 +88,34 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public boolean delete(long id) {
+    public boolean delete(Integer id) {
         return jdbcTemplate.update("DELETE FROM announcements WHERE announcementId = ?", new Object[]{id}) == 1;
     }
 
     @Override
-    public int getPageCount(long pageSize) {
+    public int getPageCount(Integer pageSize) {
         RowCountCallbackHandler countCallback = new RowCountCallbackHandler();  // not reusable
         jdbcTemplate.query("SELECT * FROM announcements", countCallback);
         return (int) Math.ceil((double)countCallback.getRowCount() / pageSize);
     }
 
     @Override
-    public List<Announcement> list(long page, long pageSize) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT * " +
-                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
-                "LIMIT ? OFFSET ?",new Object[]{ pageSize, (page - 1) * pageSize }, COURSE_ANNOUNCEMENT_ROW_MAPPER));
+    public List<Announcement> list(Integer userId, Integer page, Integer pageSize) {
+        return new ArrayList<>(jdbcTemplate.query(
+                "SELECT * FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
+                "NATURAL JOIN user_to_course " +
+                "WHERE courseid IN (SELECT courseid FROM user_to_course WHERE userid = ?) " +
+                "LIMIT ? OFFSET ?",new Object[]{ userId, pageSize, (page - 1) * pageSize }, COURSE_ANNOUNCEMENT_ROW_MAPPER));
     }
 
 
-    public List<Announcement> listByCourse(long courseId) {
+    public List<Announcement> listByCourse(Integer courseId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements NATURAL JOIN users WHERE courseId = ?",
                 new Object[]{courseId}, ANNOUNCEMENT_ROW_MAPPER));
     }
 
     @Override
-    public Optional<Announcement> getById(long id) {
+    public Optional<Announcement> getById(Integer id) {
         return jdbcTemplate.query("SELECT * " +
                 "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
                 "WHERE announcementId = ?", new Object[]{id}, COURSE_ANNOUNCEMENT_ROW_MAPPER).stream().findFirst();

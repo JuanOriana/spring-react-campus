@@ -34,8 +34,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> list() {
-        return courseDao.list();
+    public List<Course> list(Integer userId) {
+        return courseDao.list(userId);
     }
 
     @Override

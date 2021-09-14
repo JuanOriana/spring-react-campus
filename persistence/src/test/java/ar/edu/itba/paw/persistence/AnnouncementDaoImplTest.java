@@ -41,7 +41,7 @@ public class AnnouncementDaoImplTest {
     private AnnouncementDaoImpl announcementDao;
 
     private JdbcTemplate jdbcTemplate;
-    private final int ANNOUNCEMENT_ID = 1;
+    private final Integer ANNOUNCEMENT_ID = 1;
     private final String ANNOUNCEMENT_CONTENT = "test_content";
     private final String ANNOUNCEMENT_TITLE = "test_title";
 
@@ -62,8 +62,10 @@ public class AnnouncementDaoImplTest {
     private final String SUBJECT_CODE = "A1";
     private final String SUBJECT_NAME = "Protos";
 
-    private final long PAGE = 1;
-    private final long PAGE_SIZE = 1;
+    private final Integer PAGE = 1;
+    private final Integer PAGE_SIZE = 1;
+
+    private final Integer ROLE_ID = 1;
 
     private final LocalDateTime ANNOUNCEMENT_DATE = LocalDateTime.now();
 
@@ -128,6 +130,23 @@ public class AnnouncementDaoImplTest {
         announcementJdbcInsert.execute(args);
     }
 
+    private void insertRole(int roleId, String roleName) {
+        SimpleJdbcInsert roleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("roles");
+        Map<String, Object> args = new HashMap<>();
+        args.put("roleId", roleId);
+        args.put("roleName", roleName);
+        roleJdbcInsert.execute(args);
+    }
+
+    private void insertUserToCourse(int userId, int courseId, int roleId) {
+        SimpleJdbcInsert userToCourseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("user_to_course");
+        Map<String, Object> args = new HashMap<>();
+        args.put("userId",userId);
+        args.put("courseId",courseId);
+        args.put("roleId",roleId);
+        userToCourseJdbcInsert.execute(args);
+    }
+
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
@@ -135,9 +154,13 @@ public class AnnouncementDaoImplTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "roles");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_to_course");
         insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
         insertUser(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, true);
+        insertRole(ROLE_ID, "Teacher");
+        insertUserToCourse(USER_ID, COURSE_ID, ROLE_ID);
     }
 
     private Announcement getMockAnnouncement() {
@@ -220,7 +243,7 @@ public class AnnouncementDaoImplTest {
     @Test
     public void testList() {
         insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
-        List<Announcement> list = announcementDao.list(PAGE, PAGE_SIZE);
+        List<Announcement> list = announcementDao.list(USER_ID, PAGE, PAGE_SIZE);
         assertNotNull(list);
         assertEquals(1, list.size());
         assertEquals(ANNOUNCEMENT_ID, list.get(0).getAnnouncementId());
