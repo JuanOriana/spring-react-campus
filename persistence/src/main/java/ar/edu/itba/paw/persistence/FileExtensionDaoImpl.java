@@ -40,12 +40,14 @@ public class FileExtensionDaoImpl implements FileExtensionDao {
 
     @Override
     public boolean update(long fileExtensionId, String fileExtension) {
-        return false;
+        return jdbcTemplate.update("UPDATE file_extensions " +
+                "SET fileExtension = ?," +
+                "WHERE fileExtensionId = ?", new Object[]{fileExtension,fileExtensionId}) == 1;
     }
 
     @Override
     public boolean delete(long fileExtensionId) {
-        return false;
+        return jdbcTemplate.update("DELETE FROM file_extensions WHERE fileExtensionId = ?", new Object[]{fileExtensionId}) == 1;
     }
 
     @Override
