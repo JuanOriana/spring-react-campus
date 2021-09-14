@@ -1,19 +1,19 @@
 package ar.edu.itba.paw.models;
 
-public class FileExtensionModel {
+public class FileExtension {
 
     private long fileExtensionId;
     private String fileExtension;
 
-    public FileExtensionModel() {
+    public FileExtension() {
     }
 
-    public FileExtensionModel(long fileExtensionId, String fileExtension) {
+    public FileExtension(long fileExtensionId, String fileExtension) {
         this.fileExtensionId = fileExtensionId;
         this.fileExtension = fileExtension;
     }
 
-    public FileExtensionModel(String fileExtension) {
+    public FileExtension(String fileExtension) {
         this.fileExtension = fileExtension;
     }
 

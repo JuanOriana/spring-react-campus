@@ -7,12 +7,10 @@ import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.form.AnnouncementForm;
-import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +18,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.*;
 import java.time.LocalDateTime;
@@ -125,7 +122,7 @@ public class CourseController {
         String extension = getExtension(filename);
         //TODO: HANDLE NOT FOUND EXTENSIONS INTO "OTHER"
         FileModel newFile = fileService.create(new FileModel(file.getSize(),filename, LocalDateTime.now(), file.getBytes(),
-                new FileExtensionModel(extension), courseService.getById(courseId).orElseThrow(CourseNotFoundException::new)));
+                new FileExtension(extension), courseService.getById(courseId).orElseThrow(CourseNotFoundException::new)));
         fileService.addCategory(newFile.getFileId(),category);
         return teacherFiles(courseId);
     }

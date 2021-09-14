@@ -39,7 +39,7 @@ public class FileDaoImplTest {
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
         return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"),
                 rs.getTimestamp("fileDate").toLocalDateTime(), rs.getObject("file", byte[].class),
-                new FileExtensionModel(rs.getLong("fileExtensionId"),rs.getString("fileExtension")),
+                new FileExtension(rs.getLong("fileExtensionId"),rs.getString("fileExtension")),
                 new Course.Builder()
                         .withCourseId(rs.getInt("courseId"))
                         .withYear(rs.getInt("year"))
@@ -75,7 +75,7 @@ public class FileDaoImplTest {
     private final String FILE_NAME = "test.png";
 
     private FileModel createFileModelObject() throws FileNotFoundException {
-        FileExtensionModel fExtension = new FileExtensionModel(FILE_EXTENSION_ID_OTHER,FILE_EXTENSION_OTHER);
+        FileExtension fExtension = new FileExtension(FILE_EXTENSION_ID_OTHER,FILE_EXTENSION_OTHER);
         Course course = new Course.Builder()
                 .withCourseId(COURSE_ID)
                 .withYear(COURSE_YEAR)

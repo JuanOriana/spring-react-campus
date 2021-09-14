@@ -23,7 +23,7 @@ public class FileCategoryDaoImpl implements FileCategoryDao {
         return new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
     };
 
-        @Autowired
+    @Autowired
     public FileCategoryDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("file_categories").usingGeneratedKeyColumns("categoryId");
@@ -38,9 +38,9 @@ public class FileCategoryDaoImpl implements FileCategoryDao {
     }
 
     @Override
-    public boolean update(long fileCategoryId, FileCategory newFileCategory) {
+    public boolean update(long fileCategoryId, String newFileCategory) {
         return jdbcTemplate.update("UPDATE file_categories " +
-                "SET categoryName = ?," +
+                "SET categoryName = ?" +
                 "WHERE categoryId = ?", new Object[]{newFileCategory,fileCategoryId}) == 1;
     }
 
