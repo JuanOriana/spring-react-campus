@@ -18,7 +18,9 @@
                   <div style="display: flex;flex-direction: column;font-size: 14px">
                       <p>Publicado por: <c:out value="${announcementItem.author.name}
                       ${announcementItem.author.surname}"/></p>
-                      <p>Para: <c:out value="${announcementItem.course.subject.name}"/></p>
+                      <a href="<c:url value="/course/${announcementItem.course.courseId}"/>" class="styleless-anchor">
+                        <p>Para: <c:out value="${announcementItem.course.subject.name}"/></p>
+                      </a>
                   </div>
               </div>
               <p class="announcement-date"><c:out value="${announcementItem.date}"/></p>
