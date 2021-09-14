@@ -80,9 +80,9 @@
                                 </span>
                                 <c:forEach var="extension" items="${extensions}">
                                     <span>
-                                        <input class="file-checkbox" type="checkbox" id="${extension.fileExtensionId}" name="extension-type"
+                                        <input class="file-checkbox" type="checkbox" id="extension-${extension.fileExtensionId}" name="extension-type"
                                                value="${extension.fileExtensionId}" onclick="unToggle('extension-all')">
-                                        <label class="file-checkbox-label" for="${extension.fileExtensionId}">
+                                        <label class="file-checkbox-label" for="extension-${extension.fileExtensionId}">
                                             <c:out value="${extension.fileExtension}"/>
                                         </label>
                                     </span>
