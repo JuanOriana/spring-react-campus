@@ -363,7 +363,7 @@ body{
 .login-wrapper{
     background: white;
     width: 200px;
-    padding: 12px 20px 12px 20px;
+    padding: 20px 40px;
     border-radius: 12px;
     margin-bottom: 100px;
     display: flex;
@@ -375,24 +375,26 @@ body{
 .login-label{
     color: var(--cyan-darkest);
     font-size: 18px;
+    margin: 5px 0;
 }
 
 .login-input{
     border-radius: 6px;
     border: 1px solid var(--cyan-darkest);
-    padding: 3px;
+    padding: 6px;
     color: var(--cyan-darkest);
     margin-bottom: 4px;
+    font-size: 18px;
 }
 
 .login-button{
     margin: 10px 0;
     background: var(--cyan-darkest);
     border-radius: 10px;
-    border: 2px solid var(--cyan-dark);
     color: var(--cyan-dark);
-    padding: 3px;
+    padding: 10px 20px;
     font-size: 22px;
+    cursor: pointer;
 }
 
 .form-button{

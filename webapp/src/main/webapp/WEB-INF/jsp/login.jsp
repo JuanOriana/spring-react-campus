@@ -10,15 +10,15 @@
     <div class="page-container" style="justify-content: center">
         <form class="login-wrapper" method="post">
             <h1 class="section-heading">Ingresar</h1>
-            <label for="username" class="login-label">Username</label>
+            <label for="username" class="login-label">Nombre de usuario</label>
             <input type="text" id="username" name="username" class="login-input"/>
-            <label for="password" class="login-label">Password</label>
+            <label for="password" class="login-label">Contraseña</label>
             <input type="password" id="password" name="password" class="login-input"/>
-            <button class="login-button">Hola xd</button>
-            <label>
-                Remember me
-                <input type="checkbox" name="rememberMe"/>
-            </label>
+            <div style="display: flex;align-items: center; margin: 10px 0;">
+                <input type="checkbox" name="rememberMe" id="remember-me"/>
+                <label for="remember-me" style="color: #176961; margin-left: 5px">Recuerdame</label>
+            </div>
+            <button class="login-button">Ingresar</button>
         </form>
     </div>
     <jsp:include page="components/footer.jsp"/>
