@@ -16,13 +16,14 @@ public class MailingServiceImpl implements MailingService {
     @Autowired
     private Session session;
 
-    private String serverMail = "mpvcampus@gmail.com";
+    private final String SERVER_MAIL = "mpvcampus@gmail.com";
 
     @Override
     public void sendEmail(String replyTo, String to, String subject, String content, String contentType) {
         try {
             MimeMessage message = new MimeMessage(session);
-            String from = String.format("\"%s\" <%s>", to,serverMail);
+
+            String from = String.format("\"%s\" <%s>", replyTo.substring(0, replyTo.indexOf('@')), SERVER_MAIL);
             message.setFrom(new InternetAddress(from));
             message.setReplyTo(new Address[]{new InternetAddress(replyTo)});
             sendEmail(message, Collections.singletonList(to), subject, content, contentType);
