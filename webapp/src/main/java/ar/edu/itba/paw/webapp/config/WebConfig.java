@@ -70,7 +70,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ds.setDriverClass(org.postgresql.Driver.class);
 
         if (isOnDevBuild()) {
-            ds.setUrl("jdbc:postgresql://192.168.122.1:5432/");
+            ds.setUrl("jdbc:postgresql://127.0.0.1:5432/");
             ds.setUsername("postgres");
             ds.setPassword("hola");
         } else {
@@ -105,9 +105,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public Session mailingSession() {
-        // Assuming you are sending email from through gmails smtp
-        String host = "smtp.gmail.com";
-
         // Get system properties
         Properties props = System.getProperties();
 
@@ -120,11 +117,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.socketFactory.fallback", "false");
 
-        // Get the Session object.// and pass username and password
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
 
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("mpvcampus@gmail.com", "cxtwdizekebrrdhx"); //cxtwdizekebrrdhx
+                return new PasswordAuthentication("mpvcampus@gmail.com", "cxtwdizekebrrdhx");
             }
 
         });
