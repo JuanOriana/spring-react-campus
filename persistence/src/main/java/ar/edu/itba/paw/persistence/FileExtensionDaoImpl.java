@@ -2,16 +2,40 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.FileExtensionDao;
 import ar.edu.itba.paw.models.FileExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+// TODO: FileExtensionDaoImplTest
 @Repository
 public class FileExtensionDaoImpl implements FileExtensionDao {
 
+    private JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
+
+    private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) -> {
+        return new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
+    };
+
+    @Autowired
+    public FileExtensionDaoImpl(final DataSource ds) {
+        jdbcTemplate = new JdbcTemplate(ds);
+        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("file_extensions").usingGeneratedKeyColumns("fileExtensionId");
+    }
+
     @Override
     public FileExtension create(String fileExtension) {
-        return null;
+        final Map<String, Object> args = new HashMap<>();
+        args.put("fileExtension", fileExtension);
+        final int fileExtensionId = jdbcInsert.executeAndReturnKey(args).intValue();
+        return new FileExtension(fileExtensionId, fileExtension);
     }
 
     @Override

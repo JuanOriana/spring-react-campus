@@ -24,7 +24,7 @@ public class FileCategoryDaoImpl implements FileCategoryDao {
         return new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
     };
 
-        @Autowired
+    @Autowired
     public FileCategoryDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("file_categories").usingGeneratedKeyColumns("categoryId");
