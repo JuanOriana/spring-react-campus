@@ -50,4 +50,5 @@ public interface UserService {
      * @return the user that has the given username
      */
     Optional<User> findByUsername(String username);
+
 }

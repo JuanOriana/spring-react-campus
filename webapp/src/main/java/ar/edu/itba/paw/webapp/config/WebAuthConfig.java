@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.config;
 
 import ar.edu.itba.paw.webapp.auth.CampusUserDetailsService;
+import ar.edu.itba.paw.webapp.auth.CourseVoter;
 import ar.edu.itba.paw.webapp.util.KeyReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +35,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
+    @Bean
+    public CourseVoter courseVoter() { return new CourseVoter(); }
+
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement()
@@ -41,6 +45,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                     .antMatchers("/login").anonymous()
                     .antMatchers("/admin/**").hasRole("ADMIN")
+                    .antMatchers("/course/{courseId}").access("@courseVoter.checkUserCourseAccess(authentication,#courseId)")
                     .antMatchers("/**").authenticated()
                 .and().formLogin()
                     .usernameParameter("username")

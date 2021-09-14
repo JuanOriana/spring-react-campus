@@ -52,4 +52,12 @@ public interface CourseService {
      */
     Map<User, Role> getTeachers(long courseId);
 
+    /**
+     * Returns if the user belongs to the course
+     * @param userId of the user to check
+     * @param courseId of the course to check
+     * @return true if the user belongs to the given course, false otherwise
+     */
+    boolean belongs(long userId, long courseId);
+
 }

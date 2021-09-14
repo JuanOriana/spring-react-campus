@@ -31,7 +31,7 @@ public class CampusUserDetailsService implements UserDetailsService {
         final User user = userService.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
         final Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(user.isAdmin() ? "ADMIN" : "MORTAL"));
+        authorities.add(new SimpleGrantedAuthority(user.isAdmin() ? "ADMIN" : "USER"));
         final String password;
         if(user.getPassword() == null || !BCRYPT_PATTERN.matcher(user.getPassword()).matches()) {
             // TO-DO: Add method to update password in db to be hashed
@@ -39,6 +39,7 @@ public class CampusUserDetailsService implements UserDetailsService {
         } else {
             password = user.getPassword();
         }
-        return new org.springframework.security.core.userdetails.User(username, password, authorities);
+        return new CampusUser(username, password, authorities, user.getFileNumber(), user.getUserId(), user.getName(),
+                user.getSurname(), user.getEmail());
     }
 }

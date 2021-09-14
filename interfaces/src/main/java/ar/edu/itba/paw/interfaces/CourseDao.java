@@ -15,4 +15,5 @@ public interface CourseDao {
     List<Course> list();
     Optional<Course> getById(long id);
     Map<User, Role> getTeachers(long courseId);
+    public boolean belongs(long userId, long courseId);
 }

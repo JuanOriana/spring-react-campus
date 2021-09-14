@@ -19,11 +19,10 @@ import java.util.*;
 public class CourseDaoImpl implements CourseDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private static final RowMapper<Course> COURSE_ROW_MAPPER = (rs, rowNum) -> {
-        return new Course(rs.getLong("courseId"), rs.getInt("year"),
+    private static final RowMapper<Course> COURSE_ROW_MAPPER = (rs, rowNum) ->
+        new Course(rs.getLong("courseId"), rs.getInt("year"),
                 rs.getInt("quarter"), rs.getString("board"),
                 new Subject(rs.getInt("subjectId"), rs.getString("code"), rs.getString("subjectName")));
-    };
 
     private enum ROLES { STUDENT(1), HELPER(2), TEACHER(3);
         private final int id;
@@ -92,6 +91,14 @@ public class CourseDaoImpl implements CourseDao {
         return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN user_to_course NATURAL JOIN roles WHERE " +
                 "courseId = ? AND roleId BETWEEN ? AND ?", new Object[]{courseId, ROLES.HELPER.getValue(), ROLES.TEACHER.getValue()},
                 MAP_RESULT_SET_EXTRACTOR);
+    }
+
+    private static final RowMapper<Long> BELONGS_MAPPER = (rs, rowNum) -> rs.getLong("userId");
+
+    @Override
+    public boolean belongs(long userId, long courseId) {
+        return jdbcTemplate.query("SELECT * FROM user_to_course WHERE courseId = ? AND userId = ?",
+                new Object[]{courseId, userId}, BELONGS_MAPPER).stream().findFirst().isPresent();
     }
 
 }
