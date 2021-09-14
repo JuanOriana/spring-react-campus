@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.interfaces.AnnouncementService;
-import ar.edu.itba.paw.interfaces.CourseService;
-import ar.edu.itba.paw.interfaces.FileCategoryService;
-import ar.edu.itba.paw.interfaces.FileService;
+import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.form.AnnouncementForm;
@@ -34,6 +31,9 @@ public class CourseController {
 
     @Autowired
     FileCategoryService fileCategoryService;
+
+    @Autowired
+    FileExtensionService fileExtensionService;
 
     @Autowired
     FileService fileService;
@@ -99,10 +99,12 @@ public class CourseController {
     public ModelAndView files(@PathVariable int courseId) {
         final List<FileModel> files = fileService.getByCourseId(courseId);
         List<FileCategory> categories = fileCategoryService.getCategories();
+        final List<FileExtension> extensions = fileExtensionService.getExtensions();
         final ModelAndView mav = new ModelAndView("course-files");
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("categories",categories);
         mav.addObject("files",files);
+        mav.addObject("extensions",extensions);
         return mav;
     }
 
@@ -110,10 +112,12 @@ public class CourseController {
     public ModelAndView teacherFiles(@PathVariable int courseId) {
         final List<FileModel> files = fileService.getByCourseId(courseId);
         List<FileCategory> categories = fileCategoryService.getCategories();
+        final List<FileExtension> extensions = fileExtensionService.getExtensions();
         final ModelAndView mav = new ModelAndView("teacher/teacher-files");
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("categories",categories);
         mav.addObject("files",files);
+        mav.addObject("extensions",extensions);
         return mav;
     }
 

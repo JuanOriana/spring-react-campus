@@ -433,7 +433,6 @@ textarea:focus, input:focus{
 }
 .file-filter-container{
     display: none;
-    height: 120px;
     justify-content: space-between;
     padding: 0 30px;
 }

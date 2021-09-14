@@ -57,7 +57,7 @@
                                  onclick="toggleFilters()" alt="toggle filters" id="filter-toggle">
                         </div>
                         <div class="file-filter-container" id="filter-container" style="display: none">
-                            <div style="display: flex; flex-direction: column; height: 80px;">
+                            <div style="display: flex; flex-direction: column;">
                                 <label for="order-class" class="file-select-label">Buscar por</label>
                                 <select name="order-class" id="order-class" class="file-select">
                                     <option>Fecha de subida</option>
@@ -71,31 +71,25 @@
                             </div>
 
 
-                            <div style="display: flex; flex-direction: column; height: 80px;">
+                            <div style="display: flex; flex-direction: column;">
                                 <label class="file-select-label">Tipo de archivo</label>
                                 <span>
-                                    <input class="file-checkbox" type="checkbox" id="type-all" name="file-type"
+                                    <input class="file-checkbox" type="checkbox" id="extension-all" name="extension-type"
                                            value="all" onclick="toggleAll(this)">
-                                    <label class="file-checkbox-label" for="type-all">todos</label>
+                                    <label class="file-checkbox-label" for="extension-all">todos</label>
                                 </span>
-                                <span>
-                                    <input class="file-checkbox" type="checkbox" id="pdf" name="file-type"
-                                           value="pdf" onclick="unToggle('type-all')">
-                                    <label class="file-checkbox-label" for="pdf">pdf</label>
-                                </span>
-                                <span>
-                                    <input class="file-checkbox" type="checkbox" id="csv" name="file-type"
-                                           value="csv" onclick="unToggle('type-all')">
-                                    <label class="file-checkbox-label" for="csv">csv</label>
-                                </span>
-                                <span>
-                                    <input class="file-checkbox" type="checkbox" id="file-other" name="file-type"
-                                           value="other" onclick="unToggle('type-all')">
-                                    <label class="file-checkbox-label" for="file-other">otro</label>
-                                </span>
+                                <c:forEach var="extension" items="${extensions}">
+                                    <span>
+                                        <input class="file-checkbox" type="checkbox" id="${extension.fileExtensionId}" name="extension-type"
+                                               value="${extension.fileExtensionId}" onclick="unToggle('extension-all')">
+                                        <label class="file-checkbox-label" for="${extension.fileExtensionId}">
+                                            <c:out value="${extension.fileExtension}"/>
+                                        </label>
+                                    </span>
+                                </c:forEach>
                             </div>
 
-                            <div style="display: flex; flex-direction: column; height: 80px;">
+                            <div style="display: flex; flex-direction: column;">
                                 <label class="file-select-label">Categoria</label>
                                 <span>
                                     <input class="file-checkbox" type="checkbox" id="category-all" name="category-type"
