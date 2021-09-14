@@ -10,9 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -85,9 +83,9 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Role getRole(int userId, int courseId) {
+    public Optional<Role> getRole(int userId, int courseId) {
         return jdbcTemplate.query("SELECT * FROM user_to_course NATURAL JOIN roles WHERE userId = ? AND courseId = ?",
-                new Object[]{userId, courseId}, ROLE_ROW_MAPPER).get(0);
+                new Object[]{userId, courseId}, ROLE_ROW_MAPPER).stream().findFirst();
     }
 
     @Override

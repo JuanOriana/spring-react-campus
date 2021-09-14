@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Role getRole(int userId, int courseId) {
+    public Optional<Role> getRole(int userId, int courseId) {
         return userDao.getRole(userId, courseId);
     }
 

@@ -41,7 +41,7 @@ public interface UserService {
      * @param courseId of the course to get the roles from
      * @return role of the user for the specified course
      */
-    Role getRole(int userId, int courseId);
+    Optional<Role> getRole(int userId, int courseId);
 
     /**
      * Gets a User based on its userId

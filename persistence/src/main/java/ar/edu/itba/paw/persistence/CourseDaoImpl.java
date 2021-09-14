@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.Subject;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -28,11 +25,6 @@ public class CourseDaoImpl implements CourseDao {
             .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
                     rs.getString("subjectName")))
             .build();
-    private enum ROLES { STUDENT(1), HELPER(2), TEACHER(3);
-        private final int id;
-        ROLES(int id) {this.id = id;}
-        public int getValue() { return id; }
-    };
 
     @Autowired
     public CourseDaoImpl(final DataSource ds) {
@@ -106,7 +98,7 @@ public class CourseDaoImpl implements CourseDao {
     @Override
     public Map<User, Role> getTeachers(Integer courseId) {
         return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN user_to_course NATURAL JOIN roles WHERE " +
-                "courseId = ? AND roleId BETWEEN ? AND ?", new Object[]{courseId, ROLES.HELPER.getValue(), ROLES.TEACHER.getValue()},
+                "courseId = ? AND roleId BETWEEN ? AND ?", new Object[]{courseId, Permissions.HELPER.getValue(), Permissions.TEACHER.getValue()},
                 MAP_RESULT_SET_EXTRACTOR);
     }
 

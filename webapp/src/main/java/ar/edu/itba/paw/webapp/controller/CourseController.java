@@ -57,7 +57,6 @@ public class CourseController {
     public ModelAndView announcements(@PathVariable Integer courseId) {
         final ModelAndView mav = new ModelAndView("course");
         List<Announcement> announcements = announcementService.listByCourse(courseId,orderByDate);
-        // Add proper handling in the future, need to check if user has permission to access this course
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("announcementList", announcements);
         return mav;
@@ -67,7 +66,6 @@ public class CourseController {
     public ModelAndView teacherAnnouncements(@PathVariable Integer courseId, final AnnouncementForm announcementForm) {
         final ModelAndView mav = new ModelAndView("teacher/teacher-course");
         List<Announcement> announcements = announcementService.listByCourse(courseId,orderByDate);
-        // Add proper handling in the future, need to check if user has permission to access this course
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("announcementList", announcements);
         mav.addObject("announcementForm",announcementForm);

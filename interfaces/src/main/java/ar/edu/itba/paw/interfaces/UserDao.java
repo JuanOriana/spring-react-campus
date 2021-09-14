@@ -10,7 +10,7 @@ public interface UserDao {
                 boolean isAdmin);
     boolean update(int userId, User user);
     boolean delete(int userId);
-    Role getRole(int userId, int courseId);
+    Optional<Role> getRole(int userId, int courseId);
     Optional<User> findById(int userId);
     Optional<User> findByUsername(String username);
 }
