@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 import java.util.Optional;
@@ -20,10 +21,12 @@ public class CourseVoter {
     UserService userService;
 
     public boolean checkUserCourseAccess(Authentication authentication, Integer courseId) {
-        return courseService.belongs(((CampusUser)authentication.getPrincipal()).getUserId(), courseId);
+        boolean isAnonymous = authentication instanceof AnonymousAuthenticationToken;
+        return !isAnonymous && courseService.belongs(((CampusUser)authentication.getPrincipal()).getUserId(), courseId);
     }
 
     public boolean checkUserCourseRole(Authentication authentication, Integer courseId) {
+        if(authentication instanceof AnonymousAuthenticationToken) return false;
         Optional<Role> currentUserRole = userService.getRole(((CampusUser)authentication.getPrincipal()).getUserId(),
                 courseId);
         return currentUserRole.isPresent() && currentUserRole.get().getRoleId() >= Permissions.HELPER.getValue();
