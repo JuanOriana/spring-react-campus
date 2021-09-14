@@ -3,16 +3,22 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
     /**
-     * Creates a user entry in the database
-     * @param user to be created
-     * @return the user created
+     * Persist a user entry in the database
+     * @param fileNumber unique real life id of the user
+     * @param name of the user
+     * @param surname of the user
+     * @param username of the user
+     * @param email of the user
+     * @param password of the user
+     * @param isAdmin determines if the user is a full-fledged admin
+     * @return the generated User instance
      */
-    User create(User user);
+    User create(Integer fileNumber, String name, String surname, String username, String email, String password,
+                boolean isAdmin);
 
     /**
      * Attempts to update the user entry

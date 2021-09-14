@@ -11,7 +11,7 @@ public class CourseVoter {
     @Autowired
     CourseService courseService;
 
-    public boolean checkUserCourseAccess(Authentication authentication, int courseId) {
+    public boolean checkUserCourseAccess(Authentication authentication, Integer courseId) {
         return courseService.belongs(((CampusUser)authentication.getPrincipal()).getUserId(), courseId);
     }
 }

@@ -35,16 +35,16 @@ public class TimeTableDaoImplTest {
 
     private JdbcTemplate jdbcTemplate;
 
-    private final int COURSE_ID = 1;
-    private final int COURSE_YEAR = 2021;
-    private final int COURSE_QUARTER = 2;
+    private final Integer COURSE_ID = 1;
+    private final Integer COURSE_YEAR = 2021;
+    private final Integer COURSE_QUARTER = 2;
     private final String COURSE_BOARD = "S1";
 
     private final int SUBJECT_ID = 1;
     private final String SUBJECT_CODE = "A1";
     private final String SUBJECT_NAME = "PAW";
 
-    private final int TIME_TABLE_DAY_OF_WEEK = 1;
+    private final Integer TIME_TABLE_DAY_OF_WEEK = 1;
     private final Time TIME_TABLE_START_OF_COURSE = new Time(TimeUnit.HOURS.toMillis(12));
     private final Time TIME_TABLE_END_OF_COURSE = new Time(TimeUnit.HOURS.toMillis(14));
 
@@ -61,8 +61,13 @@ public class TimeTableDaoImplTest {
     }
 
     private Course getMockCourse(){
-        Subject mockSubject = new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
-        return new Course(COURSE_ID, COURSE_YEAR, COURSE_QUARTER, COURSE_BOARD, mockSubject);
+        return new Course.Builder()
+                .withCourseId(COURSE_ID)
+                .withYear(COURSE_YEAR)
+                .withQuarter(COURSE_QUARTER)
+                .withBoard(COURSE_BOARD)
+                .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
+                .build();
     }
 
     @Test

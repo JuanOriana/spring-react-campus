@@ -6,10 +6,10 @@ import org.springframework.security.core.userdetails.User;
 import java.util.Collection;
 
 public class CampusUser extends User {
-    private int fileNumber, userId;
+    private Integer fileNumber, userId;
     private String name, surname, email;
 
-    public CampusUser(String username, String password, Collection<? extends GrantedAuthority> authorities, int fileNumber, int userId, String name, String surname, String email) {
+    public CampusUser(String username, String password, Collection<? extends GrantedAuthority> authorities, Integer fileNumber, Integer userId, String name, String surname, String email) {
         super(username, password, authorities);
         this.fileNumber = fileNumber;
         this.userId = userId;
@@ -18,19 +18,19 @@ public class CampusUser extends User {
         this.email = email;
     }
 
-    public int getFileNumber() {
+    public Integer getFileNumber() {
         return fileNumber;
     }
 
-    public void setFileNumber(int fileNumber) {
+    public void setFileNumber(Integer fileNumber) {
         this.fileNumber = fileNumber;
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

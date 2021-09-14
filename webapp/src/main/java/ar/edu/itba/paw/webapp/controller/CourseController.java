@@ -54,7 +54,7 @@ public class CourseController {
     }
 
     @RequestMapping("/course/{courseId}")
-    public ModelAndView announcements(@PathVariable int courseId) {
+    public ModelAndView announcements(@PathVariable Integer courseId) {
         final ModelAndView mav = new ModelAndView("course");
         List<Announcement> announcements = announcementService.listByCourse(courseId,orderByDate);
         // Add proper handling in the future, need to check if user has permission to access this course
@@ -64,7 +64,7 @@ public class CourseController {
     }
 
     @RequestMapping(value = "/teacher-course/{courseId}", method = RequestMethod.GET)
-    public ModelAndView teacherAnnouncements(@PathVariable int courseId, final AnnouncementForm announcementForm) {
+    public ModelAndView teacherAnnouncements(@PathVariable Integer courseId, final AnnouncementForm announcementForm) {
         final ModelAndView mav = new ModelAndView("teacher/teacher-course");
         List<Announcement> announcements = announcementService.listByCourse(courseId,orderByDate);
         // Add proper handling in the future, need to check if user has permission to access this course
@@ -75,7 +75,7 @@ public class CourseController {
     }
 
     @RequestMapping(value = "/teacher-course/{courseId}", method = RequestMethod.POST)
-    public ModelAndView teacherAnnouncements(@PathVariable int courseId,
+    public ModelAndView teacherAnnouncements(@PathVariable Integer courseId,
                                              @Valid AnnouncementForm announcementForm, final BindingResult errors){
         //TODO: GETTING A RANDOM TEACHER CHANGE LATER
         if (!errors.hasErrors()){
@@ -89,7 +89,7 @@ public class CourseController {
     }
 
     @RequestMapping("/course/{courseId}/teachers")
-    public ModelAndView professors(@PathVariable int courseId) {
+    public ModelAndView professors(@PathVariable Integer courseId) {
         final ModelAndView mav = new ModelAndView("teachers");
         Map<User, Role> teachers = courseService.getTeachers(courseId);
         Set<Map.Entry<User,Role>> teacherSet = teachers.entrySet();
@@ -99,7 +99,7 @@ public class CourseController {
     }
 
     @RequestMapping("/course/{courseId}/files")
-    public ModelAndView files(@PathVariable int courseId) {
+    public ModelAndView files(@PathVariable Integer courseId) {
         final List<FileModel> files = fileService.getByCourseId(courseId);
         List<FileCategory> categories = fileCategoryService.getCategories();
         final ModelAndView mav = new ModelAndView("course-files");
@@ -110,7 +110,7 @@ public class CourseController {
     }
 
     @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.GET)
-    public ModelAndView teacherFiles(@PathVariable int courseId) {
+    public ModelAndView teacherFiles(@PathVariable Integer courseId) {
         final List<FileModel> files = fileService.getByCourseId(courseId);
         List<FileCategory> categories = fileCategoryService.getCategories();
         final ModelAndView mav = new ModelAndView("teacher/teacher-files");
@@ -121,7 +121,7 @@ public class CourseController {
     }
 
     @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.POST)
-    public ModelAndView teacherFiles(@PathVariable int courseId,
+    public ModelAndView teacherFiles(@PathVariable Integer courseId,
                                      @RequestParam CommonsMultipartFile file, @RequestParam long category){
         String filename=file.getOriginalFilename();
         String extension = getExtension(filename);

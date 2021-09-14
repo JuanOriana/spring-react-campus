@@ -32,10 +32,10 @@ public class CourseDaoImplTest {
 
     private JdbcTemplate jdbcTemplate;
 
-    private final int COURSE_ID = 1;
-    private final int SUBJECT_ID = 1;
-    private final int QUARTER = 1;
-    private final int YEAR = 2021;
+    private final Integer COURSE_ID = 1;
+    private final Integer SUBJECT_ID = 1;
+    private final Integer QUARTER = 1;
+    private final Integer YEAR = 2021;
     private final String SUBJECT_NAME = "PAW";
     private final String SUBJECT_CODE = "A1";
     private final String BOARD = "S1";
@@ -55,15 +55,15 @@ public class CourseDaoImplTest {
     @Test
     public void testCreate() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
-        Course course = courseDao.create(new Course(COURSE_ID, YEAR, QUARTER, BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME)));
+        Course course = courseDao.create(YEAR, QUARTER, BOARD, SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
         assertNotNull(course);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "courses"));
     }
 
     @Test(expected = RuntimeException.class)
     public void testCreateDuplicateUniqueValues() {
-        final Course isCreated1 = courseDao.create(new Course(YEAR, QUARTER, BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME)));
-        final Course isCreated2 = courseDao.create(new Course(YEAR, QUARTER, BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME)));
+        final Course isCreated1 = courseDao.create(YEAR, QUARTER, BOARD, SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
+        final Course isCreated2 = courseDao.create(YEAR, QUARTER, BOARD, SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
         Assert.fail("Should have thrown Runtime Exception for duplicate constraint");
     }
 
@@ -119,7 +119,13 @@ public class CourseDaoImplTest {
     @Test
     public void testUpdate(){
         jdbcTemplate.execute(insertCourseWithIdSql);
-        assertTrue(courseDao.update(COURSE_ID, new Course(YEAR, QUARTER, BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))));
+        assertTrue(courseDao.update(COURSE_ID, new Course.Builder()
+                .withCourseId(COURSE_ID)
+                .withYear(YEAR)
+                .withQuarter(QUARTER)
+                .withBoard(BOARD)
+                .withSubject( new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
+                .build()));
         final Optional<Course> course = courseDao.getById(COURSE_ID);
         assertNotNull(course);
         assertTrue(course.isPresent());

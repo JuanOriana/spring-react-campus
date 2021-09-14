@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,18 +19,22 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class CourseServiceImplTest {
 
-    private static long COURSE_ID = 1;
-    private static long SUBJECT_ID = 1;
+    private static Integer COURSE_ID = 1;
+    private static Integer SUBJECT_ID = 1;
     private static String SUBJECT_CODE = "A1";
     private static String SUBJECT_NAME = "PAW";
-    private static long INVALID_COURSE_ID = 999;
+    private static Integer INVALID_COURSE_ID = 999;
     private static int YEAR = 2021;
     private static int QUARTER = 2;
     private static String BOARD = "S1";
     private Course getMockCourse() {
-        Course mock = new Course(YEAR, QUARTER, BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME));
-        mock.setCourseId(COURSE_ID);
-        return mock;
+        return new Course.Builder()
+                .withCourseId(COURSE_ID)
+                .withYear(YEAR)
+                .withQuarter(QUARTER)
+                .withBoard(BOARD)
+                .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
+                .build();
     }
 
     @InjectMocks
@@ -40,10 +45,14 @@ public class CourseServiceImplTest {
 
     @Test
     public void testCreateCourse() {
-        Course course = getMockCourse();
-        when(mockDao.create(eq(course))).thenReturn(new Course(COURSE_ID, YEAR, QUARTER,
-                BOARD, new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME)));
-        Course newCourse = courseService.create(course);
+        when(mockDao.create(eq(YEAR), eq(QUARTER), eq(BOARD), eq(SUBJECT_ID), eq(SUBJECT_NAME), eq(SUBJECT_CODE))).thenReturn(new Course.Builder()
+                .withCourseId(COURSE_ID)
+                .withYear(YEAR)
+                .withQuarter(QUARTER)
+                .withBoard(BOARD)
+                .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
+                .build());
+        Course newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         Assert.assertEquals(newCourse.getCourseId(), COURSE_ID);
     }
 
@@ -59,8 +68,8 @@ public class CourseServiceImplTest {
     @Test(expected =  RuntimeException.class)
     public void testCreateCourseDuplicate() {
         Course course = getMockCourse();
-        when(mockDao.create(eq(course))).thenThrow(new RuntimeException());
-        Course newCourse = courseService.create(course);
+        when(mockDao.create(eq(YEAR), eq(QUARTER), eq(BOARD), eq(SUBJECT_ID), eq(SUBJECT_NAME), eq(SUBJECT_CODE))).thenThrow(new RuntimeException());
+        Course newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         Assert.fail("Should have thrown runtime exception for duplicate course creation");
     }
 

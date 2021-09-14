@@ -45,9 +45,23 @@ public class AnnouncementServiceImplTest {
     private static final String ANNOUNCEMENT_CONTENT = "Rocks! (or not)";
 
     private Announcement getMockAnnouncement() {
-        Subject mockSubject = new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
-        Course mockCourse = new Course(COURSE_ID, COURSE_YEAR, COURSE_QUARTER, COURSE_BOARD, mockSubject);
-        User mockUser = new User(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, true);
+        Course mockCourse = new Course.Builder()
+                .withCourseId(COURSE_ID)
+                .withYear(COURSE_YEAR)
+                .withQuarter(COURSE_QUARTER)
+                .withBoard(COURSE_BOARD)
+                .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
+                .build();
+        User mockUser = new User.Builder()
+                .withUserId(USER_ID)
+                .withFileNumber(USER_FILE_NUMBER)
+                .withName(USER_NAME)
+                .withSurname(USER_SURNAME)
+                .withUsername(USER_USERNAME)
+                .withEmail(USER_EMAIL)
+                .withPassword(USER_PASSWORD)
+                .isAdmin(true)
+                .build();
         Announcement mockAnnouncement = new Announcement(ANNOUNCEMENT_DATE, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, mockUser, mockCourse);
         mockAnnouncement.setAnnouncementId(ANNOUNCEMENT_ID);
         return mockAnnouncement;

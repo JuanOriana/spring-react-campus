@@ -18,17 +18,18 @@ public class CourseServiceImpl implements CourseService {
     private CourseDao courseDao;
 
     @Override
-    public Course create(Course course) {
-        return courseDao.create(course);
+    public Course create(Integer year, Integer quarter, String board, Integer subjectId, String subjectName,
+                         String subjectCode) {
+        return courseDao.create(year, quarter, board, subjectId, subjectName, subjectCode);
     }
 
     @Override
-    public boolean update(long id, Course course) {
+    public boolean update(Integer id, Course course) {
         return courseDao.update(id, course);
     }
 
     @Override
-    public boolean delete(long id) {
+    public boolean delete(Integer id) {
         return courseDao.delete(id);
     }
 
@@ -38,17 +39,17 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Optional<Course> getById(long id) {
+    public Optional<Course> getById(Integer id) {
         return courseDao.getById(id);
     }
 
     @Override
-    public Map<User, Role> getTeachers(long courseId) {
+    public Map<User, Role> getTeachers(Integer courseId) {
         return courseDao.getTeachers(courseId);
     }
 
     @Override
-    public boolean belongs(long userId, long courseId) {
+    public boolean belongs(Integer userId, Integer courseId) {
         return courseDao.belongs(userId, courseId);
     }
 
