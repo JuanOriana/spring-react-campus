@@ -1,13 +1,12 @@
 package ar.edu.itba.paw.models;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 
 public class FileModel {
 
     private long fileId, size;
-    private FileExtensionModel fileExtension;
+    private FileExtension fileExtension;
     private String name;
     private LocalDateTime date;
     private byte[] file;
@@ -16,7 +15,7 @@ public class FileModel {
     public FileModel() {
     }
 
-    public FileModel(long fileId, long size, String name, LocalDateTime date, byte[] file, FileExtensionModel fileExtension, Course course) {
+    public FileModel(long fileId, long size, String name, LocalDateTime date, byte[] file, FileExtension fileExtension, Course course) {
         this.fileId = fileId;
         this.size = size;
         this.name = name;
@@ -25,7 +24,7 @@ public class FileModel {
         this.fileExtension = fileExtension;
         this.course = course;
     }
-    public FileModel( long size, String name, LocalDateTime date, byte[] file, FileExtensionModel fileExtension, Course course) {
+    public FileModel(long size, String name, LocalDateTime date, byte[] file, FileExtension fileExtension, Course course) {
         this.size = size;
         this.name = name;
         this.date = date;
@@ -83,19 +82,19 @@ public class FileModel {
         this.file = file;
     }
 
-    public FileExtensionModel getExtension() {
+    public FileExtension getExtension() {
         return fileExtension;
     }
 
-    public void setExtension(FileExtensionModel fileExtension) {
+    public void setExtension(FileExtension fileExtension) {
         this.fileExtension = fileExtension;
     }
 
-    public FileExtensionModel getFileExtension() {
+    public FileExtension getFileExtension() {
         return fileExtension;
     }
 
-    public void setFileExtension(FileExtensionModel fileExtension) {
+    public void setFileExtension(FileExtension fileExtension) {
         this.fileExtension = fileExtension;
     }
 

@@ -20,7 +20,7 @@ public class FileCategoryServiceImpl implements FileCategoryService {
     }
 
     @Override
-    public boolean update(long fileCategoryId, FileCategory newFileCategory) {
+    public boolean update(long fileCategoryId, String newFileCategory) {
         return fileCategoryDao.update(fileCategoryId, newFileCategory);
     }
 
