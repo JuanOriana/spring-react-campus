@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO: FileCategoryDaoImplTest
 @Repository
 public class FileCategoryDaoImpl implements FileCategoryDao {
 
@@ -39,9 +38,9 @@ public class FileCategoryDaoImpl implements FileCategoryDao {
     }
 
     @Override
-    public boolean update(long fileCategoryId, FileCategory newFileCategory) {
+    public boolean update(long fileCategoryId, String newFileCategory) {
         return jdbcTemplate.update("UPDATE file_categories " +
-                "SET categoryName = ?," +
+                "SET categoryName = ?" +
                 "WHERE categoryId = ?", new Object[]{newFileCategory,fileCategoryId}) == 1;
     }
 
