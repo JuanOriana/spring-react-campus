@@ -1,12 +1,9 @@
 package ar.edu.itba.paw.webapp.controller;
-import ar.edu.itba.paw.interfaces.CourseService;
+
+import ar.edu.itba.paw.interfaces.MailingService;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.models.Announcement;
-import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
-import ar.edu.itba.paw.webapp.auth.CampusUser;
-import ar.edu.itba.paw.webapp.form.AnnouncementForm;
 import ar.edu.itba.paw.webapp.form.MailForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class MailController extends AuthController{
@@ -30,6 +25,10 @@ public class MailController extends AuthController{
 
     @Autowired
     UserService userService;
+    @Autowired
+    MailingService mailingService;
+    @Autowired
+    AuthFacade authFacade;
 
     @RequestMapping(value = "/sendmail/{userId}", method = RequestMethod.GET)
     public ModelAndView sendmail(@PathVariable Integer userId, final MailForm mailForm,
@@ -47,6 +46,13 @@ public class MailController extends AuthController{
                                          @Valid MailForm mailForm, final BindingResult errors){
         String successMessage = null;
         if (!errors.hasErrors()) {
+            Optional<User> user = userService.findById(userId);
+            if (user.isPresent()) {
+                mailingService.sendEmail(authFacade.getCurrentUser().getEmail(), user.get().getEmail(), mailForm.getSubject(), mailForm.getContent(), "text/plain"); // todo desharcodear el content type
+            }
+            else{
+                // todo: Manejo
+            }
             mailForm.setSubject("");
             mailForm.setContent("");
             successMessage = "Email enviado exitosamente";
