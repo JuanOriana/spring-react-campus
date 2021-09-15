@@ -36,6 +36,8 @@ public class User {
             this.isAdmin = isAdmin;
         }
 
+
+
         public Builder withName(String name){
             this.name = name;
             return Builder.this;
@@ -95,11 +97,6 @@ public class User {
             if(this.email == null){
                 throw new NullPointerException("The property \"email\" is null. "
                         + "Please set the value by \"email()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
-            }
-            if(this.password == null){
-                throw new NullPointerException("The property \"password\" is null. "
-                        + "Please set the value by \"password()\". "
                         + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
             }
             if(this.fileNumber == null){

@@ -31,6 +31,7 @@ public class FilesController {
 
     @RequestMapping("/files")
     public ModelAndView files(){
+        // TODO: only list files visible to the user (add userId as param to list function)
         final List<FileModel> files = fileService.list();
         final List<FileCategory> categories = fileCategoryService.getCategories();
         final List<FileExtension> extensions = fileExtensionService.getExtensions();

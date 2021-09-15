@@ -39,7 +39,7 @@
                 <jsp:param name="courseName" value="${course.subject.name}"/>
                 <jsp:param name="courseId" value="${course.courseId}"/>
             </jsp:include>
-            <c:url value="/teacher-course/${courseId}/files" var="postUrl"/>
+            <c:url value="/course/${courseId}/files" var="postUrl"/>
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> Material </h3>
                 <form method="post" action="${postUrl}" enctype="multipart/form-data" class="form-wrapper reduced">
@@ -123,7 +123,7 @@
                     <div class="file-grid">
                         <c:forEach var="file" items="${files}">
                             <div class="file-unit">
-                                <a href="<c:url value="/savefile/${file.fileId}"/>" class="styleless-anchor"
+                                <a href="<c:url value="/download/${file.fileId}"/>" class="styleless-anchor"
                                    style="display: flex;margin-left: 10px; align-items: center">
                                     <img src="<c:url value="${page.Context.request.contextPath}/resources/images/extensions/${file.extension.fileExtension}.png"/>"
                                          class="file-img" alt="${file.name}"/>

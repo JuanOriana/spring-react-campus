@@ -24,4 +24,6 @@ public interface FileDao {
     List<FileModel> getByCategory(long fileCategoryId);
 
     List<FileModel> getByCourseId(long courseId);
+
+    boolean hasAccess(long fileId, long userId);
 }

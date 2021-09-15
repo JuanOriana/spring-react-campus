@@ -150,6 +150,15 @@ public class FileDaoImpl implements FileDao {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE courseId = ?", new Object[]{courseId}, FILE_MODEL_ROW_MAPPER));
     }
 
+    private RowMapper<Integer> ACCESS_ROW_MAPPER = ((rs, rowNum) -> rs.getInt("userId"));
+
+    @Override
+    public boolean hasAccess(long fileId, long userId) {
+        Optional<Integer> userResponse = jdbcTemplate.query("SELECT * FROM files NATURAL JOIN user_to_course WHERE " +
+                "fileId = ? AND userId = ?", new Object[]{fileId, userId}, ACCESS_ROW_MAPPER).stream().findFirst();
+        return userResponse.isPresent();
+    }
+
     private String getExtension(String filename){
         String extension = "";
         int i = filename.lastIndexOf('.');

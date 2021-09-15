@@ -90,4 +90,9 @@ public class FileServiceImpl implements FileService {
         return fileDao.getByCourseId(courseId);
     }
 
+    @Override
+    public boolean hasAccess(long fileId, long userId) {
+        return fileDao.hasAccess(fileId, userId);
+    }
+
 }

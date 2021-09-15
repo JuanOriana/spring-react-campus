@@ -2,7 +2,10 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.webapp.auth.AuthFacade;
+import ar.edu.itba.paw.webapp.auth.CampusUser;
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
+import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
 import ar.edu.itba.paw.webapp.form.AnnouncementForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -22,6 +26,9 @@ import java.util.*;
 
 @Controller
 public class CourseController {
+
+    @Autowired
+    AuthFacade authFacade;
 
     @Autowired
     AnnouncementService announcementService;
@@ -41,46 +48,46 @@ public class CourseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
     private final Comparator<Announcement> orderByDate = (o1, o2) -> o2.getDate().compareTo(o1.getDate());
 
-
-    @ExceptionHandler(CourseNotFoundException.class)
-    @ResponseStatus(code = HttpStatus.NOT_FOUND)
-    public ModelAndView noSuchCourse() {
-        ModelAndView mav = new ModelAndView("errorPage");
-        mav.addObject("errorMsg", "Course does not exist");
-        return mav;
+    @RequestMapping(value = "/course/{courseId}", method = RequestMethod.GET)
+    public RedirectView coursePortal(@PathVariable Integer courseId) {
+       return new RedirectView("/course/{courseId}/announcements");
     }
 
-    @RequestMapping("/course/{courseId}")
-    public ModelAndView announcements(@PathVariable Integer courseId) {
-        final ModelAndView mav = new ModelAndView("course");
-        List<Announcement> announcements = announcementService.listByCourse(courseId,orderByDate);
+    @RequestMapping(value = "/course/{courseId}/announcements", method = RequestMethod.GET)
+    public ModelAndView announcements(@PathVariable Integer courseId, final AnnouncementForm announcementForm) {
+        final ModelAndView mav;
+        List<Announcement> announcements = announcementService.listByCourse(courseId, orderByDate);
+        if(courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
+            mav = new ModelAndView("teacher/teacher-course");
+            mav.addObject("announcementForm",announcementForm);
+        } else {
+            mav = new ModelAndView("course");
+        }
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("announcementList", announcements);
         return mav;
     }
 
-    @RequestMapping(value = "/teacher-course/{courseId}", method = RequestMethod.GET)
-    public ModelAndView teacherAnnouncements(@PathVariable Integer courseId, final AnnouncementForm announcementForm) {
-        final ModelAndView mav = new ModelAndView("teacher/teacher-course");
-        List<Announcement> announcements = announcementService.listByCourse(courseId,orderByDate);
-        mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
-        mav.addObject("announcementList", announcements);
-        mav.addObject("announcementForm",announcementForm);
-        return mav;
-    }
-
-    @RequestMapping(value = "/teacher-course/{courseId}", method = RequestMethod.POST)
-    public ModelAndView teacherAnnouncements(@PathVariable Integer courseId,
+    @RequestMapping(value = "/course/{courseId}/announcements", method = RequestMethod.POST)
+    public ModelAndView postAnnouncement(@PathVariable Integer courseId,
                                              @Valid AnnouncementForm announcementForm, final BindingResult errors){
-        //TODO: GETTING A RANDOM TEACHER CHANGE LATER
-        if (!errors.hasErrors()){
-            Set<User> teacherSet = courseService.getTeachers(courseId).keySet();
+        if (!errors.hasErrors()) {
+            CampusUser springUser = authFacade.getCurrentUser();
+            User currentUser = new User.Builder()
+                    .withUserId(springUser.getUserId())
+                    .withEmail(springUser.getEmail())
+                    .withFileNumber(springUser.getFileNumber())
+                    .withPassword(springUser.getPassword())
+                    .withName(springUser.getName())
+                    .withSurname(springUser.getSurname())
+                    .withUsername(springUser.getUsername())
+                    .build();
             announcementService.create(new Announcement(LocalDateTime.now(),
-                    announcementForm.getTitle(), announcementForm.getContent(), teacherSet.iterator().next(),courseService.getById(courseId).get()));
+                    announcementForm.getTitle(), announcementForm.getContent(), currentUser, courseService.getById(courseId).get()));
             announcementForm.setContent("");
             announcementForm.setTitle("");
         }
-        return teacherAnnouncements(courseId,announcementForm);
+        return announcements(courseId, announcementForm);
     }
 
     @RequestMapping("/course/{courseId}/teachers")
@@ -93,12 +100,17 @@ public class CourseController {
         return mav;
     }
 
-    @RequestMapping("/course/{courseId}/files")
+    @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.GET)
     public ModelAndView files(@PathVariable Integer courseId) {
+        final ModelAndView mav;
         final List<FileModel> files = fileService.getByCourseId(courseId);
         List<FileCategory> categories = fileCategoryService.getCategories();
         final List<FileExtension> extensions = fileExtensionService.getExtensions();
-        final ModelAndView mav = new ModelAndView("course-files");
+        if(courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
+            mav = new ModelAndView("teacher/teacher-files");
+        } else {
+            mav = new ModelAndView("files");
+        }
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("categories",categories);
         mav.addObject("files",files);
@@ -106,21 +118,8 @@ public class CourseController {
         return mav;
     }
 
-    @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.GET)
-    public ModelAndView teacherFiles(@PathVariable Integer courseId) {
-        final List<FileModel> files = fileService.getByCourseId(courseId);
-        List<FileCategory> categories = fileCategoryService.getCategories();
-        final List<FileExtension> extensions = fileExtensionService.getExtensions();
-        final ModelAndView mav = new ModelAndView("teacher/teacher-files");
-        mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
-        mav.addObject("categories",categories);
-        mav.addObject("files",files);
-        mav.addObject("extensions",extensions);
-        return mav;
-    }
-
-    @RequestMapping(value = "/teacher-course/{courseId}/files", method = RequestMethod.POST)
-    public ModelAndView teacherFiles(@PathVariable Integer courseId,
+    @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.POST)
+    public ModelAndView uploadFile(@PathVariable Integer courseId,
                                      @RequestParam CommonsMultipartFile file, @RequestParam long category){
         String filename=file.getOriginalFilename();
         String extension = getExtension(filename);
@@ -128,14 +127,12 @@ public class CourseController {
         FileModel newFile = fileService.create(new FileModel(file.getSize(),filename, LocalDateTime.now(), file.getBytes(),
                 new FileExtension(extension), courseService.getById(courseId).orElseThrow(CourseNotFoundException::new)));
         fileService.addCategory(newFile.getFileId(),category);
-        return teacherFiles(courseId);
+        return files(courseId);
     }
 
-    @RequestMapping(value = "/savefile/{fileId}", method = RequestMethod.GET)
-    public void saveFile(@PathVariable int fileId, HttpServletResponse response){
-        //TODO: CHECK IF USER HAS PERMISSIONS TO DOWNLOAD FILE AND ADD PROPER EXCEPTION
-        FileModel file = fileService.getById(fileId).orElseThrow(RuntimeException::new);
-        //We dont want pdf files to download automatically as they can be nicely displayed in most browsers
+    @RequestMapping(value = "/download/{fileId}", method = RequestMethod.GET)
+    public void downloadFile(@PathVariable int fileId, HttpServletResponse response) {
+        FileModel file = fileService.getById(fileId).orElseThrow(FileNotFoundException::new);
         if (!file.getFileExtension().getFileExtension().equals("pdf"))
             response.setHeader("Content-Disposition","attachment; filename=\""+ file.getName()+"\"");
         try {

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -45,8 +46,11 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                     .antMatchers("/login").anonymous()
                     .antMatchers("/admin/**").hasRole("ADMIN")
-                    .antMatchers("/teacher-course/{courseId}/**").access("@courseVoter.checkUserCourseRole(authentication, #courseId)")
-                    .antMatchers("/course/{courseId}/**").access("@courseVoter.checkUserCourseAccess(authentication,#courseId)")
+                    .antMatchers(HttpMethod.GET, "/download/{fileId}").access("@courseVoter.hasFileAccess(authentication,#fileId)")
+                    .antMatchers(HttpMethod.POST, "/course/{courseId}").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.POST, "/course/{courseId}/announcements").access("@courseVoter.hasCoursePrivileges(authentication,#courseId)")
+                    .antMatchers(HttpMethod.POST, "/course/{courseId}/files").access("@courseVoter.hasCoursePrivileges(authentication,#courseId)")
+                    .antMatchers(HttpMethod.GET, "/course/{courseId}/**").access("@courseVoter.hasCourseAccess(authentication,#courseId)")
                     .antMatchers("/**").authenticated()
                 .and().formLogin()
                     .usernameParameter("username")
