@@ -514,3 +514,13 @@ textarea:focus, input:focus{
     padding-left: 20px;
     font-weight: 700;
 }
+
+.user-section-img{
+    height: 280px;
+    border-radius: 50%;
+}
+
+.user-section-wrapper{
+    display: flex;
+    padding:20px
+}
