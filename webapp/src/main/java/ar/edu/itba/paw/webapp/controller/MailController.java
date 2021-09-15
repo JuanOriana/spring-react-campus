@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.CourseService;
+import ar.edu.itba.paw.interfaces.MailingService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.models.Course;
@@ -30,6 +31,10 @@ public class MailController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    MailingService mailingService;
+    @Autowired
+    AuthFacade authFacade;
 
     @RequestMapping(value = "/sendmail/{userId}", method = RequestMethod.GET)
     public ModelAndView sendmail(@PathVariable Integer userId, final MailForm mailForm) {
@@ -44,9 +49,13 @@ public class MailController {
     public ModelAndView sendmail(@PathVariable Integer userId,
                                          @Valid MailForm mailForm, final BindingResult errors){
         if (!errors.hasErrors()) {
+            User user = userService.findById(userId).get();
+            mailingService.sendEmail(authFacade.getCurrentUser().getEmail(),user.getEmail(),mailForm.getSubject(), mailForm.getContent(), "text/plain"); // todo desharcodear el content type
             mailForm.setSubject("");
             mailForm.setContent("");
         }
+
+
         return sendmail(userId, mailForm);
     }
 
