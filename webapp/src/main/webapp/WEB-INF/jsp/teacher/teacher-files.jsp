@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <html>
 <head>
     <title>Campus - ${course.subject.name}</title>
@@ -42,18 +43,20 @@
             <c:url value="/course/${courseId}/files" var="postUrl"/>
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> Material </h3>
-                <form method="post" action="${postUrl}" enctype="multipart/form-data" class="form-wrapper reduced">
+                <form:form modelAttribute="fileForm" method="post" enctype="multipart/form-data" class="form-wrapper reduced">
                     <h1 class="announcement-title" style="color:#176961; align-self:center">Subir nuevo archivo</h1>
-                    <label for="file" class="form-label">Archivo</label>
-                    <input id="file" name="file" type="file" class="form-input" style="font-size: 26px">
-                    <label for="category" class="form-label">Categoria</label>
-                    <select id="category" name="category" class="form-input" style="font-size: 26px">
+                    <form:label path="file" for="file" class="form-label">Archivo</form:label>
+                    <form:input path="file" type="file" class="form-input" style="font-size: 26px"/>
+                    <form:errors path="file" element="p" cssStyle="color:red;margin-left: 10px"/>
+                    <form:label path="categoryId" for="categoryId" class="form-label">Categoria</form:label>
+                    <form:select path="categoryId" class="form-input" style="font-size: 26px">
                         <c:forEach var="category" items="${categories}">
-                            <option value="${category.categoryId}"><c:out value="${category.categoryName}"/></option>
+                            <form:option value="${category.categoryId}"><c:out value="${category.categoryName}"/></form:option>
                         </c:forEach>
-                    </select>
+                    </form:select>
+                    <form:errors path="categoryId" element="p" cssStyle="color:red;margin-left: 10px"/>
                     <button class="form-button">Publicar</button>
-                </form>
+                </form:form>
                 <div class="separator reduced">.</div>
                 <div class="big-wrapper">
                     <form action="" class="file-query-container">

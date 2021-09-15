@@ -7,6 +7,7 @@ import ar.edu.itba.paw.webapp.auth.CampusUser;
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
 import ar.edu.itba.paw.webapp.form.AnnouncementForm;
+import ar.edu.itba.paw.webapp.form.FileForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,13 +102,14 @@ public class CourseController {
     }
 
     @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.GET)
-    public ModelAndView files(@PathVariable Integer courseId) {
+    public ModelAndView files(@PathVariable Integer courseId, final FileForm fileForm) {
         final ModelAndView mav;
         final List<FileModel> files = fileService.getByCourseId(courseId);
         List<FileCategory> categories = fileCategoryService.getCategories();
         final List<FileExtension> extensions = fileExtensionService.getExtensions();
         if(courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-files");
+            mav.addObject("fileForm",fileForm);
         } else {
             mav = new ModelAndView("files");
         }
@@ -120,14 +122,18 @@ public class CourseController {
 
     @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.POST)
     public ModelAndView uploadFile(@PathVariable Integer courseId,
-                                     @RequestParam CommonsMultipartFile file, @RequestParam long category){
-        String filename=file.getOriginalFilename();
-        String extension = getExtension(filename);
-        //TODO: HANDLE NOT FOUND EXTENSIONS INTO "OTHER"
-        FileModel newFile = fileService.create(new FileModel(file.getSize(),filename, LocalDateTime.now(), file.getBytes(),
-                new FileExtension(extension), courseService.getById(courseId).orElseThrow(CourseNotFoundException::new)));
-        fileService.addCategory(newFile.getFileId(),category);
-        return files(courseId);
+                                     @Valid FileForm fileForm, final BindingResult errors){
+        if (!errors.hasErrors()) {
+            CommonsMultipartFile file = fileForm.getFile();
+            String filename = file.getOriginalFilename();
+            String extension = getExtension(filename);
+            FileModel newFile = fileService.create(new FileModel(file.getSize(), filename, LocalDateTime.now(), file.getBytes(),
+                    new FileExtension(extension), courseService.getById(courseId).orElseThrow(CourseNotFoundException::new)));
+            fileService.addCategory(newFile.getFileId(), fileForm.getCategoryId());
+            fileForm.setFile(null);
+            fileForm.setCategoryId(null);
+        }
+        return files(courseId,fileForm);
     }
 
     @RequestMapping(value = "/download/{fileId}", method = RequestMethod.GET)
@@ -135,6 +141,8 @@ public class CourseController {
         FileModel file = fileService.getById(fileId).orElseThrow(FileNotFoundException::new);
         if (!file.getFileExtension().getFileExtension().equals("pdf"))
             response.setHeader("Content-Disposition","attachment; filename=\""+ file.getName()+"\"");
+        else
+            response.setContentType("application/pdf");
         try {
             InputStream is = new ByteArrayInputStream(file.getFile());
             org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
