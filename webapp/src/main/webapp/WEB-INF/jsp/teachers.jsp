@@ -24,7 +24,7 @@
                                 <p><c:out value="${teacher.key.name} ${teacher.key.surname}"/></p>
                                 <p><c:out value="${teacher.key.email}"/></p>
                             </div>
-                            <a class="styleless-anchor" href="mailto:${teacher.key.email}">
+                            <a class="styleless-anchor" href="<c:url value="/sendmail/${teacher.key.userId}"/>">
                                 <img alt="mail icon" class="mail-icon"
                                      src="https://i.pinimg.com/originals/3a/4e/95/3a4e95aa862636d6f22c95fded897f94.jpg"/>
                             </a>
