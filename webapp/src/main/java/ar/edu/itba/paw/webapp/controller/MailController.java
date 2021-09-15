@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-public class MailController {
+public class MailController extends AuthController{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PortalController.class);
 

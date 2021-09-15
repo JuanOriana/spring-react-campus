@@ -17,7 +17,12 @@
             <a href="<c:url value ="/timetable"/>" class="styleless-anchor">Mis Horarios</a>
         </li>
     </ul>
-    <div style="width: 100px;"></div>
+    <div class="user-nav-wrapper">
+        <h4>${currentUser.name}</h4>
+        <a class="styleless-anchor" href="<c:url value ="/logout"/>">
+            <button class="logout-btn">Salir</button>
+        </a>
+    </div>
 </nav>
 </body>
 </html>

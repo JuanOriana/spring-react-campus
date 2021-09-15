@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
-public class CourseController {
+public class CourseController extends AuthController{
 
     @Autowired
     AuthFacade authFacade;

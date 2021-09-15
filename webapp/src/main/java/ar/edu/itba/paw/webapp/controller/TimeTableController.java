@@ -16,7 +16,7 @@ import java.sql.Time;
 import java.util.*;
 
 @Controller
-public class TimeTableController {
+public class TimeTableController extends AuthController{
 
     final String[] days = {"Lunes","Martes","Miercoles","Jueves","Viernes","Sabado"};
     final String[] hours = {"08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00",

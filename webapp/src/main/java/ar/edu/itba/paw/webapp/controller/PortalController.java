@@ -12,7 +12,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.util.List;
 
 @Controller
-public class PortalController {
+public class PortalController extends AuthController{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PortalController.class);
 
