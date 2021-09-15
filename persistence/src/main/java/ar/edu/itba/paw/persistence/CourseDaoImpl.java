@@ -73,6 +73,12 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
+    public List<User> getStudents(Integer courseId){
+         return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN user_to_course NATURAL JOIN roles WHERE courseId = ? AND roleId = ?", new Object[]{courseId, Permissions.STUDENT.getValue()},
+                 LIST_RESULT_SET_EXTRACTOR_USERS);
+    }
+
+    @Override
     public Optional<Course> getById(Integer id) {
         return jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects WHERE courseId = ?", new Object[]{id}, COURSE_ROW_MAPPER).stream().findFirst();
     }
@@ -95,7 +101,23 @@ public class CourseDaoImpl implements CourseDao {
         }
         return result;
     });
-
+   private static final ResultSetExtractor<List<User>> LIST_RESULT_SET_EXTRACTOR_USERS = (rs -> {
+       List<User> result = new ArrayList<>();
+        while(rs.next()) {
+        User user = new User.Builder()
+                .withUserId(rs.getInt("userId"))
+                .withFileNumber(rs.getInt("fileNumber"))
+                .withName(rs.getString("name"))
+                .withSurname(rs.getString("surname"))
+                .withUsername(rs.getString("username"))
+                .withEmail(rs.getString("email"))
+                .withPassword(rs.getString("password"))
+                .isAdmin(rs.getBoolean("isAdmin"))
+                .build();
+        result.add(user);
+    }
+        return result;
+});
     @Override
     public Map<User, Role> getTeachers(Integer courseId) {
         return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN user_to_course NATURAL JOIN roles WHERE " +
