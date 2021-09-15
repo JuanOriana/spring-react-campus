@@ -55,12 +55,14 @@ public class CourseController extends AuthController{
     }
 
     @RequestMapping(value = "/course/{courseId}/announcements", method = RequestMethod.GET)
-    public ModelAndView announcements(@PathVariable Integer courseId, final AnnouncementForm announcementForm) {
+    public ModelAndView announcements(@PathVariable Integer courseId,
+                                      final AnnouncementForm announcementForm, String successMessage) {
         final ModelAndView mav;
         List<Announcement> announcements = announcementService.listByCourse(courseId, orderByDate);
         if(courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-course");
             mav.addObject("announcementForm",announcementForm);
+            mav.addObject("successMessage",successMessage);
         } else {
             mav = new ModelAndView("course");
         }
@@ -72,6 +74,7 @@ public class CourseController extends AuthController{
     @RequestMapping(value = "/course/{courseId}/announcements", method = RequestMethod.POST)
     public ModelAndView postAnnouncement(@PathVariable Integer courseId,
                                              @Valid AnnouncementForm announcementForm, final BindingResult errors){
+        String successMessage = null;
         if (!errors.hasErrors()) {
             CampusUser springUser = authFacade.getCurrentUser();
             User currentUser = new User.Builder()
@@ -87,8 +90,9 @@ public class CourseController extends AuthController{
                     announcementForm.getTitle(), announcementForm.getContent(), currentUser, courseService.getById(courseId).get()));
             announcementForm.setContent("");
             announcementForm.setTitle("");
+            successMessage = "Anuncio publicado exitosamente";
         }
-        return announcements(courseId, announcementForm);
+        return announcements(courseId, announcementForm,successMessage);
     }
 
     @RequestMapping("/course/{courseId}/teachers")
@@ -102,7 +106,8 @@ public class CourseController extends AuthController{
     }
 
     @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.GET)
-    public ModelAndView files(@PathVariable Integer courseId, final FileForm fileForm) {
+    public ModelAndView files(@PathVariable Integer courseId, final FileForm fileForm,
+                              String successMessage) {
         final ModelAndView mav;
         final List<FileModel> files = fileService.getByCourseId(courseId);
         List<FileCategory> categories = fileCategoryService.getCategories();
@@ -110,6 +115,7 @@ public class CourseController extends AuthController{
         if(courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-files");
             mav.addObject("fileForm",fileForm);
+            mav.addObject("successMessage",successMessage);
         } else {
             mav = new ModelAndView("files");
         }
@@ -123,6 +129,7 @@ public class CourseController extends AuthController{
     @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.POST)
     public ModelAndView uploadFile(@PathVariable Integer courseId,
                                      @Valid FileForm fileForm, final BindingResult errors){
+        String successMessage = null;
         if (!errors.hasErrors()) {
             CommonsMultipartFile file = fileForm.getFile();
             String filename = file.getOriginalFilename();
@@ -132,8 +139,9 @@ public class CourseController extends AuthController{
             fileService.addCategory(newFile.getFileId(), fileForm.getCategoryId());
             fileForm.setFile(null);
             fileForm.setCategoryId(null);
+            successMessage = "Archivo creado exitosamente";
         }
-        return files(courseId,fileForm);
+        return files(courseId,fileForm, successMessage);
     }
 
     @RequestMapping(value = "/download/{fileId}", method = RequestMethod.GET)

@@ -4,6 +4,8 @@
     --cyan-light: #CBF3F0;
     --orange-light: #FFBF69;
     --orange-dark: #FF9F1C;
+    --success-back: #45FF9F;
+    --success-front: #39614C;
 }
 
 body{
@@ -502,4 +504,13 @@ textarea:focus, input:focus{
 
 .file-checkbox-label{
     color: var(--cyan-light);
+}
+
+.success-box{
+    background: var(--success-back);
+    color: var(--success-front);
+    border-bottom: 2px solid var(--success-front);
+    padding: 3px;
+    padding-left: 20px;
+    font-weight: 700;
 }

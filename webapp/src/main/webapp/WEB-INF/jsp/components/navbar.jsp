@@ -29,5 +29,10 @@
         <div style="width: 120px"></div>
     </c:if>
 </nav>
+<c:if test="${param.successMessage != null && !param.successMessage.equals('')}">
+    <div class="success-box">
+        <c:out value="${param.successMessage}"/>
+    </div>
+</c:if>
 </body>
 </html>
