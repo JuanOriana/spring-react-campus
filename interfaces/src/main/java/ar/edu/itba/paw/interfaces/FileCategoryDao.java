@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface FileCategoryDao {
     FileCategory create(String newCategory);
-    boolean update(long fileCategoryId, FileCategory newFileCategory);
+    boolean update(long fileCategoryId, String newFileCategory);
     boolean delete(long fileCategoryId);
     List<FileCategory> getCategories();
 }

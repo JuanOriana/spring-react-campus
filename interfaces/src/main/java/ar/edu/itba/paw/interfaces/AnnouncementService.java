@@ -19,11 +19,11 @@ public interface AnnouncementService {
     /**
      * Attempts to update a announcement
      *
-     * @param id           of the announcement to be modified
+     * @param id of the announcement to be modified
      * @param announcement modified announcement
      * @return true if the announcement was successfully updated, false otherwise
      */
-    boolean update(long id, Announcement announcement);
+    boolean update(Integer id, Announcement announcement);
 
     /**
      * Attempts to delete an announcement
@@ -31,31 +31,34 @@ public interface AnnouncementService {
      * @param id of the announcement to be deleted
      * @return true if the announcement was successfully removed, false otherwise
      */
-    boolean delete(long id);
+    boolean delete(Integer id);
 
     /**
-     * Gets all the current available announcements
+     * Gets all the current available announcements for the given user depending on which courses he is taking
+     * @param userId of the user to get the announcements from
      * @param page offset to be retrieved
      * @param pageSize size of the page to be retrieved
      * @return list containing all the current available announcements (if any)
      */
-    List<Announcement> list(long page, long pageSize);
+    List<Announcement> list(Integer userId, Integer page, Integer pageSize);
 
     /**
      * Gets the amount of pages based on the page size
      * @param pageSize size of a page from a list query
      * @return amount of pages for the given page size
      */
-    int getPageCount(long pageSize);
+    int getPageCount(Integer pageSize);
 
     /**
-     * Returns an arbitrary ordered list of announcements with pagination
+     * Returns an arbitrary ordered list of announcements with pagination for the given user depending on which courses
+     * he is taking
+     * @param userId of the user to get the announcements from
      * @param page offset to be retrieved
      * @param pageSize size of the page to be retrieved
      * @param comparator identifies the order expected in the response list
      * @return list of announcements of size pageSize (or smaller)
      */
-    List<Announcement> list(long page, long pageSize, Comparator<Announcement> comparator);
+    List<Announcement> list(Integer userId, Integer page, Integer pageSize, Comparator<Announcement> comparator);
 
     /**
      * Gets all the current available announcements for a specific course
@@ -63,7 +66,7 @@ public interface AnnouncementService {
      * @param courseId identifier of the course to get the announcements from
      * @return list containing all the current course available announcements (if any)
      */
-    List<Announcement> listByCourse(long courseId);
+    List<Announcement> listByCourse(Integer courseId);
 
     /**
      * Gets all the current available announcements for a specific course
@@ -72,7 +75,7 @@ public interface AnnouncementService {
      * @param comparator identifies the order expected in the response list
      * @return list containing all the current course available announcements (if any)
      */
-    List<Announcement> listByCourse(long courseId, Comparator<Announcement> comparator);
+    List<Announcement> listByCourse(Integer courseId, Comparator<Announcement> comparator);
 
     /**
      * Attempts to get an announcement given an id
@@ -80,5 +83,5 @@ public interface AnnouncementService {
      * @param id of the announcement to be retrieved
      * @return the announcement corresponding to the given id if it exists, null otherwise
      */
-    Optional<Announcement> getById(long id);
+    Optional<Announcement> getById(Integer id);
 }

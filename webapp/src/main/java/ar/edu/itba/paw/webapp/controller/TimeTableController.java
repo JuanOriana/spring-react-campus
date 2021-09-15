@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.TimetableService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Timetable;
+import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,14 @@ public class TimeTableController {
     @Autowired
     TimetableService timetableService;
 
+    @Autowired
+    AuthFacade authFacade;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeTableController.class);
 
     @RequestMapping("/timetable")
     public ModelAndView timeTable() {
-        List<Course> courses = courseService.list();
+        List<Course> courses = courseService.list(authFacade.getCurrentUser().getUserId());
         Map<Course, List<Timetable>> courseTimetables = new HashMap<>();
         courses.forEach(c -> courseTimetables.put(c, timetableService.getById(c.getCourseId())));
         ArrayList<ArrayList<Course>> timeTableMatrix = createTimeTableMatrix(courseTimetables);

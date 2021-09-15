@@ -16,8 +16,9 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public User create(User user) {
-        return userDao.create(user);
+    public User create(Integer fileNumber, String name, String surname, String username, String email, String password,
+                       boolean isAdmin) {
+        return userDao.create(fileNumber, name, surname, username, email, password, isAdmin);
     }
 
     @Override
@@ -31,12 +32,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Role getRole(int userId, int courseId) {
+    public Optional<Role> getRole(int userId, int courseId) {
         return userDao.getRole(userId, courseId);
     }
 
     @Override
     public Optional<User> findById(int userId) {
         return userDao.findById(userId);
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userDao.findByUsername(username);
     }
 }

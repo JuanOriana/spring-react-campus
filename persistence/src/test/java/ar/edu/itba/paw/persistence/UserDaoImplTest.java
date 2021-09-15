@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,16 +21,16 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = TestConfig.class)
 @Sql("classpath:schema.sql")
 public class UserDaoImplTest {
-    private final int USER_ID = 1;
-    private final int USER_ID_INEXISTENCE = 999;
-    private final int FILE_NUMBER = 1;
+    private final Integer USER_ID = 1;
+    private final Integer USER_ID_INEXISTENCE = 999;
+    private final Integer FILE_NUMBER = 1;
     private final String NAME = "John";
     private final String SURNAME = "Doe";
     private final String USERNAME = "johndoe";
     private final String EMAIL = "johndoe@lorem.com";
     private final String PASSWORD = "d8d3aedd4b5d0ce0131600eaadc48dcb";
     private final boolean IS_ADMIN = true;
-    private final int ROLE_ID = 1;
+    private final Integer ROLE_ID = 1;
     private final String ROLE_NAME = "Estudiante";
     private final String sqlInsertUserWithId = String.format("INSERT INTO users (userId,fileNumber,name,surname,username,email,password,isAdmin) VALUES (%d,%d,'%s','%s','%s','%s','%s',%s)", USER_ID, FILE_NUMBER, NAME, SURNAME, USERNAME, EMAIL, PASSWORD, IS_ADMIN);
 
@@ -52,7 +51,7 @@ public class UserDaoImplTest {
     @Test
     public void testCreate() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-        User user = userDao.create(new User(FILE_NUMBER, NAME, SURNAME, USERNAME, EMAIL, PASSWORD, IS_ADMIN));
+        User user = userDao.create(FILE_NUMBER, NAME, SURNAME, USERNAME, EMAIL, PASSWORD, IS_ADMIN);
         assertNotNull(user);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "users"));
     }
@@ -97,7 +96,16 @@ public class UserDaoImplTest {
     @Test
     public void testUpdate(){
         jdbcTemplate.execute(sqlInsertUserWithId);
-        assertTrue(userDao.update(USER_ID, new User(FILE_NUMBER,NAME,SURNAME,USERNAME,EMAIL,PASSWORD,IS_ADMIN)));
+        assertTrue(userDao.update(USER_ID, new User.Builder()
+                .withUserId(USER_ID)
+                .withFileNumber(FILE_NUMBER)
+                .withName(NAME)
+                .withSurname(SURNAME)
+                .withUsername(USERNAME)
+                .withEmail(EMAIL)
+                .withPassword(PASSWORD)
+                .isAdmin(IS_ADMIN)
+                .build()));
 
     }
 

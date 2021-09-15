@@ -3,7 +3,7 @@ package ar.edu.itba.paw.models;
 import java.sql.Time;
 
 public class Timetable {
-    private int courseId, dayOfWeek;
+    private Integer courseId, dayOfWeek;
     private Time startTime, endTime;
 
     public Timetable(int courseId, int dayOfWeek, Time startTime, Time endTime) {
@@ -19,19 +19,19 @@ public class Timetable {
         this.endTime = endTime;
     }
 
-    public int getCourseId() {
+    public Integer getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(int courseId) {
+    public void setCourseId(Integer courseId) {
         this.courseId = courseId;
     }
 
-    public int getDayOfWeek() {
+    public Integer getDayOfWeek() {
         return dayOfWeek;
     }
 
-    public void setDayOfWeek(int dayOfWeek) {
+    public void setDayOfWeek(Integer dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
     }
 

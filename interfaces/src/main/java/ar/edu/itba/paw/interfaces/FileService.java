@@ -121,4 +121,12 @@ public interface FileService {
      * @return the file/s corresponding to the given course if they belong to it, null otherwise
      */
     List<FileModel> getByCourseId(long courseId);
+
+    /**
+     * Returns if a user has access to the given file
+     * @param fileId of the file to query
+     * @param userId of the user to check the privileges
+     * @return true if the user has access, false otherwise
+     */
+    boolean hasAccess(long fileId, long userId);
 }

@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.FileCategoryService;
+import ar.edu.itba.paw.interfaces.FileExtensionService;
 import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.FileCategory;
+import ar.edu.itba.paw.models.FileExtension;
 import ar.edu.itba.paw.models.FileModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +26,19 @@ public class FilesController {
     @Autowired
     FileCategoryService fileCategoryService;
 
+    @Autowired
+    FileExtensionService fileExtensionService;
+
     @RequestMapping("/files")
     public ModelAndView files(){
+        // TODO: only list files visible to the user (add userId as param to list function)
         final List<FileModel> files = fileService.list();
         final List<FileCategory> categories = fileCategoryService.getCategories();
+        final List<FileExtension> extensions = fileExtensionService.getExtensions();
         ModelAndView mav = new ModelAndView("files");
         mav.addObject("files",files);
         mav.addObject("categories",categories);
+        mav.addObject("extensions",extensions);
         return mav;
     }
 }

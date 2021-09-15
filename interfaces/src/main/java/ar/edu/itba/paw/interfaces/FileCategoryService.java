@@ -18,10 +18,10 @@ public interface FileCategoryService {
      * Attempts to update a category
      *
      * @param fileCategoryId of the category to be modified
-     * @param newFileCategory modified category
+     * @param newFileCategory modified category string
      * @return true if the category was successfully updated, false otherwise
      */
-    boolean update(long fileCategoryId, FileCategory newFileCategory);
+    boolean update(long fileCategoryId, String newFileCategory);
 
     /**
      * Attempts to delete a category

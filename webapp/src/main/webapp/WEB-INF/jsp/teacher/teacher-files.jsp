@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <html>
 <head>
     <title>Campus - ${course.subject.name}</title>
@@ -39,21 +40,23 @@
                 <jsp:param name="courseName" value="${course.subject.name}"/>
                 <jsp:param name="courseId" value="${course.courseId}"/>
             </jsp:include>
-            <c:url value="/teacher-course/${courseId}/files" var="postUrl"/>
+            <c:url value="/course/${courseId}/files" var="postUrl"/>
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> Material </h3>
-                <form method="post" action="${postUrl}" enctype="multipart/form-data" class="form-wrapper reduced">
+                <form:form modelAttribute="fileForm" method="post" enctype="multipart/form-data" class="form-wrapper reduced">
                     <h1 class="announcement-title" style="color:#176961; align-self:center">Subir nuevo archivo</h1>
-                    <label for="file" class="form-label">Archivo</label>
-                    <input id="file" name="file" type="file" class="form-input" style="font-size: 26px">
-                    <label for="category" class="form-label">Categoria</label>
-                    <select id="category" name="category" class="form-input" style="font-size: 26px">
+                    <form:label path="file" for="file" class="form-label">Archivo</form:label>
+                    <form:input path="file" type="file" class="form-input" style="font-size: 26px"/>
+                    <form:errors path="file" element="p" cssStyle="color:red;margin-left: 10px"/>
+                    <form:label path="categoryId" for="categoryId" class="form-label">Categoria</form:label>
+                    <form:select path="categoryId" class="form-input" style="font-size: 26px">
                         <c:forEach var="category" items="${categories}">
-                            <option value="${category.categoryId}"><c:out value="${category.categoryName}"/></option>
+                            <form:option value="${category.categoryId}"><c:out value="${category.categoryName}"/></form:option>
                         </c:forEach>
-                    </select>
+                    </form:select>
+                    <form:errors path="categoryId" element="p" cssStyle="color:red;margin-left: 10px"/>
                     <button class="form-button">Publicar</button>
-                </form>
+                </form:form>
                 <div class="separator reduced">.</div>
                 <div class="big-wrapper">
                     <form action="" class="file-query-container">
@@ -71,7 +74,7 @@
                                  onclick="toggleFilters()" alt="toggle filters" id="filter-toggle">
                         </div>
                         <div class="file-filter-container" id="filter-container" style="display: none">
-                            <div style="display: flex; flex-direction: column; height: 80px;">
+                            <div style="display: flex; flex-direction: column;">
                                 <label for="order-class" class="file-select-label">Buscar por</label>
                                 <select name="order-class" id="order-class" class="file-select">
                                     <option>Fecha de subida</option>
@@ -85,31 +88,25 @@
                             </div>
 
 
-                            <div style="display: flex; flex-direction: column; height: 80px;">
+                            <div style="display: flex; flex-direction: column;">
                                 <label class="file-select-label">Tipo de archivo</label>
                                 <span>
-                                    <input class="file-checkbox" type="checkbox" id="type-all" name="file-type"
+                                    <input class="file-checkbox" type="checkbox" id="extension-all" name="extension-type"
                                            value="all" onclick="toggleAll(this)">
-                                    <label class="file-checkbox-label" for="type-all">todos</label>
+                                    <label class="file-checkbox-label" for="extension-all">todos</label>
                                 </span>
-                                <span>
-                                    <input class="file-checkbox" type="checkbox" id="pdf" name="file-type"
-                                           value="pdf" onclick="unToggle('type-all')">
-                                    <label class="file-checkbox-label" for="pdf">pdf</label>
-                                </span>
-                                <span>
-                                    <input class="file-checkbox" type="checkbox" id="csv" name="file-type"
-                                           value="csv" onclick="unToggle('type-all')">
-                                    <label class="file-checkbox-label" for="csv">csv</label>
-                                </span>
-                                <span>
-                                    <input class="file-checkbox" type="checkbox" id="file-other" name="file-type"
-                                           value="other" onclick="unToggle('type-all')">
-                                    <label class="file-checkbox-label" for="file-other">otro</label>
-                                </span>
+                                <c:forEach var="extension" items="${extensions}">
+                                    <span>
+                                        <input class="file-checkbox" type="checkbox" id="extension-${extension.fileExtensionId}" name="extension-type"
+                                               value="${extension.fileExtensionId}" onclick="unToggle('extension-all')">
+                                        <label class="file-checkbox-label" for="extension-${extension.fileExtensionId}">
+                                            <c:out value="${extension.fileExtension}"/>
+                                        </label>
+                                    </span>
+                                </c:forEach>
                             </div>
 
-                            <div style="display: flex; flex-direction: column; height: 80px;">
+                            <div style="display: flex; flex-direction: column; ">
                                 <label class="file-select-label">Categoria</label>
                                 <span>
                                     <input class="file-checkbox" type="checkbox" id="category-all" name="category-type"
@@ -129,7 +126,7 @@
                     <div class="file-grid">
                         <c:forEach var="file" items="${files}">
                             <div class="file-unit">
-                                <a href="<c:url value="/savefile/${file.fileId}"/>" class="styleless-anchor"
+                                <a href="<c:url value="/download/${file.fileId}"/>" class="styleless-anchor"
                                    style="display: flex;margin-left: 10px; align-items: center">
                                     <img src="<c:url value="${page.Context.request.contextPath}/resources/images/extensions/${file.extension.fileExtension}.png"/>"
                                          class="file-img" alt="${file.name}"/>

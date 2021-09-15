@@ -19,8 +19,8 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AnnouncementServiceImplTest {
-    private static final long ANNOUNCEMENT_ID = 1;
-    private static final long INVALID_ANNOUNCEMENT_ID = 999;
+    private static final Integer ANNOUNCEMENT_ID = 1;
+    private static final Integer INVALID_ANNOUNCEMENT_ID = 999;
     private final int USER_ID = 1;
     private final int USER_FILE_NUMBER = 41205221;
     private final String USER_NAME = "Paw";
@@ -28,8 +28,8 @@ public class AnnouncementServiceImplTest {
     private final String USER_USERNAME = "paw2021";
     private final String USER_EMAIL = "paw2021@itba.edu.ar";
     private final String USER_PASSWORD = "asd123";
-    private final long PAGE_SIZE = 1;
-    private final long PAGE = 1;
+    private final Integer PAGE_SIZE = 1;
+    private final Integer PAGE = 1;
 
     private final int COURSE_ID = 1;
     private final int COURSE_YEAR = 2021;
@@ -45,9 +45,23 @@ public class AnnouncementServiceImplTest {
     private static final String ANNOUNCEMENT_CONTENT = "Rocks! (or not)";
 
     private Announcement getMockAnnouncement() {
-        Subject mockSubject = new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
-        Course mockCourse = new Course(COURSE_ID, COURSE_YEAR, COURSE_QUARTER, COURSE_BOARD, mockSubject);
-        User mockUser = new User(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, true);
+        Course mockCourse = new Course.Builder()
+                .withCourseId(COURSE_ID)
+                .withYear(COURSE_YEAR)
+                .withQuarter(COURSE_QUARTER)
+                .withBoard(COURSE_BOARD)
+                .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
+                .build();
+        User mockUser = new User.Builder()
+                .withUserId(USER_ID)
+                .withFileNumber(USER_FILE_NUMBER)
+                .withName(USER_NAME)
+                .withSurname(USER_SURNAME)
+                .withUsername(USER_USERNAME)
+                .withEmail(USER_EMAIL)
+                .withPassword(USER_PASSWORD)
+                .isAdmin(true)
+                .build();
         Announcement mockAnnouncement = new Announcement(ANNOUNCEMENT_DATE, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, mockUser, mockCourse);
         mockAnnouncement.setAnnouncementId(ANNOUNCEMENT_ID);
         return mockAnnouncement;
@@ -118,8 +132,8 @@ public class AnnouncementServiceImplTest {
     @Test
     public void testList() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.list(PAGE, PAGE_SIZE)).thenReturn(new ArrayList<Announcement>(){{ add(announcement); }});
-        List<Announcement> announcements = announcementService.list(PAGE, PAGE_SIZE);
+        when(mockDao.list(USER_ID, PAGE, PAGE_SIZE)).thenReturn(new ArrayList<Announcement>(){{ add(announcement); }});
+        List<Announcement> announcements = announcementService.list(USER_ID, PAGE, PAGE_SIZE);
         Assert.assertTrue(announcements.size() > 0);
         Assert.assertEquals(announcement.getCourse().getCourseId(), announcements.get(0).getCourse().getCourseId());
     }
