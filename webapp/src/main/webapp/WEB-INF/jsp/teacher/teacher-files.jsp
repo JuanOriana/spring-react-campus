@@ -32,7 +32,9 @@
 </head>
 <body>
 <div class="page-organizer">
-    <%@ include file="../components/navbar.jsp" %>
+    <jsp:include page="../components/navbar.jsp">
+        <jsp:param name="successMessage" value="${successMessage}"/>
+    </jsp:include>
     <h2 class="course-section-name">${course.subject.name}</h2>
     <div class="page-container" style="padding-top: 0">
         <div class="course-page-wrapper">

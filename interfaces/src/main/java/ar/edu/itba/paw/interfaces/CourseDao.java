@@ -15,6 +15,7 @@ public interface CourseDao {
     boolean delete(Integer id);
     List<Course> list(Integer userId);
     Optional<Course> getById(Integer id);
+    List<User> getStudents(Integer courseId);
     Map<User, Role> getTeachers(Integer courseId);
     public boolean belongs(Integer userId, Integer courseId);
 }

@@ -16,7 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Controller
-public class AnnouncementsController {
+public class AnnouncementsController extends AuthController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
     private final Comparator<Announcement> orderByDate = (o1,o2) -> o2.getDate().compareTo(o1.getDate());
 

@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
 @Controller
-public class FilesController {
+public class FilesController extends AuthController{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
 
