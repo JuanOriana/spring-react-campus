@@ -23,7 +23,7 @@ public class MailingServiceImpl implements MailingService {
         try {
             MimeMessage message = new MimeMessage(session);
 
-            String from = String.format("\"%s\" <%s>", replyTo.substring(0, replyTo.indexOf('@')), SERVER_MAIL);
+            String from = String.format("\"%s\" <%s>", replyTo, SERVER_MAIL);
             message.setFrom(new InternetAddress(from));
             message.setReplyTo(new Address[]{new InternetAddress(replyTo)});
             sendEmail(message, Collections.singletonList(to), subject, content, contentType);
