@@ -66,4 +66,35 @@ public interface CourseService {
      */
     boolean belongs(Integer userId, Integer courseId);
 
+    /**
+     * Returns true if the user is a teacher in the current course
+     * @param userId of the user to check the privilege
+     * @param courseId of the course to check the privilege
+     * @return true if the user is a teacher in the current course, false otherwise
+     */
+    boolean isTeacher(Integer userId, Integer courseId);
+
+    /**
+     * Returns true if the user is a helper in the current course
+     * @param userId of the user to check the privilege
+     * @param courseId of the course to check the privilege
+     * @return true if the user is a helper in the current course, false otherwise
+     */
+    boolean isHelper(Integer userId, Integer courseId);
+
+    /**
+     * Returns true if the user is a student in the current course
+     * @param userId of the user to check the privilege
+     * @param courseId of the course to check the privilege
+     * @return true if the user is a student in the current course, false otherwise
+     */
+    boolean isStudent(Integer userId, Integer courseId);
+
+    /**
+     * Returns true if the user is a helper or a teacher in the current course
+     * @param userId of the user to check the privilege
+     * @param courseId of the course to check the privilege
+     * @return true if the user is a helper or a teacher in the current course, false otherwise
+     */
+    boolean isPrivileged(Integer userId, Integer courseId);
 }
