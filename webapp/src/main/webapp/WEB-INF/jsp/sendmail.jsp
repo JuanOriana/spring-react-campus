@@ -2,13 +2,15 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <html>
 <head>
-    <title>Campus - Error</title>
+    <title>Campus</title>
     <c:import url="config/generalHead.jsp"/>
 
 </head>
 <body>
 <div class="page-organizer">
-    <%@ include file="components/navbar.jsp" %>
+    <jsp:include page="components/navbar.jsp">
+        <jsp:param name="successMessage" value="${successMessage}"/>
+    </jsp:include>
     <div class="page-container">
         <form:form modelAttribute="mailForm" class="form-wrapper reduced" method="post">
             <h1 class="announcement-title r" style="color:#176961; align-self:center">
