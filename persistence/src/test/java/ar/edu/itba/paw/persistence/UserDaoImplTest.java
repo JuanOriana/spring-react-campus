@@ -21,8 +21,8 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = TestConfig.class)
 @Sql("classpath:schema.sql")
 public class UserDaoImplTest {
-    private final Integer USER_ID = 1;
-    private final Integer USER_ID_INEXISTENCE = 999;
+    private final Long USER_ID = 1L;
+    private final Long USER_ID_INEXISTENCE = 999L;
     private final Integer FILE_NUMBER = 1;
     private final String NAME = "John";
     private final String SURNAME = "Doe";

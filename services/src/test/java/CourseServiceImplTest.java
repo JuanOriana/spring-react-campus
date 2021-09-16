@@ -19,12 +19,12 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class CourseServiceImplTest {
 
-    private static Integer COURSE_ID = 1;
-    private static Integer USER_ID = 1;
+    private static Long COURSE_ID = 1L;
+    private static Long USER_ID = 1L;
     private static Integer SUBJECT_ID = 1;
     private static String SUBJECT_CODE = "A1";
     private static String SUBJECT_NAME = "PAW";
-    private static Integer INVALID_COURSE_ID = 999;
+    private static Long INVALID_COURSE_ID = 999L;
     private static int YEAR = 2021;
     private static int QUARTER = 2;
     private static String BOARD = "S1";

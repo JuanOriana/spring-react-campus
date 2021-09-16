@@ -35,7 +35,7 @@ public class TimeTableDaoImplTest {
 
     private JdbcTemplate jdbcTemplate;
 
-    private final Integer COURSE_ID = 1;
+    private final Long COURSE_ID = 1L;
     private final Integer COURSE_YEAR = 2021;
     private final Integer COURSE_QUARTER = 2;
     private final String COURSE_BOARD = "S1";

@@ -34,7 +34,7 @@ public class FileExtensionDaoImpl implements FileExtensionDao {
     public FileExtension create(String fileExtension) {
         final Map<String, Object> args = new HashMap<>();
         args.put("fileExtension", fileExtension);
-        final int fileExtensionId = jdbcInsert.executeAndReturnKey(args).intValue();
+        final Long fileExtensionId = jdbcInsert.executeAndReturnKey(args).longValue();
         return new FileExtension(fileExtensionId, fileExtension);
     }
 

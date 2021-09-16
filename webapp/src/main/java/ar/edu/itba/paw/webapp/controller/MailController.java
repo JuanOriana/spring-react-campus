@@ -31,7 +31,7 @@ public class MailController extends AuthController{
     AuthFacade authFacade;
 
     @RequestMapping(value = "/sendmail/{userId}", method = RequestMethod.GET)
-    public ModelAndView sendmail(@PathVariable Integer userId, final MailForm mailForm,
+    public ModelAndView sendmail(@PathVariable Long userId, final MailForm mailForm,
                                  String successMessage) {
         User user = userService.findById(userId).orElseThrow(RuntimeException::new);
         ModelAndView mav = new ModelAndView("sendmail");
@@ -42,7 +42,7 @@ public class MailController extends AuthController{
     }
 
     @RequestMapping(value = "/sendmail/{userId}", method = RequestMethod.POST)
-    public ModelAndView sendmail(@PathVariable Integer userId,
+    public ModelAndView sendmail(@PathVariable Long userId,
                                          @Valid MailForm mailForm, final BindingResult errors){
         String successMessage = null;
         if (!errors.hasErrors()) {

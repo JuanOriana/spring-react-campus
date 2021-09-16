@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FileCategory;
+import ar.edu.itba.paw.models.FileExtension;
 import ar.edu.itba.paw.models.FileModel;
 
 import java.io.FileNotFoundException;
@@ -11,11 +13,13 @@ public interface FileService {
 
     /**
      * Attempts to persist a file entry in the database
-     *
-     * @param file The file to be persisted in the database
+     * @param size of the file
+     * @param name of the file
+     * @param file representation in byte array
+     * @param course where the file belongs to
      * @return the file if it was successfully added
      */
-    FileModel create(FileModel file);
+    FileModel create(Long size, String name, byte[] file, Course course);
 
     /**
      * Attempts to update a file
@@ -24,7 +28,7 @@ public interface FileService {
      * @param file modified file
      * @return true if the file was successfully updated, false otherwise
      */
-    boolean update(long fileId, FileModel file);
+    boolean update(Long fileId, FileModel file);
 
     /**
      * Attempts to delete a file
@@ -32,13 +36,13 @@ public interface FileService {
      * @param fileId of the file to be deleted
      * @return true if the file was successfully removed, false otherwise
      */
-    boolean delete(long fileId);
+    boolean delete(Long fileId);
 
     /**
      * Gets all the current available files
      * @return list containing all the current available files (if any)
      */
-    List<FileModel> list();
+    List<FileModel> list(Long userId);
 
     /**
      * Attempts to get a file given an id
@@ -46,7 +50,7 @@ public interface FileService {
      * @param fileId of the file to be retrieved
      * @return the file corresponding to the given id if it exists, null otherwise
      */
-    Optional<FileModel> getById(long fileId);
+    Optional<FileModel> getById(Long fileId);
 
     /**
      * Attempts to get a file given a name
@@ -62,7 +66,7 @@ public interface FileService {
      * @param extensionId of the file/s to be retrieved
      * @return the file/s corresponding to the given extension if it exists, null otherwise
      */
-    List<FileModel> getByExtension(long extensionId);
+    List<FileModel> getByExtension(Long extensionId);
 
     /**
      * Attempts to get a file given its extension
@@ -79,7 +83,7 @@ public interface FileService {
      * @param fileCategoryId of the category to add
      * @return true if the category was successfully added, false otherwise
      */
-    boolean addCategory(long fileId, long fileCategoryId);
+    boolean addCategory(Long fileId, Long fileCategoryId);
 
     /**
      * Attempts to get remove a category of a file
@@ -88,7 +92,7 @@ public interface FileService {
      * @param fileCategoryId of the category to remove
      * @return true if the category was successfully removed, false otherwise
      */
-    boolean removeCategory(long fileId, long fileCategoryId);
+    boolean removeCategory(Long fileId, Long fileCategoryId);
 
     /**
      * Attempts to get the categories of a file
@@ -96,7 +100,7 @@ public interface FileService {
      * @param fileId of the file
      * @return the category/ies corresponding to the given file if it contains, null otherwise
      */
-    List<FileCategory> getFileCategories(long fileId);
+    List<FileCategory> getFileCategories(Long fileId);
 
     /**
      * Attempts to get file/s given a category
@@ -104,7 +108,7 @@ public interface FileService {
      * @param fileCategoryId of the category
      * @return the file/s corresponding to the given category if they contain it, null otherwise
      */
-    List<FileModel> getByCategory(long fileCategoryId);
+    List<FileModel> getByCategory(Long fileCategoryId);
 
     /**
      * Attempts to get file/s given a list of categories
@@ -117,10 +121,10 @@ public interface FileService {
     /**
      * Attempts to get file/s given a course
      *
-     * @param courseId that the file must belong to
-     * @return the file/s corresponding to the given course if they belong to it, null otherwise
+     * @param courseId that the file must beLong to
+     * @return the file/s corresponding to the given course if they beLong to it, null otherwise
      */
-    List<FileModel> getByCourseId(long courseId);
+    List<FileModel> getByCourseId(Long courseId);
 
     /**
      * Returns if a user has access to the given file
@@ -128,5 +132,5 @@ public interface FileService {
      * @param userId of the user to check the privileges
      * @return true if the user has access, false otherwise
      */
-    boolean hasAccess(long fileId, long userId);
+    boolean hasAccess(Long fileId, Long userId);
 }

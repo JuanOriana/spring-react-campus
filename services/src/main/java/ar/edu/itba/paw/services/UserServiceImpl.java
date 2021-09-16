@@ -22,22 +22,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean update(int userId, User user) {
+    public boolean update(Long userId, User user) {
         return userDao.update(userId, user);
     }
 
     @Override
-    public boolean delete(int userId) {
+    public boolean delete(Long userId) {
         return userDao.delete(userId);
     }
 
     @Override
-    public Optional<Role> getRole(int userId, int courseId) {
+    public Optional<Role> getRole(Long userId, Long courseId) {
         return userDao.getRole(userId, courseId);
     }
 
     @Override
-    public Optional<User> findById(int userId) {
+    public Optional<User> findById(Long userId) {
         return userDao.findById(userId);
     }
 

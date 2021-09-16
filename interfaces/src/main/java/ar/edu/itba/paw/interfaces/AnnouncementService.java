@@ -2,6 +2,8 @@ package ar.edu.itba.paw.interfaces;
 
 
 import ar.edu.itba.paw.models.Announcement;
+import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.User;
 
 import java.util.Comparator;
 import java.util.List;
@@ -10,11 +12,13 @@ import java.util.Optional;
 public interface AnnouncementService {
     /**
      * Attempts to persist an announcement entry in the database
-     *
-     * @param announcement The announcement to be persisted in the database
-     * @return the announcement if it was successfully added
+     * @param title
+     * @param content
+     * @param author
+     * @param course
+     * @return
      */
-    Announcement create(Announcement announcement);
+    Announcement create(String title, String content, User author, Course course);
 
     /**
      * Attempts to update a announcement
@@ -23,7 +27,7 @@ public interface AnnouncementService {
      * @param announcement modified announcement
      * @return true if the announcement was successfully updated, false otherwise
      */
-    boolean update(Integer id, Announcement announcement);
+    boolean update(Long id, Announcement announcement);
 
     /**
      * Attempts to delete an announcement
@@ -31,7 +35,7 @@ public interface AnnouncementService {
      * @param id of the announcement to be deleted
      * @return true if the announcement was successfully removed, false otherwise
      */
-    boolean delete(Integer id);
+    boolean delete(Long id);
 
     /**
      * Gets all the current available announcements for the given user depending on which courses he is taking
@@ -40,7 +44,7 @@ public interface AnnouncementService {
      * @param pageSize size of the page to be retrieved
      * @return list containing all the current available announcements (if any)
      */
-    List<Announcement> list(Integer userId, Integer page, Integer pageSize);
+    List<Announcement> list(Long userId, Integer page, Integer pageSize);
 
     /**
      * Gets the amount of pages based on the page size
@@ -58,7 +62,7 @@ public interface AnnouncementService {
      * @param comparator identifies the order expected in the response list
      * @return list of announcements of size pageSize (or smaller)
      */
-    List<Announcement> list(Integer userId, Integer page, Integer pageSize, Comparator<Announcement> comparator);
+    List<Announcement> list(Long userId, Integer page, Integer pageSize, Comparator<Announcement> comparator);
 
     /**
      * Gets all the current available announcements for a specific course
@@ -66,7 +70,7 @@ public interface AnnouncementService {
      * @param courseId identifier of the course to get the announcements from
      * @return list containing all the current course available announcements (if any)
      */
-    List<Announcement> listByCourse(Integer courseId);
+    List<Announcement> listByCourse(Long courseId);
 
     /**
      * Gets all the current available announcements for a specific course
@@ -75,7 +79,7 @@ public interface AnnouncementService {
      * @param comparator identifies the order expected in the response list
      * @return list containing all the current course available announcements (if any)
      */
-    List<Announcement> listByCourse(Integer courseId, Comparator<Announcement> comparator);
+    List<Announcement> listByCourse(Long courseId, Comparator<Announcement> comparator);
 
     /**
      * Attempts to get an announcement given an id
@@ -83,5 +87,5 @@ public interface AnnouncementService {
      * @param id of the announcement to be retrieved
      * @return the announcement corresponding to the given id if it exists, null otherwise
      */
-    Optional<Announcement> getById(Integer id);
+    Optional<Announcement> getById(Long id);
 }

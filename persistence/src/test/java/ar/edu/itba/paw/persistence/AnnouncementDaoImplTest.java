@@ -41,11 +41,11 @@ public class AnnouncementDaoImplTest {
     private AnnouncementDaoImpl announcementDao;
 
     private JdbcTemplate jdbcTemplate;
-    private final Integer ANNOUNCEMENT_ID = 1;
+    private final Long ANNOUNCEMENT_ID = 1L;
     private final String ANNOUNCEMENT_CONTENT = "test_content";
     private final String ANNOUNCEMENT_TITLE = "test_title";
 
-    private final Integer USER_ID = 1;
+    private final Long USER_ID = 1L;
     private final Integer USER_FILE_NUMBER = 41205221;
     private final String USER_NAME = "Paw";
     private final String USER_SURNAME = "2021";
@@ -53,7 +53,7 @@ public class AnnouncementDaoImplTest {
     private final String USER_EMAIL = "paw2021@itba.edu.ar";
     private final String USER_PASSWORD = "asd123";
 
-    private final Integer COURSE_ID = 1;
+    private final Long COURSE_ID = 1L;
     private final Integer COURSE_YEAR = 2021;
     private final Integer COURSE_QUARTER = 1;
     private final String COURSE_BOARD = "S1";
@@ -70,10 +70,13 @@ public class AnnouncementDaoImplTest {
     private final LocalDateTime ANNOUNCEMENT_DATE = LocalDateTime.now();
 
     private static final RowMapper<Announcement> ANNOUNCEMENT_ROW_MAPPER = (rs, rowNum) ->
-            new Announcement(rs.getInt("announcementId"), rs.getTimestamp("date").toLocalDateTime(), rs.getString("title"),
-                    rs.getString("content"),
-                    new User.Builder()
-                            .withUserId(rs.getInt("userId"))
+            new Announcement.Builder()
+                    .withAnnouncementId(rs.getLong("announcementid"))
+                    .withDate(rs.getTimestamp("date").toLocalDateTime())
+                    .withTitle(rs.getString("title"))
+                    .withContent(rs.getString("content"))
+                    .withAuthor(new User.Builder()
+                            .withUserId(rs.getLong("userId"))
                             .withFileNumber(rs.getInt("fileNumber"))
                             .withName(rs.getString("name"))
                             .withSurname(rs.getString("surname"))
@@ -81,7 +84,9 @@ public class AnnouncementDaoImplTest {
                             .withEmail(rs.getString("email"))
                             .withPassword(rs.getString("password"))
                             .isAdmin(rs.getBoolean("isAdmin"))
-                            .build(),null);
+                            .build())
+                    .withCourse(null)
+                    .build();
 
     private void insertSubject(int subjectId, String subjectName, String code) {
         SimpleJdbcInsert subjectJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("subjects");
@@ -92,7 +97,7 @@ public class AnnouncementDaoImplTest {
         subjectJdbcInsert.execute(args);
     }
 
-    private void insertCourse(int courseId, int subjectId, int quarter, String board, int year) {
+    private void insertCourse(Long courseId, int subjectId, int quarter, String board, int year) {
         SimpleJdbcInsert courseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses");
         Map<String, Object> args = new HashMap<>();
         args.put("courseId", courseId);
@@ -103,7 +108,7 @@ public class AnnouncementDaoImplTest {
         courseJdbcInsert.execute(args);
     }
 
-    private void insertUser(int userId, int fileNumber, String name, String surname, String username, String email,
+    private void insertUser(Long userId, int fileNumber, String name, String surname, String username, String email,
                             String password, boolean isAdmin) {
         SimpleJdbcInsert userJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("users");
         Map<String, Object> args = new HashMap<>();
@@ -118,7 +123,7 @@ public class AnnouncementDaoImplTest {
         userJdbcInsert.execute(args);
     }
 
-    private void insertAnnouncement(int announcementId, int userId, int courseId, String title, String content, LocalDateTime date) {
+    private void insertAnnouncement(Long announcementId, Long userId, Long courseId, String title, String content, LocalDateTime date) {
         SimpleJdbcInsert announcementJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("announcements");
         Map<String, Object> args = new HashMap<>();
         args.put("announcementId",announcementId);
@@ -138,7 +143,7 @@ public class AnnouncementDaoImplTest {
         roleJdbcInsert.execute(args);
     }
 
-    private void insertUserToCourse(int userId, int courseId, int roleId) {
+    private void insertUserToCourse(Long userId, Long courseId, int roleId) {
         SimpleJdbcInsert userToCourseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("user_to_course");
         Map<String, Object> args = new HashMap<>();
         args.put("userId",userId);
@@ -182,12 +187,21 @@ public class AnnouncementDaoImplTest {
                 .withPassword(USER_PASSWORD)
                 .isAdmin(true)
                 .build();
-        return new Announcement(ANNOUNCEMENT_DATE, "test_title", "test_content", mockUser, mockCourse);
+        return new Announcement.Builder()
+            .withAnnouncementId(ANNOUNCEMENT_ID)
+            .withDate(ANNOUNCEMENT_DATE)
+            .withTitle("test_title")
+            .withContent("test_content")
+            .withAuthor(mockUser)
+            .withCourse(mockCourse)
+        .build();
     }
 
     @Test
     public void testCreate() {
-        final Announcement announcement = announcementDao.create(getMockAnnouncement());
+        Announcement announcement = getMockAnnouncement();
+        announcementDao.create(announcement.getDate(), announcement.getTitle(),
+                announcement.getContent(), announcement.getAuthor(), announcement.getCourse());
         assertEquals( 1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
     }
 
@@ -196,7 +210,8 @@ public class AnnouncementDaoImplTest {
     public void testCreateNonExistentCourseId() {
         Announcement announcement = getMockAnnouncement();
         announcement.getCourse().setCourseId(COURSE_ID + 1);
-        announcementDao.create(announcement);
+        announcementDao.create(announcement.getDate(), announcement.getTitle(),
+                announcement.getContent(), announcement.getAuthor(), announcement.getCourse());
         Assert.fail("Should have thrown assertion error  for non-existent foreign key 'course id' ");
     }
 
@@ -210,7 +225,7 @@ public class AnnouncementDaoImplTest {
 
     @Test
     public void testDeleteNoExist() {
-        final int NOT_EXISTING_ID = 100;
+        final Long NOT_EXISTING_ID = 100L;
         insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
         announcementDao.delete(NOT_EXISTING_ID);
@@ -233,7 +248,7 @@ public class AnnouncementDaoImplTest {
 
     @Test
     public void getByIdNoExist() {
-        final int NOT_EXISTING_ID = 100;
+        final Long NOT_EXISTING_ID = 100L;
         insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
         Optional<Announcement> announcementOptional = announcementDao.getById(NOT_EXISTING_ID);

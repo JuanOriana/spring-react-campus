@@ -17,6 +17,7 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
 import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -27,6 +28,7 @@ import static org.junit.Assert.*;
 @Sql("classpath:schema.sql")
 public class FileDaoImplTest {
 
+
     @Autowired
     private DataSource ds;
 
@@ -36,22 +38,27 @@ public class FileDaoImplTest {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert JdbcInsert;
 
-    private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"),
-                rs.getTimestamp("fileDate").toLocalDateTime(), rs.getObject("file", byte[].class),
-                new FileExtension(rs.getLong("fileExtensionId"),rs.getString("fileExtension")),
-                new Course.Builder()
-                        .withCourseId(rs.getInt("courseId"))
-                        .withYear(rs.getInt("year"))
-                        .withQuarter(rs.getInt("quarter"))
-                        .withBoard(rs.getString("board"))
-                        .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
-                                rs.getString("subjectName")))
-                        .build());
-    };
+    private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) ->
+            new FileModel.Builder()
+                    .withFileId(rs.getLong("fileId"))
+                    .withSize(rs.getLong("fileSize"))
+                    .withName(rs.getString("fileName"))
+                    .withDate(rs.getTimestamp("fileDate").toLocalDateTime())
+                    .withFile(rs.getBytes("file"))
+                    .withExtension(new FileExtension(rs.getLong("fileExtensionId"),rs.getString("fileExtension")))
+                    .withCourse(new Course.Builder()
+                            .withCourseId(rs.getLong("courseId"))
+                            .withYear(rs.getInt("year"))
+                            .withQuarter(rs.getInt("quarter"))
+                            .withBoard(rs.getString("board"))
+                            .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
+                                    rs.getString("subjectName")))
+                            .build())
+                    .build();
 
     // Course & Subject
-    private final Integer COURSE_ID = 1;
+    private final Long COURSE_ID = 1L;
+    private final Long ROLE_ID = 1L;
     private final Integer COURSE_YEAR = 2021;
     private final Integer COURSE_QUARTER = 1;
     private final String COURSE_BOARD = "S1";
@@ -61,9 +68,9 @@ public class FileDaoImplTest {
     private final String SUBJECT_NAME = "Protos";
 
     // FileExtension
-    private final int FILE_EXTENSION_ID_OTHER = 0;
+    private final Long FILE_EXTENSION_ID_OTHER = 0L;
     private final String FILE_EXTENSION_OTHER = "other";
-    private final int FILE_EXTENSION_ID = 1;
+    private final Long FILE_EXTENSION_ID = 1L;
     private final String FILE_EXTENSION = "pdf";
 
     // FileCategory
@@ -71,8 +78,18 @@ public class FileDaoImplTest {
     private final String FILE_CATEGORY = "TLA";
 
     // FileModel
-    private final int FILE_ID = 1;
+    private final Long FILE_ID = 1L;
     private final String FILE_NAME = "test.png";
+
+    private final Long USER_ID = 1L;
+    private final Integer FILE_NUMBER = 1;
+    private final String NAME = "John";
+    private final String SURNAME = "Doe";
+    private final String USERNAME = "johndoe";
+    private final String EMAIL = "johndoe@lorem.com";
+    private final String PASSWORD = "d8d3aedd4b5d0ce0131600eaadc48dcb";
+    private final boolean IS_ADMIN = true;
+
 
     private FileModel createFileModelObject() throws FileNotFoundException {
         FileExtension fExtension = new FileExtension(FILE_EXTENSION_ID_OTHER,FILE_EXTENSION_OTHER);
@@ -83,17 +100,8 @@ public class FileDaoImplTest {
                 .withBoard(COURSE_BOARD)
                 .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
                 .build();
-        FileModel fModel = new FileModel();
-        fModel.setCourse(course);
-        fModel.setExtension(fExtension);
-        fModel.setFileId(FILE_ID);
-
         String filePath = "src/test/resources/test.png";
         File fileInFileSystem = new File(filePath);
-
-        fModel.setName(fileInFileSystem.getName());
-
-        ////////////
         ByteArrayOutputStream ous = null;
         InputStream ios = null;
         byte[] buffer = new byte[0];
@@ -120,15 +128,15 @@ public class FileDaoImplTest {
             } catch (IOException e) {
             }
         }
-        ///////////
-
-        fModel.setSize(buffer.length);
-        fModel.setFile(buffer);
-
-        LocalDateTime currentTimeDate = LocalDateTime.now();
-        fModel.setDate(currentTimeDate);
-
-        return fModel;
+        return new FileModel.Builder()
+                .withCourse(course)
+                .withExtension(fExtension)
+                .withFileId(FILE_ID)
+                .withName(fileInFileSystem.getName())
+                .withSize((long) buffer.length)
+                .withFile(buffer)
+                .withDate(LocalDateTime.now())
+                .build();
     }
 
     private void insertFileModelToDB(FileModel fModel){
@@ -152,7 +160,7 @@ public class FileDaoImplTest {
         subjectJdbcInsert.execute(args);
     }
 
-    private void insertCourse(int courseId, int subjectId, int quarter, String board, int year) {
+    private void insertCourse(Long courseId, int subjectId, int quarter, String board, int year) {
         SimpleJdbcInsert courseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses");
         Map<String, Object> args = new HashMap<>();
         args.put("courseId", courseId);
@@ -177,8 +185,14 @@ public class FileDaoImplTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "files");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_categories");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_extensions");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_to_course");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "roles");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
         insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
+        jdbcTemplate.execute(String.format("INSERT INTO users (userId,fileNumber,name,surname,username,email,password,isAdmin) VALUES (%d,%d,'%s','%s','%s','%s','%s',%s)", USER_ID, FILE_NUMBER, NAME, SURNAME, USERNAME, EMAIL, PASSWORD, IS_ADMIN));
+        jdbcTemplate.execute(String.format("INSERT INTO roles VALUES (%d, 'Teacher')", ROLE_ID));
+        jdbcTemplate.execute(String.format("INSERT INTO user_to_course VALUES (%d, %d, %d)", USER_ID, COURSE_ID, ROLE_ID));
         jdbcTemplate.execute(String.format("INSERT INTO file_extensions VALUES (%d, '%s')",FILE_EXTENSION_ID_OTHER, FILE_EXTENSION_OTHER));
         jdbcTemplate.execute(String.format("INSERT INTO file_extensions VALUES (%d, '%s')",FILE_EXTENSION_ID, FILE_EXTENSION));
         jdbcTemplate.execute(String.format("INSERT INTO file_categories VALUES (%d, '%s')",FILE_CATEGORY_ID, FILE_CATEGORY));
@@ -186,7 +200,9 @@ public class FileDaoImplTest {
 
     @Test
     public void testCreate() throws FileNotFoundException {
-        FileModel fileModel = fileDao.create(createFileModelObject());
+        FileModel mockFile = createFileModelObject();
+        FileModel fileModel = fileDao.create(mockFile.getSize(), LocalDateTime.now(), mockFile.getName(),
+                mockFile.getFile(), mockFile.getCourse());
         assertNotNull(fileModel);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "files"));
     }
@@ -236,7 +252,7 @@ public class FileDaoImplTest {
     @Test
     public void testList() throws FileNotFoundException {
         insertFileModelToDB(createFileModelObject());
-        List<FileModel> list = fileDao.list();
+        List<FileModel> list = fileDao.list(USER_ID);
         assertNotNull(list);
         assertEquals(1, list.size());
         assertEquals(FILE_ID, list.get(0).getFileId());

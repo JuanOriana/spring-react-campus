@@ -22,17 +22,17 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
     @Override
-    public boolean update(int courseId, int dayOfWeek, Time start, Time end) {
+    public boolean update(Long courseId, int dayOfWeek, Time start, Time end) {
         return timetableDaoDao.update(courseId, dayOfWeek, start, end);
     }
 
     @Override
-    public boolean delete(int courseId) {
+    public boolean delete(Long courseId) {
         return timetableDaoDao.delete(courseId);
     }
 
     @Override
-    public List<Timetable> getById(long courseId) {
+    public List<Timetable> getById(Long courseId) {
         return timetableDaoDao.getById(courseId);
     }
 

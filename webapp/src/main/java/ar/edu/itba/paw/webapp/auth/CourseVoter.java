@@ -20,17 +20,17 @@ public class CourseVoter {
     @Autowired
     FileDao fileDao;
 
-    public boolean hasCourseAccess(Authentication authentication, Integer courseId) {
+    public boolean hasCourseAccess(Authentication authentication, Long courseId) {
         boolean isAnonymous = authentication instanceof AnonymousAuthenticationToken;
         return !isAnonymous && courseService.belongs(((CampusUser)authentication.getPrincipal()).getUserId(), courseId);
     }
 
-    public boolean hasCoursePrivileges(Authentication authentication, Integer courseId) {
+    public boolean hasCoursePrivileges(Authentication authentication, Long courseId) {
         if(authentication instanceof AnonymousAuthenticationToken) return false;
         return courseService.isPrivileged(((CampusUser)authentication.getPrincipal()).getUserId(), courseId);
     }
 
-    public boolean hasFileAccess(Authentication authentication, Integer fileId) {
+    public boolean hasFileAccess(Authentication authentication, Long fileId) {
         if(authentication instanceof AnonymousAuthenticationToken) return false;
         return fileDao.hasAccess(fileId, ((CampusUser)authentication.getPrincipal()).getUserId());
     }

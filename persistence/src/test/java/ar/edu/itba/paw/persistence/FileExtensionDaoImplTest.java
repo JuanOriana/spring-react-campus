@@ -35,7 +35,7 @@ public class FileExtensionDaoImplTest {
         return new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
     };
 
-    private final int FILE_EXTENSION_ID = 1;
+    private final Long FILE_EXTENSION_ID = 1L;
     private final String FILE_EXTENSION = "pdf";
 
     private JdbcTemplate jdbcTemplate;
