@@ -7,7 +7,7 @@
   <c:import url="../config/generalHead.jsp"/>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script>
-    const deleteById = function (announcementId){
+    function deleteById(announcementId){
       $.ajax({
         url: '/deleteAnnouncement/' + announcementId,
         type: 'DELETE',

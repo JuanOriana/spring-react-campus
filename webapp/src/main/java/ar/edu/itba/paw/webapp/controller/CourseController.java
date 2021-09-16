@@ -163,9 +163,16 @@ public class CourseController extends AuthController{
 
     @RequestMapping(value = "/deleteAnnouncement/{announcementId}", method = RequestMethod.DELETE)
     @ResponseBody
-    public void deleteFile(@PathVariable Long announcementId){
+    public void deleteAnnouncement(@PathVariable Long announcementId){
         announcementService.delete(announcementId);
     }
+
+    @RequestMapping(value = "/deleteFile/{fileId}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void deleteFile(@PathVariable Long fileId){
+        fileService.delete(fileId);
+    }
+
     private String getExtension(String filename){
         String extension = "";
         int i = filename.lastIndexOf('.');

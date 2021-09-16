@@ -5,6 +5,7 @@
 <head>
     <title>Campus - ${course.subject.name}</title>
     <c:import url="../config/generalHead.jsp"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
         function toggleAll(source) {
             const checkboxes = document.getElementsByName(source.name);
@@ -28,6 +29,16 @@
                 filters.style.display = "none";
                 toggler.style.transform="rotate(90deg)"
             }
+        }
+
+        function deleteById(fileId){
+            $.ajax({
+                url: '/deleteFile/' + fileId,
+                type: 'DELETE',
+                success: function (result) {
+                    $("#file-"+ fileId).remove();
+                }
+            });
         }
     </script>
 </head>
@@ -129,7 +140,7 @@
                     </form>
                     <div class="file-grid">
                         <c:forEach var="file" items="${files}">
-                            <div class="file-unit">
+                            <div class="file-unit" id="file-${file.fileId}">
                                 <a href="<c:url value="/download/${file.fileId}"/>" class="styleless-anchor"
                                    style="display: flex;margin-left: 10px; align-items: center">
                                     <img src="<c:url value="${page.Context.request.contextPath}/resources/images/extensions/${file.extension.fileExtension}.png"/>"
@@ -137,7 +148,7 @@
                                 <p class="file-name"><c:out value=" ${file.name}"/></p>
                                 </a>
                                 <img src="${page.Context.request.contextPath}/resources/images/trash.png"
-                                     alt="delete" class="medium-icon">
+                                     alt="delete" class="medium-icon" onclick="deleteById(${file.fileId})">
                             </div>
                         </c:forEach>
                     </div>
