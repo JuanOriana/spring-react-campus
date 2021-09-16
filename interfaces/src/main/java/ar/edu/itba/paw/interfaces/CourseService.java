@@ -59,6 +59,13 @@ public interface CourseService {
     Map<User, Role> getTeachers(Long courseId);
 
     /**
+     * Gets the list of students for the given course
+     * @param courseId of the course to get the teachers from
+     * @return List of Users in that course
+     */
+    List<User> getStudents(Long courseId);
+
+    /**
      * Returns if the user belongs to the course
      * @param userId of the user to check
      * @param courseId of the course to check

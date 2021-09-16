@@ -21,6 +21,7 @@ public class TimeTableController extends AuthController{
     final String[] days = {"Lunes","Martes","Miercoles","Jueves","Viernes","Sabado"};
     final String[] hours = {"08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00",
             "17:00","18:00","19:00","20:00","21:00","22:00"};
+    final String[] colors = {"#2EC4B6","#173E5C","#0D6C52","#16386D","6F9A13"};
 
     @Autowired
     CourseService courseService;
@@ -35,14 +36,23 @@ public class TimeTableController extends AuthController{
 
     @RequestMapping("/timetable")
     public ModelAndView timeTable() {
-        List<Course> courses = courseService.list(authFacade.getCurrentUser().getUserId());
+        int colorIdx = 0;
+        Map<Course,String> courseColors = new HashMap<>();
         Map<Course, List<Timetable>> courseTimetables = new HashMap<>();
-        courses.forEach(c -> courseTimetables.put(c, timetableService.getById(c.getCourseId())));
+
+        List<Course> courses = courseService.list(authFacade.getCurrentUser().getUserId());
+        for (Course course: courses) {
+            courseTimetables.put(course, timetableService.getById(course.getCourseId()));
+            if (colorIdx > colors.length) colorIdx = 0;
+            courseColors.put(course,colors[colorIdx]);
+            colorIdx++;
+        }
         ArrayList<ArrayList<Course>> timeTableMatrix = createTimeTableMatrix(courseTimetables);
         ModelAndView mav = new ModelAndView("timetable");
         mav.addObject("days",days);
         mav.addObject("hours",hours);
         mav.addObject("timeTableMatrix",timeTableMatrix);
+        mav.addObject("courseColors",courseColors);
         return mav;
     }
 

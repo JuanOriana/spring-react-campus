@@ -19,7 +19,9 @@
     </ul>
     <c:if test="${currentUser != null}">
         <div class="user-nav-wrapper">
-            <h4>${currentUser.name}</h4>
+            <a href="<c:url value="/user"/>" class="styleless-anchor">
+                <h4>${currentUser.name}</h4>
+            </a>
             <a class="styleless-anchor" href="<c:url value ="/logout"/>">
                 <button class="logout-btn">Salir</button>
             </a>
@@ -29,5 +31,10 @@
         <div style="width: 120px"></div>
     </c:if>
 </nav>
+<c:if test="${param.successMessage != null && !param.successMessage.equals('')}">
+    <div class="success-box">
+        <c:out value="${param.successMessage}"/>
+    </div>
+</c:if>
 </body>
 </html>

@@ -54,6 +54,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<User> getStudents(Long courseId) {
+        return courseDao.getStudents(courseId);
+    }
+
+    @Override
     public boolean belongs(Long userId, Long courseId) {
         return courseDao.belongs(userId, courseId);
     }

@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Permissions;
 import ar.edu.itba.paw.models.Subject;
+import ar.edu.itba.paw.models.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +39,7 @@ public class CourseDaoImplTest {
     private final Long USER_ID = 1L;
     private final Integer USER_FILENUMBER = 49523123;
     private final Integer ROLE_ID = 1;
+    private final Integer STUDENT_ID = Permissions.STUDENT.getValue();
     private final Integer QUARTER = 1;
     private final Integer YEAR = 2021;
     private final String SUBJECT_NAME = "PAW";
@@ -48,6 +51,7 @@ public class CourseDaoImplTest {
     private final String insertSubjectSql = String.format("INSERT INTO subjects (subjectId,code,subjectName) VALUES (%d,'A1','PAW')", SUBJECT_ID);
     private final String insertUserSql = String.format("INSERT INTO users VALUES (%d, %d,'John','Doe','johndoe', 'johndoe@gmail.com', 'asd123', %b)", USER_ID, USER_FILENUMBER, true);
     private final String insertUserToCourseSql = String.format("INSERT INTO user_to_course VALUES (%d,%d,%d)", COURSE_ID, USER_ID, ROLE_ID);
+    private final String insertStudentToCourseSql = String.format("INSERT INTO user_to_course VALUES (%d,%d,%d)", COURSE_ID, USER_ID, STUDENT_ID);
     String insertRoleSql = String.format("INSERT INTO roles VALUES (%d, 'Student')", ROLE_ID);
     @Before
     public void setUp() {
@@ -138,6 +142,15 @@ public class CourseDaoImplTest {
         assertEquals(Optional.of(QUARTER).get(), course.get().getQuarter());
         assertEquals("S1", course.get().getBoard());
         assertEquals(Optional.of(YEAR).get(), course.get().getYear());
+    }
+
+    @Test
+    public void testGetStudents(){
+        List<User> list = courseDao.getStudents(COURSE_ID);
+
+        assertNotNull(list);
+        assertEquals(1, list.size());
+        assertEquals(USER_ID, list.get(0).getUserId());
     }
 
 }
