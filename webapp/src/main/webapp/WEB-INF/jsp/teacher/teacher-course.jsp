@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@page pageEncoding="UTF-8" %>
 <html>
 <head>
   <title>Campus - <c:out value="${course.subject.name}"/></title>
@@ -20,7 +21,7 @@
 
       <div class="course-data-container">
         <h3 class="section-heading" style="margin: 0 0 20px 20px"> Anuncios </h3>
-        <form:form modelAttribute="announcementForm" class="form-wrapper reduced" method="post">
+        <form:form modelAttribute="announcementForm" class="form-wrapper reduced" method="post" acceptCharset="utf-8">
           <h1 class="announcement-title" style="color:#176961; align-self:center">Crear nuevo anuncio</h1>
           <form:label path="title" for="title" class="form-label">Titulo</form:label>
           <form:input type="text" path="title" class="form-input" style="font-size: 26px"/>

@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@page pageEncoding="UTF-8" %>
 <html>
 <head>
     <title>Campus - ${course.subject.name}</title>
@@ -45,7 +46,8 @@
             <c:url value="/course/${courseId}/files" var="postUrl"/>
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> Material </h3>
-                <form:form modelAttribute="fileForm" method="post" enctype="multipart/form-data" class="form-wrapper reduced">
+                <form:form modelAttribute="fileForm" method="post" enctype="multipart/form-data"
+                           class="form-wrapper reduced" acceptCharset="utf-8">
                     <h1 class="announcement-title" style="color:#176961; align-self:center">Subir nuevo archivo</h1>
                     <form:label path="file" for="file" class="form-label">Archivo</form:label>
                     <form:input path="file" type="file" class="form-input" style="font-size: 26px"/>
