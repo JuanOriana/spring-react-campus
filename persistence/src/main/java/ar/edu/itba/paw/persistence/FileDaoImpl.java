@@ -95,10 +95,12 @@ public class FileDaoImpl implements FileDao {
         return jdbcTemplate.update("DELETE FROM files WHERE fileId = ?", new Object[]{fileId}) == 1;
     }
 
-    // TODO: Add userId logic
     @Override
     public List<FileModel> list(Long userId) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects", FILE_MODEL_ROW_MAPPER));
+        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, " +
+                "quarter, board, subjectId, code, subjectName " +
+                "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN user_to_course " +
+                "WHERE userId = ?", new Object[]{userId}, FILE_MODEL_ROW_MAPPER));
     }
 
     @Override
