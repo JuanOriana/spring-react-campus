@@ -74,7 +74,7 @@ public class AnnouncementServiceImplTest {
     }
 
     @InjectMocks
-    private AnnouncementServiceImpl announcementService = new AnnouncementServiceImpl();
+    private final AnnouncementServiceImpl announcementService = new AnnouncementServiceImpl();
 
     @Mock
     private AnnouncementDao mockDao;
@@ -82,8 +82,8 @@ public class AnnouncementServiceImplTest {
     @Test
     public void testCreateAnnouncement() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.create(eq(ANNOUNCEMENT_DATE), eq(ANNOUNCEMENT_TITLE), eq(ANNOUNCEMENT_CONTENT),
-                eq(announcement.getAuthor()), eq(announcement.getCourse()))).thenReturn(announcement);
+        when(mockDao.create(any(LocalDateTime.class), anyString(), anyString(),
+                any(User.class), any(Course.class))).thenReturn(announcement);
         final Announcement newAnnouncement = announcementService.create(ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT,
                 announcement.getAuthor(), announcement.getCourse());
         Assert.assertEquals(newAnnouncement.getAnnouncementId(), ANNOUNCEMENT_ID);
@@ -102,9 +102,9 @@ public class AnnouncementServiceImplTest {
     @Test(expected =  RuntimeException.class)
     public void testCreateAnnouncementDuplicate() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.create(eq(ANNOUNCEMENT_DATE), eq(ANNOUNCEMENT_TITLE), eq(ANNOUNCEMENT_CONTENT),
-                eq(announcement.getAuthor()), eq(announcement.getCourse()))).thenThrow(new RuntimeException());
-        Announcement announcementCreateResult = announcementService.create(ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT,
+        when(mockDao.create(any(LocalDateTime.class), anyString(), anyString(),
+                any(User.class), any(Course.class))).thenThrow(RuntimeException.class);
+        announcementService.create(ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT,
                 announcement.getAuthor(), announcement.getCourse());
         Assert.fail("Should have thrown runtime exception for duplicate announcement creation");
     }
