@@ -3,10 +3,11 @@ package ar.edu.itba.paw.models;
 import java.sql.Time;
 
 public class Timetable {
-    private Integer courseId, dayOfWeek;
+    private Long courseId;
+    private Integer dayOfWeek;
     private Time startTime, endTime;
 
-    public Timetable(int courseId, int dayOfWeek, Time startTime, Time endTime) {
+    public Timetable(Long courseId, int dayOfWeek, Time startTime, Time endTime) {
         this.courseId = courseId;
         this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
@@ -19,11 +20,11 @@ public class Timetable {
         this.endTime = endTime;
     }
 
-    public Integer getCourseId() {
+    public Long getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(Integer courseId) {
+    public void setCourseId(Long courseId) {
         this.courseId = courseId;
     }
 

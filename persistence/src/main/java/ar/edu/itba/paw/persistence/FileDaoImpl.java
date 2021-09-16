@@ -19,19 +19,24 @@ public class FileDaoImpl implements FileDao {
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final SimpleJdbcInsert jdbcInsertCategory;
-    private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileModel(rs.getInt("fileId"), rs.getLong("fileSize"), rs.getString("fileName"),
-                rs.getTimestamp("fileDate").toLocalDateTime(), rs.getBytes("file"),
-                new FileExtension(rs.getInt("fileExtensionId"),rs.getString("fileExtension")),
-                new Course.Builder()
-                        .withCourseId(rs.getInt("courseId"))
-                        .withYear(rs.getInt("year"))
-                        .withQuarter(rs.getInt("quarter"))
-                        .withBoard(rs.getString("board"))
-                        .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
-                                rs.getString("subjectName")))
-                        .build());
-    };
+    private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) ->
+        new FileModel.Builder()
+            .withFileId(rs.getLong("fileId"))
+            .withSize(rs.getLong("fileSize"))
+            .withName(rs.getString("fileName"))
+            .withDate(rs.getTimestamp("fileDate").toLocalDateTime())
+            .withFile(rs.getBytes("file"))
+            .withExtension(new FileExtension(rs.getLong("fileExtensionId"),rs.getString("fileExtension")))
+            .withCourse(new Course.Builder()
+                    .withCourseId(rs.getLong("courseId"))
+                    .withYear(rs.getInt("year"))
+                    .withQuarter(rs.getInt("quarter"))
+                    .withBoard(rs.getString("board"))
+                    .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
+                            rs.getString("subjectName")))
+                    .build())
+            .build();
+
     private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) -> {
       return new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
     };
@@ -47,31 +52,34 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public FileModel create(FileModel file){
-
-        String fileExtension = getExtension(file.getName());
+    public FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course){
+        String fileExtension = getExtension(name);
         FileExtension fileExtensionModel;
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension}, Integer.class);
-        if (count == 0){
-            fileExtension = "other";
-        }
+        if (count == 0) fileExtension = "other";
         List<FileExtension> list = jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension},FILE_EXTENSION_ROW_MAPPER);
         fileExtensionModel = list.get(0);
-
         final Map<String, Object> args = new HashMap<>();
-        args.put("fileSize", file.getFile().length);
-        args.put("file", file.getFile());
-        args.put("fileName",file.getName());
-        LocalDateTime currentTimeDate = LocalDateTime.now();
-        args.put("fileDate", Timestamp.valueOf(currentTimeDate));
+        args.put("fileSize", size);
+        args.put("file", file);
+        args.put("fileName", name);
+        args.put("fileDate", Timestamp.valueOf(date));
         args.put("fileExtensionId", fileExtensionModel.getFileExtensionId());
-        args.put("courseId", file.getCourse().getCourseId());
-        final int fileId = jdbcInsert.executeAndReturnKey(args).intValue();
-        return new FileModel(fileId, file.getFile().length, file.getName(), currentTimeDate,file.getFile(),fileExtensionModel, file.getCourse());
+        args.put("courseId", course.getCourseId());
+        final Long fileId = jdbcInsert.executeAndReturnKey(args).longValue();
+        return new FileModel.Builder()
+                .withFileId(fileId)
+                .withSize(size)
+                .withName(name)
+                .withDate(date)
+                .withFile(file)
+                .withExtension(fileExtensionModel)
+                .withCourse(course)
+        .build();
     }
 
     @Override
-    public boolean update(long fileId, FileModel file) {
+    public boolean update(Long fileId, FileModel file) {
         return jdbcTemplate.update("UPDATE files " +
                 "SET file = ?," +
                         "fileName = ?," +
@@ -83,17 +91,18 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public boolean delete(long fileId) {
+    public boolean delete(Long fileId) {
         return jdbcTemplate.update("DELETE FROM files WHERE fileId = ?", new Object[]{fileId}) == 1;
     }
 
+    // TODO: Add userId logic
     @Override
-    public List<FileModel> list() {
+    public List<FileModel> list(Long userId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects", FILE_MODEL_ROW_MAPPER));
     }
 
     @Override
-    public Optional<FileModel> getById(long fileId) {
+    public Optional<FileModel> getById(Long fileId) {
         return jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileId = ?", new Object[]{fileId},FILE_MODEL_ROW_MAPPER).stream().findFirst();
     }
 
@@ -103,7 +112,7 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public List<FileModel> getByExtension(long extensionId) {
+    public List<FileModel> getByExtension(Long extensionId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileExtensionId = ?", new Object[]{extensionId}, FILE_MODEL_ROW_MAPPER));
     }
 
@@ -118,7 +127,7 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public boolean addCategory(long fileId, long fileCategoryId) {
+    public boolean addCategory(Long fileId, Long fileCategoryId) {
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", new Object[]{fileId,fileCategoryId}, Integer.class);
         if (count == 0){
             final Map<String, Object> args = new HashMap<>();
@@ -131,29 +140,29 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public boolean removeCategory(long fileId, long fileCategoryId) {
+    public boolean removeCategory(Long fileId, Long fileCategoryId) {
         return jdbcTemplate.update("DELETE FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", new Object[]{fileId, fileCategoryId}) == 1;
     }
 
     @Override
-    public List<FileCategory> getFileCategories(long fileId) {
+    public List<FileCategory> getFileCategories(Long fileId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT categoryId, categoryName FROM category_file_relationship NATURAL JOIN file_categories WHERE fileId = ?", new Object[]{fileId}, FILE_CATEGORY_ROW_MAPPER));
     }
 
     @Override
-    public List<FileModel> getByCategory(long fileCategoryId) {
+    public List<FileModel> getByCategory(Long fileCategoryId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN category_file_relationship NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE categoryId = ?", new Object[]{fileCategoryId}, FILE_MODEL_ROW_MAPPER));
     }
 
     @Override
-    public List<FileModel> getByCourseId(long courseId) {
+    public List<FileModel> getByCourseId(Long courseId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE courseId = ?", new Object[]{courseId}, FILE_MODEL_ROW_MAPPER));
     }
 
     private RowMapper<Integer> ACCESS_ROW_MAPPER = ((rs, rowNum) -> rs.getInt("userId"));
 
     @Override
-    public boolean hasAccess(long fileId, long userId) {
+    public boolean hasAccess(Long fileId, Long userId) {
         Optional<Integer> userResponse = jdbcTemplate.query("SELECT * FROM files NATURAL JOIN user_to_course WHERE " +
                 "fileId = ? AND userId = ?", new Object[]{fileId, userId}, ACCESS_ROW_MAPPER).stream().findFirst();
         return userResponse.isPresent();

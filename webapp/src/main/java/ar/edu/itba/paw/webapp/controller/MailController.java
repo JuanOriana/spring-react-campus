@@ -32,7 +32,7 @@ public class MailController extends AuthController{
     UserService userService;
 
     @RequestMapping(value = "/sendmail/{userId}", method = RequestMethod.GET)
-    public ModelAndView sendmail(@PathVariable Integer userId, final MailForm mailForm) {
+    public ModelAndView sendmail(@PathVariable Long userId, final MailForm mailForm) {
         User user = userService.findById(userId).orElseThrow(RuntimeException::new);
         ModelAndView mav = new ModelAndView("sendmail");
         mav.addObject("user", user);
@@ -41,7 +41,7 @@ public class MailController extends AuthController{
     }
 
     @RequestMapping(value = "/sendmail/{userId}", method = RequestMethod.POST)
-    public ModelAndView sendmail(@PathVariable Integer userId,
+    public ModelAndView sendmail(@PathVariable Long userId,
                                          @Valid MailForm mailForm, final BindingResult errors){
         if (!errors.hasErrors()) {
             mailForm.setSubject("");

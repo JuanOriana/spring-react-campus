@@ -32,9 +32,9 @@ public class CourseDaoImplTest {
 
     private JdbcTemplate jdbcTemplate;
 
-    private final Integer COURSE_ID = 1;
+    private final Long COURSE_ID = 1L;
     private final Integer SUBJECT_ID = 1;
-    private final Integer USER_ID = 1;
+    private final Long USER_ID = 1L;
     private final Integer USER_FILENUMBER = 49523123;
     private final Integer ROLE_ID = 1;
     private final Integer QUARTER = 1;
@@ -42,7 +42,7 @@ public class CourseDaoImplTest {
     private final String SUBJECT_NAME = "PAW";
     private final String SUBJECT_CODE = "A1";
     private final String BOARD = "S1";
-    private final int INVALID_COURSE_ID = 999;
+    private final Long INVALID_COURSE_ID = 999L;
     private final String insertCourseSql = String.format("INSERT INTO courses (subjectId, quarter,board,year) VALUES (%d, %d,'S1',%d)", SUBJECT_ID, QUARTER,YEAR);
     private final String insertCourseWithIdSql = String.format("INSERT INTO courses  VALUES (%d, %d, %d, 'S1',%d)", COURSE_ID, SUBJECT_ID, QUARTER, YEAR);
     private final String insertSubjectSql = String.format("INSERT INTO subjects (subjectId,code,subjectName) VALUES (%d,'A1','PAW')", SUBJECT_ID);

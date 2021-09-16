@@ -18,7 +18,7 @@ public class CourseDaoImpl implements CourseDao {
     private final SimpleJdbcInsert jdbcInsert;
     private static final RowMapper<Course> COURSE_ROW_MAPPER = (rs, rowNum) ->
         new Course.Builder()
-            .withCourseId(rs.getInt("courseId"))
+            .withCourseId(rs.getLong("courseId"))
             .withYear(rs.getInt("year"))
             .withQuarter(rs.getInt("quarter"))
             .withBoard(rs.getString("board"))
@@ -40,7 +40,7 @@ public class CourseDaoImpl implements CourseDao {
         args.put("board", board);
         args.put("year", year);
         args.put("subjectId", subjectId);
-        final int courseId = jdbcInsert.executeAndReturnKey(args).intValue();
+        final Long courseId = jdbcInsert.executeAndReturnKey(args).longValue();
         return new Course.Builder()
                 .withCourseId(courseId)
                 .withYear(year)
@@ -51,7 +51,7 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public boolean update(Integer id, Course course) {
+    public boolean update(Long id, Course course) {
         return jdbcTemplate.update("UPDATE courses " +
                 "SET subjectId = ?," +
                 "year = ?," +
@@ -62,18 +62,18 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public boolean delete(Integer id) {
+    public boolean delete(Long id) {
         return jdbcTemplate.update("DELETE FROM courses WHERE courseId = ?", new Object[]{id}) == 1;
     }
 
     @Override
-    public List<Course> list(Integer userId) {
+    public List<Course> list(Long userId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects " +
                 "NATURAL JOIN user_to_course WHERE userId = ?", new Object[]{userId}, COURSE_ROW_MAPPER));
     }
 
     @Override
-    public Optional<Course> getById(Integer id) {
+    public Optional<Course> getById(Long id) {
         return jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects WHERE courseId = ?", new Object[]{id}, COURSE_ROW_MAPPER).stream().findFirst();
     }
 
@@ -81,7 +81,7 @@ public class CourseDaoImpl implements CourseDao {
         Map<User, Role> result = new HashMap<>();
         while(rs.next()) {
             User user = new User.Builder()
-                    .withUserId(rs.getInt("userId"))
+                    .withUserId(rs.getLong("userId"))
                     .withFileNumber(rs.getInt("fileNumber"))
                     .withName(rs.getString("name"))
                     .withSurname(rs.getString("surname"))
@@ -97,7 +97,7 @@ public class CourseDaoImpl implements CourseDao {
     });
 
     @Override
-    public Map<User, Role> getTeachers(Integer courseId) {
+    public Map<User, Role> getTeachers(Long courseId) {
         return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN user_to_course NATURAL JOIN roles WHERE " +
                 "courseId = ? AND roleId BETWEEN ? AND ?", new Object[]{courseId, Permissions.HELPER.getValue(), Permissions.TEACHER.getValue()},
                 MAP_RESULT_SET_EXTRACTOR);
@@ -106,7 +106,7 @@ public class CourseDaoImpl implements CourseDao {
     private static final RowMapper<Integer> BELONGS_MAPPER = (rs, rowNum) -> rs.getInt("userId");
 
     @Override
-    public boolean belongs(Integer userId, Integer courseId) {
+    public boolean belongs(Long userId, Long courseId) {
         return jdbcTemplate.query("SELECT * FROM user_to_course WHERE courseId = ? AND userId = ?",
                 new Object[]{courseId, userId}, BELONGS_MAPPER).stream().findFirst().isPresent();
     }

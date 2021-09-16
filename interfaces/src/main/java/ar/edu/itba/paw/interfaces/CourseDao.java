@@ -11,10 +11,10 @@ import java.util.Optional;
 public interface CourseDao {
     Course create(Integer year, Integer quarter, String board, Integer subjectId, String subjectName,
                   String subjectCode);
-    boolean update(Integer id, Course course);
-    boolean delete(Integer id);
-    List<Course> list(Integer userId);
-    Optional<Course> getById(Integer id);
-    Map<User, Role> getTeachers(Integer courseId);
-    public boolean belongs(Integer userId, Integer courseId);
+    boolean update(Long id, Course course);
+    boolean delete(Long id);
+    List<Course> list(Long userId);
+    Optional<Course> getById(Long id);
+    Map<User, Role> getTeachers(Long courseId);
+    public boolean belongs(Long userId, Long courseId);
 }

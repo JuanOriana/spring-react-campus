@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileExtension;
 import ar.edu.itba.paw.models.FileModel;
+import ar.edu.itba.paw.webapp.auth.CampusUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,8 @@ public class FilesController extends AuthController{
 
     @RequestMapping("/files")
     public ModelAndView files(){
-        // TODO: only list files visible to the user (add userId as param to list function)
-        final List<FileModel> files = fileService.list();
+        CampusUser user = authFacade.getCurrentUser();
+        final List<FileModel> files = fileService.list(user.getUserId());
         final List<FileCategory> categories = fileCategoryService.getCategories();
         final List<FileExtension> extensions = fileExtensionService.getExtensions();
         ModelAndView mav = new ModelAndView("files");

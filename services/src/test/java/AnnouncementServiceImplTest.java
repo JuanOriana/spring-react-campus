@@ -19,9 +19,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AnnouncementServiceImplTest {
-    private static final Integer ANNOUNCEMENT_ID = 1;
-    private static final Integer INVALID_ANNOUNCEMENT_ID = 999;
-    private final int USER_ID = 1;
+    private static final Long ANNOUNCEMENT_ID = 1L;
+    private static final Long INVALID_ANNOUNCEMENT_ID = 999L;
+    private final Long USER_ID = 1L;
     private final int USER_FILE_NUMBER = 41205221;
     private final String USER_NAME = "Paw";
     private final String USER_SURNAME = "2021";
@@ -31,7 +31,7 @@ public class AnnouncementServiceImplTest {
     private final Integer PAGE_SIZE = 1;
     private final Integer PAGE = 1;
 
-    private final int COURSE_ID = 1;
+    private final Long COURSE_ID = 1L;
     private final int COURSE_YEAR = 2021;
     private final int COURSE_QUARTER = 2;
     private final String COURSE_BOARD = "S1";
@@ -62,9 +62,15 @@ public class AnnouncementServiceImplTest {
                 .withPassword(USER_PASSWORD)
                 .isAdmin(true)
                 .build();
-        Announcement mockAnnouncement = new Announcement(ANNOUNCEMENT_DATE, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, mockUser, mockCourse);
-        mockAnnouncement.setAnnouncementId(ANNOUNCEMENT_ID);
-        return mockAnnouncement;
+
+        return new Announcement.Builder()
+            .withAnnouncementId(ANNOUNCEMENT_ID)
+            .withDate(ANNOUNCEMENT_DATE)
+            .withTitle(ANNOUNCEMENT_TITLE)
+            .withContent(ANNOUNCEMENT_CONTENT)
+            .withAuthor(mockUser)
+            .withCourse(mockCourse)
+        .build();
     }
 
     @InjectMocks
@@ -76,8 +82,10 @@ public class AnnouncementServiceImplTest {
     @Test
     public void testCreateAnnouncement() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.create(eq(announcement))).thenReturn(announcement);
-        final Announcement newAnnouncement = announcementService.create(announcement);
+        when(mockDao.create(eq(ANNOUNCEMENT_DATE), eq(ANNOUNCEMENT_TITLE), eq(ANNOUNCEMENT_CONTENT),
+                eq(announcement.getAuthor()), eq(announcement.getCourse()))).thenReturn(announcement);
+        final Announcement newAnnouncement = announcementService.create(ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT,
+                announcement.getAuthor(), announcement.getCourse());
         Assert.assertEquals(newAnnouncement.getAnnouncementId(), ANNOUNCEMENT_ID);
     }
 
@@ -94,8 +102,10 @@ public class AnnouncementServiceImplTest {
     @Test(expected =  RuntimeException.class)
     public void testCreateAnnouncementDuplicate() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.create(eq(announcement))).thenThrow(new RuntimeException());
-        Announcement announcementCreateResult = announcementService.create(announcement);
+        when(mockDao.create(eq(ANNOUNCEMENT_DATE), eq(ANNOUNCEMENT_TITLE), eq(ANNOUNCEMENT_CONTENT),
+                eq(announcement.getAuthor()), eq(announcement.getCourse()))).thenThrow(new RuntimeException());
+        Announcement announcementCreateResult = announcementService.create(ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT,
+                announcement.getAuthor(), announcement.getCourse());
         Assert.fail("Should have thrown runtime exception for duplicate announcement creation");
     }
 

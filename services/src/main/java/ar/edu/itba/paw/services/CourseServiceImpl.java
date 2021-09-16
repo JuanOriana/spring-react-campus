@@ -29,55 +29,55 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public boolean update(Integer id, Course course) {
+    public boolean update(Long id, Course course) {
         return courseDao.update(id, course);
     }
 
     @Override
-    public boolean delete(Integer id) {
+    public boolean delete(Long id) {
         return courseDao.delete(id);
     }
 
     @Override
-    public List<Course> list(Integer userId) {
+    public List<Course> list(Long userId) {
         return courseDao.list(userId);
     }
 
     @Override
-    public Optional<Course> getById(Integer id) {
+    public Optional<Course> getById(Long id) {
         return courseDao.getById(id);
     }
 
     @Override
-    public Map<User, Role> getTeachers(Integer courseId) {
+    public Map<User, Role> getTeachers(Long courseId) {
         return courseDao.getTeachers(courseId);
     }
 
     @Override
-    public boolean belongs(Integer userId, Integer courseId) {
+    public boolean belongs(Long userId, Long courseId) {
         return courseDao.belongs(userId, courseId);
     }
 
     @Override
-    public boolean isTeacher(Integer userId, Integer courseId) {
+    public boolean isTeacher(Long userId, Long courseId) {
         Optional<Role> userRole = userDao.getRole(userId, courseId);
         return userRole.isPresent() && userRole.get().getRoleId() == Permissions.TEACHER.getValue();
     }
 
     @Override
-    public boolean isHelper(Integer userId, Integer courseId) {
+    public boolean isHelper(Long userId, Long courseId) {
         Optional<Role> userRole = userDao.getRole(userId, courseId);
         return userRole.isPresent() && userRole.get().getRoleId() == Permissions.HELPER.getValue();
     }
 
     @Override
-    public boolean isStudent(Integer userId, Integer courseId) {
+    public boolean isStudent(Long userId, Long courseId) {
         Optional<Role> userRole = userDao.getRole(userId, courseId);
         return userRole.isPresent() && userRole.get().getRoleId() == Permissions.STUDENT.getValue();
     }
 
     @Override
-    public boolean isPrivileged(Integer userId, Integer courseId) {
+    public boolean isPrivileged(Long userId, Long courseId) {
         Optional<Role> userRole = userDao.getRole(userId, courseId);
         if(!userRole.isPresent()) return false;
         int roleId = userRole.get().getRoleId();

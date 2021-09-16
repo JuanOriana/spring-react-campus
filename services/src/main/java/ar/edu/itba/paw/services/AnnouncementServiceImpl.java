@@ -3,9 +3,12 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.AnnouncementDao;
 import ar.edu.itba.paw.interfaces.AnnouncementService;
 import ar.edu.itba.paw.models.Announcement;
+import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -19,22 +22,22 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     private AnnouncementDao announcementDao;
 
     @Override
-    public Announcement create(Announcement announcement) {
-        return announcementDao.create(announcement);
+    public Announcement create(String title, String content, User author, Course course) {
+        return announcementDao.create(LocalDateTime.now(), title, content, author, course);
     }
 
     @Override
-    public boolean update(Integer id, Announcement announcement) {
+    public boolean update(Long id, Announcement announcement) {
         return announcementDao.update(id, announcement);
     }
 
     @Override
-    public boolean delete(Integer id) {
+    public boolean delete(Long id) {
         return announcementDao.delete(id);
     }
 
     @Override
-    public List<Announcement> list(Integer userId, Integer page, Integer pageSize) {
+    public List<Announcement> list(Long userId, Integer page, Integer pageSize) {
         return announcementDao.list(userId, page, pageSize);
     }
 
@@ -45,23 +48,23 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public List<Announcement> list(Integer userId, Integer page, Integer pageSize, Comparator<Announcement> comparator) {
+    public List<Announcement> list(Long userId, Integer page, Integer pageSize, Comparator<Announcement> comparator) {
         if(page < 1 || pageSize < 1) return new ArrayList<>();
         return list(userId, page, pageSize).stream().sorted(comparator).collect(Collectors.toList());
     }
 
     @Override
-    public List<Announcement> listByCourse(Integer courseId) {
+    public List<Announcement> listByCourse(Long courseId) {
         return announcementDao.listByCourse(courseId);
     }
 
     @Override
-    public List<Announcement> listByCourse(Integer courseId, Comparator<Announcement> comparator) {
+    public List<Announcement> listByCourse(Long courseId, Comparator<Announcement> comparator) {
         return listByCourse(courseId).stream().sorted(comparator).collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Announcement> getById(Integer id) {
+    public Optional<Announcement> getById(Long id) {
         return announcementDao.getById(id);
     }
 }
