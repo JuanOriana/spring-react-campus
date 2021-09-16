@@ -5,6 +5,18 @@
 <head>
   <title>Campus - <c:out value="${course.subject.name}"/></title>
   <c:import url="../config/generalHead.jsp"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script>
+    const deleteById = function (announcementId){
+      $.ajax({
+        url: '/deleteAnnouncement/' + announcementId,
+        type: 'DELETE',
+        success: function (result) {
+          $("#announcement-"+ announcementId).remove();
+        }
+      });
+    }
+  </script>
 </head>
 <body>
 <div class="page-organizer">
@@ -33,14 +45,15 @@
         </form:form>
         <div class="separator reduced">.</div>
         <c:forEach var="announcementItem" items="${announcementList}">
-          <div class="announcement-wrapper">
+          <div class="announcement-wrapper" id="announcement-${announcementItem.announcementId}">
             <div class="announcement-header">
               <h4 class="announcement-title"><c:out value="${announcementItem.title}"/></h4>
               <div style="display: flex">
                 <p style="font-size: 14px">Publicado por: <c:out value="${announcementItem.author.name}
                                   ${announcementItem.author.surname}"/></p>
                 <img src="${page.Context.request.contextPath}/resources/images/trash-red.png"
-                     alt="delete" class="small-icon" style="margin-left: 10px">
+                     alt="delete" class="small-icon" style="margin-left: 10px"
+                     onclick="deleteById(${announcementItem.announcementId})">
               </div>
             </div>
             <p class="announcement-date"><c:out value="${announcementItem.date}"/></p>

@@ -160,6 +160,12 @@ public class CourseController extends AuthController{
             throw new RuntimeException("IOError writing file to output stream");
         }
     }
+
+    @RequestMapping(value = "/deleteAnnouncement/{announcementId}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void deleteFile(@PathVariable Long announcementId){
+        announcementService.delete(announcementId);
+    }
     private String getExtension(String filename){
         String extension = "";
         int i = filename.lastIndexOf('.');
