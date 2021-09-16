@@ -36,8 +36,12 @@
           <div class="announcement-wrapper">
             <div class="announcement-header">
               <h4 class="announcement-title"><c:out value="${announcementItem.title}"/></h4>
-              <p style="font-size: 14px">Publicado por: <c:out value="${announcementItem.author.name}
-                                ${announcementItem.author.surname}"/></p>
+              <div style="display: flex">
+                <p style="font-size: 14px">Publicado por: <c:out value="${announcementItem.author.name}
+                                  ${announcementItem.author.surname}"/></p>
+                <img src="${page.Context.request.contextPath}/resources/images/trash-red.png"
+                     alt="delete" class="small-icon" style="margin-left: 10px">
+              </div>
             </div>
             <p class="announcement-date"><c:out value="${announcementItem.date}"/></p>
             <c:out value="${announcementItem.content}"/>

@@ -136,6 +136,8 @@
                                          class="file-img" alt="${file.name}"/>
                                 <p class="file-name"><c:out value=" ${file.name}"/></p>
                                 </a>
+                                <img src="${page.Context.request.contextPath}/resources/images/trash.png"
+                                     alt="delete" class="medium-icon">
                             </div>
                         </c:forEach>
                     </div>
