@@ -9,10 +9,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class FileExtensionDaoImpl implements FileExtensionDao {
@@ -23,6 +20,8 @@ public class FileExtensionDaoImpl implements FileExtensionDao {
     private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) -> {
         return new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
     };
+
+    private static final RowMapper<String> FILE_EXTENSION_STRING_ROW_MAPPER = (rs, rowNum) -> rs.getString("fileExtension");
 
     @Autowired
     public FileExtensionDaoImpl(final DataSource ds) {
@@ -53,5 +52,10 @@ public class FileExtensionDaoImpl implements FileExtensionDao {
     @Override
     public List<FileExtension> getExtensions() {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions", FILE_EXTENSION_ROW_MAPPER));
+    }
+
+    @Override
+    public Optional<String> getExtension(Long extensionId) {
+        return jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions WHERE fileExtensionId = ?",new Object[]{extensionId}, FILE_EXTENSION_STRING_ROW_MAPPER).stream().findFirst();
     }
 }
