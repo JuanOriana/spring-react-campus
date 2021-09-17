@@ -1,7 +1,10 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.FileCategoryDao;
 import ar.edu.itba.paw.interfaces.FileDao;
+import ar.edu.itba.paw.interfaces.FileExtensionDao;
 import ar.edu.itba.paw.models.*;
+import com.sun.xml.internal.ws.api.FeatureListValidatorAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,29 +19,35 @@ import java.util.*;
 @Repository
 public class FileDaoImpl implements FileDao {
 
+    @Autowired
+    FileExtensionDao fileExtensionDao;
+
+    @Autowired
+    FileCategoryDao fileCategoryDao;
+
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final SimpleJdbcInsert jdbcInsertCategory;
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) ->
-        new FileModel.Builder()
-            .withFileId(rs.getLong("fileId"))
-            .withSize(rs.getLong("fileSize"))
-            .withName(rs.getString("fileName"))
-            .withDate(rs.getTimestamp("fileDate").toLocalDateTime())
-            .withFile(rs.getBytes("file"))
-            .withExtension(new FileExtension(rs.getLong("fileExtensionId"),rs.getString("fileExtension")))
-            .withCourse(new Course.Builder()
-                    .withCourseId(rs.getLong("courseId"))
-                    .withYear(rs.getInt("year"))
-                    .withQuarter(rs.getInt("quarter"))
-                    .withBoard(rs.getString("board"))
-                    .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
-                            rs.getString("subjectName")))
-                    .build())
-            .build();
+            new FileModel.Builder()
+                    .withFileId(rs.getLong("fileId"))
+                    .withSize(rs.getLong("fileSize"))
+                    .withName(rs.getString("fileName"))
+                    .withDate(rs.getTimestamp("fileDate").toLocalDateTime())
+                    .withFile(rs.getBytes("file"))
+                    .withExtension(new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension")))
+                    .withCourse(new Course.Builder()
+                            .withCourseId(rs.getLong("courseId"))
+                            .withYear(rs.getInt("year"))
+                            .withQuarter(rs.getInt("quarter"))
+                            .withBoard(rs.getString("board"))
+                            .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
+                                    rs.getString("subjectName")))
+                            .build())
+                    .build();
 
     private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) -> {
-      return new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
+        return new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
     };
     private static final RowMapper<FileCategory> FILE_CATEGORY_ROW_MAPPER = (rs, rowNum) -> {
         return new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
@@ -52,12 +61,12 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course){
+    public FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course) {
         String fileExtension = getExtension(name);
         FileExtension fileExtensionModel;
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension}, Integer.class);
         if (count == 0) fileExtension = "other";
-        List<FileExtension> list = jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension},FILE_EXTENSION_ROW_MAPPER);
+        List<FileExtension> list = jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension}, FILE_EXTENSION_ROW_MAPPER);
         fileExtensionModel = list.get(0);
         final Map<String, Object> args = new HashMap<>();
         args.put("fileSize", size);
@@ -75,19 +84,19 @@ public class FileDaoImpl implements FileDao {
                 .withFile(file)
                 .withExtension(fileExtensionModel)
                 .withCourse(course)
-        .build();
+                .build();
     }
 
     @Override
     public boolean update(Long fileId, FileModel file) {
         return jdbcTemplate.update("UPDATE files " +
                 "SET file = ?," +
-                        "fileName = ?," +
-                        "fileSize = ?," +
-                        "fileDate = ?," +
-                        "fileExtensionId = ?," +
-                        "courseId = ? " +
-                        "WHERE fileId = ?", new Object[]{file.getFile(), file.getName(), file.getFile().length, Timestamp.valueOf(LocalDateTime.now()),file.getExtension().getFileExtensionId(), file.getCourse().getCourseId(), fileId}) == 1;
+                "fileName = ?," +
+                "fileSize = ?," +
+                "fileDate = ?," +
+                "fileExtensionId = ?," +
+                "courseId = ? " +
+                "WHERE fileId = ?", new Object[]{file.getFile(), file.getName(), file.getFile().length, Timestamp.valueOf(LocalDateTime.now()), file.getExtension().getFileExtensionId(), file.getCourse().getCourseId(), fileId}) == 1;
     }
 
     @Override
@@ -105,7 +114,7 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public Optional<FileModel> getById(Long fileId) {
-        return jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileId = ?", new Object[]{fileId},FILE_MODEL_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileId = ?", new Object[]{fileId}, FILE_MODEL_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
@@ -122,16 +131,16 @@ public class FileDaoImpl implements FileDao {
     public List<FileModel> getByExtension(String extension) {
         String fileExtension = extension;
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension}, Integer.class);
-        if (count == 0){
+        if (count == 0) {
             fileExtension = "other";
         }
-        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileExtension = ?", new Object[]{fileExtension},FILE_MODEL_ROW_MAPPER));
+        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileExtension = ?", new Object[]{fileExtension}, FILE_MODEL_ROW_MAPPER));
     }
 
     @Override
     public boolean addCategory(Long fileId, Long fileCategoryId) {
-        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", new Object[]{fileId,fileCategoryId}, Integer.class);
-        if (count == 0){
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", new Object[]{fileId, fileCategoryId}, Integer.class);
+        if (count == 0) {
             final Map<String, Object> args = new HashMap<>();
             args.put("fileId", fileId);
             args.put("categoryId", fileCategoryId);
@@ -170,12 +179,52 @@ public class FileDaoImpl implements FileDao {
         return userResponse.isPresent();
     }
 
-    private String getExtension(String filename){
+    private String getExtension(String filename) {
         String extension = "";
         int i = filename.lastIndexOf('.');
         if (i > 0) {
-            extension = filename.substring(i+1);
+            extension = filename.substring(i + 1);
         }
         return extension;
+    }
+
+    public List<FileModel> listByCriteria(OrderCriterias orderCriterias,SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories) {
+        StringBuilder extensionAndCategoryQuery = new StringBuilder();
+        if (!extensions.isEmpty()) {
+            extensionAndCategoryQuery.append(" fileExtension IN (");
+            for (Long extension : extensions) {
+                Optional<String> exten = fileExtensionDao.getExtension(extension);
+                extensionAndCategoryQuery.append("'" + (exten.orElse("other")) + "',");
+            }
+            extensionAndCategoryQuery.delete(extensionAndCategoryQuery.length() - 1, extensionAndCategoryQuery.length()); // todo ver si se puede mejorar esta forma "hardcodeada" de borrar la coma
+            extensionAndCategoryQuery.append(")");
+        }
+        if (!categories.isEmpty()) {
+            if (!extensions.isEmpty()) {
+                extensionAndCategoryQuery.append(" AND");
+            }
+            extensionAndCategoryQuery.append(" categoryname IN ( ");
+            for (Long category : categories) {
+                Optional<String> cat = fileCategoryDao.getCategory(category);
+                extensionAndCategoryQuery.append("'" + cat.orElse("none") + "',");
+            }
+            extensionAndCategoryQuery.delete(extensionAndCategoryQuery.length() - 1, extensionAndCategoryQuery.length()); // todo ver si se puede mejorar esta forma "hardcodeada" de borrar la coma
+            extensionAndCategoryQuery.append(" )");
+        }
+
+        String filterStringNameAndDate = (extensions.isEmpty() && categories.isEmpty()) ? extensionAndCategoryQuery.toString() : "AND "+extensionAndCategoryQuery.toString();
+        String filterStringNone = (extensions.isEmpty() && categories.isEmpty()) ? extensionAndCategoryQuery.toString() : "WHERE " +extensionAndCategoryQuery.toString();
+        switch (criterias) {
+            case NAME:
+                return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE fileName LIKE ?"+filterStringNameAndDate+" ORDER BY CAST(? as varchar(10)) ", new Object[]{("%"+param+"%"),orderCriterias.getValue()}, FILE_MODEL_ROW_MAPPER));
+            case DATE:
+                return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE fileDate = ? "+ filterStringNameAndDate+" ORDER BY CAST(? as varchar(10)) ", new Object[]{param,orderCriterias.getValue()}, FILE_MODEL_ROW_MAPPER));
+            case NONE:
+                return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories "+filterStringNone+" ORDER BY CAST(? as varchar(10)) ",new Object[]{orderCriterias.getValue()}, FILE_MODEL_ROW_MAPPER));
+            default:
+                break;
+
+        }
+        return new ArrayList<>();
     }
 }
