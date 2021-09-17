@@ -8,10 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class FileCategoryDaoImpl implements FileCategoryDao {
@@ -22,6 +19,10 @@ public class FileCategoryDaoImpl implements FileCategoryDao {
     private static final RowMapper<FileCategory> FILE_CATEGORY_ROW_MAPPER = (rs, rowNum) -> {
         return new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
     };
+
+    private static final RowMapper<String> FILE_CATEGORY_STRING_ROW_MAPPER = (rs, rowNum) -> rs.getString("categoryName");
+
+
 
     @Autowired
     public FileCategoryDaoImpl(final DataSource ds) {
@@ -52,5 +53,10 @@ public class FileCategoryDaoImpl implements FileCategoryDao {
     @Override
     public List<FileCategory> getCategories() {
         return new ArrayList<>(jdbcTemplate.query("SELECT categoryId, categoryName FROM file_categories", FILE_CATEGORY_ROW_MAPPER));
+    }
+
+    @Override
+    public Optional<String> getCategory(Integer categoryId) {
+        return jdbcTemplate.query("SELECT categoryName FROM file_categories WHERE categoryId = ?",new Object[]{categoryId}, FILE_CATEGORY_STRING_ROW_MAPPER).stream().findFirst();
     }
 }
