@@ -45,8 +45,8 @@ public class MailingServiceImpl implements MailingService {
             message.setSubject(subject);
             message.setContent(content, contentType);
             Transport.send(message);
-        } catch (MessagingException mex) {
-            throw new RuntimeException(mex.getMessage());
+        }  catch(MessagingException mex) {
+           mex.printStackTrace();
         }
     }
 
