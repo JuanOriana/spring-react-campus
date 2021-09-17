@@ -25,6 +25,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public FileModel create(Long size, String name, byte[] file, Course course, Long fileCategoryId) {
+        FileModel fileModel = this.create(size, name, file, course);
+        this.addCategory(fileModel.getFileId(), fileCategoryId);
+        return fileModel;
+    }
+
+    @Override
     public boolean update(Long fileId, FileModel file) {
         return fileDao.update(fileId, file);
     }
