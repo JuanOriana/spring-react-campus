@@ -1,9 +1,22 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@page pageEncoding="UTF-8" %>
 <html>
 <head>
   <title>Campus - <c:out value="${course.subject.name}"/></title>
   <c:import url="../config/generalHead.jsp"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script>
+    function deleteById(announcementId){
+      $.ajax({
+        url: '/deleteAnnouncement/' + announcementId,
+        type: 'DELETE',
+        success: function (result) {
+          $("#announcement-"+ announcementId).remove();
+        }
+      });
+    }
+  </script>
 </head>
 <body>
 <div class="page-organizer">
@@ -20,7 +33,7 @@
 
       <div class="course-data-container">
         <h3 class="section-heading" style="margin: 0 0 20px 20px"> Anuncios </h3>
-        <form:form modelAttribute="announcementForm" class="form-wrapper reduced" method="post">
+        <form:form modelAttribute="announcementForm" class="form-wrapper reduced" method="post" acceptCharset="utf-8">
           <h1 class="announcement-title" style="color:#176961; align-self:center">Crear nuevo anuncio</h1>
           <form:label path="title" for="title" class="form-label">Titulo</form:label>
           <form:input type="text" path="title" class="form-input" style="font-size: 26px"/>
@@ -32,11 +45,16 @@
         </form:form>
         <div class="separator reduced">.</div>
         <c:forEach var="announcementItem" items="${announcementList}">
-          <div class="announcement-wrapper">
+          <div class="announcement-wrapper" id="announcement-${announcementItem.announcementId}">
             <div class="announcement-header">
               <h4 class="announcement-title"><c:out value="${announcementItem.title}"/></h4>
-              <p style="font-size: 14px">Publicado por: <c:out value="${announcementItem.author.name}
-                                ${announcementItem.author.surname}"/></p>
+              <div style="display: flex">
+                <p style="font-size: 14px">Publicado por: <c:out value="${announcementItem.author.name}
+                                  ${announcementItem.author.surname}"/></p>
+                <img src="${page.Context.request.contextPath}/resources/images/trash-red.png"
+                     alt="delete" class="small-icon" style="margin-left: 10px"
+                     onclick="deleteById(${announcementItem.announcementId})">
+              </div>
             </div>
             <p class="announcement-date"><c:out value="${announcementItem.date}"/></p>
             <c:out value="${announcementItem.content}"/>

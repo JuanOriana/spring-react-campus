@@ -58,8 +58,8 @@ public class CourseController extends AuthController{
     }
 
     @RequestMapping(value = "/course/{courseId}/announcements", method = RequestMethod.GET)
-    public ModelAndView announcements(@PathVariable Integer courseId,
-                                      final AnnouncementForm announcementForm, String successMessage) {
+    public ModelAndView announcements(@PathVariable Long courseId, final AnnouncementForm announcementForm,
+                                      String successMessage) {
         final ModelAndView mav;
         List<Announcement> announcements = announcementService.listByCourse(courseId, orderByDate);
         if(courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
@@ -75,7 +75,7 @@ public class CourseController extends AuthController{
     }
 
     @RequestMapping(value = "/course/{courseId}/announcements", method = RequestMethod.POST)
-    public ModelAndView postAnnouncement(@PathVariable Integer courseId,
+    public ModelAndView postAnnouncement(@PathVariable Long courseId,
                                              @Valid AnnouncementForm announcementForm, final BindingResult errors){
         String successMessage = null;
         if (!errors.hasErrors()) {
@@ -89,12 +89,14 @@ public class CourseController extends AuthController{
                     .withSurname(springUser.getSurname())
                     .withUsername(springUser.getUsername())
                     .build();
-            announcementService.create(new Announcement(LocalDateTime.now(),
-                    announcementForm.getTitle(), announcementForm.getContent(), currentUser, courseService.getById(courseId).get()));
+            announcementService.create(announcementForm.getTitle(), announcementForm.getContent(), currentUser,courseService.getById(courseId).get());
             List<User> userList = courseService.getStudents(courseId);
             List<String> emailList = new ArrayList<>();
             userList.forEach(u->emailList.add(u.getEmail()));
             mailingService.sendBroadcastEmail(emailList, "Nuevo anuncio en curso "+announcementForm.getTitle(), announcementForm.getContent(), "text/plain");
+
+
+
             announcementForm.setContent("");
             announcementForm.setTitle("");
             successMessage = "Anuncio publicado exitosamente";
@@ -103,7 +105,7 @@ public class CourseController extends AuthController{
     }
 
     @RequestMapping("/course/{courseId}/teachers")
-    public ModelAndView professors(@PathVariable Integer courseId) {
+    public ModelAndView professors(@PathVariable Long courseId) {
         final ModelAndView mav = new ModelAndView("teachers");
         Map<User, Role> teachers = courseService.getTeachers(courseId);
         Set<Map.Entry<User,Role>> teacherSet = teachers.entrySet();
@@ -113,7 +115,7 @@ public class CourseController extends AuthController{
     }
 
     @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.GET)
-    public ModelAndView files(@PathVariable Integer courseId, final FileForm fileForm,
+    public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm,
                               String successMessage) {
         final ModelAndView mav;
         final List<FileModel> files = fileService.getByCourseId(courseId);
@@ -134,15 +136,15 @@ public class CourseController extends AuthController{
     }
 
     @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.POST)
-    public ModelAndView uploadFile(@PathVariable Integer courseId,
+    public ModelAndView uploadFile(@PathVariable Long courseId,
                                      @Valid FileForm fileForm, final BindingResult errors){
         String successMessage = null;
         if (!errors.hasErrors()) {
             CommonsMultipartFile file = fileForm.getFile();
             String filename = file.getOriginalFilename();
             String extension = getExtension(filename);
-            FileModel newFile = fileService.create(new FileModel(file.getSize(), filename, LocalDateTime.now(), file.getBytes(),
-                    new FileExtension(extension), courseService.getById(courseId).orElseThrow(CourseNotFoundException::new)));
+            FileModel newFile = fileService.create(file.getSize(), filename, file.getBytes(),
+                    courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
             fileService.addCategory(newFile.getFileId(), fileForm.getCategoryId());
             fileForm.setFile(null);
             fileForm.setCategoryId(null);
@@ -152,9 +154,9 @@ public class CourseController extends AuthController{
     }
 
     @RequestMapping(value = "/download/{fileId}", method = RequestMethod.GET)
-    public void downloadFile(@PathVariable int fileId, HttpServletResponse response) {
+    public void downloadFile(@PathVariable Long fileId, HttpServletResponse response) {
         FileModel file = fileService.getById(fileId).orElseThrow(FileNotFoundException::new);
-        if (!file.getFileExtension().getFileExtension().equals("pdf"))
+        if (!file.getExtension().getFileExtension().equals("pdf"))
             response.setHeader("Content-Disposition","attachment; filename=\""+ file.getName()+"\"");
         else
             response.setContentType("application/pdf");
@@ -167,6 +169,19 @@ public class CourseController extends AuthController{
             throw new RuntimeException("IOError writing file to output stream");
         }
     }
+
+    @RequestMapping(value = "/deleteAnnouncement/{announcementId}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void deleteAnnouncement(@PathVariable Long announcementId){
+        announcementService.delete(announcementId);
+    }
+
+    @RequestMapping(value = "/deleteFile/{fileId}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void deleteFile(@PathVariable Long fileId){
+        fileService.delete(fileId);
+    }
+
     private String getExtension(String filename){
         String extension = "";
         int i = filename.lastIndexOf('.');

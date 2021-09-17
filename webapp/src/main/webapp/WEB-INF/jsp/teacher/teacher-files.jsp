@@ -1,9 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@page pageEncoding="UTF-8" %>
 <html>
 <head>
     <title>Campus - ${course.subject.name}</title>
     <c:import url="../config/generalHead.jsp"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
         function toggleAll(source) {
             const checkboxes = document.getElementsByName(source.name);
@@ -28,6 +30,16 @@
                 toggler.style.transform="rotate(90deg)"
             }
         }
+
+        function deleteById(fileId){
+            $.ajax({
+                url: '/deleteFile/' + fileId,
+                type: 'DELETE',
+                success: function (result) {
+                    $("#file-"+ fileId).remove();
+                }
+            });
+        }
     </script>
 </head>
 <body>
@@ -45,7 +57,8 @@
             <c:url value="/course/${courseId}/files" var="postUrl"/>
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> Material </h3>
-                <form:form modelAttribute="fileForm" method="post" enctype="multipart/form-data" class="form-wrapper reduced">
+                <form:form modelAttribute="fileForm" method="post" enctype="multipart/form-data"
+                           class="form-wrapper reduced" acceptCharset="utf-8">
                     <h1 class="announcement-title" style="color:#176961; align-self:center">Subir nuevo archivo</h1>
                     <form:label path="file" for="file" class="form-label">Archivo</form:label>
                     <form:input path="file" type="file" class="form-input" style="font-size: 26px"/>
@@ -127,13 +140,15 @@
                     </form>
                     <div class="file-grid">
                         <c:forEach var="file" items="${files}">
-                            <div class="file-unit">
+                            <div class="file-unit" id="file-${file.fileId}">
                                 <a href="<c:url value="/download/${file.fileId}"/>" class="styleless-anchor"
                                    style="display: flex;margin-left: 10px; align-items: center">
                                     <img src="<c:url value="${page.Context.request.contextPath}/resources/images/extensions/${file.extension.fileExtension}.png"/>"
                                          class="file-img" alt="${file.name}"/>
                                 <p class="file-name"><c:out value=" ${file.name}"/></p>
                                 </a>
+                                <img src="${page.Context.request.contextPath}/resources/images/trash.png"
+                                     alt="delete" class="medium-icon" onclick="deleteById(${file.fileId})">
                             </div>
                         </c:forEach>
                     </div>

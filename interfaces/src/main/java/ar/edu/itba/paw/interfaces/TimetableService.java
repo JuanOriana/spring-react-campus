@@ -23,20 +23,20 @@ public interface TimetableService {
      * @param end modified
      * @return true if the timetable was successfully updated, false otherwise
      */
-    boolean update(int courseId, int dayOfWeek, Time start, Time end);
+    boolean update(Long courseId, int dayOfWeek, Time start, Time end);
 
     /**
      * Attempts to delete a course's timetable
      * @param courseId of the course's timetable to be deleted
      * @return true if the timetable was successfully removed, false otherwise
      */
-    boolean delete(int courseId);
+    boolean delete(Long courseId);
 
     /**
      * Attempts to get the timetable of the given id
      * @param courseId of the course to get the timetable from
      * @return list of timetables for the given courseId
      */
-    List<Timetable> getById(long courseId);
+    List<Timetable> getById(Long courseId);
 
 }

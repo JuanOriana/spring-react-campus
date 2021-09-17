@@ -8,9 +8,9 @@ import java.util.Optional;
 public interface UserDao {
     User create(Integer fileNumber, String name, String surname, String username, String email, String password,
                 boolean isAdmin);
-    boolean update(int userId, User user);
-    boolean delete(int userId);
-    Optional<Role> getRole(int userId, int courseId);
-    Optional<User> findById(int userId);
+    boolean update(Long userId, User user);
+    boolean delete(Long userId);
+    Optional<Role> getRole(Long userId, Long courseId);
+    Optional<User> findById(Long userId);
     Optional<User> findByUsername(String username);
 }

@@ -2,13 +2,13 @@ package ar.edu.itba.paw.models;
 
 public class FileExtension {
 
-    private long fileExtensionId;
+    private Long fileExtensionId;
     private String fileExtension;
 
     public FileExtension() {
     }
 
-    public FileExtension(long fileExtensionId, String fileExtension) {
+    public FileExtension(Long fileExtensionId, String fileExtension) {
         this.fileExtensionId = fileExtensionId;
         this.fileExtension = fileExtension;
     }
@@ -17,11 +17,11 @@ public class FileExtension {
         this.fileExtension = fileExtension;
     }
 
-    public long getFileExtensionId() {
+    public Long getFileExtensionId() {
         return fileExtensionId;
     }
 
-    public void setFileExtensionId(long fileExtensionId) {
+    public void setFileExtensionId(Long fileExtensionId) {
         this.fileExtensionId = fileExtensionId;
     }
 

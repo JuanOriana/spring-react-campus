@@ -2,7 +2,7 @@ package ar.edu.itba.paw.models;
 
 public class Course {
 
-    private Integer courseId;
+    private Long courseId;
     private Integer year;
     private Integer quarter;
     private String board;
@@ -10,7 +10,7 @@ public class Course {
 
     public static class Builder {
 
-        private Integer courseId;
+        private Long courseId;
         private Integer year;
         private Integer quarter;
         private String board;
@@ -19,7 +19,7 @@ public class Course {
         public Builder() {
         }
 
-        Builder(Integer courseId, Integer year, Integer quarter, String board, Subject subject) {
+        Builder(Long courseId, Integer year, Integer quarter, String board, Subject subject) {
             this.courseId = courseId;
             this.year = year;
             this.quarter = quarter;
@@ -27,7 +27,7 @@ public class Course {
             this.subject = subject;
         }
 
-        public Builder withCourseId(Integer courseId){
+        public Builder withCourseId(Long courseId){
             this.courseId = courseId;
             return Builder.this;
         }
@@ -91,11 +91,11 @@ public class Course {
         this.subject = builder.subject;
     }
 
-    public Integer getCourseId() {
+    public Long getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(Integer courseId) {
+    public void setCourseId(Long courseId) {
         this.courseId = courseId;
     }
 

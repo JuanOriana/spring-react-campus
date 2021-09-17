@@ -25,7 +25,8 @@
                     <c:forEach items="${days}" var="day" varStatus="dayLoop">
                         <c:set var = "currentCourse" value = "${timeTableMatrix.get(dayLoop.index).get(hourLoop.index)}"/>
                         <c:if test="${currentCourse != null}">
-                            <td class="active-time-td"  style="padding: 0" data-tooltip="${currentCourse.subject.name}">
+                            <td class="active-time-td"  style="padding: 0;background:${courseColors.get(currentCourse)}"
+                                data-tooltip="${currentCourse.subject.name}">
                                 <a class="styleless-anchor" style="display: block;height: 100%; padding: 1em; text-align: center"
                                    href="<c:url value="/course/${currentCourse.courseId}"/>">
                                         ${currentCourse.subject.code} [${currentCourse.board}]

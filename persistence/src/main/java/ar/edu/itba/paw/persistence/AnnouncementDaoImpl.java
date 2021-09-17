@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
@@ -22,10 +23,13 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private static final RowMapper<Announcement> COURSE_ANNOUNCEMENT_ROW_MAPPER = (rs, rowNum) ->
-        new Announcement(rs.getInt("announcementid"), rs.getTimestamp("date").toLocalDateTime(), rs.getString("title"),
-                rs.getString("content"),
-                new User.Builder()
-                    .withUserId(rs.getInt("userId"))
+        new Announcement.Builder()
+            .withAnnouncementId(rs.getLong("announcementid"))
+            .withDate(rs.getTimestamp("date").toLocalDateTime())
+            .withTitle(rs.getString("title"))
+            .withContent(rs.getString("content"))
+            .withAuthor(new User.Builder()
+                    .withUserId(rs.getLong("userId"))
                     .withFileNumber(rs.getInt("fileNumber"))
                     .withName(rs.getString("name"))
                     .withSurname(rs.getString("surname"))
@@ -33,28 +37,35 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
                     .withEmail(rs.getString("email"))
                     .withPassword(rs.getString("password"))
                     .isAdmin(rs.getBoolean("isAdmin"))
-                .build(),
-                new Course.Builder()
-                    .withCourseId(rs.getInt("courseId"))
+                    .build())
+            .withCourse(new Course.Builder()
+                    .withCourseId(rs.getLong("courseId"))
                     .withYear(rs.getInt("year"))
                     .withQuarter(rs.getInt("quarter"))
                     .withBoard(rs.getString("board"))
                     .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
-                        rs.getString("subjectName")))
-                .build());
+                            rs.getString("subjectName")))
+                    .build())
+            .build();
 
     private static final RowMapper<Announcement> ANNOUNCEMENT_ROW_MAPPER = (rs, rowNum) ->
-            new Announcement(rs.getInt("announcementid"), rs.getTimestamp("date").toLocalDateTime(), rs.getString("title"),
-                    rs.getString("content"), new User.Builder()
-                    .withUserId(rs.getInt("userId"))
-                    .withFileNumber(rs.getInt("fileNumber"))
-                    .withName(rs.getString("name"))
-                    .withSurname(rs.getString("surname"))
-                    .withUsername(rs.getString("username"))
-                    .withEmail(rs.getString("email"))
-                    .withPassword(rs.getString("password"))
-                    .isAdmin(rs.getBoolean("isAdmin"))
-                    .build(),null);
+            new Announcement.Builder()
+                    .withAnnouncementId(rs.getLong("announcementid"))
+                    .withDate(rs.getTimestamp("date").toLocalDateTime())
+                    .withTitle(rs.getString("title"))
+                    .withContent(rs.getString("content"))
+                    .withAuthor(new User.Builder()
+                            .withUserId(rs.getLong("userId"))
+                            .withFileNumber(rs.getInt("fileNumber"))
+                            .withName(rs.getString("name"))
+                            .withSurname(rs.getString("surname"))
+                            .withUsername(rs.getString("username"))
+                            .withEmail(rs.getString("email"))
+                            .withPassword(rs.getString("password"))
+                            .isAdmin(rs.getBoolean("isAdmin"))
+                            .build())
+                    .withCourse(null)
+            .build();
 
     @Autowired
     public AnnouncementDaoImpl(final DataSource ds) {
@@ -63,20 +74,26 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public Announcement create(Announcement announcement) {
+    public Announcement create(LocalDateTime date, String title, String content, User author, Course course) {
         final Map<String, Object> args = new HashMap<>();
-        args.put("date", Timestamp.valueOf(announcement.getDate()));
-        args.put("title", announcement.getTitle());
-        args.put("content", announcement.getContent());
-        args.put("userId", announcement.getAuthor().getUserId());
-        args.put("courseId", announcement.getCourse().getCourseId());
-        final int announcementId = jdbcInsert.executeAndReturnKey(args).intValue();
-        return new Announcement(announcementId, announcement.getDate(), announcement.getTitle(), announcement.getContent(),
-                announcement.getAuthor(), announcement.getCourse());
+        args.put("date", Timestamp.valueOf(date));
+        args.put("title",title);
+        args.put("content", content);
+        args.put("userId", author.getUserId());
+        args.put("courseId", course.getCourseId());
+        final Long announcementId = jdbcInsert.executeAndReturnKey(args).longValue();
+        return new Announcement.Builder()
+            .withAnnouncementId(announcementId)
+            .withDate(date)
+            .withTitle(title)
+            .withContent(content)
+            .withAuthor(author)
+            .withCourse(course)
+        .build();
     }
 
     @Override
-    public boolean update(Integer id, Announcement announcement) {
+    public boolean update(Long id, Announcement announcement) {
         return jdbcTemplate.update("UPDATE announcements " +
                 "SET userId = ?," +
                 "courseId = ?," +
@@ -88,7 +105,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public boolean delete(Integer id) {
+    public boolean delete(Long id) {
         return jdbcTemplate.update("DELETE FROM announcements WHERE announcementId = ?", new Object[]{id}) == 1;
     }
 
@@ -100,7 +117,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public List<Announcement> list(Integer userId, Integer page, Integer pageSize) {
+    public List<Announcement> list(Long userId, Integer page, Integer pageSize) {
         return new ArrayList<>(jdbcTemplate.query(
                 "SELECT * FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
                 "NATURAL JOIN user_to_course " +
@@ -109,13 +126,13 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
 
-    public List<Announcement> listByCourse(Integer courseId) {
+    public List<Announcement> listByCourse(Long courseId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements NATURAL JOIN users WHERE courseId = ?",
                 new Object[]{courseId}, ANNOUNCEMENT_ROW_MAPPER));
     }
 
     @Override
-    public Optional<Announcement> getById(Integer id) {
+    public Optional<Announcement> getById(Long id) {
         return jdbcTemplate.query("SELECT * " +
                 "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
                 "WHERE announcementId = ?", new Object[]{id}, COURSE_ANNOUNCEMENT_ROW_MAPPER).stream().findFirst();

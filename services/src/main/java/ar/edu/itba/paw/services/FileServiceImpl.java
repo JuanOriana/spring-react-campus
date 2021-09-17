@@ -2,11 +2,14 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.FileDao;
 import ar.edu.itba.paw.interfaces.FileService;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FileCategory;
+import ar.edu.itba.paw.models.FileExtension;
 import ar.edu.itba.paw.models.FileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,27 +20,27 @@ public class FileServiceImpl implements FileService {
     private FileDao fileDao;
 
     @Override
-    public FileModel create(FileModel file) {
-        return fileDao.create(file);
+    public FileModel create(Long size, String name, byte[] file, Course course) {
+        return fileDao.create(size, LocalDateTime.now(), name, file, course);
     }
 
     @Override
-    public boolean update(long fileId, FileModel file) {
+    public boolean update(Long fileId, FileModel file) {
         return fileDao.update(fileId, file);
     }
 
     @Override
-    public boolean delete(long fileId) {
+    public boolean delete(Long fileId) {
         return fileDao.delete(fileId);
     }
 
     @Override
-    public List<FileModel> list() {
-        return new ArrayList<>(fileDao.list());
+    public List<FileModel> list(Long userId) {
+        return new ArrayList<>(fileDao.list(userId));
     }
 
     @Override
-    public Optional<FileModel> getById(long fileId) {
+    public Optional<FileModel> getById(Long fileId) {
         return fileDao.getById(fileId);
     }
 
@@ -47,7 +50,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileModel> getByExtension(long extensionId) {
+    public List<FileModel> getByExtension(Long extensionId) {
         return fileDao.getByExtension(extensionId);
     }
 
@@ -57,22 +60,22 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public boolean addCategory(long fileId, long fileCategoryId) {
+    public boolean addCategory(Long fileId, Long fileCategoryId) {
         return fileDao.addCategory(fileId, fileCategoryId);
     }
 
     @Override
-    public boolean removeCategory(long fileId, long fileCategoryId) {
+    public boolean removeCategory(Long fileId, Long fileCategoryId) {
         return fileDao.removeCategory(fileId, fileCategoryId);
     }
 
     @Override
-    public List<FileCategory> getFileCategories(long fileId) {
+    public List<FileCategory> getFileCategories(Long fileId) {
         return fileDao.getFileCategories(fileId);
     }
 
     @Override
-    public List<FileModel> getByCategory(long fileCategoryId) {
+    public List<FileModel> getByCategory(Long fileCategoryId) {
         return fileDao.getByCategory(fileCategoryId);
     }
 
@@ -86,12 +89,12 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileModel> getByCourseId(long courseId) {
+    public List<FileModel> getByCourseId(Long courseId) {
         return fileDao.getByCourseId(courseId);
     }
 
     @Override
-    public boolean hasAccess(long fileId, long userId) {
+    public boolean hasAccess(Long fileId, Long userId) {
         return fileDao.hasAccess(fileId, userId);
     }
 

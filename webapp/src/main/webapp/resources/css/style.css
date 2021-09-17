@@ -518,9 +518,20 @@ textarea:focus, input:focus{
 .user-section-img{
     height: 280px;
     border-radius: 50%;
+    margin-right: 40px;
 }
 
 .user-section-wrapper{
     display: flex;
     padding:20px
+}
+
+.medium-icon{
+    width: 48px;
+    cursor: pointer;
+}
+
+.small-icon{
+    width: 32px;
+    cursor: pointer;
 }

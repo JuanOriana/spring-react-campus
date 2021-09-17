@@ -26,14 +26,14 @@ public interface UserService {
      * @param user info to be updated
      * @return true if the user was updated successfully, false otherwise
      */
-    boolean update(int userId, User user);
+    boolean update(Long userId, User user);
 
     /**
      * Attempts to delete a user entry
      * @param userId of the user to be deleted
      * @return true if the user was deleted successfully, false otherwise
      */
-    boolean delete(int userId);
+    boolean delete(Long userId);
 
     /**
      * Returns the role of the user for a certain course
@@ -41,14 +41,14 @@ public interface UserService {
      * @param courseId of the course to get the roles from
      * @return role of the user for the specified course
      */
-    Optional<Role> getRole(int userId, int courseId);
+    Optional<Role> getRole(Long userId, Long courseId);
 
     /**
      * Gets a User based on its userId
      * @param userId of the user to get the data from
      * @return the user that has the given userId
      */
-    Optional<User> findById(int userId);
+    Optional<User> findById(Long userId);
 
     /**
      * Gets a user based on its username

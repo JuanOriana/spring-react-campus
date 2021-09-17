@@ -19,7 +19,7 @@ public class UserDaoImpl implements UserDao {
 
     private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) ->
         new User.Builder()
-            .withUserId(rs.getInt("userId"))
+            .withUserId(rs.getLong("userId"))
             .withFileNumber(rs.getInt("fileNumber"))
             .withName(rs.getString("name"))
             .withSurname(rs.getString("surname"))
@@ -50,7 +50,7 @@ public class UserDaoImpl implements UserDao {
         args.put("email", email);
         args.put("password", password);
         args.put("isAdmin", isAdmin);
-        final int userId = jdbcInsert.executeAndReturnKey(args).intValue();
+        final Long userId = jdbcInsert.executeAndReturnKey(args).longValue();
         return new User.Builder()
                 .withUserId(userId)
                 .withFileNumber(fileNumber)
@@ -64,7 +64,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean update(int userId, User user) {
+    public boolean update(Long userId, User user) {
         return jdbcTemplate.update("UPDATE users " +
                 "SET fileNumber = ?," +
                 "name = ?," +
@@ -78,18 +78,18 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean delete(int userId) {
+    public boolean delete(Long userId) {
         return jdbcTemplate.update("DELETE FROM users WHERE userId = ?", new Object[]{userId}) == 1;
     }
 
     @Override
-    public Optional<Role> getRole(int userId, int courseId) {
+    public Optional<Role> getRole(Long userId, Long courseId) {
         return jdbcTemplate.query("SELECT * FROM user_to_course NATURAL JOIN roles WHERE userId = ? AND courseId = ?",
                 new Object[]{userId, courseId}, ROLE_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
-    public Optional<User> findById(int userId) {
+    public Optional<User> findById(Long userId) {
         return jdbcTemplate.query("SELECT * FROM users WHERE userId = ?",
                 new Object[]{userId}, USER_ROW_MAPPER).stream().findFirst();
     }

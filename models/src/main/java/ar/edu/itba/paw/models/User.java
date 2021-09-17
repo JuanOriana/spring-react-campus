@@ -8,7 +8,7 @@ public class User {
     private String email;
     private String password;
     private Integer fileNumber;
-    private Integer userId;
+    private Long userId;
     private boolean isAdmin;
 
     public static class Builder {
@@ -19,13 +19,13 @@ public class User {
         private String email;
         private String password;
         private Integer fileNumber;
-        private Integer userId;
+        private Long userId;
         private boolean isAdmin;
 
         public Builder() {
         }
 
-        Builder(String name, String surname, String username, String email, String password, Integer fileNumber, Integer userId, boolean isAdmin) {
+        Builder(String name, String surname, String username, String email, String password, Integer fileNumber, Long userId, boolean isAdmin) {
             this.name = name;
             this.surname = surname;
             this.username = username;
@@ -68,7 +68,7 @@ public class User {
             return Builder.this;
         }
 
-        public Builder withUserId(Integer userId){
+        public Builder withUserId(Long userId){
             this.userId = userId;
             return Builder.this;
         }
@@ -173,11 +173,11 @@ public class User {
         this.fileNumber = fileNumber;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

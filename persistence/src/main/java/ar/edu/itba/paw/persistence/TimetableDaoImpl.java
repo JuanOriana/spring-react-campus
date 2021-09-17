@@ -22,7 +22,7 @@ public class TimetableDaoImpl implements TimetableDao {
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private static final RowMapper<Timetable> TIMETABLE_ROW_MAPPER = (rs, rowNum) -> {
-        return new Timetable(rs.getInt("courseId"), rs.getInt("dayOfWeek"), rs.getTime("startTime"),
+        return new Timetable(rs.getLong("courseId"), rs.getInt("dayOfWeek"), rs.getTime("startTime"),
                 rs.getTime("endTime"));
     };
 
@@ -45,7 +45,7 @@ public class TimetableDaoImpl implements TimetableDao {
     }
 
     @Override
-    public boolean update(int course_id, int dayOfWeek, Time start, Time end) {
+    public boolean update(Long course_id, int dayOfWeek, Time start, Time end) {
         return jdbcTemplate.update("UPDATE timetables " +
                 "SET dayOfWeek = ?," +
                 "startTime = ?," +
@@ -54,12 +54,12 @@ public class TimetableDaoImpl implements TimetableDao {
     }
 
     @Override
-    public boolean delete(int course_id) {
+    public boolean delete(Long course_id) {
         return jdbcTemplate.update("DELETE FROM timetables WHERE courseId = ?", new Object[]{course_id}) == 1;
     }
 
     @Override
-    public List<Timetable> getById(long courseId) {
+    public List<Timetable> getById(Long courseId) {
         return jdbcTemplate.query("SELECT * FROM timetables WHERE courseId = ?",
                 new Object[]{courseId}, TIMETABLE_ROW_MAPPER);
     }
