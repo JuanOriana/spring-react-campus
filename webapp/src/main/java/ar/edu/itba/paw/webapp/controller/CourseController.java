@@ -46,6 +46,9 @@ public class CourseController extends AuthController{
     @Autowired
     FileService fileService;
 
+    @Autowired
+    MailingService mailingService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
     private final Comparator<Announcement> orderByDate = (o1, o2) -> o2.getDate().compareTo(o1.getDate());
 
@@ -88,6 +91,10 @@ public class CourseController extends AuthController{
                     .build();
             announcementService.create(new Announcement(LocalDateTime.now(),
                     announcementForm.getTitle(), announcementForm.getContent(), currentUser, courseService.getById(courseId).get()));
+            List<User> userList = courseService.getStudents(courseId);
+            List<String> emailList = new ArrayList<>();
+            userList.forEach(u->emailList.add(u.getEmail()));
+            mailingService.sendBroadcastEmail(emailList, "Nuevo anuncio en curso "+announcementForm.getTitle(), announcementForm.getContent(), "text/plain");
             announcementForm.setContent("");
             announcementForm.setTitle("");
             successMessage = "Anuncio publicado exitosamente";
