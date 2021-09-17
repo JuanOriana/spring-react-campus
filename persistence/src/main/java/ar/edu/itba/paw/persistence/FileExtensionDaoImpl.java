@@ -41,7 +41,7 @@ public class FileExtensionDaoImpl implements FileExtensionDao {
     public boolean update(long fileExtensionId, String fileExtension) {
         return jdbcTemplate.update("UPDATE file_extensions " +
                 "SET fileExtension = ?" +
-                "WHERE fileExtensionId = ?", new Object[]{fileExtension,fileExtensionId}) == 1;
+                "WHERE fileExtensionId = ?", new Object[]{fileExtension, fileExtensionId}) == 1;
     }
 
     @Override
@@ -56,6 +56,6 @@ public class FileExtensionDaoImpl implements FileExtensionDao {
 
     @Override
     public Optional<String> getExtension(Long extensionId) {
-        return jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions WHERE fileExtensionId = ?",new Object[]{extensionId}, FILE_EXTENSION_STRING_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions WHERE fileExtensionId = ?", new Object[]{extensionId}, FILE_EXTENSION_STRING_ROW_MAPPER).stream().findFirst();
     }
 }

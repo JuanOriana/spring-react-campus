@@ -56,7 +56,7 @@ public class FileCategoryDaoImpl implements FileCategoryDao {
     }
 
     @Override
-    public Optional<String> getCategory(Integer categoryId) {
+    public Optional<String> getCategory(Long categoryId) {
         return jdbcTemplate.query("SELECT categoryName FROM file_categories WHERE categoryId = ?",new Object[]{categoryId}, FILE_CATEGORY_STRING_ROW_MAPPER).stream().findFirst();
     }
 }
