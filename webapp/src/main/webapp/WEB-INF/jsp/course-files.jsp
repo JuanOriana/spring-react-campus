@@ -52,7 +52,7 @@
                                     border-top-left-radius: 0; border-bottom-left-radius: 0">
                                 Buscar
                             </button>
-                            <img src="<c:url value="${page.Context.request.contextPath}/resources/images/page-arrow.png"/>"
+                            <img src="<c:url value="${pageContext.request.contextPath}/resources/images/page-arrow.png"/>"
                                 class="pagination-arrow"  style="transform: rotate(90deg); margin-left: 10px"
                                  onclick="toggleFilters()" alt="toggle filters" id="filter-toggle">
                         </div>
@@ -111,7 +111,7 @@
                             <div class="file-unit">
                                 <a href="<c:url value="/savefile/${file.fileId}"/>" class="styleless-anchor"
                                    style="display: flex;margin-left: 10px; align-items: center">
-                                    <img src="<c:url value="${page.Context.request.contextPath}/resources/images/extensions/${file.extension.fileExtension}.png"/>"
+                                    <img src="<c:url value="${pageContext.request.contextPath}/resources/images/extensions/${file.extension.fileExtension}.png"/>"
                                          class="file-img" alt="${file.name}"/>
                                     <p class="file-name"><c:out value=" ${file.name}"/></p>
                                 </a>

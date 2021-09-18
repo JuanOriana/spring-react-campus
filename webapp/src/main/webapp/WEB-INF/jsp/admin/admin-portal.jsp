@@ -11,8 +11,16 @@
         <jsp:param name="isAdmin" value="${true}"/>
         <jsp:param name="successMessage" value="${successMessage}"/>
     </jsp:include>
-    <div class="page-container">
-        <h1>Admin</h1>
+    <div class="page-container" >
+        <h1 class="admin-title">Centro de administracion de Campus</h1>
+        <div style="display: flex">
+            <a href="${pageContext.request.contextPath}/admin/newuser">
+                <button class="redirection-button" style="margin-right: 25px;">Crear usuario</button>
+            </a>
+            <a href="${pageContext.request.contextPath}/admin/newcourse">
+                <button class="redirection-button" style="margin-left:25px;">Crear curso</button>
+            </a>
+        </div>
     </div>
     <jsp:include page="../components/footer.jsp"/>
 </div>

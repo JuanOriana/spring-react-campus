@@ -32,14 +32,14 @@
       <div class="pagination-wrapper">
           <c:if test="${currentPage > 1}">
               <a href="<c:url value="/announcements?page=${currentPage-1}&pageSize=${pageSize}"/>">
-                <img src="<c:url value="${page.Context.request.contextPath}/resources/images/page-arrow.png"/>"
+                <img src="<c:url value="${pageContext.request.contextPath}/resources/images/page-arrow.png"/>"
                      alt="Next page" class="pagination-arrow x-rotated">
               </a>
           </c:if>
           Pagina ${currentPage} de ${maxPage}
           <c:if test="${currentPage < maxPage}">
               <a href="<c:url value="/announcements?page=${currentPage+1}&pageSize=${pageSize}"/>">
-                  <img src="<c:url value="${page.Context.request.contextPath}/resources/images/page-arrow.png"/>"
+                  <img src="<c:url value="${pageContext.request.contextPath}/resources/images/page-arrow.png"/>"
                        alt="Next page" class="pagination-arrow">
               </a>
           </c:if>

@@ -400,7 +400,8 @@ body{
     margin: 10px 0;
     background: var(--cyan-darkest);
     border-radius: 10px;
-    color: var(--cyan-dark);
+    color: white;
+    border: 3px solid var(--cyan-dark);
     padding: 10px 20px;
     font-size: 22px;
     cursor: pointer;
@@ -533,5 +534,20 @@ textarea:focus, input:focus{
 
 .small-icon{
     width: 32px;
+    cursor: pointer;
+}
+
+.admin-title{
+    color: var(--cyan-darkest);
+    margin: 40px 0;
+}
+
+.redirection-button{
+    font-size: 32px;
+    padding: 30px;
+    background: var(--cyan-darkest);
+    border-radius: 10px;
+    color: white;
+    border: 3px solid var(--cyan-dark);
     cursor: pointer;
 }
