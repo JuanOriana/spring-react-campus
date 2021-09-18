@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.slf4j.Logger;
@@ -21,6 +23,7 @@ public class AdminController extends AuthController{
 
     @Autowired
     UserService userService;
+
 
     @RequestMapping(value = "/portal")
     public ModelAndView adminPortal(){
@@ -46,8 +49,19 @@ public class AdminController extends AuthController{
         return newUser(userRegisterForm,"Usuario registrado correctamente");
     }
 
-    @RequestMapping(value = "/newcourse")
-    public ModelAndView newCourse(){
-        return new ModelAndView("admin/new-course");
+    @RequestMapping(value = "/newcourse", method = RequestMethod.GET)
+    public ModelAndView newCourse(final CourseForm courseForm, final String successMessage){
+        ModelAndView mav = new ModelAndView("admin/new-course");
+        mav.addObject("courseForm",courseForm);
+        mav.addObject("successMessage",successMessage);
+        return mav;
+    }
+
+    @RequestMapping(value = "/newcourse", method = RequestMethod.POST)
+    public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult errors){
+        if (!errors.hasErrors()) {
+            return adminPortal();
+        }
+        return newCourse(courseForm,"Curso registrado correctamente");
     }
 }

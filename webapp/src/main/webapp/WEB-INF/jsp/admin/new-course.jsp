@@ -1,7 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
-    <title>Campus - Nuevo Curso</title>
+    <title>Campus - Nuevo Usuario</title>
     <c:import url="../config/generalHead.jsp"/>
 
 </head>
@@ -11,7 +12,20 @@
         <jsp:param name="isAdmin" value="${true}"/>
     </jsp:include>
     <div class="page-container">
-        <h1>Nuevo Curso</h1>
+        <form:form modelAttribute="courseForm" class="form-wrapper reduced" method="post"
+                   acceptCharset="utf-8" cssStyle="margin: 30px 0">
+            <h1 class="announcement-title" style="color:#176961; align-self:center">Crear nuevo curso</h1>
+            <form:label path="quarter" for="quarter" class="form-label">Cuatrimestre</form:label>
+            <form:input type="number" path="quarter" class="form-input" style="font-size: 26px"/>
+            <form:errors path="quarter" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <form:label path="year" for="year" class="form-label">Ano</form:label>
+            <form:input type="number" path="year" class="form-input" style="font-size: 26px"/>
+            <form:errors path="year" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <form:label path="board" for="board" class="form-label">Comision</form:label>
+            <form:input type="text" path="board" class="form-input" style="font-size: 26px"/>
+            <form:errors path="board" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <button class="form-button">Crear</button>
+        </form:form>
     </div>
     <jsp:include page="../components/footer.jsp"/>
 </div>

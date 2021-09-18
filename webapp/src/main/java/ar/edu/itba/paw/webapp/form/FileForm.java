@@ -3,6 +3,8 @@ package ar.edu.itba.paw.webapp.form;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class FileForm {
@@ -10,6 +12,8 @@ public class FileForm {
     @NotNull
     private CommonsMultipartFile file;
 
+    @Min(0)
+    @Max(2147483647) // Value of the max integer in postgresql
     @NotNull
     private Long categoryId;
 

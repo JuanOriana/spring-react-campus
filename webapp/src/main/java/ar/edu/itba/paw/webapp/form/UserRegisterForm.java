@@ -3,15 +3,13 @@ package ar.edu.itba.paw.webapp.form;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 public class UserRegisterForm {
 
     @Min(0)
     @Max(2147483647) // Value of the max integer in postgresql
+    @NotNull
     private int fileNumber;
 
     @Pattern(regexp = "[a-zA-Z]+") // Must have at leat one caracter and only letters
