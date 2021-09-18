@@ -22,6 +22,17 @@ public interface FileService {
     FileModel create(Long size, String name, byte[] file, Course course);
 
     /**
+     * Attempts to persist a file entry in the database
+     * @param size of the file
+     * @param name of the file
+     * @param file representation in byte array
+     * @param course where the file belongs to
+     * @param fileCategoryId of the category of the file
+     * @return the file if it was successfully added
+     */
+    FileModel create(Long size, String name, byte[] file, Course course, Long fileCategoryId);
+
+    /**
      * Attempts to update a file
      *
      * @param fileId of the file to be modified
