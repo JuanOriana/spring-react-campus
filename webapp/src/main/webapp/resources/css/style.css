@@ -410,14 +410,14 @@ body{
     border-radius: 12px;
     width: 200px;
     padding: 5px;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
     background: var(--cyan-dark);
     color: var(--cyan-light);
     border: 2px solid var(--cyan-light);
     cursor: pointer;
     align-self: center;
-    margin-top:10px;
+    margin-top:20px;
     resize:none;
 }
 .form-label{
@@ -429,7 +429,7 @@ body{
 }
 .form-input{
     font-size: 18px;
-    width: 90%;
+    margin: 0 10px;
     border-radius: 12px;
     border: 2px solid var(--cyan-dark);
     padding:5px;

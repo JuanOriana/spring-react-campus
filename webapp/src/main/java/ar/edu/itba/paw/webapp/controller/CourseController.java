@@ -95,8 +95,6 @@ public class CourseController extends AuthController{
             userList.forEach(u->emailList.add(u.getEmail()));
             mailingService.sendBroadcastEmail(emailList, "Nuevo anuncio en curso "+announcementForm.getTitle(), announcementForm.getContent(), "text/plain");
 
-
-
             announcementForm.setContent("");
             announcementForm.setTitle("");
             successMessage = "Anuncio publicado exitosamente";
