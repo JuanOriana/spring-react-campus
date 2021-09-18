@@ -32,7 +32,7 @@ public class FileDaoImpl implements FileDao {
                     .withYear(rs.getInt("year"))
                     .withQuarter(rs.getInt("quarter"))
                     .withBoard(rs.getString("board"))
-                    .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
+                    .withSubject(new Subject(rs.getLong("subjectId"), rs.getString("code"),
                             rs.getString("subjectName")))
                     .build())
             .build();

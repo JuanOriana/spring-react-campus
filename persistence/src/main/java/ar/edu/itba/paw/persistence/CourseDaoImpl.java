@@ -22,7 +22,7 @@ public class CourseDaoImpl implements CourseDao {
             .withYear(rs.getInt("year"))
             .withQuarter(rs.getInt("quarter"))
             .withBoard(rs.getString("board"))
-            .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
+            .withSubject(new Subject(rs.getLong("subjectId"), rs.getString("code"),
                     rs.getString("subjectName")))
             .build();
 
@@ -33,7 +33,7 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public Course create(Integer year, Integer quarter, String board, Integer subjectId, String subjectName,
+    public Course create(Integer year, Integer quarter, String board, Long subjectId, String subjectName,
                          String subjectCode) {
         final Map<String, Object> args = new HashMap<>();
         args.put("quarter", quarter);

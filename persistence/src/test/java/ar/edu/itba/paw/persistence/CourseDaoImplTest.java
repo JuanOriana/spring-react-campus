@@ -35,7 +35,7 @@ public class CourseDaoImplTest {
     private JdbcTemplate jdbcTemplate;
 
     private final Long COURSE_ID = 1L;
-    private final Integer SUBJECT_ID = 1;
+    private final Long SUBJECT_ID = 1L;
     private final Long USER_ID = 1L;
     private final Integer USER_FILENUMBER = 49523123;
     private final Integer ROLE_ID = 1;

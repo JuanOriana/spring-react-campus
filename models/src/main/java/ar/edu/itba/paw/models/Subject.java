@@ -1,20 +1,20 @@
 package ar.edu.itba.paw.models;
 
 public class Subject {
-    Integer subjectId;
+    Long subjectId;
     String code, name;
 
-    public Subject(Integer subjectId, String code, String name) {
+    public Subject(Long subjectId, String code, String name) {
         this.subjectId = subjectId;
         this.code = code;
         this.name = name;
     }
 
-    public Integer getSubjectId() {
+    public Long getSubjectId() {
         return subjectId;
     }
 
-    public void setSubjectId(Integer subjectId) {
+    public void setSubjectId(Long subjectId) {
         this.subjectId = subjectId;
     }
 

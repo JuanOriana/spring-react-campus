@@ -21,7 +21,7 @@ public class CourseServiceImplTest {
 
     private static Long COURSE_ID = 1L;
     private static Long USER_ID = 1L;
-    private static Integer SUBJECT_ID = 1;
+    private static Long SUBJECT_ID = 1L;
     private static String SUBJECT_CODE = "A1";
     private static String SUBJECT_NAME = "PAW";
     private static Long INVALID_COURSE_ID = 999L;

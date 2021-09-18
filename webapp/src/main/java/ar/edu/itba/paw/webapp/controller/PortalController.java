@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.CourseService;
+import ar.edu.itba.paw.interfaces.SubjectService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import org.slf4j.Logger;
@@ -21,6 +22,9 @@ public class PortalController extends AuthController{
 
     @Autowired
     AuthFacade authFacade;
+
+    @Autowired
+    SubjectService subjectService;
 
     @RequestMapping("/")
     public RedirectView rootRedirect() {
