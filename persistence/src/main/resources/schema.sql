@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS category_file_relationship
 (
     categoryId INTEGER,
     fileId INTEGER,
-    FOREIGN KEY (categoryId) references file_categories,
+    FOREIGN KEY (categoryId) references file_categories ON DELETE SET NULL,
     FOREIGN KEY (fileId) references files ON DELETE CASCADE,
     UNIQUE(categoryId,fileId)
 );
