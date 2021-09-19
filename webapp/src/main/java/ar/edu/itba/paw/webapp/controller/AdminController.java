@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.CourseService;
+import ar.edu.itba.paw.interfaces.RoleService;
 import ar.edu.itba.paw.interfaces.SubjectService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Course;
@@ -32,6 +33,9 @@ public class AdminController extends AuthController{
 
     @Autowired
     CourseService courseService;
+
+    @Autowired
+    RoleService roleService;
 
 
     @RequestMapping(value = "/portal")
@@ -81,6 +85,8 @@ public class AdminController extends AuthController{
         ModelAndView mav = new ModelAndView("admin/add-user-to-course");
         mav.addObject("userToCourseForm",userToCourseForm);
         mav.addObject("users",userService.list());
+        mav.addObject("courses",courseService.list());
+        mav.addObject("roles",roleService.list());
         return mav;
     }
 

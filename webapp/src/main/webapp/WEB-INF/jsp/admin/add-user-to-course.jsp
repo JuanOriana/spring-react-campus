@@ -21,6 +21,23 @@
                     <form:option value="${user.userId}"><c:out value="${user.name} ${user.surname}"/></form:option>
                 </c:forEach>
             </form:select>
+            <form:errors path="userId" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <form:label path="roleId" for="roleId" class="form-label">Rol</form:label>
+            <form:select path="roleId" class="form-input" style="font-size: 26px">
+                <c:forEach var="role" items="${roles}">
+                    <form:option value="${role.roleId}"><c:out value="${role.roleName}"/></form:option>
+                </c:forEach>
+            </form:select>
+            <form:errors path="roleId" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <form:label path="courseId" for="courseId" class="form-label">Materia</form:label>
+            <form:select path="courseId" class="form-input" style="font-size: 26px">
+                <c:forEach var="course" items="${courses}">
+                    <form:option value="${course.courseId}">
+                        <c:out value="${course.subject.name}[${course.board}]-${course.year}/${course.quarter}Q}"/>
+                    </form:option>
+                </c:forEach>
+            </form:select>
+            <form:errors path="courseId" element="p" cssStyle="color:red;margin-left: 10px"/>
             <button class="form-button">Crear</button>
         </form:form>
     </div>
