@@ -50,7 +50,7 @@ public class FileDaoImplTest {
                             .withYear(rs.getInt("year"))
                             .withQuarter(rs.getInt("quarter"))
                             .withBoard(rs.getString("board"))
-                            .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
+                            .withSubject(new Subject(rs.getLong("subjectId"), rs.getString("code"),
                                     rs.getString("subjectName")))
                             .build())
                     .build();
@@ -62,7 +62,7 @@ public class FileDaoImplTest {
     private final Integer COURSE_QUARTER = 1;
     private final String COURSE_BOARD = "S1";
 
-    private final Integer SUBJECT_ID = 1;
+    private final Long SUBJECT_ID = 1L;
     private final String SUBJECT_CODE = "A1";
     private final String SUBJECT_NAME = "Protos";
 
@@ -155,7 +155,7 @@ public class FileDaoImplTest {
         JdbcInsert.execute(args);
     }
 
-    private void insertSubject(int subjectId, String subjectName, String code) {
+    private void insertSubject(Long subjectId, String subjectName, String code) {
         SimpleJdbcInsert subjectJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("subjects");
         Map<String, Object> args = new HashMap<>();
         args.put("subjectId", subjectId);
@@ -164,7 +164,7 @@ public class FileDaoImplTest {
         subjectJdbcInsert.execute(args);
     }
 
-    private void insertCourse(Long courseId, int subjectId, int quarter, String board, int year) {
+    private void insertCourse(Long courseId, Long subjectId, int quarter, String board, int year) {
         SimpleJdbcInsert courseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses");
         Map<String, Object> args = new HashMap<>();
         args.put("courseId", courseId);

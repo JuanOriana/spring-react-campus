@@ -28,22 +28,23 @@ public class FileDaoImpl implements FileDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final SimpleJdbcInsert jdbcInsertCategory;
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) ->
-            new FileModel.Builder()
-                    .withFileId(rs.getLong("fileId"))
-                    .withSize(rs.getLong("fileSize"))
-                    .withName(rs.getString("fileName"))
-                    .withDate(rs.getTimestamp("fileDate").toLocalDateTime())
-                    .withFile(rs.getBytes("file"))
-                    .withExtension(new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension")))
-                    .withCourse(new Course.Builder()
-                            .withCourseId(rs.getLong("courseId"))
-                            .withYear(rs.getInt("year"))
-                            .withQuarter(rs.getInt("quarter"))
-                            .withBoard(rs.getString("board"))
-                            .withSubject(new Subject(rs.getInt("subjectId"), rs.getString("code"),
-                                    rs.getString("subjectName")))
-                            .build())
-                    .build();
+
+        new FileModel.Builder()
+            .withFileId(rs.getLong("fileId"))
+            .withSize(rs.getLong("fileSize"))
+            .withName(rs.getString("fileName"))
+            .withDate(rs.getTimestamp("fileDate").toLocalDateTime())
+            .withFile(rs.getBytes("file"))
+            .withExtension(new FileExtension(rs.getLong("fileExtensionId"),rs.getString("fileExtension")))
+            .withCourse(new Course.Builder()
+                    .withCourseId(rs.getLong("courseId"))
+                    .withYear(rs.getInt("year"))
+                    .withQuarter(rs.getInt("quarter"))
+                    .withBoard(rs.getString("board"))
+                    .withSubject(new Subject(rs.getLong("subjectId"), rs.getString("code"),
+                            rs.getString("subjectName")))
+                    .build())
+            .build();
 
     private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) -> {
         return new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));

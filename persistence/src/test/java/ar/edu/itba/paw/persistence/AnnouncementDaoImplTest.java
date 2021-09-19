@@ -58,7 +58,7 @@ public class AnnouncementDaoImplTest {
     private final Integer COURSE_QUARTER = 1;
     private final String COURSE_BOARD = "S1";
 
-    private final int SUBJECT_ID = 1;
+    private final Long SUBJECT_ID = 1L;
     private final String SUBJECT_CODE = "A1";
     private final String SUBJECT_NAME = "Protos";
 
@@ -88,7 +88,7 @@ public class AnnouncementDaoImplTest {
                     .withCourse(null)
                     .build();
 
-    private void insertSubject(int subjectId, String subjectName, String code) {
+    private void insertSubject(Long subjectId, String subjectName, String code) {
         SimpleJdbcInsert subjectJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("subjects");
         Map<String, Object> args = new HashMap<>();
         args.put("subjectId", subjectId);
@@ -97,7 +97,7 @@ public class AnnouncementDaoImplTest {
         subjectJdbcInsert.execute(args);
     }
 
-    private void insertCourse(Long courseId, int subjectId, int quarter, String board, int year) {
+    private void insertCourse(Long courseId, Long subjectId, int quarter, String board, int year) {
         SimpleJdbcInsert courseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses");
         Map<String, Object> args = new HashMap<>();
         args.put("courseId", courseId);

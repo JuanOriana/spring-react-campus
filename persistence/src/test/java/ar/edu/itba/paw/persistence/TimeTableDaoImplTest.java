@@ -40,7 +40,7 @@ public class TimeTableDaoImplTest {
     private final Integer COURSE_QUARTER = 2;
     private final String COURSE_BOARD = "S1";
 
-    private final int SUBJECT_ID = 1;
+    private final Long SUBJECT_ID = 1L;
     private final String SUBJECT_CODE = "A1";
     private final String SUBJECT_NAME = "PAW";
 

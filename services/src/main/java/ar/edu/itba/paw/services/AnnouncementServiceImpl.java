@@ -42,9 +42,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public int getPageCount(Integer pageSize) {
+    public int getPageCount(Long userId, Integer pageSize) {
         if(pageSize < 1) return 0;
-        return announcementDao.getPageCount(pageSize);
+        return announcementDao.getPageCount(userId, pageSize);
     }
 
     @Override

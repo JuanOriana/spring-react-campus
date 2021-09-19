@@ -18,16 +18,16 @@ public class UserDaoImpl implements UserDao {
     private final SimpleJdbcInsert jdbcInsert;
 
     private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) ->
-        new User.Builder()
-            .withUserId(rs.getLong("userId"))
-            .withFileNumber(rs.getInt("fileNumber"))
-            .withName(rs.getString("name"))
-            .withSurname(rs.getString("surname"))
-            .withUsername(rs.getString("username"))
-            .withEmail(rs.getString("email"))
-            .withPassword(rs.getString("password"))
-            .isAdmin(rs.getBoolean("isAdmin"))
-            .build();
+            new User.Builder()
+                    .withUserId(rs.getLong("userId"))
+                    .withFileNumber(rs.getInt("fileNumber"))
+                    .withName(rs.getString("name"))
+                    .withSurname(rs.getString("surname"))
+                    .withUsername(rs.getString("username"))
+                    .withEmail(rs.getString("email"))
+                    .withPassword(rs.getString("password"))
+                    .isAdmin(rs.getBoolean("isAdmin"))
+                    .build();
 
     private static final RowMapper<Role> ROLE_ROW_MAPPER = (rs, rowNum) -> {
         return new Role(rs.getInt("roleId"), rs.getString("roleName"));
@@ -44,7 +44,7 @@ public class UserDaoImpl implements UserDao {
                        boolean isAdmin) {
         final Map<String, Object> args = new HashMap<>();
         args.put("fileNumber", fileNumber);
-        args.put("name",name);
+        args.put("name", name);
         args.put("surname", surname);
         args.put("username", username);
         args.put("email", email);
@@ -74,7 +74,7 @@ public class UserDaoImpl implements UserDao {
                 "password = ? ," +
                 "isAdmin = ? " +
                 "WHERE userId = ?;", new Object[]{user.getFileNumber(), user.getName(), user.getSurname(),
-                    user.getUsername(), user.getEmail(), user.getPassword(), user.isAdmin(), userId}) == 1;
+                user.getUsername(), user.getEmail(), user.getPassword(), user.isAdmin(), userId}) == 1;
     }
 
     @Override
@@ -98,5 +98,10 @@ public class UserDaoImpl implements UserDao {
     public Optional<User> findByUsername(String username) {
         return jdbcTemplate.query("SELECT * FROM users WHERE username = ?",
                 new Object[]{username}, USER_ROW_MAPPER).stream().findFirst();
+    }
+
+    @Override
+    public List<User> list() {
+        return jdbcTemplate.query("SELECT * FROM users", USER_ROW_MAPPER);
     }
 }

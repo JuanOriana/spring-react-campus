@@ -23,7 +23,7 @@ public class CourseServiceImpl implements CourseService {
     private UserDao userDao;
 
     @Override
-    public Course create(Integer year, Integer quarter, String board, Integer subjectId, String subjectName,
+    public Course create(Integer year, Integer quarter, String board, Long subjectId, String subjectName,
                          String subjectCode) {
         return courseDao.create(year, quarter, board, subjectId, subjectName, subjectCode);
     }
@@ -36,6 +36,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public boolean delete(Long id) {
         return courseDao.delete(id);
+    }
+
+    @Override
+    public List<Course> list() {
+        return courseDao.list();
     }
 
     @Override
@@ -87,6 +92,11 @@ public class CourseServiceImpl implements CourseService {
         if(!userRole.isPresent()) return false;
         int roleId = userRole.get().getRoleId();
         return roleId == Permissions.TEACHER.getValue() || roleId == Permissions.HELPER.getValue();
+    }
+
+    @Override
+    public boolean enroll(Long userId, Long courseId, Integer roleId) {
+        return courseDao.enroll(userId, courseId, roleId);
     }
 
 }

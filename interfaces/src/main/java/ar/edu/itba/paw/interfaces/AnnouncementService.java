@@ -12,11 +12,11 @@ import java.util.Optional;
 public interface AnnouncementService {
     /**
      * Attempts to persist an announcement entry in the database
-     * @param title
-     * @param content
-     * @param author
-     * @param course
-     * @return
+     * @param title of the announcement to be created
+     * @param content of the announcement to be created
+     * @param author of the announcement to be created
+     * @param course of the announcement to be created
+     * @return instance of the created announcement
      */
     Announcement create(String title, String content, User author, Course course);
 
@@ -48,10 +48,11 @@ public interface AnnouncementService {
 
     /**
      * Gets the amount of pages based on the page size
+     * @param userId of the related user
      * @param pageSize size of a page from a list query
      * @return amount of pages for the given page size
      */
-    int getPageCount(Integer pageSize);
+    int getPageCount(Long userId, Integer pageSize);
 
     /**
      * Returns an arbitrary ordered list of announcements with pagination for the given user depending on which courses
