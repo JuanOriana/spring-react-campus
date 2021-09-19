@@ -115,8 +115,12 @@ public class CourseController extends AuthController{
     }
 
     @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.GET)
-    public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm,
-                              String successMessage) {
+    public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm, String successMessage,
+                              @RequestParam(value = "category-type", required = false, defaultValue = "0")
+                                      List<Integer> categoryType,
+                              @RequestParam(value = "extension-type", required = false, defaultValue = "0")
+                                          List<Integer> extensionType) {
+        System.out.println(categoryType);
         final ModelAndView mav;
         final List<FileModel> files = fileService.getByCourseId(courseId);
         List<FileCategory> categories = fileCategoryService.getCategories();
@@ -136,8 +140,11 @@ public class CourseController extends AuthController{
     }
 
     @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.POST)
-    public ModelAndView uploadFile(@PathVariable Long courseId,
-                                     @Valid FileForm fileForm, final BindingResult errors){
+    public ModelAndView uploadFile(@PathVariable Long courseId,@Valid FileForm fileForm, final BindingResult errors,
+                                   @RequestParam(value = "category-type", required = false, defaultValue = "-1")
+                                           List<Integer> categoryType,
+                                   @RequestParam(value = "extension-type", required = false, defaultValue = "0")
+                                               List<Integer> extensionType){
         String successMessage = null;
         if (!errors.hasErrors()) {
             CommonsMultipartFile file = fileForm.getFile();
@@ -150,7 +157,7 @@ public class CourseController extends AuthController{
             fileForm.setCategoryId(null);
             successMessage = "Archivo creado exitosamente";
         }
-        return files(courseId,fileForm, successMessage);
+        return files(courseId,fileForm, successMessage,categoryType,extensionType);
     }
 
     @RequestMapping(value = "/download/{fileId}", method = RequestMethod.GET)
