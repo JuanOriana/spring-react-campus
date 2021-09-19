@@ -12,11 +12,11 @@ import java.util.Optional;
 public interface AnnouncementService {
     /**
      * Attempts to persist an announcement entry in the database
-     * @param title
-     * @param content
-     * @param author
-     * @param course
-     * @return
+     * @param title of the announcement to be created
+     * @param content of the announcement to be created
+     * @param author of the announcement to be created
+     * @param course of the announcement to be created
+     * @return instance of the created announcement
      */
     Announcement create(String title, String content, User author, Course course);
 

@@ -39,6 +39,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<Course> list() {
+        return courseDao.list();
+    }
+
+    @Override
     public List<Course> list(Long userId) {
         return courseDao.list(userId);
     }
@@ -87,6 +92,11 @@ public class CourseServiceImpl implements CourseService {
         if(!userRole.isPresent()) return false;
         int roleId = userRole.get().getRoleId();
         return roleId == Permissions.TEACHER.getValue() || roleId == Permissions.HELPER.getValue();
+    }
+
+    @Override
+    public boolean enroll(Long userId, Long courseId, Integer roleId) {
+        return courseDao.enroll(userId, courseId, roleId);
     }
 
 }
