@@ -110,9 +110,12 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public int getPageCount(Integer pageSize) {
-        RowCountCallbackHandler countCallback = new RowCountCallbackHandler();  // not reusable
-        jdbcTemplate.query("SELECT * FROM announcements", countCallback);
+    public int getPageCount(Long userId, Integer pageSize) {
+        RowCountCallbackHandler countCallback = new RowCountCallbackHandler();
+        jdbcTemplate.query("SELECT * FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
+                "NATURAL JOIN user_to_course " +
+                "WHERE courseid IN (SELECT courseid FROM user_to_course WHERE userid = ?)"
+                ,new Object[]{userId}, countCallback);
         return (int) Math.ceil((double)countCallback.getRowCount() / pageSize);
     }
 

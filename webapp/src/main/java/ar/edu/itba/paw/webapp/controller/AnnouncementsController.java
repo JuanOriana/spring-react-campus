@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.AnnouncementService;
 import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
+import ar.edu.itba.paw.webapp.auth.CampusUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +30,13 @@ public class AnnouncementsController extends AuthController {
     public ModelAndView announcements(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                       @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
         ModelAndView mav = new ModelAndView("announcements");
-        int pageCount = announcementService.getPageCount(pageSize);
+        CampusUser currentUser = authFacade.getCurrentUser();
+        int pageCount = announcementService.getPageCount(currentUser.getUserId(), pageSize);
         if (page < 1) page = 1;
         else if (page > pageCount) page = pageCount;
         if(pageSize < 1) pageSize = 10;
         else if(pageSize > 50) pageSize = 50;
-        List<Announcement> announcements = announcementService.list(authFacade.getCurrentUser().getUserId(), page, pageSize, orderByDate);
+        List<Announcement> announcements = announcementService.list(currentUser.getUserId(), page, pageSize, orderByDate);
         mav.addObject("announcementList", announcements);
         mav.addObject("currentPage",page);
         mav.addObject("maxPage", pageCount);
