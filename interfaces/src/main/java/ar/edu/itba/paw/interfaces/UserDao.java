@@ -21,4 +21,8 @@ public interface UserDao {
     Optional<User> findByUsername(String username);
 
     List<User> list();
+
+    Optional<byte[]> getProfileImage(Long userId);
+
+    boolean updateProfileImage(Long userId, byte[] image);
 }

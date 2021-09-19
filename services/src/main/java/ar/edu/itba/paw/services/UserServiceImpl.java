@@ -51,4 +51,14 @@ public class UserServiceImpl implements UserService {
     public List<User> list() {
         return userDao.list();
     }
+
+    @Override
+    public Optional<byte[]> getProfileImage(Long userId) {
+        return userDao.getProfileImage(userId);
+    }
+
+    @Override
+    public boolean updateProfileImage(Long userId, byte[] image) {
+        return userDao.updateProfileImage(userId, image);
+    }
 }
