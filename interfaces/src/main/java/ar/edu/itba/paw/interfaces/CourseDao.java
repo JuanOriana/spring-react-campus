@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface CourseDao {
-    Course create(Integer year, Integer quarter, String board, Integer subjectId, String subjectName,
+    Course create(Integer year, Integer quarter, String board, Long subjectId, String subjectName,
                   String subjectCode);
     boolean update(Long id, Course course);
     boolean delete(Long id);
@@ -17,5 +17,5 @@ public interface CourseDao {
     Optional<Course> getById(Long id);
     List<User> getStudents(Long courseId);
     Map<User, Role> getTeachers(Long courseId);
-    public boolean belongs(Long userId, Long courseId);
+    boolean belongs(Long userId, Long courseId);
 }

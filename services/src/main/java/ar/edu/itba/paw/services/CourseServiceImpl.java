@@ -23,7 +23,7 @@ public class CourseServiceImpl implements CourseService {
     private UserDao userDao;
 
     @Override
-    public Course create(Integer year, Integer quarter, String board, Integer subjectId, String subjectName,
+    public Course create(Integer year, Integer quarter, String board, Long subjectId, String subjectName,
                          String subjectCode) {
         return courseDao.create(year, quarter, board, subjectId, subjectName, subjectCode);
     }

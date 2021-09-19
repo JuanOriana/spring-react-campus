@@ -19,7 +19,7 @@ public interface CourseService {
      * @param subjectCode of the subject associated to the course
      * @return a Course instance holding the passed values
      */
-    Course create(Integer year, Integer quarter, String board, Integer subjectId, String subjectName,
+    Course create(Integer year, Integer quarter, String board, Long subjectId, String subjectName,
                   String subjectCode);
 
     /**
