@@ -15,6 +15,13 @@
         <form:form modelAttribute="courseForm" class="form-wrapper reduced" method="post"
                    acceptCharset="utf-8" cssStyle="margin: 30px 0">
             <h1 class="announcement-title" style="color:#176961; align-self:center">Crear nuevo curso</h1>
+            <form:label path="subjectId" for="subjectId" class="form-label">Materia</form:label>
+            <form:select path="subjectId" class="form-input" style="font-size: 26px">
+                <c:forEach var="subject" items="${subjects}">
+                    <form:option value="${subject.subjectId}"><c:out value="${subject.name}"/></form:option>
+                </c:forEach>
+            </form:select>
+            <form:errors path="subjectId" element="p" cssStyle="color:red;margin-left: 10px"/>
             <form:label path="quarter" for="quarter" class="form-label">Cuatrimestre</form:label>
             <form:input type="number" path="quarter" class="form-input" style="font-size: 26px"/>
             <form:errors path="quarter" element="p" cssStyle="color:red;margin-left: 10px"/>

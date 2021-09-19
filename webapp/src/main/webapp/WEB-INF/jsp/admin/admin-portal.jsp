@@ -18,7 +18,10 @@
                 <button class="redirection-button" style="margin-right: 25px;">Crear usuario</button>
             </a>
             <a href="${pageContext.request.contextPath}/admin/newcourse">
-                <button class="redirection-button" style="margin-left:25px;">Crear curso</button>
+                <button class="redirection-button" style="margin:0 25px;">Crear curso</button>
+            </a>
+            <a href="${pageContext.request.contextPath}/admin/addusertocourse">
+                <button class="redirection-button" style="margin-left:25px;">Agregar usuario a curso</button>
             </a>
         </div>
     </div>

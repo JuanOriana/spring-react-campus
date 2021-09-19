@@ -33,10 +33,10 @@ public class CourseForm {
     private Integer year;
 
     @NotEmpty
-    private List<User> teacher;
+    private List<Integer> teacherIds;
 
     @NotEmpty
-    private List<User> students;
+    private List<Integer> studentIds;
 
     public Long getSubjectId() {
         return subjectId;
@@ -70,19 +70,19 @@ public class CourseForm {
         this.year = year;
     }
 
-    public List<User> getTeacher() {
-        return teacher;
+    public List<Integer> getTeacherIds() {
+        return teacherIds;
     }
 
-    public void setTeacher(List<User> teacher) {
-        this.teacher = teacher;
+    public void setTeacherIds(List<Integer> teacherIds) {
+        this.teacherIds = teacherIds;
     }
 
-    public List<User> getStudents() {
-        return students;
+    public List<Integer> getStudentIds() {
+        return studentIds;
     }
 
-    public void setStudents(List<User> students) {
-        this.students = students;
+    public void setStudentIds(List<Integer> studentIds) {
+        this.studentIds = studentIds;
     }
 }

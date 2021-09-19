@@ -1,9 +1,12 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.interfaces.CourseService;
+import ar.edu.itba.paw.interfaces.SubjectService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
+import ar.edu.itba.paw.webapp.form.UserToCourseForm;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +27,24 @@ public class AdminController extends AuthController{
     @Autowired
     UserService userService;
 
+    @Autowired
+    SubjectService subjectService;
+
+    @Autowired
+    CourseService courseService;
+
 
     @RequestMapping(value = "/portal")
-    public ModelAndView adminPortal(){
-        return new ModelAndView("admin/admin-portal");
+    public ModelAndView adminPortal(final String successMessage){
+        ModelAndView mav = new  ModelAndView("admin/admin-portal");
+        mav.addObject("successMessage",successMessage);
+        return mav;
     }
 
     @RequestMapping(value = "/newuser", method = RequestMethod.GET)
-    public ModelAndView newUser(final UserRegisterForm userRegisterForm, final String successMessage){
+    public ModelAndView newUser(final UserRegisterForm userRegisterForm){
         ModelAndView mav = new ModelAndView("admin/new-user");
         mav.addObject("userRegisterForm",userRegisterForm);
-        mav.addObject("successMessage",successMessage);
         return mav;
     }
 
@@ -44,24 +54,41 @@ public class AdminController extends AuthController{
             userService.create(userRegisterForm.getFileNumber(),userRegisterForm.getName(),userRegisterForm.getSurname(),
                     userRegisterForm.getUsername(),userRegisterForm.getEmail(),
                     userRegisterForm.getPassword(),false);
-            return adminPortal();
+            return adminPortal("Usuario creado exitosamente");
         }
-        return newUser(userRegisterForm,"Usuario registrado correctamente");
+        return newUser(userRegisterForm);
     }
 
     @RequestMapping(value = "/newcourse", method = RequestMethod.GET)
-    public ModelAndView newCourse(final CourseForm courseForm, final String successMessage){
+    public ModelAndView newCourse(final CourseForm courseForm){
         ModelAndView mav = new ModelAndView("admin/new-course");
         mav.addObject("courseForm",courseForm);
-        mav.addObject("successMessage",successMessage);
+        mav.addObject("subjects", subjectService.list());
+        mav.addObject("users",userService.list());
         return mav;
     }
 
     @RequestMapping(value = "/newcourse", method = RequestMethod.POST)
     public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult errors){
         if (!errors.hasErrors()) {
-            return adminPortal();
+            return adminPortal("Curso creado exitosamente");
         }
-        return newCourse(courseForm,"Curso registrado correctamente");
+        return newCourse(courseForm);
+    }
+
+    @RequestMapping(value = "/addusertocourse", method = RequestMethod.GET)
+    public ModelAndView addUserToCourse(final UserToCourseForm userToCourseForm){
+        ModelAndView mav = new ModelAndView("admin/add-user-to-course");
+        mav.addObject("userToCourseForm",userToCourseForm);
+        mav.addObject("users",userService.list());
+        return mav;
+    }
+
+    @RequestMapping(value = "/addusertocourse", method = RequestMethod.POST)
+    public ModelAndView addUserToCourse(@Valid UserToCourseForm userToCourseForm, final BindingResult errors){
+        if (!errors.hasErrors()) {
+            return adminPortal("Usuario agregado exitosamente");
+        }
+        return addUserToCourse(userToCourseForm);
     }
 }
