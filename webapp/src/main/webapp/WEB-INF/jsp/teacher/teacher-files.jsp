@@ -107,7 +107,7 @@
                                 <label class="file-select-label">Tipo de archivo</label>
                                 <span>
                                     <input class="file-checkbox" type="checkbox" id="extension-all" name="extension-type"
-                                           value="all" onclick="toggleAll(this)">
+                                           value="${0}" onclick="toggleAll(this)">
                                     <label class="file-checkbox-label" for="extension-all">todos</label>
                                 </span>
                                 <c:forEach var="extension" items="${extensions}">
@@ -125,7 +125,7 @@
                                 <label class="file-select-label">Categoria</label>
                                 <span>
                                     <input class="file-checkbox" type="checkbox" id="category-all" name="category-type"
-                                           value="all" onclick="toggleAll(this)">
+                                           value="${0}" onclick="toggleAll(this)">
                                     <label class="file-checkbox-label" for="category-all">todos</label>
                                 </span>
                                 <c:forEach var="category" items="${categories}">
