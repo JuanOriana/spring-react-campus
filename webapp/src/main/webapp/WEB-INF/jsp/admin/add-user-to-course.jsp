@@ -15,7 +15,16 @@
         <form:form modelAttribute="userToCourseForm" class="form-wrapper reduced" method="post"
                    acceptCharset="utf-8" cssStyle="margin: 30px 0">
             <h1 class="announcement-title" style="color:#176961; align-self:center">Agregar usuario a curso</h1>
-            <form:label path="userId" for="userId" class="form-label">Materia</form:label>
+            <form:label path="courseId" for="courseId" class="form-label">Materia</form:label>
+            <form:select path="courseId" class="form-input" style="font-size: 26px">
+                <c:forEach var="course" items="${courses}">
+                    <form:option value="${course.courseId}">
+                        <c:out value="${course.subject.name}[${course.board}]-${course.year}/${course.quarter}Q"/>
+                    </form:option>
+                </c:forEach>
+            </form:select>
+            <form:errors path="courseId" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <form:label path="userId" for="userId" class="form-label">Usuario</form:label>
             <form:select path="userId" class="form-input" style="font-size: 26px">
                 <c:forEach var="user" items="${users}">
                     <form:option value="${user.userId}"><c:out value="${user.name} ${user.surname}"/></form:option>
@@ -29,15 +38,6 @@
                 </c:forEach>
             </form:select>
             <form:errors path="roleId" element="p" cssStyle="color:red;margin-left: 10px"/>
-            <form:label path="courseId" for="courseId" class="form-label">Materia</form:label>
-            <form:select path="courseId" class="form-input" style="font-size: 26px">
-                <c:forEach var="course" items="${courses}">
-                    <form:option value="${course.courseId}">
-                        <c:out value="${course.subject.name}[${course.board}]-${course.year}/${course.quarter}Q}"/>
-                    </form:option>
-                </c:forEach>
-            </form:select>
-            <form:errors path="courseId" element="p" cssStyle="color:red;margin-left: 10px"/>
             <button class="form-button">Crear</button>
         </form:form>
     </div>
