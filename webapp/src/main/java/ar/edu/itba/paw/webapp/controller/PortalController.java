@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.CourseService;
+import ar.edu.itba.paw.interfaces.RoleService;
 import ar.edu.itba.paw.interfaces.SubjectService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
@@ -21,6 +22,9 @@ public class PortalController extends AuthController{
     CourseService courseService;
 
     @Autowired
+    RoleService roleService;
+
+    @Autowired
     AuthFacade authFacade;
 
     @Autowired
@@ -33,7 +37,6 @@ public class PortalController extends AuthController{
 
     @RequestMapping("/portal")
     public ModelAndView portal() {
-        LOGGER.debug("Log debug call from {}", PortalController.class.getSimpleName());
         ModelAndView mav = new ModelAndView("portal");
         List<Course> courses = courseService.list(authFacade.getCurrentUser().getUserId());
         mav.addObject("courseList", courses);

@@ -15,7 +15,8 @@ import java.util.*;
 @Repository
 public class CourseDaoImpl implements CourseDao {
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcInsert;
+    private final SimpleJdbcInsert courseJdbcInsert;
+    private final SimpleJdbcInsert userToCourseJdbcInsert;
     private static final RowMapper<Course> COURSE_ROW_MAPPER = (rs, rowNum) ->
         new Course.Builder()
             .withCourseId(rs.getLong("courseId"))
@@ -29,7 +30,8 @@ public class CourseDaoImpl implements CourseDao {
     @Autowired
     public CourseDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
-        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses").usingGeneratedKeyColumns("courseid");
+        courseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses").usingGeneratedKeyColumns("courseid");
+        userToCourseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("user_to_course");
     }
 
     @Override
@@ -40,7 +42,7 @@ public class CourseDaoImpl implements CourseDao {
         args.put("board", board);
         args.put("year", year);
         args.put("subjectId", subjectId);
-        final Long courseId = jdbcInsert.executeAndReturnKey(args).longValue();
+        final Long courseId = courseJdbcInsert.executeAndReturnKey(args).longValue();
         return new Course.Builder()
                 .withCourseId(courseId)
                 .withYear(year)
@@ -48,6 +50,15 @@ public class CourseDaoImpl implements CourseDao {
                 .withBoard(board)
                 .withSubject(new Subject(subjectId, subjectCode, subjectName))
                 .build();
+    }
+
+    @Override
+    public boolean enroll(Long userId, Long courseId, Integer roleId) {
+        final Map<String, Object> args = new HashMap<>();
+        args.put("userId", userId);
+        args.put("courseId", courseId);
+        args.put("roleId", roleId);
+        return userToCourseJdbcInsert.execute(args) > 0;
     }
 
     @Override
@@ -64,6 +75,11 @@ public class CourseDaoImpl implements CourseDao {
     @Override
     public boolean delete(Long id) {
         return jdbcTemplate.update("DELETE FROM courses WHERE courseId = ?", new Object[]{id}) == 1;
+    }
+
+    @Override
+    public List<Course> list() {
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects", COURSE_ROW_MAPPER));
     }
 
     @Override

@@ -38,6 +38,12 @@ public interface CourseService {
     boolean delete(Long id);
 
     /**
+     * Gets all available courses from the course table
+     * @return list containing all the courses (if any)
+     */
+    List<Course> list();
+
+    /**
      * Gets all the current available courses of a user
      * @param userId of the user to retrieve the courses from
      * @return list containing all the current available courses (if any)
@@ -66,7 +72,7 @@ public interface CourseService {
     List<User> getStudents(Long courseId);
 
     /**
-     * Returns if the user belongs to the course
+     * Informs if the user belongs to the course
      * @param userId of the user to check
      * @param courseId of the course to check
      * @return true if the user belongs to the given course, false otherwise
@@ -74,7 +80,7 @@ public interface CourseService {
     boolean belongs(Long userId, Long courseId);
 
     /**
-     * Returns true if the user is a teacher in the current course
+     * Informs if the user is a teacher in the current course
      * @param userId of the user to check the privilege
      * @param courseId of the course to check the privilege
      * @return true if the user is a teacher in the current course, false otherwise
@@ -82,7 +88,7 @@ public interface CourseService {
     boolean isTeacher(Long userId, Long courseId);
 
     /**
-     * Returns true if the user is a helper in the current course
+     * Informs if the user is a helper in the current course
      * @param userId of the user to check the privilege
      * @param courseId of the course to check the privilege
      * @return true if the user is a helper in the current course, false otherwise
@@ -90,7 +96,7 @@ public interface CourseService {
     boolean isHelper(Long userId, Long courseId);
 
     /**
-     * Returns true if the user is a student in the current course
+     * Informs if the user is a student in the current course
      * @param userId of the user to check the privilege
      * @param courseId of the course to check the privilege
      * @return true if the user is a student in the current course, false otherwise
@@ -98,10 +104,19 @@ public interface CourseService {
     boolean isStudent(Long userId, Long courseId);
 
     /**
-     * Returns true if the user is a helper or a teacher in the current course
+     * Informs if the user is a helper or a teacher in the current course
      * @param userId of the user to check the privilege
      * @param courseId of the course to check the privilege
      * @return true if the user is a helper or a teacher in the current course, false otherwise
      */
     boolean isPrivileged(Long userId, Long courseId);
+
+    /**
+     * Attempts to persist a user to a course with the given role
+     * @param userId of the user to enroll
+     * @param courseId of the course to enroll the user to
+     * @param roleId of the role of the user in the course
+     * @return true if the user was enrolled successfully, false otherwise
+     */
+    boolean enroll(Long userId, Long courseId, Integer roleId);
 }
