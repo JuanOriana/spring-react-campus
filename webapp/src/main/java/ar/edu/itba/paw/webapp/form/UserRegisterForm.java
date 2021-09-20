@@ -3,15 +3,13 @@ package ar.edu.itba.paw.webapp.form;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 public class UserRegisterForm {
 
     @Min(0)
     @Max(2147483647) // Value of the max integer in postgresql
+    @NotNull
     private int fileNumber;
 
     @Pattern(regexp = "[a-zA-Z]+") // Must have at leat one caracter and only letters
@@ -21,7 +19,7 @@ public class UserRegisterForm {
     private String surname;
 
     @NotBlank
-    @Size(min = 8, max = 50)
+    @Size(min = 6, max = 50)
     @Pattern(regexp = "[a-zA-Z]+")
     private String username;
 
@@ -34,8 +32,6 @@ public class UserRegisterForm {
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
     //Minimum eight characters, at least one uppercase letter, one lowercase letter and one number (sourc: https://stackoverflow.com/questions/19605150/regex-for-password-must-contain-at-least-eight-characters-at-least-one-number-a )
     private String password;
-
-    private String roleName; // Should have a "select" in the form.
 
     public int getFileNumber() {
         return fileNumber;

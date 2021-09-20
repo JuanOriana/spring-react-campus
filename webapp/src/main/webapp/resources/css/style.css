@@ -400,7 +400,8 @@ body{
     margin: 10px 0;
     background: var(--cyan-darkest);
     border-radius: 10px;
-    color: var(--cyan-dark);
+    color: white;
+    border: 3px solid var(--cyan-dark);
     padding: 10px 20px;
     font-size: 22px;
     cursor: pointer;
@@ -410,14 +411,14 @@ body{
     border-radius: 12px;
     width: 200px;
     padding: 5px;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
     background: var(--cyan-dark);
     color: var(--cyan-light);
     border: 2px solid var(--cyan-light);
     cursor: pointer;
     align-self: center;
-    margin-top:10px;
+    margin-top:20px;
     resize:none;
 }
 .form-label{
@@ -429,7 +430,7 @@ body{
 }
 .form-input{
     font-size: 18px;
-    width: 90%;
+    margin: 0 10px;
     border-radius: 12px;
     border: 2px solid var(--cyan-dark);
     padding:5px;
@@ -534,5 +535,20 @@ textarea:focus, input:focus{
 
 .small-icon{
     width: 32px;
+    cursor: pointer;
+}
+
+.admin-title{
+    color: var(--cyan-darkest);
+    margin: 40px 0;
+}
+
+.redirection-button{
+    font-size: 32px;
+    padding: 30px;
+    background: var(--cyan-darkest);
+    border-radius: 10px;
+    color: white;
+    border: 3px solid var(--cyan-dark);
     cursor: pointer;
 }
