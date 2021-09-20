@@ -135,7 +135,7 @@ public class CourseController extends AuthController{
             mav.addObject("fileForm",fileForm);
             mav.addObject("successMessage",successMessage);
         } else {
-            mav = new ModelAndView("files");
+            mav = new ModelAndView("course-files");
         }
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("categories",categories);
