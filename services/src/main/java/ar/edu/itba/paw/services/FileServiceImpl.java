@@ -2,10 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.FileDao;
 import ar.edu.itba.paw.interfaces.FileService;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.FileCategory;
-import ar.edu.itba.paw.models.FileExtension;
-import ar.edu.itba.paw.models.FileModel;
+import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -103,6 +100,11 @@ public class FileServiceImpl implements FileService {
     @Override
     public boolean hasAccess(Long fileId, Long userId) {
         return fileDao.hasAccess(fileId, userId);
+    }
+
+    @Override
+    public List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories) {
+        return fileDao.listByCriteria(order,criterias,param,extensions,categories);
     }
 
 }

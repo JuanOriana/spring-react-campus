@@ -71,4 +71,18 @@ public interface UserService {
      */
     List<User> list();
 
+
+    /**
+     * Attempts to get user profile image
+     *
+     * @return an optional of byte[] that represents the image
+     */
+    Optional<byte[]> getProfileImage(Long userId);
+
+    /**
+     * Attempts to update user profile image
+     *
+     * @return true if the user image was updated successfully, false otherwise
+     */
+    boolean updateProfileImage(Long userId, byte[] image);
 }

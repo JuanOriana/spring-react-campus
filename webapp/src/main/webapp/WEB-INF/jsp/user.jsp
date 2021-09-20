@@ -9,17 +9,23 @@
 <div class="page-organizer">
     <%@ include file="components/navbar.jsp" %>
     <div class="page-container">
-        <div class="big-wrapper" style="max-width: 1100px">
+        <div class="big-wrapper" style="width: auto">
             <div class="user-section-wrapper">
-                <div style="display:flex; flex-direction: column; align-items: center" >
-                    <h1 style="margin-bottom: 15px">${currentUser.name} ${currentUser.surname}</h1>
-                    <img src="https://pbs.twimg.com/profile_images/758084549821730820/_HYHtD8F.jpg"
-                         class="user-section-img"/>
-                </div>
-                <div style="display:flex; flex-direction: column">
-                    <p><span style="font-weight: 700">Nombre de usuario:</span> ${currentUser.username}</p>
-                    <p><span style="font-weight: 700">Email:</span> ${currentUser.email}</p>
-                    <p><span style="font-weight: 700">Legajo:</span> ${currentUser.fileNumber}</p>
+                <h1 style="margin-bottom: 15px">
+                    <c:out value="${currentUser.name} ${currentUser.surname}"/>
+                </h1>
+                <img src="https://pbs.twimg.com/profile_images/758084549821730820/_HYHtD8F.jpg"
+                     class="user-section-img"/>
+                <div style="display:flex; flex-direction: column; margin-top: 40px; font-size: 24px">
+                    <p><span style="font-weight: 700">Nombre de usuario:</span>
+                        <c:out value="${currentUser.username}"/>
+                    </p>
+                    <p><span style="font-weight: 700">Email:</span>
+                        <c:out value="${currentUser.email}"/>
+                    </p>
+                    <p><span style="font-weight: 700">Legajo:</span>
+                        <c:out value="${currentUser.fileNumber}"/>
+                    </p>
                 </div>
             </div>
         </div>

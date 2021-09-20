@@ -18,6 +18,9 @@
                 <input type="checkbox" name="rememberMe" id="remember-me"/>
                 <label for="remember-me" style="color: #176961; margin-left: 5px">Recuerdame</label>
             </div>
+            <c:if test="${param.error != null}">
+                <p style="color:red; text-align: center">Las credenciales no son validas</p>
+            </c:if>
             <button class="login-button">Ingresar</button>
         </form>
     </div>

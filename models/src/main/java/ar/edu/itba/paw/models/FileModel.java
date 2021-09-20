@@ -11,6 +11,7 @@ public class FileModel {
     private LocalDateTime date;
     private byte[] file;
     private Course course;
+    private Long downloads;
 
     public static class Builder {
         private Long fileId;
@@ -20,11 +21,13 @@ public class FileModel {
         private LocalDateTime date;
         private byte[] file;
         private Course course;
+        private Long downloads;
 
         public Builder() {
         }
 
-        Builder(Long fileId, Long size, FileExtension extension, String name, LocalDateTime date, byte[] file, Course course) {
+        Builder(Long fileId, Long size, FileExtension extension, String name, LocalDateTime date, byte[] file,
+                Course course, Long downloads) {
             this.fileId = fileId;
             this.size = size;
             this.extension = extension;
@@ -32,6 +35,7 @@ public class FileModel {
             this.date = date;
             this.file = file;
             this.course = course;
+            this.downloads = downloads;
         }
 
         public Builder withFileId(Long fileId){
@@ -66,6 +70,11 @@ public class FileModel {
 
         public Builder withCourse(Course course){
             this.course = course;
+            return Builder.this;
+        }
+
+        public Builder withDownloads(Long downloads) {
+            this.downloads = downloads;
             return Builder.this;
         }
 
@@ -113,6 +122,7 @@ public class FileModel {
         this.date = builder.date;
         this.file = builder.file;
         this.course = builder.course;
+        this.downloads = builder.downloads;
     }
 
     public Long getFileId() {
@@ -169,5 +179,13 @@ public class FileModel {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public Long getDownloads() {
+        return downloads;
+    }
+
+    public void setDownloads(Long downloads) {
+        this.downloads = downloads;
     }
 }

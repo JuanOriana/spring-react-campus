@@ -10,12 +10,16 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class UserDaoImpl implements UserDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
+    private final SimpleJdbcInsert jdbcInsertProfileImage;
 
     private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) ->
             new User.Builder()
@@ -37,6 +41,7 @@ public class UserDaoImpl implements UserDao {
     public UserDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("users").usingGeneratedKeyColumns("userid");
+        jdbcInsertProfileImage = new SimpleJdbcInsert(jdbcTemplate).withTableName("profile_images").usingGeneratedKeyColumns("userid");
     }
 
     @Override
@@ -51,6 +56,12 @@ public class UserDaoImpl implements UserDao {
         args.put("password", password);
         args.put("isAdmin", isAdmin);
         final Long userId = jdbcInsert.executeAndReturnKey(args).longValue();
+
+        final Map<String, Object> argsProfileImage = new HashMap<>();
+        args.put("image", null);
+        args.put("userId", userId);
+        jdbcInsertProfileImage.execute(argsProfileImage);
+
         return new User.Builder()
                 .withUserId(userId)
                 .withFileNumber(fileNumber)
@@ -103,5 +114,17 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> list() {
         return jdbcTemplate.query("SELECT * FROM users", USER_ROW_MAPPER);
+    }
+
+    @Override
+    public boolean updateProfileImage(Long userId, byte[] image) {
+        return jdbcTemplate.update("UPDATE profile_images " +
+                "SET image = ?" +
+                "WHERE userId = ?", new Object[]{image, userId}) == 1;
+    }
+
+    @Override
+    public Optional<byte[]> getProfileImage(Long userId) {
+        return jdbcTemplate.query("SELECT image FROM profile_images WHERE userId = ?", new Object[]{userId}, (rs, rowNumber) -> rs.getBytes("image")).stream().findFirst();
     }
 }

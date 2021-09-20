@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.FileCategory;
-import ar.edu.itba.paw.models.FileExtension;
-import ar.edu.itba.paw.models.FileModel;
+import ar.edu.itba.paw.models.*;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -144,4 +141,17 @@ public interface FileService {
      * @return true if the user has access, false otherwise
      */
     boolean hasAccess(Long fileId, Long userId);
+
+
+    /**
+     * Attempts to get file/s given some criterias of searching and filter
+     * @param order that is expected in the list that is return
+     * @param criterias establish the search criteria.Example, name, date...
+     * @param param establish de key word to be search. In case of not searching nothing can be null or ""
+     * @param  extensions List of ids of the extensions that are expected in the return list. To get all send a empty list
+     * @param  categories List of ids of the categories that are expected in the return list. To get all send a empty list
+     * @return a list containing all the files that match with all the criterias given (if any).
+     */
+    List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories);
+
 }

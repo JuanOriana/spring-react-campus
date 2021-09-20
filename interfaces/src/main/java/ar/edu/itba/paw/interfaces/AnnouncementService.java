@@ -48,10 +48,11 @@ public interface AnnouncementService {
 
     /**
      * Gets the amount of pages based on the page size
+     * @param userId of the related user
      * @param pageSize size of a page from a list query
      * @return amount of pages for the given page size
      */
-    int getPageCount(Integer pageSize);
+    int getPageCount(Long userId, Integer pageSize);
 
     /**
      * Returns an arbitrary ordered list of announcements with pagination for the given user depending on which courses
