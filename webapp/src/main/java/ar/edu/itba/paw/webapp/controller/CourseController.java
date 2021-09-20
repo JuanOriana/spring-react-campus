@@ -116,13 +116,20 @@ public class CourseController extends AuthController{
 
     @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.GET)
     public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm, String successMessage,
-                              @RequestParam(value = "category-type", required = false, defaultValue = "0")
-                                      List<Integer> categoryType,
-                              @RequestParam(value = "extension-type", required = false, defaultValue = "0")
-                                          List<Integer> extensionType) {
-        System.out.println(categoryType);
+                              @RequestParam(value = "category-type", required = false, defaultValue = "")
+                                      List<Long> categoryType,
+                              @RequestParam(value = "extension-type", required = false, defaultValue = "")
+                                          List<Long> extensionType,
+                              @RequestParam(value = "query", required = false, defaultValue = "")
+                                          String query,
+                              @RequestParam(value = "order-class",required = false,defaultValue = "NAME")
+                                          String orderClass,
+                              @RequestParam(value = "order-by",required = false,defaultValue = "DESC")
+                                          String orderBy){
+        final List<FileModel> files = fileService.listByCriteria(OrderCriterias.valueOf(orderBy),
+                SearchingCriterias.valueOf(orderClass),
+                query,extensionType,categoryType);
         final ModelAndView mav;
-        final List<FileModel> files = fileService.getByCourseId(courseId);
         List<FileCategory> categories = fileCategoryService.getCategories();
         final List<FileExtension> extensions = fileExtensionService.getExtensions();
         if(courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
@@ -136,15 +143,16 @@ public class CourseController extends AuthController{
         mav.addObject("categories",categories);
         mav.addObject("files",files);
         mav.addObject("extensions",extensions);
+        mav.addObject("categoryType",categoryType);
+        mav.addObject("extensionType",extensionType);
+        mav.addObject("query",query);
+        mav.addObject("orderBy",orderBy);
+        mav.addObject("orderClass",orderClass);
         return mav;
     }
 
     @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.POST)
-    public ModelAndView uploadFile(@PathVariable Long courseId,@Valid FileForm fileForm, final BindingResult errors,
-                                   @RequestParam(value = "category-type", required = false, defaultValue = "-1")
-                                           List<Integer> categoryType,
-                                   @RequestParam(value = "extension-type", required = false, defaultValue = "0")
-                                               List<Integer> extensionType){
+    public ModelAndView uploadFile(@PathVariable Long courseId,@Valid FileForm fileForm, final BindingResult errors){
         String successMessage = null;
         if (!errors.hasErrors()) {
             CommonsMultipartFile file = fileForm.getFile();
@@ -157,7 +165,7 @@ public class CourseController extends AuthController{
             fileForm.setCategoryId(null);
             successMessage = "Archivo creado exitosamente";
         }
-        return files(courseId,fileForm, successMessage,categoryType,extensionType);
+        return files(courseId,fileForm, successMessage,new ArrayList<>(),new ArrayList<>(),"","NAME","DESC");
     }
 
     @RequestMapping(value = "/download/{fileId}", method = RequestMethod.GET)
