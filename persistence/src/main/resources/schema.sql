@@ -81,6 +81,7 @@ CREATE TABLE IF NOT EXISTS files
     file            BYTEA,
     fileExtensionId INTEGER,
     courseId        INTEGER,
+    downloads       INTEGER,
     FOREIGN KEY (fileExtensionId) references file_extensions ON DELETE CASCADE,
     FOREIGN KEY (courseId) references courses ON DELETE CASCADE
 );
