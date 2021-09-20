@@ -31,9 +31,9 @@
 <form action="" class="file-query-container">
     <div style="display: flex; align-items: center; margin-bottom: 10px">
         <input class="form-input" name="query" style="width: 70%; height: 30px; border-top-right-radius: 0;
-        border-bottom-right-radius: 0; border:none" value="${param.query}">
+        border-bottom-right-radius: 0; border:none; margin: 0" value="${param.query}">
         <button class="form-button" style="height: 30px; margin:0; width: 120px;border-top-left-radius: 0;
-        border-bottom-left-radius: 0">
+        border-bottom-left-radius: 0; padding: 0">
             Buscar
         </button>
         <img src="<c:url value="${pageContext.request.contextPath}/resources/images/page-arrow.png"/>"
