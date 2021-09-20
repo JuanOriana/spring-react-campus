@@ -44,6 +44,7 @@ public class FileDaoImplTest {
                     .withName(rs.getString("fileName"))
                     .withDate(rs.getTimestamp("fileDate").toLocalDateTime())
                     .withFile(rs.getBytes("file"))
+                    .withDownloads(rs.getLong("downloads"))
                     .withExtension(new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension")))
                     .withCourse(new Course.Builder()
                             .withCourseId(rs.getLong("courseId"))
@@ -140,6 +141,7 @@ public class FileDaoImplTest {
                 .withSize((long) buffer.length)
                 .withFile(buffer)
                 .withDate(LocalDateTime.now())
+                .withDownloads(0L)
                 .build();
     }
 
@@ -421,6 +423,7 @@ public class FileDaoImplTest {
                 .withName(fileInFileSystem.getName())
                 .withSize((long) buffer.length)
                 .withFile(buffer)
+                .withDownloads(0L)
                 .withDate(LocalDateTime.now())
                 .build();
     }
