@@ -80,7 +80,14 @@
                            value="${extension.fileExtensionId}" onclick="unToggle('extension-all')"
                            <c:if test="${requestScope.extensionType.contains(extension.fileExtensionId)}">checked</c:if>>
                     <label class="file-checkbox-label" for="extension-${extension.fileExtensionId}">
-                        <spring:message code="file.search.type.name" htmlEscape="true" arguments="${extension.fileExtension}"/>
+                        <c:choose>
+                            <c:when test="${extension.fileExtension.equals('other')}">
+                                <spring:message code="file.search.type.other" htmlEscape="true"/>
+                            </c:when>
+                            <c:otherwise>
+                                <spring:message code="file.search.type.name" htmlEscape="true" arguments="${extension.fileExtension}"/>
+                            </c:otherwise>
+                        </c:choose>
                     </label>
                 </span>
             </c:forEach>
@@ -100,7 +107,7 @@
                            value="${category.categoryId}" onclick="unToggle('category-all')"
                            <c:if test="${requestScope.categoryType.contains(category.categoryId)}">checked</c:if>>
                     <label class="file-checkbox-label" for="category-${category.categoryId}">
-                        <spring:message code="file.search.category.name" htmlEscape="true" arguments="${category.categoryName}"/>
+                        <spring:message code="category.${category.categoryName}" htmlEscape="true"/>
                     </label>
                 </span>
             </c:forEach>

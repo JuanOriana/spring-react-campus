@@ -43,7 +43,7 @@
                     <form:label path="categoryId" for="categoryId" class="form-label"><spring:message code="teacher.file.new.file.category" htmlEscape="true"/></form:label>
                     <form:select path="categoryId" class="form-input" style="font-size: 26px">
                         <c:forEach var="category" items="${categories}">
-                            <form:option value="${category.categoryId}"><spring:message code="teacher.file.new.file.category.element" htmlEscape="true" arguments="${category.categoryName}"/></form:option>
+                            <form:option value="${category.categoryId}"><spring:message code="category.${category.categoryName}" htmlEscape="true"/></form:option>
                         </c:forEach>
                     </form:select>
                     <form:errors path="categoryId" element="p" cssStyle="color:red;margin-left: 10px"/>
