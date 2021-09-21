@@ -552,3 +552,18 @@ textarea:focus, input:focus{
     border: 3px solid var(--cyan-dark);
     cursor: pointer;
 }
+
+.user-container{
+    display: flex;
+    width: calc(95% - 60px);
+    margin:30px 10px 10px 10px;
+    border-radius: 12px;
+    border: 2px solid var(--cyan-darkest);
+    padding: 30px;
+    align-self: center;
+}
+
+.user-column{
+    width: 50%;
+
+}

@@ -4,11 +4,10 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.RoleService;
 import ar.edu.itba.paw.interfaces.SubjectService;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import ar.edu.itba.paw.webapp.form.UserToCourseForm;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/admin")
@@ -83,22 +85,41 @@ public class AdminController extends AuthController{
         return newCourse(courseForm);
     }
 
-    @RequestMapping(value = "/addusertocourse", method = RequestMethod.GET)
-    public ModelAndView addUserToCourse(final UserToCourseForm userToCourseForm){
-        ModelAndView mav = new ModelAndView("admin/add-user-to-course");
-        mav.addObject("userToCourseForm",userToCourseForm);
-        mav.addObject("users",userService.list());
+    @RequestMapping(value = "/select-course", method = RequestMethod.GET)
+    public ModelAndView selectCourse(){
+        ModelAndView mav = new ModelAndView("admin/select-course");
         mav.addObject("courses",courseService.list());
-        mav.addObject("roles",roleService.list());
         return mav;
     }
 
-    @RequestMapping(value = "/addusertocourse", method = RequestMethod.POST)
-    public ModelAndView addUserToCourse(@Valid UserToCourseForm userToCourseForm, final BindingResult errors){
+    @RequestMapping(value = "/add-user-to-course", method = RequestMethod.GET)
+    public ModelAndView addUserToCourse(final UserToCourseForm userToCourseForm,
+                                        @RequestParam(name = "courseId") Long courseId,
+                                        final String successMessage){
+        ModelAndView mav = new ModelAndView("admin/add-user-to-course");
+        List<User> courseStudents = courseService.getStudents(courseId);
+        Set<User> courseTeachers = courseService.getTeachers(courseId).keySet();
+        List<User> remainingUsers = userService.list();
+        remainingUsers.removeAll(courseStudents);
+        remainingUsers.removeAll(courseTeachers);
+        mav.addObject("userToCourseForm",userToCourseForm);
+        mav.addObject("users",remainingUsers);
+        mav.addObject("course",courseService.getById(courseId).orElseThrow(RuntimeException::new));
+        mav.addObject("roles",roleService.list());
+        mav.addObject("courseStudents", courseStudents);
+        mav.addObject("courseTeachers", courseTeachers);
+        mav.addObject("successMessage",successMessage);
+        return mav;
+    }
+
+    @RequestMapping(value = "/add-user-to-course", method = RequestMethod.POST)
+    public ModelAndView addUserToCourse(@Valid UserToCourseForm userToCourseForm, final BindingResult errors,
+                                        @RequestParam(name = "courseId") Long courseId){
+        String successMessage = "";
         if (!errors.hasErrors()) {
-            courseService.enroll(userToCourseForm.getUserId(),userToCourseForm.getCourseId(),userToCourseForm.getRoleId());
-            return adminPortal("Usuario agregado exitosamente");
+            courseService.enroll(userToCourseForm.getUserId(),courseId,userToCourseForm.getRoleId());
+            successMessage ="Usuario agregado exitosamente";
         }
-        return addUserToCourse(userToCourseForm);
+        return addUserToCourse(userToCourseForm,courseId,successMessage);
     }
 }
