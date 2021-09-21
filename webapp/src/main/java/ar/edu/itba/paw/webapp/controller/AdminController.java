@@ -47,14 +47,14 @@ public class AdminController extends AuthController{
         return mav;
     }
 
-    @RequestMapping(value = "/newuser", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/new", method = RequestMethod.GET)
     public ModelAndView newUser(final UserRegisterForm userRegisterForm){
         ModelAndView mav = new ModelAndView("admin/new-user");
         mav.addObject("userRegisterForm",userRegisterForm);
         return mav;
     }
 
-    @RequestMapping(value = "/newuser", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/new", method = RequestMethod.POST)
     public ModelAndView newUser(@Valid UserRegisterForm userRegisterForm, final BindingResult errors){
         if (!errors.hasErrors()) {
             userService.create(userRegisterForm.getFileNumber(),userRegisterForm.getName(),userRegisterForm.getSurname(),
@@ -65,7 +65,7 @@ public class AdminController extends AuthController{
         return newUser(userRegisterForm);
     }
 
-    @RequestMapping(value = "/newcourse", method = RequestMethod.GET)
+    @RequestMapping(value = "/course/new", method = RequestMethod.GET)
     public ModelAndView newCourse(final CourseForm courseForm){
         ModelAndView mav = new ModelAndView("admin/new-course");
         mav.addObject("courseForm",courseForm);
@@ -74,7 +74,7 @@ public class AdminController extends AuthController{
         return mav;
     }
 
-    @RequestMapping(value = "/newcourse", method = RequestMethod.POST)
+    @RequestMapping(value = "/course/new", method = RequestMethod.POST)
     public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult errors){
         if (!errors.hasErrors()) {
             //TODO: MAKE IT FUNCTIONAL WHEN CREATE IS UPDATED
@@ -85,14 +85,14 @@ public class AdminController extends AuthController{
         return newCourse(courseForm);
     }
 
-    @RequestMapping(value = "/select-course", method = RequestMethod.GET)
+    @RequestMapping(value = "/course/select", method = RequestMethod.GET)
     public ModelAndView selectCourse(){
         ModelAndView mav = new ModelAndView("admin/select-course");
         mav.addObject("courses",courseService.list());
         return mav;
     }
 
-    @RequestMapping(value = "/add-user-to-course", method = RequestMethod.GET)
+    @RequestMapping(value = "/course/enroll", method = RequestMethod.GET)
     public ModelAndView addUserToCourse(final UserToCourseForm userToCourseForm,
                                         @RequestParam(name = "courseId") Long courseId,
                                         final String successMessage){
@@ -112,7 +112,7 @@ public class AdminController extends AuthController{
         return mav;
     }
 
-    @RequestMapping(value = "/add-user-to-course", method = RequestMethod.POST)
+    @RequestMapping(value = "/course/enroll", method = RequestMethod.POST)
     public ModelAndView addUserToCourse(@Valid UserToCourseForm userToCourseForm, final BindingResult errors,
                                         @RequestParam(name = "courseId") Long courseId){
         String successMessage = "";

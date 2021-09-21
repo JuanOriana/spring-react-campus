@@ -2,7 +2,7 @@
 <html>
 <body>
 <nav class="navbar-container">
-    <h1 class="nav-title"><a class="styleless-anchor" href="<c:url value ="/portal"/>">CAMPUS</a></h1>
+    <h1 class="nav-title"><a class="styleless-anchor" href="<c:url value ="/"/>">CAMPUS</a></h1>
     <c:if test="${!param.isAdmin}">
         <ul class="nav-sections-container">
             <li class="${param.navItem == 1? "nav-sections-item nav-sections-item-active" : "nav-sections-item" }">

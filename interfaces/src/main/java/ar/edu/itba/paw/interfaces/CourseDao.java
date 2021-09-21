@@ -19,6 +19,6 @@ public interface CourseDao {
     List<User> getStudents(Long courseId);
     Map<User, Role> getTeachers(Long courseId);
     boolean belongs(Long userId, Long courseId);
-    public boolean enroll(Long userId, Long courseId, Integer roleId);
+    boolean enroll(Long userId, Long courseId, Integer roleId);
 
 }

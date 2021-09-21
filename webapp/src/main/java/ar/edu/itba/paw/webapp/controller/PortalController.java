@@ -31,8 +31,11 @@ public class PortalController extends AuthController{
     SubjectService subjectService;
 
     @RequestMapping("/")
-    public RedirectView rootRedirect() {
-        return new RedirectView("portal");
+    public String rootRedirect() {
+        if(authFacade.getCurrentUser().isAdmin()) {
+            return "redirect:/admin/portal";
+        }
+        return "redirect:/portal";
     }
 
     @RequestMapping("/portal")

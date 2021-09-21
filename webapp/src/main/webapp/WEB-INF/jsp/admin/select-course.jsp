@@ -12,7 +12,7 @@
         <jsp:param name="isAdmin" value="${true}"/>
     </jsp:include>
     <div class="page-container">
-        <form action="/admin/add-user-to-course" class="form-wrapper reduced" method="get" css="margin: 30px 0">
+        <form action="/admin/course/enroll" class="form-wrapper reduced" method="get" css="margin: 30px 0">
             <h1 class="announcement-title" style="color:#176961; align-self:center">Seleccionar un curso</h1>
             <label name="courseId" for="courseId" class="form-label">Curso</label>
             <select name="courseId" id="courseId" class="form-input" style="font-size: 26px">
@@ -22,7 +22,7 @@
                     </option>
                 </c:forEach>
             </select>
-            <button class=" form-button">Ir a agregar usuarios</button>
+            <button class="form-button">Ir a agregar usuarios</button>
         </form>
     </div>
     <jsp:include page="../components/footer.jsp"/>
