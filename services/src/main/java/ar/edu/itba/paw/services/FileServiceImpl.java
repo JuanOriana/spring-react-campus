@@ -86,7 +86,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public List<FileModel> getByMultipleCategories(List<FileCategory> categories) {
         Set<FileModel> filesContainingCategories = new HashSet<>(getByCategory(categories.get(0).getCategoryId()));
-        for (FileCategory cat : categories.subList(1,categories.size())){
+        for (FileCategory cat : categories.subList(1, categories.size())) {
             filesContainingCategories = filesContainingCategories.stream().filter(getByCategory(cat.getCategoryId())::contains).collect(Collectors.toSet());
         }
         return new ArrayList<>(filesContainingCategories);
@@ -103,8 +103,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories,Long userId) {
-       return fileDao.listByCriteria(order,criterias,param,extensions,categories,userId);
+    public List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId) {
+        return fileDao.listByCriteria(order, criterias, param, extensions, categories, userId, courseId);
+    }
+
+    @Override
+    public List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId) {
+        return fileDao.listByCriteria(order, criterias, param, extensions, categories, userId);
     }
 
 }
