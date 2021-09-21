@@ -29,23 +29,23 @@ public class FileDaoImpl implements FileDao {
     private final SimpleJdbcInsert jdbcInsertCategory;
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) ->
 
-        new FileModel.Builder()
-            .withFileId(rs.getLong("fileId"))
-            .withSize(rs.getLong("fileSize"))
-            .withName(rs.getString("fileName"))
-            .withDate(rs.getTimestamp("fileDate").toLocalDateTime())
-            .withFile(rs.getBytes("file"))
-            .withExtension(new FileExtension(rs.getLong("fileExtensionId"),rs.getString("fileExtension")))
-            .withDownloads(rs.getLong("downloads"))
-            .withCourse(new Course.Builder()
-                    .withCourseId(rs.getLong("courseId"))
-                    .withYear(rs.getInt("year"))
-                    .withQuarter(rs.getInt("quarter"))
-                    .withBoard(rs.getString("board"))
-                    .withSubject(new Subject(rs.getLong("subjectId"), rs.getString("code"),
-                            rs.getString("subjectName")))
-                    .build())
-            .build();
+            new FileModel.Builder()
+                    .withFileId(rs.getLong("fileId"))
+                    .withSize(rs.getLong("fileSize"))
+                    .withName(rs.getString("fileName"))
+                    .withDate(rs.getTimestamp("fileDate").toLocalDateTime())
+                    .withFile(rs.getBytes("file"))
+                    .withExtension(new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension")))
+                    .withDownloads(rs.getLong("downloads"))
+                    .withCourse(new Course.Builder()
+                            .withCourseId(rs.getLong("courseId"))
+                            .withYear(rs.getInt("year"))
+                            .withQuarter(rs.getInt("quarter"))
+                            .withBoard(rs.getString("board"))
+                            .withSubject(new Subject(rs.getLong("subjectId"), rs.getString("code"),
+                                    rs.getString("subjectName")))
+                            .build())
+                    .build();
 
     private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) -> {
         return new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
@@ -120,17 +120,17 @@ public class FileDaoImpl implements FileDao {
     @Override
     public Optional<FileModel> getById(Long fileId) {
         return jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, " +
-                "fileExtension, courseId, year, quarter, board, subjectId, code, subjectName, downloads " +
-                "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileId = ?",
+                        "fileExtension, courseId, year, quarter, board, subjectId, code, subjectName, downloads " +
+                        "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileId = ?",
                 new Object[]{fileId}, FILE_MODEL_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public List<FileModel> getByName(String fileName) {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, " +
-                "fileExtensionId, fileExtension, courseId, year, quarter, board, " +
-                "subjectId, code, subjectName, downloads " +
-                "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileName = ?",
+                        "fileExtensionId, fileExtension, courseId, year, quarter, board, " +
+                        "subjectId, code, subjectName, downloads " +
+                        "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileName = ?",
                 new Object[]{fileName}, FILE_MODEL_ROW_MAPPER));
     }
 
@@ -152,9 +152,9 @@ public class FileDaoImpl implements FileDao {
             fileExtension = "other";
         }
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, " +
-                "fileExtensionId, fileExtension, courseId, year, " +
-                "quarter, board, subjectId, code, subjectName, downloads " +
-                "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileExtension = ?",
+                        "fileExtensionId, fileExtension, courseId, year, " +
+                        "quarter, board, subjectId, code, subjectName, downloads " +
+                        "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileExtension = ?",
                 new Object[]{fileExtension}, FILE_MODEL_ROW_MAPPER));
     }
 
@@ -193,9 +193,9 @@ public class FileDaoImpl implements FileDao {
     @Override
     public List<FileModel> getByCourseId(Long courseId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, " +
-                "fileExtensionId, fileExtension, courseId, year, " +
-                "quarter, board, subjectId, code, subjectName, downloads " +
-                "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE courseId = ?",
+                        "fileExtensionId, fileExtension, courseId, year, " +
+                        "quarter, board, subjectId, code, subjectName, downloads " +
+                        "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE courseId = ?",
                 new Object[]{courseId}, FILE_MODEL_ROW_MAPPER));
     }
 
@@ -217,57 +217,98 @@ public class FileDaoImpl implements FileDao {
         return extension;
     }
 
-    public List<FileModel> listByCriteria(OrderCriterias orderCriterias, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories) {
+    public List<FileModel> listByCriteria(OrderCriterias orderCriterias, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId) {
+
         StringBuilder extensionAndCategoryQuery = new StringBuilder();
+        List<Object> params = new ArrayList<>();
         // Armado del string para filtrar por extensiones (si hay )
         if (!extensions.isEmpty()) {
-            extensionAndCategoryQuery.append(" fileExtension IN (");
+            extensionAndCategoryQuery.append(" ( ");
             for (Long extension : extensions) {
                 Optional<String> exten = fileExtensionDao.getExtension(extension);
-                extensionAndCategoryQuery.append("'" + (exten.orElse("other")) + "',");
+                params.add(exten.orElse("other"));
+                extensionAndCategoryQuery.append(" fileExtension = ? OR ");
             }
-            extensionAndCategoryQuery.delete(extensionAndCategoryQuery.length() - 1, extensionAndCategoryQuery.length()); // todo ver si se puede mejorar esta forma "hardcodeada" de borrar la coma
-            extensionAndCategoryQuery.append(")");
+            extensionAndCategoryQuery.delete(extensionAndCategoryQuery.length() - 4, extensionAndCategoryQuery.length()); // Removed the last AND
+            extensionAndCategoryQuery.append(" ) ");
         }
         // Armado del string para filtrar por categorias (si hay )
         if (!categories.isEmpty()) {
             if (!extensions.isEmpty()) {
-                extensionAndCategoryQuery.append(" AND");
+                extensionAndCategoryQuery.append(" AND ");
             }
-            extensionAndCategoryQuery.append(" categoryname IN ( ");
+            extensionAndCategoryQuery.append(" ( ");
             for (Long category : categories) {
                 Optional<String> cat = fileCategoryDao.getCategory(category);
-                extensionAndCategoryQuery.append("'" + cat.orElse("none") + "',");
+                params.add(cat.orElse("none"));
+                extensionAndCategoryQuery.append("categoryname = ? OR ");
             }
-            extensionAndCategoryQuery.delete(extensionAndCategoryQuery.length() - 1, extensionAndCategoryQuery.length()); // todo ver si se puede mejorar esta forma "hardcodeada" de borrar la coma
-            extensionAndCategoryQuery.append(" )");
+            extensionAndCategoryQuery.delete(extensionAndCategoryQuery.length() - 4, extensionAndCategoryQuery.length()); // Removed the last AND
+            extensionAndCategoryQuery.append(" ) ");
         }
 
-        // Armado del string para buscar por nombre o fecha
-        String filterStringNameAndDate = (extensions.isEmpty() && categories.isEmpty()) ? extensionAndCategoryQuery.toString() : "AND " + extensionAndCategoryQuery.toString();
-        String filterStringNone = (extensions.isEmpty() && categories.isEmpty()) ? extensionAndCategoryQuery.toString() : "WHERE " + extensionAndCategoryQuery.toString();
+
+        String courseSelection = courseId < 0 ? "(SELECT courseId FROM user_to_course WHERE userId = ?)" : "(?)";
+        Long courseSelectionParam = courseId < 0 ? userId : courseId;
+        String selectByName = "SELECT * FROM files NATURAL JOIN courses NATURAL JOIN file_extensions NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE LOWER(fileName) LIKE ? AND courseId IN " + courseSelection;
+        String selectBydate = "SELECT *  FROM files NATURAL JOIN courses NATURAL JOIN file_extensions  NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE date_part('year', fileDate) = CAST(? AS INTEGER) AND date_part('month', fileDate) = CAST(? AS INTEGER) AND date_part('day', fileDate) = CAST(? AS INTEGER) AND courseId IN " + courseSelection;
+        String selectFilterExtensionsAndCategory;
+
+        if (extensions.isEmpty() && categories.isEmpty()) {
+            selectFilterExtensionsAndCategory = "";
+        } else {
+            selectFilterExtensionsAndCategory = " INTERSECT SELECT * FROM files NATURAL JOIN courses NATURAL JOIN file_extensions  NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE " + extensionAndCategoryQuery;
+        }
+        String selectAll = "SELECT *  FROM files NATURAL JOIN courses NATURAL JOIN file_extensions  NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE courseId IN " + courseSelection;
+
         switch (criterias) {
             case NAME:
-                    return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName, downloads FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE fileName LIKE ?" + filterStringNameAndDate + " ORDER BY fileName "+orderCriterias.getValue(), new Object[]{("%" + param + "%")}, FILE_MODEL_ROW_MAPPER));
+                Object[] sqlParams = new Object[params.size() + 2];
+                sqlParams[0] = "%" + param.toLowerCase() + "%";
+                sqlParams[1] = courseSelectionParam;
+                for (int i = 0; i < params.size(); i++) {
+                    sqlParams[i + 2] = params.get(i);
+                }
+                return new ArrayList<>(jdbcTemplate.query(selectByName + selectFilterExtensionsAndCategory + " ORDER BY fileName " + orderCriterias.getValue(), sqlParams, FILE_MODEL_ROW_MAPPER));
             case DATE:
                 /// param  to DATE must be YYYY-MM-DD
-               if(param.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")) {
-                   String year = param.substring(0, 4);
-                   String month = param.substring(5, 7);
-                   String day = param.substring(8, 10);
-                   return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE date_part('year', fileDate) = CAST(? AS INTEGER) AND date_part('month', fileDate) = CAST(? AS INTEGER) AND date_part('day', fileDate) = CAST(? AS INTEGER) " + filterStringNameAndDate + " ORDER BY fileDate " + orderCriterias.getValue(), new Object[]{year, month, day}, FILE_MODEL_ROW_MAPPER));
-               }else if(param.isEmpty()){
-                   filterStringNameAndDate = (extensions.isEmpty() && categories.isEmpty()) ? extensionAndCategoryQuery.toString() : "WHERE " + extensionAndCategoryQuery.toString();
-                   return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories " + filterStringNameAndDate + " ORDER BY fileDate " + orderCriterias.getValue(), FILE_MODEL_ROW_MAPPER));
-               }else{
-                   return new ArrayList<>();
-               }
+                if (param.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")) {
+
+                    Object[] sqlParamsDate = new Object[params.size() + 4];
+                    sqlParamsDate[0] = param.substring(0, 4);
+                    sqlParamsDate[1] = param.substring(5, 7);
+                    sqlParamsDate[2] = param.substring(8, 10);
+                    sqlParamsDate[3] = courseSelectionParam;
+                    for (int i = 0; i < params.size(); i++) {
+                        sqlParamsDate[i + 4] = params.get(i);
+                    }
+                    return new ArrayList<>(jdbcTemplate.query(selectBydate + selectFilterExtensionsAndCategory + " ORDER BY fileDate " + orderCriterias.getValue(), sqlParamsDate, FILE_MODEL_ROW_MAPPER));
+                } else if (param.isEmpty()) {
+                    Object[] sqlParamsAll = new Object[params.size() + 1];
+                    sqlParamsAll[0] = courseSelectionParam;
+                    for (int i = 0; i < params.size(); i++) {
+                        sqlParamsAll[i + 1] = params.get(i);
+                    }
+                    return new ArrayList<>(jdbcTemplate.query(selectAll + selectFilterExtensionsAndCategory + " ORDER BY fileDate " + orderCriterias.getValue(), sqlParamsAll, FILE_MODEL_ROW_MAPPER));
+                } else {
+                    return new ArrayList<>();
+                }
             case NONE:
-                return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, fileExtension, courseId, year, quarter, board, subjectId, code, subjectName, downloads FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories " + filterStringNone, FILE_MODEL_ROW_MAPPER));
+                Object[] sqlParamsNone = new Object[params.size() + 1];
+                sqlParamsNone[0] = courseSelectionParam;
+                for (int i = 0; i < params.size(); i++) {
+                    sqlParamsNone[i + 1] = params.get(i);
+                }
+                return new ArrayList<>(jdbcTemplate.query(selectAll + selectFilterExtensionsAndCategory, sqlParamsNone, FILE_MODEL_ROW_MAPPER));
             default:
                 break;
 
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId) {
+        return listByCriteria(order,criterias,param,extensions,categories,userId,-1L);
     }
 }

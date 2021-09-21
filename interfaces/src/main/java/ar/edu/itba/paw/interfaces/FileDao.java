@@ -35,5 +35,10 @@ public interface FileDao {
 
     boolean hasAccess(Long fileId, Long userId);
 
-    List<FileModel> listByCriteria(OrderCriterias order,SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories);
+    // Course id must be negative when looking for all the courses.
+    List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId);
+
+    List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId);
+
+
 }

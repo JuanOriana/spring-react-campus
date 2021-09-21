@@ -52,7 +52,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .invalidSessionUrl("/login")
                 .and().authorizeRequests()
                     .antMatchers("/login").anonymous()
-                    .antMatchers("/admin/**").hasRole("ADMIN")
+                    .antMatchers("/admin/**").hasAuthority("ADMIN")
                     .antMatchers(HttpMethod.GET, "/download/{fileId}").access("@courseVoter.hasFileAccess(authentication,#fileId)")
                     .antMatchers(HttpMethod.POST, "/course/{courseId}").hasRole("ADMIN")
                     .antMatchers(HttpMethod.POST, "/course/{courseId}/announcements").access("@courseVoter.hasCoursePrivileges(authentication,#courseId)")

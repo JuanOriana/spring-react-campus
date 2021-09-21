@@ -45,7 +45,7 @@ public class FilesController extends AuthController{
         CampusUser user = authFacade.getCurrentUser();
         final List<FileModel> files = fileService.listByCriteria(OrderCriterias.valueOf(orderBy),
                 SearchingCriterias.valueOf(orderClass),
-                query,extensionType,categoryType);
+                query,extensionType,categoryType,authFacade.getCurrentUser().getUserId());
         final List<FileCategory> categories = fileCategoryService.getCategories();
         final List<FileExtension> extensions = fileExtensionService.getExtensions();
         ModelAndView mav = new ModelAndView("files");
