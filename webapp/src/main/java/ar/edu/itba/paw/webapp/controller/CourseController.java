@@ -53,8 +53,8 @@ public class CourseController extends AuthController{
     private final Comparator<Announcement> orderByDate = (o1, o2) -> o2.getDate().compareTo(o1.getDate());
 
     @RequestMapping(value = "/course/{courseId}", method = RequestMethod.GET)
-    public RedirectView coursePortal(@PathVariable Integer courseId) {
-       return new RedirectView("/course/{courseId}/announcements");
+    public String coursePortal(@PathVariable Integer courseId) {
+       return "redirect:/course/{courseId}/announcements";
     }
 
     @RequestMapping(value = "/course/{courseId}/announcements", method = RequestMethod.GET)
