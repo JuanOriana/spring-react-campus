@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@page pageEncoding="UTF-8" %>
+<!DOCTYPE html>
 <html>
 <head>
   <title>Campus - <c:out value="${course.subject.name}"/></title>
@@ -9,7 +10,7 @@
   <script>
     function deleteById(announcementId){
       $.ajax({
-        url: '/deleteAnnouncement/' + announcementId,
+        url: '${pageContext.request.contextPath}/announcements/' + announcementId,
         type: 'DELETE',
         success: function (result) {
           $("#announcement-"+ announcementId).remove();
@@ -51,7 +52,7 @@
               <div style="display: flex">
                 <p style="font-size: 14px">Publicado por: <c:out value="${announcementItem.author.name}
                                   ${announcementItem.author.surname}"/></p>
-                <img src="${page.Context.request.contextPath}/resources/images/trash-red.png"
+                <img src="<c:url value="/resources/images/trash-red.png"/>"
                      alt="delete" class="small-icon" style="margin-left: 10px"
                      onclick="deleteById(${announcementItem.announcementId})">
               </div>
