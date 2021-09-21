@@ -1,7 +1,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+
 <html>
 <head>
-    <title>Campus - Material</title>
+    <title><spring:message code="files.page.title" htmlEscape="true"/></title>
     <c:import url="config/generalHead.jsp"/>
 </head>
 <body>
@@ -10,7 +12,7 @@
         <jsp:param name="navItem" value="${3}"/>
     </jsp:include>
     <div class="page-container">
-        <h2 class="section-heading">Mi Material</h2>
+        <h2 class="section-heading"><spring:message code="files.section-heading.title" htmlEscape="true"/></h2>
         <div class="big-wrapper">
             <c:set var="categories" value="${categories}" scope="request"/>
             <c:set var="extensions" value="${extensions}" scope="request"/>
@@ -28,10 +30,10 @@
                            style="display: flex;margin-left: 10px; align-items: center">
                             <img src="<c:url value="${page.Context.request.contextPath}/resources/images/extensions/${file.extension.fileExtension}.png"/>"
                                  class="file-img" alt="${file.name}"/>
-                            <p class="file-name"><c:out value=" ${file.name}"/></p>
+                            <p class="file-name"><spring:message code="files.file.name" htmlEscape="true" arguments="${file.name}"/></p>
                         </a>
                         <a href="<c:url value="/course/${file.course.courseId}"/>" class="styleless-anchor">
-                            <p class="file-name"><c:out value="${file.course.subject.name}"/></p>
+                            <p class="file-name"><spring:message code="files.file.subject.name" htmlEscape="true" arguments="${file.course.subject.name}"/></p>
                         </a>
                     </div>
                 </c:forEach>
