@@ -103,8 +103,8 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories) {
-        return fileDao.listByCriteria(order,criterias,param,extensions,categories);
+    public List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories,Long userId) {
+       return fileDao.listByCriteria(order,criterias,param,extensions,categories,userId);
     }
 
 }

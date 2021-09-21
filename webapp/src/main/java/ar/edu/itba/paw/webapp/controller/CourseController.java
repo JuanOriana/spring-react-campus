@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
+import ar.edu.itba.paw.webapp.auth.AuthFacadeImpl;
 import ar.edu.itba.paw.webapp.auth.CampusUser;
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
@@ -126,9 +127,10 @@ public class CourseController extends AuthController{
                                           String orderClass,
                               @RequestParam(value = "order-by",required = false,defaultValue = "DESC")
                                           String orderBy){
+
         final List<FileModel> files = fileService.listByCriteria(OrderCriterias.valueOf(orderBy),
                 SearchingCriterias.valueOf(orderClass),
-                query,extensionType,categoryType);
+                query,extensionType,categoryType, authFacade.getCurrentUser().getUserId());
         final ModelAndView mav;
         List<FileCategory> categories = fileCategoryService.getCategories();
         final List<FileExtension> extensions = fileExtensionService.getExtensions();

@@ -35,5 +35,7 @@ public interface FileDao {
 
     boolean hasAccess(Long fileId, Long userId);
 
-    List<FileModel> listByCriteria(OrderCriterias order,SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories);
+    List<FileModel> listByCriteria(OrderCriterias order,SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories,Long userId);
+
+
 }

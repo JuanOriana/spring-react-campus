@@ -152,6 +152,6 @@ public interface FileService {
      * @param  categories List of ids of the categories that are expected in the return list. To get all send a empty list
      * @return a list containing all the files that match with all the criterias given (if any).
      */
-    List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories);
+    List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories,Long userId);
 
 }
