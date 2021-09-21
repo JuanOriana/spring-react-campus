@@ -218,47 +218,61 @@ public class FileDaoImpl implements FileDao {
     }
 
     public List<FileModel> listByCriteria(OrderCriterias orderCriterias, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories) {
+
         StringBuilder extensionAndCategoryQuery = new StringBuilder();
+        List<Object> params = new ArrayList<Object>();
         // Armado del string para filtrar por extensiones (si hay )
         if (!extensions.isEmpty()) {
-            extensionAndCategoryQuery.append(" fileExtension IN (");
+            extensionAndCategoryQuery.append(" ( ");
             for (Long extension : extensions) {
                 Optional<String> exten = fileExtensionDao.getExtension(extension);
-                extensionAndCategoryQuery.append("'" + (exten.orElse("other")) + "',");
+                params.add(exten.orElse("other"));
+                extensionAndCategoryQuery.append(" fileExtension = ? OR ");
             }
-            extensionAndCategoryQuery.delete(extensionAndCategoryQuery.length() - 1, extensionAndCategoryQuery.length()); // todo ver si se puede mejorar esta forma "hardcodeada" de borrar la coma
-            extensionAndCategoryQuery.append(")");
+            extensionAndCategoryQuery.delete(extensionAndCategoryQuery.length()-4, extensionAndCategoryQuery.length()); // Removed the last AND
+            extensionAndCategoryQuery.append(" ) ");
         }
         // Armado del string para filtrar por categorias (si hay )
         if (!categories.isEmpty()) {
             if (!extensions.isEmpty()) {
-                extensionAndCategoryQuery.append(" AND");
+                extensionAndCategoryQuery.append(" AND ");
             }
-            extensionAndCategoryQuery.append(" categoryname IN ( ");
+            extensionAndCategoryQuery.append(" ( ");
             for (Long category : categories) {
                 Optional<String> cat = fileCategoryDao.getCategory(category);
-                extensionAndCategoryQuery.append("'" + cat.orElse("none") + "',");
+                params.add(cat.orElse( "none"));
+                extensionAndCategoryQuery.append("categoryname = ? OR ");
             }
-            extensionAndCategoryQuery.delete(extensionAndCategoryQuery.length() - 1, extensionAndCategoryQuery.length()); // todo ver si se puede mejorar esta forma "hardcodeada" de borrar la coma
-            extensionAndCategoryQuery.append(" )");
+            extensionAndCategoryQuery.delete(extensionAndCategoryQuery.length()-4, extensionAndCategoryQuery.length()); // Removed the last AND
+            extensionAndCategoryQuery.append(" ) ");
         }
 
 
-        String selectByName = "SELECT *  FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE fileName LIKE ? ";
+        String selectByName = "SELECT *  FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE LOWER(fileName) LIKE LOWER(?) ";
         String selectBydate = "SELECT *  FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE date_part('year', fileDate) = CAST(? AS INTEGER) AND date_part('month', fileDate) = CAST(? AS INTEGER) AND date_part('day', fileDate) = CAST(? AS INTEGER)";
         String selectFilterExtensionsAndCategory = "SELECT * FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE 1=1 "+ (extensionAndCategoryQuery.toString().isEmpty()? "": " AND "+extensionAndCategoryQuery.toString());
         String selectAll = "SELECT *  FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories ";
 
+        // TODO: Ver como manejar los argumentos de la lista y el q ya tenia
         switch (criterias) {
             case NAME:
-                    return new ArrayList<>(jdbcTemplate.query(selectByName +" INTERSECT "+ selectFilterExtensionsAndCategory + " ORDER BY fileName "+orderCriterias.getValue(), new Object[]{("%" + param + "%")}, FILE_MODEL_ROW_MAPPER));
+                Object[] sqlParams = new Object[params.size()+1];
+                sqlParams[0] = "%" + param + "%";
+                for (int i = 0; i<params.size(); i++){
+                    sqlParams[i+1] = params.get(i);
+                }
+                    return new ArrayList<FileModel>(jdbcTemplate.query(selectByName +" INTERSECT "+ selectFilterExtensionsAndCategory + " ORDER BY fileName "+orderCriterias.getValue(), sqlParams, FILE_MODEL_ROW_MAPPER));
             case DATE:
                 /// param  to DATE must be YYYY-MM-DD
                if(param.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")) {
-                   String year = param.substring(0, 4);
-                   String month = param.substring(5, 7);
-                   String day = param.substring(8, 10);
-                   return new ArrayList<>(jdbcTemplate.query( selectBydate+ " INTERSECT " + selectFilterExtensionsAndCategory + " ORDER BY fileDate " + orderCriterias.getValue(), new Object[]{year, month, day}, FILE_MODEL_ROW_MAPPER));
+                   Object[] sqlParamsDate = new Object[params.size()+3];
+                   sqlParamsDate[0]  = param.substring(0, 4);
+                   sqlParamsDate[1]  = param.substring(5, 7);
+                   sqlParamsDate[2]  = param.substring(8, 10);
+                   for (int i = 0; i<params.size(); i++){
+                       sqlParamsDate[i+3] = params.get(i);
+                   }
+                   return new ArrayList<>(jdbcTemplate.query( selectBydate+ " INTERSECT " + selectFilterExtensionsAndCategory + " ORDER BY fileDate " + orderCriterias.getValue(), sqlParamsDate, FILE_MODEL_ROW_MAPPER));
                }else if(param.isEmpty()){
                    return new ArrayList<>(jdbcTemplate.query(selectAll + " INTERSECT " + selectFilterExtensionsAndCategory + " ORDER BY fileDate " + orderCriterias.getValue(), FILE_MODEL_ROW_MAPPER));
                }else{
