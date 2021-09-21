@@ -18,7 +18,7 @@
             <input type="password" id="password" name="password" class="login-input"/>
             <div style="display: flex;align-items: center; margin: 10px 0;">
                 <input type="checkbox" name="rememberMe" id="remember-me"/>
-                <label for="remember-me" style="color: #176961; margin-left: 5px"><spring:message code="login.label.remeber.me" htmlEscape="true"/></label>
+                <label for="remember-me" style="color: #176961; margin-left: 5px"><spring:message code="login.label.remember.me" htmlEscape="true"/></label>
             </div>
             <c:if test="${param.error != null}">
                 <p style="color:red; text-align: center"><spring:message code="login.bad.credentials" htmlEscape="true"/></p>
