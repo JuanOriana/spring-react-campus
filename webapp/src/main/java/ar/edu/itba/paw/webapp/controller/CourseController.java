@@ -53,8 +53,10 @@ public class CourseController extends AuthController {
     private final Comparator<Announcement> orderByDate = (o1, o2) -> o2.getDate().compareTo(o1.getDate());
 
     @RequestMapping(value = "/course/{courseId}", method = RequestMethod.GET)
-    public RedirectView coursePortal(@PathVariable Integer courseId) {
-        return new RedirectView("/course/{courseId}/announcements");
+
+    public String coursePortal(@PathVariable Integer courseId) {
+       return "redirect:/course/{courseId}/announcements";
+
     }
 
     @RequestMapping(value = "/course/{courseId}/announcements", method = RequestMethod.GET)
@@ -92,8 +94,8 @@ public class CourseController extends AuthController {
             announcementService.create(announcementForm.getTitle(), announcementForm.getContent(), currentUser, courseService.getById(courseId).get());
             List<User> userList = courseService.getStudents(courseId);
             List<String> emailList = new ArrayList<>();
-            userList.forEach(u -> emailList.add(u.getEmail()));
-            mailingService.sendBroadcastEmail(emailList, "Nuevo anuncio en curso " + announcementForm.getTitle(), announcementForm.getContent(), "text/plain");
+            userList.forEach(u->emailList.add(u.getEmail()));
+            mailingService.sendBroadcastEmail(emailList, "Nuevo anuncio en curso "+announcementForm.getTitle(), announcementForm.getContent(), "text/plain");
 
 
             announcementForm.setContent("");
@@ -137,7 +139,7 @@ public class CourseController extends AuthController {
             mav.addObject("fileForm", fileForm);
             mav.addObject("successMessage", successMessage);
         } else {
-            mav = new ModelAndView("files");
+            mav = new ModelAndView("course-files");
         }
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("categories", categories);
