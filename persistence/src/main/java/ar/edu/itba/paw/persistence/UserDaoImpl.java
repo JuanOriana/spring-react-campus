@@ -33,9 +33,8 @@ public class UserDaoImpl implements UserDao {
                     .isAdmin(rs.getBoolean("isAdmin"))
                     .build();
 
-    private static final RowMapper<Role> ROLE_ROW_MAPPER = (rs, rowNum) -> {
-        return new Role(rs.getInt("roleId"), rs.getString("roleName"));
-    };
+    private static final RowMapper<Role> ROLE_ROW_MAPPER = (rs, rowNum) ->
+        new Role(rs.getInt("roleId"), rs.getString("roleName"));
 
     @Autowired
     public UserDaoImpl(final DataSource ds) {

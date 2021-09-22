@@ -9,8 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface CourseDao {
-    Course create(Integer year, Integer quarter, String board, Long subjectId, String subjectName,
-                  String subjectCode);
+    Course create(Integer year, Integer quarter, String board, Long subjectId);
     boolean update(Long id, Course course);
     boolean delete(Long id);
     List<Course> list();

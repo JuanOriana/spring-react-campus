@@ -13,8 +13,12 @@ import java.util.stream.Collectors;
 @Service
 public class FileServiceImpl implements FileService {
 
+    private final FileDao fileDao;
+
     @Autowired
-    private FileDao fileDao;
+    public FileServiceImpl(FileDao fileDao) {
+        this.fileDao = fileDao;
+    }
 
     @Override
     public FileModel create(Long size, String name, byte[] file, Course course) {

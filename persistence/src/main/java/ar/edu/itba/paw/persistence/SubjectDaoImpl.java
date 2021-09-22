@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Repository
 public class SubjectDaoImpl implements SubjectDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
     @Autowired

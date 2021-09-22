@@ -19,12 +19,12 @@ import java.util.*;
 public class FileDaoImpl implements FileDao {
 
     @Autowired
-    FileExtensionDao fileExtensionDao;
+    private FileExtensionDao fileExtensionDao;
 
     @Autowired
-    FileCategoryDao fileCategoryDao;
+    private FileCategoryDao fileCategoryDao;
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final SimpleJdbcInsert jdbcInsertCategory;
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) ->
@@ -271,13 +271,13 @@ public class FileDaoImpl implements FileDao {
                 }
                 return new ArrayList<>(jdbcTemplate.query(selectByName + selectFilterExtensionsAndCategory + " ORDER BY fileName " + orderCriterias.getValue(), sqlParams, FILE_MODEL_ROW_MAPPER));
             case DATE:
+                String date = getDateInFormat(param);
                 /// param  to DATE must be YYYY-MM-DD
-                if (param.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")) {
-
+                if (date.matches("[0-9]{4}[-/][0-9]{2}[-/][0-9]{2}")) {
                     Object[] sqlParamsDate = new Object[params.size() + 4];
-                    sqlParamsDate[0] = param.substring(0, 4);
-                    sqlParamsDate[1] = param.substring(5, 7);
-                    sqlParamsDate[2] = param.substring(8, 10);
+                    sqlParamsDate[0] = date.substring(0, 4);
+                    sqlParamsDate[1] = date.substring(5, 7);
+                    sqlParamsDate[2] = date.substring(8, 10);
                     sqlParamsDate[3] = courseSelectionParam;
                     for (int i = 0; i < params.size(); i++) {
                         sqlParamsDate[i + 4] = params.get(i);
@@ -307,8 +307,23 @@ public class FileDaoImpl implements FileDao {
         return new ArrayList<>();
     }
 
+
+    // If param date is a valid date, returns a date in yyyy-mm-dd or yyyy/mm/dd, else empty string
+    private String getDateInFormat(String date) {
+        if (date.matches("[0-9]{4}[-/][0-9]{2}[-/][0-9]{2}")) {
+            return date;
+        } else if (date.matches("[0-9]{2}[-/][0-9]{2}[-/][0-9]{4}")) { // dd-mm-yyyy
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(date, 6, 10).append("-");
+            stringBuilder.append(date, 3, 5).append("-");
+            stringBuilder.append(date, 0, 2);
+            return stringBuilder.toString();
+        }
+        return "";
+    }
+
     @Override
     public List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId) {
-        return listByCriteria(order,criterias,param,extensions,categories,userId,-1L);
+        return listByCriteria(order, criterias, param, extensions, categories, userId, -1L);
     }
 }

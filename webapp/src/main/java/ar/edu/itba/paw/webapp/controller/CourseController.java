@@ -23,42 +23,42 @@ import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
+@RequestMapping(value = "/course")
 public class CourseController extends AuthController {
-
-    @Autowired
-    AuthFacade authFacade;
-
-    @Autowired
-    AnnouncementService announcementService;
-
-    @Autowired
-    CourseService courseService;
-
-    @Autowired
-    FileCategoryService fileCategoryService;
-
-    @Autowired
-    FileExtensionService fileExtensionService;
-
-    @Autowired
-    FileService fileService;
-
-    @Autowired
-    MailingService mailingService;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
+    private final AnnouncementService announcementService;
+    private final CourseService courseService;
+    private final FileCategoryService fileCategoryService;
+    private final FileExtensionService fileExtensionService;
+    private final FileService fileService;
+    private final MailingService mailingService;
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private final Comparator<Announcement> orderByDate = (o1, o2) -> o2.getDate().compareTo(o1.getDate());
 
-    @RequestMapping(value = "/course/{courseId}", method = RequestMethod.GET)
+    @Autowired
+    public CourseController(AuthFacade authFacade, AnnouncementService announcementService,
+                            CourseService courseService, FileCategoryService fileCategoryService,
+                            FileExtensionService fileExtensionService, FileService fileService,
+                            MailingService mailingService) {
+        super(authFacade);
+        this.announcementService = announcementService;
+        this.courseService = courseService;
+        this.fileCategoryService = fileCategoryService;
+        this.fileExtensionService = fileExtensionService;
+        this.fileService = fileService;
+        this.mailingService = mailingService;
+    }
+
+    @GetMapping(value = "/{courseId}")
     public String coursePortal(@PathVariable Integer courseId) {
        return "redirect:/course/{courseId}/announcements";
 
     }
 
-    @RequestMapping(value = "/course/{courseId}/announcements", method = RequestMethod.GET)
+    @GetMapping(value = "/{courseId}/announcements")
     public ModelAndView announcements(@PathVariable Long courseId, final AnnouncementForm announcementForm,
                                       String successMessage) {
         final ModelAndView mav;
@@ -72,10 +72,11 @@ public class CourseController extends AuthController {
         }
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("announcementList", announcements);
+        mav.addObject("dateTimeFormatter",dateTimeFormatter);
         return mav;
     }
 
-    @RequestMapping(value = "/course/{courseId}/announcements", method = RequestMethod.POST)
+    @PostMapping(value = "/{courseId}/announcements")
     public ModelAndView postAnnouncement(@PathVariable Long courseId,
                                          @Valid AnnouncementForm announcementForm, final BindingResult errors) {
         String successMessage = null;
@@ -104,7 +105,7 @@ public class CourseController extends AuthController {
         return announcements(courseId, announcementForm, successMessage);
     }
 
-    @RequestMapping("/course/{courseId}/teachers")
+    @RequestMapping("/{courseId}/teachers")
     public ModelAndView professors(@PathVariable Long courseId) {
         final ModelAndView mav = new ModelAndView("teachers");
         Map<User, Role> teachers = courseService.getTeachers(courseId);
@@ -114,7 +115,7 @@ public class CourseController extends AuthController {
         return mav;
     }
 
-    @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.GET)
+    @GetMapping(value = "/{courseId}/files")
     public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm, String successMessage,
                               @RequestParam(value = "category-type", required = false, defaultValue = "")
                                       List<Long> categoryType,
@@ -152,13 +153,12 @@ public class CourseController extends AuthController {
         return mav;
     }
 
-    @RequestMapping(value = "/course/{courseId}/files", method = RequestMethod.POST)
+    @PostMapping(value = "/{courseId}/files")
     public ModelAndView uploadFile(@PathVariable Long courseId, @Valid FileForm fileForm, final BindingResult errors) {
         String successMessage = null;
         if (!errors.hasErrors()) {
             CommonsMultipartFile file = fileForm.getFile();
             String filename = file.getOriginalFilename();
-            String extension = getExtension(filename);
             FileModel newFile = fileService.create(file.getSize(), filename, file.getBytes(),
                     courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
             fileService.addCategory(newFile.getFileId(), fileForm.getCategoryId());
@@ -169,41 +169,4 @@ public class CourseController extends AuthController {
         return files(courseId, fileForm, successMessage, new ArrayList<>(), new ArrayList<>(), "", "NAME", "DESC");
     }
 
-    @RequestMapping(value = "/download/{fileId}", method = RequestMethod.GET)
-    public void downloadFile(@PathVariable Long fileId, HttpServletResponse response) {
-        FileModel file = fileService.getById(fileId).orElseThrow(FileNotFoundException::new);
-        if (!file.getExtension().getFileExtension().equals("pdf"))
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-        else
-            response.setContentType("application/pdf");
-        try {
-            InputStream is = new ByteArrayInputStream(file.getFile());
-            org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException ex) {
-            System.out.println("Error writing file to output stream. Filename was " + file.getName() + ex);
-            throw new RuntimeException("IOError writing file to output stream");
-        }
-    }
-
-    @RequestMapping(value = "/deleteAnnouncement/{announcementId}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public void deleteAnnouncement(@PathVariable Long announcementId) {
-        announcementService.delete(announcementId);
-    }
-
-    @RequestMapping(value = "/deleteFile/{fileId}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public void deleteFile(@PathVariable Long fileId) {
-        fileService.delete(fileId);
-    }
-
-    private String getExtension(String filename) {
-        String extension = "";
-        int i = filename.lastIndexOf('.');
-        if (i > 0) {
-            extension = filename.substring(i + 1);
-        }
-        return extension;
-    }
 }

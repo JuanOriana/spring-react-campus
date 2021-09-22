@@ -73,11 +73,11 @@ public class AnnouncementServiceImplTest {
         .build();
     }
 
-    @InjectMocks
-    private final AnnouncementServiceImpl announcementService = new AnnouncementServiceImpl();
-
     @Mock
     private AnnouncementDao mockDao;
+
+    @InjectMocks
+    private final AnnouncementServiceImpl announcementService = new AnnouncementServiceImpl();
 
     @Test
     public void testCreateAnnouncement() {

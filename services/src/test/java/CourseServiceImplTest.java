@@ -46,14 +46,14 @@ public class CourseServiceImplTest {
 
     @Test
     public void testCreateCourse() {
-        when(mockDao.create(eq(YEAR), eq(QUARTER), eq(BOARD), eq(SUBJECT_ID), eq(SUBJECT_NAME), eq(SUBJECT_CODE))).thenReturn(new Course.Builder()
+        when(mockDao.create(eq(YEAR), eq(QUARTER), eq(BOARD), eq(SUBJECT_ID))).thenReturn(new Course.Builder()
                 .withCourseId(COURSE_ID)
                 .withYear(YEAR)
                 .withQuarter(QUARTER)
                 .withBoard(BOARD)
                 .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
                 .build());
-        Course newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
+        Course newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID);
         Assert.assertEquals(newCourse.getCourseId(), COURSE_ID);
     }
 
@@ -69,8 +69,8 @@ public class CourseServiceImplTest {
     @Test(expected =  RuntimeException.class)
     public void testCreateCourseDuplicate() {
         Course course = getMockCourse();
-        when(mockDao.create(eq(YEAR), eq(QUARTER), eq(BOARD), eq(SUBJECT_ID), eq(SUBJECT_NAME), eq(SUBJECT_CODE))).thenThrow(new RuntimeException());
-        Course newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
+        when(mockDao.create(eq(YEAR), eq(QUARTER), eq(BOARD), eq(SUBJECT_ID))).thenThrow(new RuntimeException());
+        Course newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID);
         Assert.fail("Should have thrown runtime exception for duplicate course creation");
     }
 

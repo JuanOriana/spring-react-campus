@@ -38,7 +38,7 @@
         border-bottom-left-radius: 0">
             <spring:message code="file.search.button" htmlEscape="true"/>
         </button>
-        <img src="<c:url value="${pageContext.request.contextPath}/resources/images/page-arrow.png"/>"
+        <img src="<c:url value="/resources/images/page-arrow.png"/>"
              class="pagination-arrow"  style="transform: rotate(90deg); margin-left: 10px"
              onclick="toggleFilters()" alt="toggle filters" id="filter-toggle">
     </div>

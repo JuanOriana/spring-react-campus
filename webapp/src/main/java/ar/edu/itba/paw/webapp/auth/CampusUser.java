@@ -1,18 +1,17 @@
 package ar.edu.itba.paw.webapp.auth;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 public class CampusUser extends User {
     private Integer fileNumber;
     private Long userId;
-    private String name, surname, email;
-    private boolean isAdmin;
+    private String name;
+    private String surname;
+    private String email;
+    private final boolean isAdmin;
 
     public CampusUser(String username, String password, Collection<? extends GrantedAuthority> authorities,
                       Integer fileNumber, Long userId, String name, String surname, String email,

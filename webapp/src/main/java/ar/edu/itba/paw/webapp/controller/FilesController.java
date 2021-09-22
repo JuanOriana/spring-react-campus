@@ -4,32 +4,41 @@ import ar.edu.itba.paw.interfaces.FileCategoryService;
 import ar.edu.itba.paw.interfaces.FileExtensionService;
 import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.auth.CampusUser;
+import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
 import ar.edu.itba.paw.webapp.form.FileForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @Controller
-public class FilesController extends AuthController{
+public class FilesController extends AuthController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FilesController.class);
 
-    @Autowired
-    FileService fileService;
-
-    @Autowired
-    FileCategoryService fileCategoryService;
+    private final FileService fileService;
+    private final FileCategoryService fileCategoryService;
+    private final FileExtensionService fileExtensionService;
 
     @Autowired
-    FileExtensionService fileExtensionService;
+    public FilesController(FileService fileService, FileCategoryService fileCategoryService,
+                           FileExtensionService fileExtensionService,
+                           AuthFacade authFacade) {
+        super(authFacade);
+        this.fileService = fileService;
+        this.fileCategoryService = fileCategoryService;
+        this.fileExtensionService = fileExtensionService;
+    }
 
     @RequestMapping("/files")
     public ModelAndView files(@RequestParam(value = "category-type", required = false, defaultValue = "")
@@ -42,7 +51,7 @@ public class FilesController extends AuthController{
                                           String orderClass,
                               @RequestParam(value = "order-by",required = false,defaultValue = "DESC")
                                           String orderBy){
-        CampusUser user = authFacade.getCurrentUser();
+
         final List<FileModel> files = fileService.listByCriteria(OrderCriterias.valueOf(orderBy),
                 SearchingCriterias.valueOf(orderClass),
                 query,extensionType,categoryType,authFacade.getCurrentUser().getUserId());
@@ -58,5 +67,28 @@ public class FilesController extends AuthController{
         mav.addObject("orderBy",orderBy);
         mav.addObject("orderClass",orderClass);
         return mav;
+    }
+
+    @GetMapping(value = "/files/{fileId}")
+    public void downloadFile(@PathVariable Long fileId, HttpServletResponse response) {
+        FileModel file = fileService.getById(fileId).orElseThrow(FileNotFoundException::new);
+        if (!file.getExtension().getFileExtension().equals("pdf"))
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+        else
+            response.setContentType("application/pdf");
+        try {
+            InputStream is = new ByteArrayInputStream(file.getFile());
+            org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException ex) {
+            LOGGER.debug(String.format("Error writing file to output stream. Filename was %s", file.getName() + ex));
+            throw new RuntimeException("IOError writing file to output stream");
+        }
+    }
+
+    @DeleteMapping(value = "/files/{fileId}")
+    @ResponseBody
+    public void deleteFile(@PathVariable Long fileId) {
+        fileService.delete(fileId);
     }
 }

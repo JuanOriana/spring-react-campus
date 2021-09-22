@@ -13,7 +13,7 @@ import java.util.*;
 @Repository
 public class FileCategoryDaoImpl implements FileCategoryDao {
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
     private static final RowMapper<FileCategory> FILE_CATEGORY_ROW_MAPPER = (rs, rowNum) -> {
