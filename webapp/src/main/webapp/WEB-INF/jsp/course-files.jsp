@@ -34,7 +34,7 @@
                     <div class="file-grid">
                         <c:forEach var="file" items="${files}">
                             <div class="file-unit" id="file-${file.fileId}">
-                                <a href="<c:url value="/download/${file.fileId}"/>" class="styleless-anchor" target="_blank"
+                                <a href="<c:url value="/files/${file.fileId}"/>" class="styleless-anchor" target="_blank"
                                    style="display: flex;margin-left: 10px; align-items: center">
                                     <img src="<c:url value="/resources/images/extensions/${file.extension.fileExtension}.png"/>"
                                          class="file-img" alt="${file.name}"/>

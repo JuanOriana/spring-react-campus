@@ -53,7 +53,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                     .antMatchers("/login").anonymous()
                     .antMatchers("/admin/**").hasAuthority("ADMIN")
-                    .antMatchers(HttpMethod.GET, "/download/{fileId}").access("@courseVoter.hasFileAccess(authentication,#fileId)")
+                    .antMatchers(HttpMethod.GET, "/files/{fileId}").access("@courseVoter.hasFileAccess(authentication,#fileId)")
                     .antMatchers(HttpMethod.POST, "/course/{courseId}").hasRole("ADMIN")
                     .antMatchers(HttpMethod.POST, "/course/{courseId}/announcements").access("@courseVoter.hasCoursePrivileges(authentication,#courseId)")
                     .antMatchers(HttpMethod.POST, "/course/{courseId}/files").access("@courseVoter.hasCoursePrivileges(authentication,#courseId)")

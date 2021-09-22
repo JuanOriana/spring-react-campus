@@ -159,7 +159,6 @@ public class CourseController extends AuthController {
         if (!errors.hasErrors()) {
             CommonsMultipartFile file = fileForm.getFile();
             String filename = file.getOriginalFilename();
-            String extension = getExtension(filename);
             FileModel newFile = fileService.create(file.getSize(), filename, file.getBytes(),
                     courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
             fileService.addCategory(newFile.getFileId(), fileForm.getCategoryId());
@@ -170,29 +169,4 @@ public class CourseController extends AuthController {
         return files(courseId, fileForm, successMessage, new ArrayList<>(), new ArrayList<>(), "", "NAME", "DESC");
     }
 
-    @RequestMapping(value = "/download/{fileId}", method = RequestMethod.GET)
-    public void downloadFile(@PathVariable Long fileId, HttpServletResponse response) {
-        FileModel file = fileService.getById(fileId).orElseThrow(FileNotFoundException::new);
-        if (!file.getExtension().getFileExtension().equals("pdf"))
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-        else
-            response.setContentType("application/pdf");
-        try {
-            InputStream is = new ByteArrayInputStream(file.getFile());
-            org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException ex) {
-            System.out.println("Error writing file to output stream. Filename was " + file.getName() + ex);
-            throw new RuntimeException("IOError writing file to output stream");
-        }
-    }
-
-    private String getExtension(String filename) {
-        String extension = "";
-        int i = filename.lastIndexOf('.');
-        if (i > 0) {
-            extension = filename.substring(i + 1);
-        }
-        return extension;
-    }
 }
