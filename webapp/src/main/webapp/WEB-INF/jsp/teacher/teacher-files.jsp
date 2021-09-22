@@ -9,7 +9,7 @@
     <script>
         function deleteById(fileId){
             $.ajax({
-                url: '/deleteFile/' + fileId,
+                url: '${pageContext.request.contextPath}/files/' + fileId,
                 type: 'DELETE',
                 success: function (result) {
                     $("#file-"+ fileId).remove();
@@ -62,13 +62,13 @@
                     <div class="file-grid">
                         <c:forEach var="file" items="${files}">
                             <div class="file-unit" id="file-${file.fileId}">
-                                <a href="<c:url value="/download/${file.fileId}"/>" class="styleless-anchor" target="_blank"
+                                <a href="<c:url value="/files/${file.fileId}"/>" class="styleless-anchor" target="_blank"
                                    style="display: flex;margin-left: 10px; align-items: center">
-                                    <img src="<c:url value="${page.Context.request.contextPath}/resources/images/extensions/${file.extension.fileExtension}.png"/>"
+                                    <img src="<c:url value="/resources/images/extensions/${file.extension.fileExtension}.png"/>"
                                          class="file-img" alt="${file.name}"/>
                                 <p class="file-name"><c:out value=" ${file.name}"/></p>
                                 </a>
-                                <img src="${page.Context.request.contextPath}/resources/images/trash.png"
+                                <img src="<c:url value="/resources/images/trash.png"/>"
                                      alt="delete" class="medium-icon" onclick="deleteById(${file.fileId})">
                             </div>
                         </c:forEach>

@@ -5,16 +5,19 @@ import ar.edu.itba.paw.interfaces.FileExtensionService;
 import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.auth.CampusUser;
+import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
 import ar.edu.itba.paw.webapp.form.FileForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @Controller
@@ -58,5 +61,28 @@ public class FilesController extends AuthController{
         mav.addObject("orderBy",orderBy);
         mav.addObject("orderClass",orderClass);
         return mav;
+    }
+
+    @RequestMapping(value = "/files/{fileId}", method = RequestMethod.GET)
+    public void downloadFile(@PathVariable Long fileId, HttpServletResponse response) {
+        FileModel file = fileService.getById(fileId).orElseThrow(FileNotFoundException::new);
+        if (!file.getExtension().getFileExtension().equals("pdf"))
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+        else
+            response.setContentType("application/pdf");
+        try {
+            InputStream is = new ByteArrayInputStream(file.getFile());
+            org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException ex) {
+            System.out.println("Error writing file to output stream. Filename was " + file.getName() + ex);
+            throw new RuntimeException("IOError writing file to output stream");
+        }
+    }
+
+    @RequestMapping(value = "/files/{fileId}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void deleteFile(@PathVariable Long fileId) {
+        fileService.delete(fileId);
     }
 }
