@@ -77,9 +77,8 @@ public class AdminController extends AuthController{
     @RequestMapping(value = "/course/new", method = RequestMethod.POST)
     public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult errors){
         if (!errors.hasErrors()) {
-            //TODO: MAKE IT FUNCTIONAL WHEN CREATE IS UPDATED
-//            courseService.create(courseForm.getYear(),courseForm.getQuarter(),
-//                    courseForm.getBoard(),courseForm.getSubjectId());
+            courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
+                    , courseForm.getSubjectId());
             return adminPortal("Curso creado exitosamente");
         }
         return newCourse(courseForm);

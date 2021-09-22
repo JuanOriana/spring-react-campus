@@ -32,12 +32,6 @@ public class CourseForm {
     @NotNull
     private Integer year;
 
-    @NotEmpty
-    private List<Integer> teacherIds;
-
-    @NotEmpty
-    private List<Integer> studentIds;
-
     public Long getSubjectId() {
         return subjectId;
     }
@@ -68,21 +62,5 @@ public class CourseForm {
 
     public void setYear(Integer year) {
         this.year = year;
-    }
-
-    public List<Integer> getTeacherIds() {
-        return teacherIds;
-    }
-
-    public void setTeacherIds(List<Integer> teacherIds) {
-        this.teacherIds = teacherIds;
-    }
-
-    public List<Integer> getStudentIds() {
-        return studentIds;
-    }
-
-    public void setStudentIds(List<Integer> studentIds) {
-        this.studentIds = studentIds;
     }
 }
