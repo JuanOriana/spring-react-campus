@@ -24,13 +24,13 @@ public class TimeTableController extends AuthController{
     final String[] colors = {"#2EC4B6","#173E5C","#0D6C52","#16386D","6F9A13"};
 
     @Autowired
-    CourseService courseService;
+    private CourseService courseService;
 
     @Autowired
-    TimetableService timetableService;
+    private TimetableService timetableService;
 
     @Autowired
-    AuthFacade authFacade;
+    private AuthFacade authFacade;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeTableController.class);
 

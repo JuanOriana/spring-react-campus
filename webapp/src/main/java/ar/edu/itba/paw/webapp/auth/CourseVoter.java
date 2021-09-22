@@ -12,13 +12,13 @@ public class CourseVoter {
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseVoter.class);
 
     @Autowired
-    CourseService courseService;
+    private CourseService courseService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    FileDao fileDao;
+    private FileDao fileDao;
 
     public boolean hasCourseAccess(Authentication authentication, Long courseId) {
         boolean isAnonymous = authentication instanceof AnonymousAuthenticationToken;

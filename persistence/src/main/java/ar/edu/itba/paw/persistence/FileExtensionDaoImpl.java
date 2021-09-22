@@ -17,9 +17,8 @@ public class FileExtensionDaoImpl implements FileExtensionDao {
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
-    };
+    private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) ->
+        new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
 
     private static final RowMapper<String> FILE_EXTENSION_STRING_ROW_MAPPER = (rs, rowNum) -> rs.getString("fileExtension");
 

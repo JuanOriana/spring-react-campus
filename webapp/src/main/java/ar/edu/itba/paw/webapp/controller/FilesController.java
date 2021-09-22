@@ -26,13 +26,13 @@ public class FilesController extends AuthController{
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
 
     @Autowired
-    FileService fileService;
+    private FileService fileService;
 
     @Autowired
-    FileCategoryService fileCategoryService;
+    private FileCategoryService fileCategoryService;
 
     @Autowired
-    FileExtensionService fileExtensionService;
+    private FileExtensionService fileExtensionService;
 
     @RequestMapping("/files")
     public ModelAndView files(@RequestParam(value = "category-type", required = false, defaultValue = "")

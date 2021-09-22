@@ -21,10 +21,9 @@ public class TimetableDaoImpl implements TimetableDao {
 
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private static final RowMapper<Timetable> TIMETABLE_ROW_MAPPER = (rs, rowNum) -> {
-        return new Timetable(rs.getLong("courseId"), rs.getInt("dayOfWeek"), rs.getTime("startTime"),
+    private static final RowMapper<Timetable> TIMETABLE_ROW_MAPPER = (rs, rowNum) ->
+        new Timetable(rs.getLong("courseId"), rs.getInt("dayOfWeek"), rs.getTime("startTime"),
                 rs.getTime("endTime"));
-    };
 
     @Autowired
     public TimetableDaoImpl(final DataSource ds){

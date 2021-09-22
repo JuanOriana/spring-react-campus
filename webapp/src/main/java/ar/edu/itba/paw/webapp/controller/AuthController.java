@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class AuthController {
 
     @Autowired
-    AuthFacade authFacade;
+    protected AuthFacade authFacade;
 
     @ModelAttribute
     public void getCurrentUser(Model model){

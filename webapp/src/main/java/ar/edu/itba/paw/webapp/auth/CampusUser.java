@@ -12,7 +12,7 @@ public class CampusUser extends User {
     private Integer fileNumber;
     private Long userId;
     private String name, surname, email;
-    private boolean isAdmin;
+    private final boolean isAdmin;
 
     public CampusUser(String username, String password, Collection<? extends GrantedAuthority> authorities,
                       Integer fileNumber, Long userId, String name, String surname, String email,

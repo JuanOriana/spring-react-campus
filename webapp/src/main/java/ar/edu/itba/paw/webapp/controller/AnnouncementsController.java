@@ -23,10 +23,10 @@ public class AnnouncementsController extends AuthController {
 
 
     @Autowired
-    AnnouncementService announcementService;
+    private AnnouncementService announcementService;
 
     @Autowired
-    AuthFacade authFacade;
+    private AuthFacade authFacade;
 
     @RequestMapping("/announcements")
     public ModelAndView announcements(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,

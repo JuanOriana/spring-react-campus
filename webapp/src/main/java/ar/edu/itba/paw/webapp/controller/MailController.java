@@ -24,11 +24,11 @@ public class MailController extends AuthController{
     private static final Logger LOGGER = LoggerFactory.getLogger(PortalController.class);
 
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    MailingService mailingService;
+    private MailingService mailingService;
     @Autowired
-    AuthFacade authFacade;
+    private AuthFacade authFacade;
 
     @RequestMapping(value = "/sendmail/{userId}", method = RequestMethod.GET)
     public ModelAndView sendmail(@PathVariable Long userId, final MailForm mailForm,
