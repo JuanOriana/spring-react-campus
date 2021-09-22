@@ -12,13 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 
 @Controller
 public class AnnouncementsController extends AuthController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private final Comparator<Announcement> orderByDate = (o1,o2) -> o2.getDate().compareTo(o1.getDate());
+
 
     @Autowired
     AnnouncementService announcementService;
@@ -41,6 +44,7 @@ public class AnnouncementsController extends AuthController {
         mav.addObject("currentPage",page);
         mav.addObject("maxPage", pageCount);
         mav.addObject("pageSize",pageSize);
+        mav.addObject("dateTimeFormatter",dateTimeFormatter);
         return mav;
     }
 
