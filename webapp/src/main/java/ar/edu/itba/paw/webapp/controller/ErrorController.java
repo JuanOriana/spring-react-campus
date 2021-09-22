@@ -4,10 +4,7 @@ import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class ErrorController {
 
-    @RequestMapping(value = "403", method = RequestMethod.GET)
+    @GetMapping(value = "403")
     public ModelAndView render403ErrorPage() {
         return new ModelAndView("403");
     }
@@ -41,7 +38,7 @@ public class ErrorController {
         return mav;
     }
 
-    @RequestMapping(value = "error", method = RequestMethod.GET)
+    @GetMapping(value = "error")
     public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
 
         ModelAndView errorPage = new ModelAndView("errorPage");
@@ -63,6 +60,9 @@ public class ErrorController {
             case 500: {
                 errorMsg = "Http Error Code: 500. Internal Server Error";
                 break;
+            }
+            default: {
+                errorMsg = "Http Error Code: Undefined";
             }
         }
         errorPage.addObject("errorMsg", errorMsg);

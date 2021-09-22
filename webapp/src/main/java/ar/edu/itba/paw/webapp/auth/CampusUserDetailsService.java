@@ -18,22 +18,26 @@ import java.util.regex.Pattern;
 @Component
 public class CampusUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
-    private Pattern BCRYPT_PATTERN = Pattern.compile("\\A\\$2a?\\$\\d\\d\\$[.\0-9A-Za-z]{53}");
+    private final Pattern BCRYPT_HASH_PATTERN = Pattern.compile("\\A\\$2a?\\$\\d\\d\\$[0-9A-Za-z]{53}");
+
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
+    public CampusUserDetailsService(PasswordEncoder encoder, UserService userService) {
+        this.encoder = encoder;
+        this.userService = userService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final User user = userService.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
-        final Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+        final Collection<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority(user.isAdmin() ? "ADMIN" : "USER"));
         final String password;
-        if(user.getPassword() == null || !BCRYPT_PATTERN.matcher(user.getPassword()).matches()) {
+        if(user.getPassword() == null || !BCRYPT_HASH_PATTERN.matcher(user.getPassword()).matches()) {
             // TO-DO: Add method to update password in db to be hashed
             password = encoder.encode(user.getPassword());
         } else {

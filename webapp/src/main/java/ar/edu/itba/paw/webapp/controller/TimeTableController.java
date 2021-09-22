@@ -25,15 +25,14 @@ public class TimeTableController extends AuthController{
 
     private final CourseService courseService;
     private final TimetableService timetableService;
-    private final AuthFacade authFacade;
-    private static final Logger LOGGER = LoggerFactory.getLogger(TimeTableController.class);
 
     @Autowired
-    public TimeTableController(CourseService courseService, TimetableService timetableService, AuthFacade authFacade) {
-        this.courseService = courseService;
+    public TimeTableController(AuthFacade authFacade, TimetableService timetableService, CourseService courseService) {
+        super(authFacade);
         this.timetableService = timetableService;
-        this.authFacade = authFacade;
+        this.courseService = courseService;
     }
+
 
     @RequestMapping("/timetable")
     public ModelAndView timeTable() {
@@ -81,7 +80,7 @@ public class TimeTableController extends AuthController{
         return timeTableMatrix;
     }
 
-    static private Time stringToTime(String stringedTime){
+    private static Time stringToTime(String stringedTime){
         String[] tokens = stringedTime.split(":");
         return new Time(Integer.parseInt(tokens[0]),Integer.parseInt(tokens[1]),0);
 

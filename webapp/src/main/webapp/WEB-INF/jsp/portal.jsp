@@ -15,7 +15,7 @@
                 <c:forEach var="courseItem" items="${courseList}">
                     <div class="course">
                         <p class="course-name">
-                            <a href="<c:url value="course/${courseItem.subject.subjectId}"/>" class="styleless-anchor">
+                            <a href="<c:url value="course/${courseItem.courseId}"/>" class="styleless-anchor">
                                     <c:out value="${courseItem.subject.name}"/>
                             </a>
                         </p>
