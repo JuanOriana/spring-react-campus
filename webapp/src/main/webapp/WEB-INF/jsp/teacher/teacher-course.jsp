@@ -57,7 +57,7 @@
                      onclick="deleteById(${announcementItem.announcementId})">
               </div>
             </div>
-            <p class="announcement-date"><c:out value="${announcementItem.date}"/></p>
+            <p class="announcement-date"><c:out value="${announcementItem.date.format(dateTimeFormatter)}"/></p>
             <c:out value="${announcementItem.content}"/>
           </div>
         </c:forEach>

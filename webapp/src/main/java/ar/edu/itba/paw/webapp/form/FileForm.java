@@ -1,15 +1,15 @@
 package ar.edu.itba.paw.webapp.form;
 
+import ar.edu.itba.paw.webapp.constraint.annotation.NotEmptyFile;
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 public class FileForm {
 
-    @NotNull
+    @NotEmptyFile
     private CommonsMultipartFile file;
 
     @Min(0)
@@ -31,5 +31,10 @@ public class FileForm {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    @AssertTrue(message = "File must be provided")
+    public boolean isFileProvided() {
+        return (file != null) && ( ! file.isEmpty());
     }
 }
