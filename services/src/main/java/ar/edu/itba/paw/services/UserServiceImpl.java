@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,13 +14,20 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final UserDao userDao;
+
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    private UserDao userDao;
+    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
+        this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public User create(Integer fileNumber, String name, String surname, String username, String email, String password,
                        boolean isAdmin) {
-        return userDao.create(fileNumber, name, surname, username, email, password, isAdmin);
+        return userDao.create(fileNumber, name, surname, username, email, passwordEncoder.encode(password), isAdmin);
     }
 
     @Override

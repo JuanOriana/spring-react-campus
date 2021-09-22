@@ -17,16 +17,15 @@ import java.util.List;
 
 @Controller
 public class AnnouncementsController extends AuthController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private final Comparator<Announcement> orderByDate = (o1,o2) -> o2.getDate().compareTo(o1.getDate());
-
-
-    @Autowired
-    private AnnouncementService announcementService;
+    private final AnnouncementService announcementService;
 
     @Autowired
-    private AuthFacade authFacade;
+    public AnnouncementsController(AuthFacade authFacade, AnnouncementService announcementService) {
+        super(authFacade);
+        this.announcementService = announcementService;
+    }
 
     @RequestMapping("/announcements")
     public ModelAndView announcements(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,

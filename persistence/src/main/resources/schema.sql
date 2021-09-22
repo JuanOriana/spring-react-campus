@@ -20,11 +20,11 @@ CREATE TABLE IF NOT EXISTS users
 (
     userId     SERIAL PRIMARY KEY,
     fileNumber INTEGER UNIQUE,
-    name       VARCHAR(50),
-    surname    VARCHAR(50),
-    username   VARCHAR(50) NOT NULL UNIQUE,
-    email      VARCHAR(50) NOT NULL UNIQUE,
-    password   VARCHAR(50),
+    name       TEXT,
+    surname    TEXT,
+    username   TEXT NOT NULL UNIQUE,
+    email      TEXT NOT NULL UNIQUE,
+    password   TEXT,
     isAdmin    BOOLEAN
 );
 

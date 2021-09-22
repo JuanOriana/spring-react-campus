@@ -13,10 +13,14 @@ import java.util.List;
 @Service
 public class MailingServiceImpl implements MailingService {
 
-    @Autowired
-    private Session session;
+    private final Session session;
 
     private final String SERVER_MAIL = "mpvcampus@gmail.com";
+
+    @Autowired
+    public MailingServiceImpl(Session session) {
+        this.session = session;
+    }
 
     @Override
     public void sendEmail(String replyTo, String to, String subject, String content, String contentType) {

@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.FileCategoryService;
 import ar.edu.itba.paw.interfaces.FileExtensionService;
 import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.auth.CampusUser;
 import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
 import ar.edu.itba.paw.webapp.form.FileForm;
@@ -21,18 +22,23 @@ import java.io.InputStream;
 import java.util.List;
 
 @Controller
-public class FilesController extends AuthController{
+public class FilesController extends AuthController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FilesController.class);
 
-    @Autowired
-    private FileService fileService;
-
-    @Autowired
-    private FileCategoryService fileCategoryService;
+    private final FileService fileService;
+    private final FileCategoryService fileCategoryService;
+    private final FileExtensionService fileExtensionService;
 
     @Autowired
-    private FileExtensionService fileExtensionService;
+    public FilesController(FileService fileService, FileCategoryService fileCategoryService,
+                           FileExtensionService fileExtensionService,
+                           AuthFacade authFacade) {
+        super(authFacade);
+        this.fileService = fileService;
+        this.fileCategoryService = fileCategoryService;
+        this.fileExtensionService = fileExtensionService;
+    }
 
     @RequestMapping("/files")
     public ModelAndView files(@RequestParam(value = "category-type", required = false, defaultValue = "")
@@ -45,7 +51,7 @@ public class FilesController extends AuthController{
                                           String orderClass,
                               @RequestParam(value = "order-by",required = false,defaultValue = "DESC")
                                           String orderBy){
-        CampusUser user = authFacade.getCurrentUser();
+
         final List<FileModel> files = fileService.listByCriteria(OrderCriterias.valueOf(orderBy),
                 SearchingCriterias.valueOf(orderClass),
                 query,extensionType,categoryType,authFacade.getCurrentUser().getUserId());
@@ -63,7 +69,7 @@ public class FilesController extends AuthController{
         return mav;
     }
 
-    @RequestMapping(value = "/files/{fileId}", method = RequestMethod.GET)
+    @GetMapping(value = "/files/{fileId}")
     public void downloadFile(@PathVariable Long fileId, HttpServletResponse response) {
         FileModel file = fileService.getById(fileId).orElseThrow(FileNotFoundException::new);
         if (!file.getExtension().getFileExtension().equals("pdf"))
@@ -75,12 +81,12 @@ public class FilesController extends AuthController{
             org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
             response.flushBuffer();
         } catch (IOException ex) {
-            System.out.println("Error writing file to output stream. Filename was " + file.getName() + ex);
+            LOGGER.debug(String.format("Error writing file to output stream. Filename was %s", file.getName() + ex));
             throw new RuntimeException("IOError writing file to output stream");
         }
     }
 
-    @RequestMapping(value = "/files/{fileId}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/files/{fileId}")
     @ResponseBody
     public void deleteFile(@PathVariable Long fileId) {
         fileService.delete(fileId);

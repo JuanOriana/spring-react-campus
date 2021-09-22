@@ -20,7 +20,7 @@ import java.util.*;
 @Repository
 public class AnnouncementDaoImpl implements AnnouncementDao {
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private static final RowMapper<Announcement> COURSE_ANNOUNCEMENT_ROW_MAPPER = (rs, rowNum) ->
         new Announcement.Builder()

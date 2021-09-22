@@ -11,8 +11,12 @@ import java.util.List;
 @Service
 public class SubjectServiceImpl implements SubjectService {
 
+    private final SubjectDao subjectDao;
+
     @Autowired
-    SubjectDao subjectDao;
+    public SubjectServiceImpl(SubjectDao subjectDao) {
+        this.subjectDao = subjectDao;
+    }
 
     @Override
     public Subject create(String code, String name) {

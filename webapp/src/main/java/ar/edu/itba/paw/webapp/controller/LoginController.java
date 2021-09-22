@@ -12,8 +12,6 @@ import java.util.List;
 @Controller
 public class LoginController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PortalController.class);
-
     @RequestMapping("/login")
     public ModelAndView portal() {
         return new ModelAndView("login");

@@ -35,8 +35,7 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public Course create(Integer year, Integer quarter, String board, Long subjectId, String subjectName,
-                         String subjectCode) {
+    public Course create(Integer year, Integer quarter, String board, Long subjectId) {
         final Map<String, Object> args = new HashMap<>();
         args.put("quarter", quarter);
         args.put("board", board);
@@ -48,7 +47,7 @@ public class CourseDaoImpl implements CourseDao {
                 .withYear(year)
                 .withQuarter(quarter)
                 .withBoard(board)
-                .withSubject(new Subject(subjectId, subjectCode, subjectName))
+                .withSubject(new Subject(subjectId, null, null))
                 .build();
     }
 

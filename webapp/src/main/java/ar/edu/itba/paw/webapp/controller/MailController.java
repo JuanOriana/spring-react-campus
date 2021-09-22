@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -21,16 +19,18 @@ import java.util.Optional;
 @Controller
 public class MailController extends AuthController{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PortalController.class);
+    private final UserService userService;
+    private final MailingService mailingService;
 
     @Autowired
-    private UserService userService;
-    @Autowired
-    private MailingService mailingService;
-    @Autowired
-    private AuthFacade authFacade;
+    public MailController(AuthFacade authFacade,
+                          UserService userService, MailingService mailingService) {
+        super(authFacade);
+        this.userService = userService;
+        this.mailingService = mailingService;
+    }
 
-    @RequestMapping(value = "/sendmail/{userId}", method = RequestMethod.GET)
+    @GetMapping(value = "/sendmail/{userId}")
     public ModelAndView sendmail(@PathVariable Long userId, final MailForm mailForm,
                                  String successMessage) {
         User user = userService.findById(userId).orElseThrow(RuntimeException::new);
@@ -41,7 +41,7 @@ public class MailController extends AuthController{
         return mav;
     }
 
-    @RequestMapping(value = "/sendmail/{userId}", method = RequestMethod.POST)
+    @PostMapping(value = "/sendmail/{userId}")
     public ModelAndView sendmail(@PathVariable Long userId,
                                          @Valid MailForm mailForm, final BindingResult errors){
         String successMessage = null;

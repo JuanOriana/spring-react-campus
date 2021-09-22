@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 public class CourseVoter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CourseVoter.class);
 
     @Autowired
     private CourseService courseService;

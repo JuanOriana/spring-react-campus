@@ -13,8 +13,12 @@ import java.util.List;
 @Service
 public class TimetableServiceImpl implements TimetableService {
 
+    private final TimetableDao timetableDaoDao;
+
     @Autowired
-    private TimetableDao timetableDaoDao;
+    public TimetableServiceImpl(TimetableDao timetableDaoDao) {
+        this.timetableDaoDao = timetableDaoDao;
+    }
 
     @Override
     public boolean create(Course course, int dayOfWeek, Time start, Time end) {

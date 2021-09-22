@@ -29,39 +29,36 @@ import java.util.*;
 @Controller
 @RequestMapping(value = "/course")
 public class CourseController extends AuthController {
-
-    @Autowired
-    private AuthFacade authFacade;
-
-    @Autowired
-    private AnnouncementService announcementService;
-
-    @Autowired
-    private CourseService courseService;
-
-    @Autowired
-    private FileCategoryService fileCategoryService;
-
-    @Autowired
-    private FileExtensionService fileExtensionService;
-
-    @Autowired
-    private FileService fileService;
-
-    @Autowired
-    private MailingService mailingService;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
+    private final AnnouncementService announcementService;
+    private final CourseService courseService;
+    private final FileCategoryService fileCategoryService;
+    private final FileExtensionService fileExtensionService;
+    private final FileService fileService;
+    private final MailingService mailingService;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private final Comparator<Announcement> orderByDate = (o1, o2) -> o2.getDate().compareTo(o1.getDate());
 
-    @RequestMapping(value = "/{courseId}", method = RequestMethod.GET)
+    @Autowired
+    public CourseController(AuthFacade authFacade, AnnouncementService announcementService,
+                            CourseService courseService, FileCategoryService fileCategoryService,
+                            FileExtensionService fileExtensionService, FileService fileService,
+                            MailingService mailingService) {
+        super(authFacade);
+        this.announcementService = announcementService;
+        this.courseService = courseService;
+        this.fileCategoryService = fileCategoryService;
+        this.fileExtensionService = fileExtensionService;
+        this.fileService = fileService;
+        this.mailingService = mailingService;
+    }
+
+    @GetMapping(value = "/{courseId}")
     public String coursePortal(@PathVariable Integer courseId) {
        return "redirect:/course/{courseId}/announcements";
 
     }
 
-    @RequestMapping(value = "/{courseId}/announcements", method = RequestMethod.GET)
+    @GetMapping(value = "/{courseId}/announcements")
     public ModelAndView announcements(@PathVariable Long courseId, final AnnouncementForm announcementForm,
                                       String successMessage) {
         final ModelAndView mav;
@@ -79,7 +76,7 @@ public class CourseController extends AuthController {
         return mav;
     }
 
-    @RequestMapping(value = "/{courseId}/announcements", method = RequestMethod.POST)
+    @PostMapping(value = "/{courseId}/announcements")
     public ModelAndView postAnnouncement(@PathVariable Long courseId,
                                          @Valid AnnouncementForm announcementForm, final BindingResult errors) {
         String successMessage = null;
@@ -118,7 +115,7 @@ public class CourseController extends AuthController {
         return mav;
     }
 
-    @RequestMapping(value = "/{courseId}/files", method = RequestMethod.GET)
+    @GetMapping(value = "/{courseId}/files")
     public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm, String successMessage,
                               @RequestParam(value = "category-type", required = false, defaultValue = "")
                                       List<Long> categoryType,
@@ -156,7 +153,7 @@ public class CourseController extends AuthController {
         return mav;
     }
 
-    @RequestMapping(value = "/{courseId}/files", method = RequestMethod.POST)
+    @PostMapping(value = "/{courseId}/files")
     public ModelAndView uploadFile(@PathVariable Long courseId, @Valid FileForm fileForm, final BindingResult errors) {
         String successMessage = null;
         if (!errors.hasErrors()) {

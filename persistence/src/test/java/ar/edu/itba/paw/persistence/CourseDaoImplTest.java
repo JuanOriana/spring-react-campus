@@ -71,15 +71,15 @@ public class CourseDaoImplTest {
     @Test
     public void testCreate() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
-        Course course = courseDao.create(YEAR, QUARTER, BOARD, SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
+        Course course = courseDao.create(YEAR, QUARTER, BOARD, SUBJECT_ID);
         assertNotNull(course);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "courses"));
     }
 
     @Test(expected = RuntimeException.class)
     public void testCreateDuplicateUniqueValues() {
-        final Course isCreated1 = courseDao.create(YEAR, QUARTER, BOARD, SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
-        final Course isCreated2 = courseDao.create(YEAR, QUARTER, BOARD, SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME);
+        final Course isCreated1 = courseDao.create(YEAR, QUARTER, BOARD, SUBJECT_ID);
+        final Course isCreated2 = courseDao.create(YEAR, QUARTER, BOARD, SUBJECT_ID);
         Assert.fail("Should have thrown Runtime Exception for duplicate constraint");
     }
 
