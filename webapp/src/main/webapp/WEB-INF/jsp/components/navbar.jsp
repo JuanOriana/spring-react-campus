@@ -18,20 +18,19 @@
                 <a href="<c:url value ="/timetable"/>" class="styleless-anchor">Mis Horarios</a>
             </li>
         </ul>
-
-        <c:if test="${currentUser != null}">
-            <div class="user-nav-wrapper">
-                <a href="<c:url value="/user"/>" class="styleless-anchor">
-                    <h4>${currentUser.name}</h4>
-                </a>
-                <a class="styleless-anchor" href="<c:url value ="/logout"/>">
-                    <button class="logout-btn">Salir</button>
-                </a>
-            </div>
-        </c:if>
-        <c:if test="${currentUser == null}">
-            <div style="width: 120px"></div>
-        </c:if>
+    </c:if>
+    <c:if test="${currentUser != null}">
+        <div class="user-nav-wrapper">
+            <a href="<c:url value="/user"/>" class="styleless-anchor">
+                <h4>${currentUser.name}</h4>
+            </a>
+            <a class="styleless-anchor" href="<c:url value ="/logout"/>">
+                <button class="logout-btn">Salir</button>
+            </a>
+        </div>
+    </c:if>
+    <c:if test="${currentUser == null}">
+        <div style="width: 120px"></div>
     </c:if>
 </nav>
 <c:if test="${param.successMessage != null && !param.successMessage.equals('')}">
