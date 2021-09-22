@@ -18,17 +18,18 @@ public class PortalController extends AuthController{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PortalController.class);
 
-    @Autowired
-    private CourseService courseService;
+    private final CourseService courseService;
+    protected final RoleService roleService;
+    private final AuthFacade authFacade;
+    protected final SubjectService subjectService;
 
     @Autowired
-    protected RoleService roleService;
-
-    @Autowired
-    AuthFacade authFacade;
-
-    @Autowired
-    protected SubjectService subjectService;
+    public PortalController(CourseService courseService, RoleService roleService, AuthFacade authFacade, SubjectService subjectService) {
+        this.courseService = courseService;
+        this.roleService = roleService;
+        this.authFacade = authFacade;
+        this.subjectService = subjectService;
+    }
 
     @RequestMapping("/")
     public String rootRedirect() {

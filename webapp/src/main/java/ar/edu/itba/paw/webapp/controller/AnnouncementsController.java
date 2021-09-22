@@ -22,11 +22,15 @@ public class AnnouncementsController extends AuthController {
     private final Comparator<Announcement> orderByDate = (o1,o2) -> o2.getDate().compareTo(o1.getDate());
 
 
-    @Autowired
-    private AnnouncementService announcementService;
+    private final AnnouncementService announcementService;
+
+    private final AuthFacade authFacade;
 
     @Autowired
-    private AuthFacade authFacade;
+    public AnnouncementsController(AnnouncementService announcementService, AuthFacade authFacade) {
+        this.announcementService = announcementService;
+        this.authFacade = authFacade;
+    }
 
     @RequestMapping("/announcements")
     public ModelAndView announcements(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,

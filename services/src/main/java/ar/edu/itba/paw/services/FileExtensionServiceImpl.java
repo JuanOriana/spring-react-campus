@@ -11,8 +11,12 @@ import java.util.List;
 @Service
 public class FileExtensionServiceImpl implements FileExtensionService {
 
+    private final FileExtensionDao fileExtensionDao;
+
     @Autowired
-    private FileExtensionDao fileExtensionDao;
+    public FileExtensionServiceImpl(FileExtensionDao fileExtensionDao) {
+        this.fileExtensionDao = fileExtensionDao;
+    }
 
     @Override
     public FileExtension create(String fileExtension) {

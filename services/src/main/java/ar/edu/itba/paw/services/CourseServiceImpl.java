@@ -16,11 +16,11 @@ import java.util.Optional;
 
 @Service
 public class CourseServiceImpl implements CourseService {
-    @Autowired
-    private CourseDao courseDao;
 
     @Autowired
-    private UserDao userDao;
+    private CourseDao courseDao;
+    @Autowired
+    private  UserDao userDao;
 
     @Override
     public Course create(Integer year, Integer quarter, String board, Long subjectId) {

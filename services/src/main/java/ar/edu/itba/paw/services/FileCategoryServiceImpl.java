@@ -11,8 +11,12 @@ import java.util.List;
 @Service
 public class FileCategoryServiceImpl implements FileCategoryService {
 
+    private final FileCategoryDao fileCategoryDao;
+
     @Autowired
-    private FileCategoryDao fileCategoryDao;
+    public FileCategoryServiceImpl(FileCategoryDao fileCategoryDao) {
+        this.fileCategoryDao = fileCategoryDao;
+    }
 
     @Override
     public FileCategory create(String newCategory) {

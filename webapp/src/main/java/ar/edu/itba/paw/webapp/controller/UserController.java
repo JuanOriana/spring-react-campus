@@ -18,8 +18,12 @@ public class UserController  extends AuthController{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PortalController.class);
 
+    protected final AuthFacade authFacade;
+
     @Autowired
-    protected AuthFacade authFacade;
+    public UserController(AuthFacade authFacade) {
+        this.authFacade = authFacade;
+    }
 
     @RequestMapping("/user")
     public ModelAndView portal() {

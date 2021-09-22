@@ -19,7 +19,7 @@ import java.util.Map;
 @Repository
 public class TimetableDaoImpl implements TimetableDao {
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private static final RowMapper<Timetable> TIMETABLE_ROW_MAPPER = (rs, rowNum) ->
         new Timetable(rs.getLong("courseId"), rs.getInt("dayOfWeek"), rs.getTime("startTime"),

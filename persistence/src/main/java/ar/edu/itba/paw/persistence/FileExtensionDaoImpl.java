@@ -14,7 +14,7 @@ import java.util.*;
 @Repository
 public class FileExtensionDaoImpl implements FileExtensionDao {
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
     private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) ->

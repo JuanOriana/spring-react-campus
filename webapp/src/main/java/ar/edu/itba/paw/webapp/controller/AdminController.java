@@ -27,17 +27,21 @@ import java.util.Set;
 public class AdminController extends AuthController{
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    private final SubjectService subjectService;
+
+    private final CourseService courseService;
+
+    private final RoleService roleService;
 
     @Autowired
-    private SubjectService subjectService;
-
-    @Autowired
-    private CourseService courseService;
-
-    @Autowired
-    private RoleService roleService;
+    public AdminController(UserService userService, SubjectService subjectService, CourseService courseService, RoleService roleService) {
+        this.userService = userService;
+        this.subjectService = subjectService;
+        this.courseService = courseService;
+        this.roleService = roleService;
+    }
 
 
     @RequestMapping(value = "/portal")

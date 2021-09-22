@@ -29,31 +29,27 @@ import java.util.*;
 @Controller
 @RequestMapping(value = "/course")
 public class CourseController extends AuthController {
-
-    @Autowired
-    private AuthFacade authFacade;
-
-    @Autowired
-    private AnnouncementService announcementService;
-
-    @Autowired
-    private CourseService courseService;
-
-    @Autowired
-    private FileCategoryService fileCategoryService;
-
-    @Autowired
-    private FileExtensionService fileExtensionService;
-
-    @Autowired
-    private FileService fileService;
-
-    @Autowired
-    private MailingService mailingService;
-
+    private final AuthFacade authFacade;
+    private final AnnouncementService announcementService;
+    private final CourseService courseService;
+    private final FileCategoryService fileCategoryService;
+    private final FileExtensionService fileExtensionService;
+    private final FileService fileService;
+    private final MailingService mailingService;
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private final Comparator<Announcement> orderByDate = (o1, o2) -> o2.getDate().compareTo(o1.getDate());
+
+    @Autowired
+    public CourseController(AuthFacade authFacade, AnnouncementService announcementService, CourseService courseService, FileCategoryService fileCategoryService, FileExtensionService fileExtensionService, FileService fileService, MailingService mailingService) {
+        this.authFacade = authFacade;
+        this.announcementService = announcementService;
+        this.courseService = courseService;
+        this.fileCategoryService = fileCategoryService;
+        this.fileExtensionService = fileExtensionService;
+        this.fileService = fileService;
+        this.mailingService = mailingService;
+    }
 
     @RequestMapping(value = "/{courseId}", method = RequestMethod.GET)
     public String coursePortal(@PathVariable Integer courseId) {
