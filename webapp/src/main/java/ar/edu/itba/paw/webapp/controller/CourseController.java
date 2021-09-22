@@ -30,25 +30,25 @@ import java.util.*;
 public class CourseController extends AuthController {
 
     @Autowired
-    AuthFacade authFacade;
+    private AuthFacade authFacade;
 
     @Autowired
-    AnnouncementService announcementService;
+    private AnnouncementService announcementService;
 
     @Autowired
-    CourseService courseService;
+    private CourseService courseService;
 
     @Autowired
-    FileCategoryService fileCategoryService;
+    private FileCategoryService fileCategoryService;
 
     @Autowired
-    FileExtensionService fileExtensionService;
+    private FileExtensionService fileExtensionService;
 
     @Autowired
-    FileService fileService;
+    private FileService fileService;
 
     @Autowired
-    MailingService mailingService;
+    private MailingService mailingService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
     private final Comparator<Announcement> orderByDate = (o1, o2) -> o2.getDate().compareTo(o1.getDate());

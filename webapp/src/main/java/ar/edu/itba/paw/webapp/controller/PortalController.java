@@ -19,16 +19,16 @@ public class PortalController extends AuthController{
     private static final Logger LOGGER = LoggerFactory.getLogger(PortalController.class);
 
     @Autowired
-    CourseService courseService;
+    private CourseService courseService;
 
     @Autowired
-    RoleService roleService;
+    protected RoleService roleService;
 
     @Autowired
     AuthFacade authFacade;
 
     @Autowired
-    SubjectService subjectService;
+    protected SubjectService subjectService;
 
     @RequestMapping("/")
     public String rootRedirect() {

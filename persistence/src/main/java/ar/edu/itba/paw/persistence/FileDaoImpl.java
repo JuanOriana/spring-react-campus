@@ -19,10 +19,10 @@ import java.util.*;
 public class FileDaoImpl implements FileDao {
 
     @Autowired
-    FileExtensionDao fileExtensionDao;
+    private FileExtensionDao fileExtensionDao;
 
     @Autowired
-    FileCategoryDao fileCategoryDao;
+    private FileCategoryDao fileCategoryDao;
 
     private JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;

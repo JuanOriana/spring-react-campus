@@ -20,10 +20,10 @@ public class AnnouncementsController extends AuthController {
     private final Comparator<Announcement> orderByDate = (o1,o2) -> o2.getDate().compareTo(o1.getDate());
 
     @Autowired
-    AnnouncementService announcementService;
+    private AnnouncementService announcementService;
 
     @Autowired
-    AuthFacade authFacade;
+    private AuthFacade authFacade;
 
     @RequestMapping("/announcements")
     public ModelAndView announcements(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,

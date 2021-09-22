@@ -28,16 +28,16 @@ public class AdminController extends AuthController{
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    SubjectService subjectService;
+    private SubjectService subjectService;
 
     @Autowired
-    CourseService courseService;
+    private CourseService courseService;
 
     @Autowired
-    RoleService roleService;
+    private RoleService roleService;
 
 
     @RequestMapping(value = "/portal")
