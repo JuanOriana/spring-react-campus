@@ -2,7 +2,8 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@page pageEncoding="UTF-8" %>
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <title><spring:message code="page.title.course.subject.name" htmlEscape="true" arguments="${course.subject.name}"/></title>
     <c:import url="../config/generalHead.jsp"/>

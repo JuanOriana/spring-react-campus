@@ -38,12 +38,12 @@ public class RoleDaoImpl implements RoleDao {
     public boolean update(Integer roleId, String roleName) {
         return jdbcTemplate.update("UPDATE roles " +
                 "SET roleName = ?," +
-                "WHERE roleId = ?", new Object[]{roleName, roleId}) == 1;
+                "WHERE roleId = ?", roleName, roleId) == 1;
     }
 
     @Override
     public boolean delete(Integer roleId) {
-        return jdbcTemplate.update("DELETE FROM roles WHERE roleId = ?", new Object[]{roleId}) == 1;
+        return jdbcTemplate.update("DELETE FROM roles WHERE roleId = ?", roleId) == 1;
     }
 
     private static final RowMapper<Role> ROLE_ROW_MAPPER = (rs, rowNum) ->

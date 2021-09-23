@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <body>
 <div class="course-sections-col">
   <h3 class="course-sections-col-title"><spring:message code="course.sections.col.course.name" htmlEscape="true" arguments="${param.courseName}"/></h3>

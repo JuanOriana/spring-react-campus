@@ -39,12 +39,12 @@ public class SubjectDaoImpl implements SubjectDao {
         return jdbcTemplate.update("UPDATE subjects " +
                 "SET code = ?," +
                 "name = ? " +
-                "WHERE subjectId = ?", new Object[]{code, name, subjectId}) == 1;
+                "WHERE subjectId = ?", code, name, subjectId) == 1;
     }
 
     @Override
     public boolean delete(Long subjectId) {
-        return jdbcTemplate.update("DELETE FROM subjects WHERE subjectId = ?", new Object[]{subjectId}) == 1;
+        return jdbcTemplate.update("DELETE FROM subjects WHERE subjectId = ?", subjectId) == 1;
     }
 
     private static final RowMapper<Subject> SUBJECT_ROW_MAPPER = (rs, rowNum) ->

@@ -2,7 +2,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <title><spring:message code="new.user.page.title" htmlEscape="true"/></title>
     <c:import url="../config/generalHead.jsp"/>

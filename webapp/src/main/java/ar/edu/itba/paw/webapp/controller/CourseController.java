@@ -5,24 +5,15 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.auth.CampusUser;
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
-import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
 import ar.edu.itba.paw.webapp.form.AnnouncementForm;
 import ar.edu.itba.paw.webapp.form.FileForm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -91,13 +82,12 @@ public class CourseController extends AuthController {
                     .withSurname(springUser.getSurname())
                     .withUsername(springUser.getUsername())
                     .build();
-            announcementService.create(announcementForm.getTitle(), announcementForm.getContent(), currentUser, courseService.getById(courseId).get());
+            announcementService.create(announcementForm.getTitle(), announcementForm.getContent(), currentUser,
+                    courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
             List<User> userList = courseService.getStudents(courseId);
             List<String> emailList = new ArrayList<>();
             userList.forEach(u->emailList.add(u.getEmail()));
             mailingService.sendBroadcastEmail(emailList, "Nuevo anuncio en curso "+announcementForm.getTitle(), announcementForm.getContent(), "text/plain");
-
-
             announcementForm.setContent("");
             announcementForm.setTitle("");
             successMessage = "Anuncio publicado exitosamente";

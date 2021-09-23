@@ -4,8 +4,6 @@ import ar.edu.itba.paw.interfaces.AnnouncementService;
 import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.auth.CampusUser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +44,7 @@ public class AnnouncementsController extends AuthController {
         return mav;
     }
 
-    @RequestMapping(value = "/announcements/{announcementId}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/announcements/{announcementId}")
     @ResponseBody
     public void deleteAnnouncement(@PathVariable Long announcementId) {
         announcementService.delete(announcementId);

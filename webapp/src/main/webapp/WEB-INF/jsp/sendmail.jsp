@@ -3,7 +3,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@page pageEncoding="UTF-8" %>
 
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <title><spring:message code="campus.page.title" htmlEscape="true"/></title>
     <c:import url="config/generalHead.jsp"/>

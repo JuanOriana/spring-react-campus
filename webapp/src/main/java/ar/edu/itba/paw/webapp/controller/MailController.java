@@ -5,8 +5,6 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.form.MailForm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -30,25 +28,25 @@ public class MailController extends AuthController{
         this.mailingService = mailingService;
     }
 
-    @GetMapping(value = "/sendmail/{userId}")
+    @GetMapping(value = "/mail/{userId}")
     public ModelAndView sendmail(@PathVariable Long userId, final MailForm mailForm,
                                  String successMessage) {
-        User user = userService.findById(userId).orElseThrow(RuntimeException::new);
         ModelAndView mav = new ModelAndView("sendmail");
-        mav.addObject("user", user);
+        mav.addObject("user", userService.findById(userId).orElseThrow(RuntimeException::new));
         mav.addObject("mailForm",mailForm);
         mav.addObject("successMessage",successMessage);
         return mav;
     }
 
-    @PostMapping(value = "/sendmail/{userId}")
+    @PostMapping(value = "/mail/{userId}")
     public ModelAndView sendmail(@PathVariable Long userId,
                                          @Valid MailForm mailForm, final BindingResult errors){
         String successMessage = null;
         if (!errors.hasErrors()) {
             Optional<User> user = userService.findById(userId);
             if (user.isPresent()) {
-                mailingService.sendEmail(authFacade.getCurrentUser().getEmail(), user.get().getEmail(), mailForm.getSubject(), mailForm.getContent(), "text/plain"); // todo desharcodear el content type
+                mailingService.sendEmail(authFacade.getCurrentUser().getEmail(), user.get().getEmail(),
+                        mailForm.getSubject(), mailForm.getContent(), "text/plain"); // todo desharcodear el content type
             }
             else{
                 // todo: Manejo

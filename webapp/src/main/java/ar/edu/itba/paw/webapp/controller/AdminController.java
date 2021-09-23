@@ -21,13 +21,10 @@ import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/admin")
-public class AdminController extends AuthController{
+public class AdminController extends AuthController {
     private final UserService userService;
-
     private final SubjectService subjectService;
-
     private final CourseService courseService;
-
     private final RoleService roleService;
 
     @Autowired
@@ -39,7 +36,6 @@ public class AdminController extends AuthController{
         this.courseService = courseService;
         this.roleService = roleService;
     }
-
 
     @RequestMapping(value = "/portal")
     public ModelAndView adminPortal(final String successMessage){

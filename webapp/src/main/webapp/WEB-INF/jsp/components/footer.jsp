@@ -3,7 +3,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <jsp:useBean id="now" class="java.util.Date" />
 <fmt:formatDate var="year" value="${now}" pattern="yyyy" />
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <body>
     <div class="footer-container">
         <spring:message code="footer.message" htmlEscape="true" arguments="${year}"/>

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,17 +43,17 @@ public class TimetableDaoImpl implements TimetableDao {
     }
 
     @Override
-    public boolean update(Long course_id, int dayOfWeek, Time start, Time end) {
+    public boolean update(Long courseId, int dayOfWeek, Time start, Time end) {
         return jdbcTemplate.update("UPDATE timetables " +
                 "SET dayOfWeek = ?," +
                 "startTime = ?," +
                 "endTime = ?" +
-                "WHERE courseId = ?", new Object[]{dayOfWeek,start,end,course_id}) == 1;
+                "WHERE courseId = ?", dayOfWeek,start,end,courseId) == 1;
     }
 
     @Override
-    public boolean delete(Long course_id) {
-        return jdbcTemplate.update("DELETE FROM timetables WHERE courseId = ?", new Object[]{course_id}) == 1;
+    public boolean delete(Long courseId) {
+        return jdbcTemplate.update("DELETE FROM timetables WHERE courseId = ?", courseId) == 1;
     }
 
     @Override
