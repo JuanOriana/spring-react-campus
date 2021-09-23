@@ -5,7 +5,8 @@ import java.sql.Time;
 public class Timetable {
     private Long courseId;
     private Integer dayOfWeek;
-    private Time startTime, endTime;
+    private Time startTime;
+    private Time endTime;
 
     public Timetable(Long courseId, int dayOfWeek, Time startTime, Time endTime) {
         this.courseId = courseId;

@@ -9,7 +9,7 @@ public enum OrderCriterias {
             this.identifier = identifier;
             this.value = value;
         }
-        public String getValue(){return value;};
+        public String getValue(){return value;}
         public int getIdentifier(){
             return identifier;
         }

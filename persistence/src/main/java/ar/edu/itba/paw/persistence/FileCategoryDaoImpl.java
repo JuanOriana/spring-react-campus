@@ -16,9 +16,8 @@ public class FileCategoryDaoImpl implements FileCategoryDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    private static final RowMapper<FileCategory> FILE_CATEGORY_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
-    };
+    private static final RowMapper<FileCategory> FILE_CATEGORY_ROW_MAPPER = (rs, rowNum) ->
+        new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
 
     private static final RowMapper<String> FILE_CATEGORY_STRING_ROW_MAPPER = (rs, rowNum) -> rs.getString("categoryName");
 
@@ -42,12 +41,12 @@ public class FileCategoryDaoImpl implements FileCategoryDao {
     public boolean update(long fileCategoryId, String newFileCategory) {
         return jdbcTemplate.update("UPDATE file_categories " +
                 "SET categoryName = ?" +
-                "WHERE categoryId = ?", new Object[]{newFileCategory,fileCategoryId}) == 1;
+                "WHERE categoryId = ?", newFileCategory,fileCategoryId) == 1;
     }
 
     @Override
     public boolean delete(long fileCategoryId) {
-        return jdbcTemplate.update("DELETE FROM file_categories WHERE categoryId = ?", new Object[]{fileCategoryId}) == 1;
+        return jdbcTemplate.update("DELETE FROM file_categories WHERE categoryId = ?", fileCategoryId) == 1;
     }
 
     @Override

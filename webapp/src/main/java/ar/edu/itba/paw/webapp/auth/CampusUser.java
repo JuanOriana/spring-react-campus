@@ -4,6 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class CampusUser extends User {
     private Integer fileNumber;
@@ -67,5 +68,19 @@ public class CampusUser extends User {
 
     public boolean isAdmin() {
         return isAdmin;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CampusUser user = (CampusUser) o;
+        return Objects.equals(fileNumber, user.fileNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), fileNumber);
     }
 }

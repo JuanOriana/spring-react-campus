@@ -67,13 +67,13 @@ public class CourseDaoImpl implements CourseDao {
                 "year = ?," +
                 "quarter = ?," +
                 "board = ? " +
-                "WHERE courseId = ?;", new Object[]{course.getSubject().getSubjectId(), course.getYear(), course.getQuarter(), course.getBoard(), id}) == 1;
+                "WHERE courseId = ?;", course.getSubject().getSubjectId(), course.getYear(), course.getQuarter(), course.getBoard(), id) == 1;
 
     }
 
     @Override
     public boolean delete(Long id) {
-        return jdbcTemplate.update("DELETE FROM courses WHERE courseId = ?", new Object[]{id}) == 1;
+        return jdbcTemplate.update("DELETE FROM courses WHERE courseId = ?", id) == 1;
     }
 
     @Override

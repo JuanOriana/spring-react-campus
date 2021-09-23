@@ -2,7 +2,8 @@ package ar.edu.itba.paw.models;
 
 public class Subject {
     private Long subjectId;
-    private String code, name;
+    private String code;
+    private String name;
 
     public Subject(Long subjectId, String code, String name) {
         this.subjectId = subjectId;

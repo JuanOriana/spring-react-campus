@@ -9,6 +9,7 @@ import javax.validation.ConstraintValidatorContext;
 public class NotEmptyFileValidator implements ConstraintValidator<NotEmptyFile, CommonsMultipartFile> {
 
     public void initialize(NotEmptyFile constraintAnnotation) {
+        // Do nothing
     }
 
     public boolean isValid(CommonsMultipartFile file, ConstraintValidatorContext constraintContext) {

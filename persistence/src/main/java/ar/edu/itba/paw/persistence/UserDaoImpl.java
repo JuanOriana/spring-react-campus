@@ -83,13 +83,13 @@ public class UserDaoImpl implements UserDao {
                 "email = ?, " +
                 "password = ? ," +
                 "isAdmin = ? " +
-                "WHERE userId = ?;", new Object[]{user.getFileNumber(), user.getName(), user.getSurname(),
-                user.getUsername(), user.getEmail(), user.getPassword(), user.isAdmin(), userId}) == 1;
+                "WHERE userId = ?;", user.getFileNumber(), user.getName(), user.getSurname(),
+                user.getUsername(), user.getEmail(), user.getPassword(), user.isAdmin(), userId) == 1;
     }
 
     @Override
     public boolean delete(Long userId) {
-        return jdbcTemplate.update("DELETE FROM users WHERE userId = ?", new Object[]{userId}) == 1;
+        return jdbcTemplate.update("DELETE FROM users WHERE userId = ?", userId) == 1;
     }
 
     @Override
@@ -119,7 +119,7 @@ public class UserDaoImpl implements UserDao {
     public boolean updateProfileImage(Long userId, byte[] image) {
         return jdbcTemplate.update("UPDATE profile_images " +
                 "SET image = ?" +
-                "WHERE userId = ?", new Object[]{image, userId}) == 1;
+                "WHERE userId = ?", image, userId) == 1;
     }
 
     @Override

@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.webapp.exception;
 
-import java.util.function.Supplier;
-
 public class CourseNotFoundException extends RuntimeException {
     public CourseNotFoundException() {
     }

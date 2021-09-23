@@ -66,7 +66,7 @@ public class FileExtensionDaoImplTest {
         FileExtension fileExtensionFromDB = jdbcTemplate.query(sqlGetFileOfId,FILE_EXTENSION_ROW_MAPPER).get(0);
 
         assertEquals(FILE_EXTENSION_ID, fileExtensionFromDB.getFileExtensionId());
-        assertEquals(newExtension, fileExtensionFromDB.getFileExtension());
+        assertEquals(newExtension, fileExtensionFromDB.getFileExtensionName());
     }
 
     @Test

@@ -47,12 +47,11 @@ public class FileDaoImpl implements FileDao {
                             .build())
                     .build();
 
-    private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
-    };
-    private static final RowMapper<FileCategory> FILE_CATEGORY_ROW_MAPPER = (rs, rowNum) -> {
-        return new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
-    };
+    private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) ->
+        new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
+
+    private static final RowMapper<FileCategory> FILE_CATEGORY_ROW_MAPPER = (rs, rowNum) ->
+        new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
 
     @Autowired
     public FileDaoImpl(final DataSource ds) {
@@ -99,14 +98,14 @@ public class FileDaoImpl implements FileDao {
                 "fileExtensionId = ?," +
                 "courseId = ?, " +
                 "downloads = ? " +
-                "WHERE fileId = ?", new Object[]{file.getFile(), file.getName(), file.getFile().length,
+                "WHERE fileId = ?", file.getFile(), file.getName(), file.getFile().length,
                 Timestamp.valueOf(LocalDateTime.now()), file.getExtension().getFileExtensionId(),
-                file.getCourse().getCourseId(), file.getDownloads(), fileId}) == 1;
+                file.getCourse().getCourseId(), file.getDownloads(), fileId) == 1;
     }
 
     @Override
     public boolean delete(Long fileId) {
-        return jdbcTemplate.update("DELETE FROM files WHERE fileId = ?", new Object[]{fileId}) == 1;
+        return jdbcTemplate.update("DELETE FROM files WHERE fileId = ?", fileId) == 1;
     }
 
     @Override
@@ -173,7 +172,7 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public boolean removeCategory(Long fileId, Long fileCategoryId) {
-        return jdbcTemplate.update("DELETE FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", new Object[]{fileId, fileCategoryId}) == 1;
+        return jdbcTemplate.update("DELETE FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", fileId, fileCategoryId) == 1;
     }
 
     @Override
@@ -217,6 +216,7 @@ public class FileDaoImpl implements FileDao {
         return extension;
     }
 
+    // TODO: Refactor
     public List<FileModel> listByCriteria(OrderCriterias orderCriterias, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId) {
 
         StringBuilder extensionAndCategoryQuery = new StringBuilder();
