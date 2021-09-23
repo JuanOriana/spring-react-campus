@@ -21,7 +21,7 @@ import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/admin")
-public class AdminController extends AuthController{
+public class AdminController extends AuthController {
     private final UserService userService;
 
     private final SubjectService subjectService;
