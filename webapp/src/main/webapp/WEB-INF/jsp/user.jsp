@@ -1,8 +1,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>Campus</title>
+    <title><spring:message code="campus.page.title" htmlEscape="true"/></title>
     <c:import url="config/generalHead.jsp"/>
 
 </head>
@@ -10,23 +12,17 @@
 <div class="page-organizer">
     <%@ include file="components/navbar.jsp" %>
     <div class="page-container">
-        <div class="big-wrapper" style="width: auto">
+        <div class="big-wrapper" style="max-width: 1100px">
             <div class="user-section-wrapper">
-                <h1 style="margin-bottom: 15px">
-                    <c:out value="${currentUser.name} ${currentUser.surname}"/>
-                </h1>
-                <img src="https://pbs.twimg.com/profile_images/758084549821730820/_HYHtD8F.jpg"
-                     class="user-section-img"/>
-                <div style="display:flex; flex-direction: column; margin-top: 40px; font-size: 24px">
-                    <p><span style="font-weight: 700">Nombre de usuario:</span>
-                        <c:out value="${currentUser.username}"/>
-                    </p>
-                    <p><span style="font-weight: 700">Email:</span>
-                        <c:out value="${currentUser.email}"/>
-                    </p>
-                    <p><span style="font-weight: 700">Legajo:</span>
-                        <c:out value="${currentUser.fileNumber}"/>
-                    </p>
+                <div style="display:flex; flex-direction: column; align-items: center" >
+                    <h1 style="margin-bottom: 15px"><spring:message code="user.name" htmlEscape="true" arguments="${currentUser.name},${currentUser.surname}"/></h1>
+                    <img src="https://pbs.twimg.com/profile_images/758084549821730820/_HYHtD8F.jpg"
+                         class="user-section-img"/>
+                </div>
+                <div style="display:flex; flex-direction: column">
+                    <p><span style="font-weight: 700"><spring:message code="user.username.title" htmlEscape="true"/></span> <spring:message code="user.username" htmlEscape="true" arguments="${currentUser.username}"/></p>
+                    <p><span style="font-weight: 700"><spring:message code="user.email.title" htmlEscape="true"/></span> <spring:message code="user.email" htmlEscape="true" arguments="${currentUser.email}"/></p>
+                    <p><span style="font-weight: 700"><spring:message code="user.filenumber.title" htmlEscape="true"/></span> <spring:message code="user.filenumber" htmlEscape="true" arguments="${currentUser.fileNumber.toString()}"/></p>
                 </div>
             </div>
         </div>

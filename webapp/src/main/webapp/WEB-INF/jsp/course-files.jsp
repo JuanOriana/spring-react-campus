@@ -1,10 +1,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@page pageEncoding="UTF-8" %>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>Campus - ${course.subject.name}</title>
+    <title><spring:message code="page.title.course.subject.name" htmlEscape="true" arguments="${course.subject.name}"/></title>
     <c:import url="config/generalHead.jsp"/>
 </head>
 <body>
@@ -12,7 +14,7 @@
     <jsp:include page="components/navbar.jsp">
         <jsp:param name="successMessage" value="${successMessage}"/>
     </jsp:include>
-    <h2 class="course-section-name">${course.subject.name}</h2>
+    <h2 class="course-section-name"><spring:message code="subject.name" htmlEscape="true" arguments="${course.subject.name}"/></h2>
     <div class="page-container" style="padding-top: 0">
         <div class="course-page-wrapper">
             <jsp:include page="components/courseSectionsCol.jsp">
@@ -21,7 +23,7 @@
             </jsp:include>
             <c:url value="/course/${courseId}/files" var="postUrl"/>
             <div class="course-data-container">
-                <h3 class="section-heading" style="margin: 0 0 20px 20px"> Material </h3>
+                <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course.file.section-heading.title" htmlEscape="true"/> </h3>
                 <div class="big-wrapper">
                     <c:set var="categories" value="${categories}" scope="request"/>
                     <c:set var="extensions" value="${extensions}" scope="request"/>
@@ -39,7 +41,7 @@
                                    style="display: flex;margin-left: 10px; align-items: center">
                                     <img src="<c:url value="/resources/images/extensions/${file.extension.fileExtension}.png"/>"
                                          class="file-img" alt="${file.name}"/>
-                                    <p class="file-name"><c:out value=" ${file.name}"/></p>
+                                    <p class="file-name"><spring:message code="course.file.file.name" htmlEscape="true" arguments="${file.name}"/></p>
                                 </a>
                                 <img src="<c:url value="/resources/images/trash.png"/>"
                                      alt="delete" class="medium-icon" onclick="deleteById(${file.fileId})">

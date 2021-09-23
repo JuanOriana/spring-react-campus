@@ -1,8 +1,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>Campus - Timetable</title>
+    <title><spring:message code="timetable.page.title" htmlEscape="true"/></title>
     <c:import url="config/generalHead.jsp"/>
 </head>
 <body>
@@ -11,7 +13,7 @@
     <jsp:param name="navItem" value="${4}"/>
 </jsp:include>
 <div class="page-container">
-    <h2 class="section-heading">Mis Horarios</h2>
+    <h2 class="section-heading"><spring:message code="timetable.section-heading.title" htmlEscape="true"/></h2>
     <div class="tab">
         <table class="timetable">
             <tr class="days">

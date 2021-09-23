@@ -1,8 +1,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>Campus - Error</title>
+    <title><spring:message code="403.page.title" htmlEscape="true"/></title>
     <c:import url="config/generalHead.jsp"/>
 
 </head>
@@ -10,7 +11,7 @@
 <div class="page-organizer">
     <%@ include file="components/navbar.jsp" %>
     <div class="page-container">
-        <h1>403 : Access Denied</h1>
+        <h1><spring:message code="403.page.message" htmlEscape="true"/></h1>
     </div>
     <jsp:include page="components/footer.jsp"/>
 </div>
