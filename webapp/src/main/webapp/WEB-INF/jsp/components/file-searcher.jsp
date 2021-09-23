@@ -82,11 +82,11 @@
                            <c:if test="${requestScope.extensionType.contains(extension.fileExtensionId)}">checked</c:if>>
                     <label class="file-checkbox-label" for="extension-${extension.fileExtensionId}">
                         <c:choose>
-                            <c:when test="${extension.fileExtension.equals('other')}">
+                            <c:when test="${extension.fileExtensionName.equals('other')}">
                                 <spring:message code="file.search.type.other" htmlEscape="true"/>
                             </c:when>
                             <c:otherwise>
-                                <spring:message code="file.search.type.name" htmlEscape="true" arguments="${extension.fileExtension}"/>
+                                <spring:message code="file.search.type.name" htmlEscape="true" arguments="${extension.fileExtensionName}"/>
                             </c:otherwise>
                         </c:choose>
                     </label>
