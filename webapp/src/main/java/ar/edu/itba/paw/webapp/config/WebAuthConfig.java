@@ -25,12 +25,8 @@ import java.util.concurrent.TimeUnit;
 @ComponentScan("ar.edu.itba.paw.webapp.auth")
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
-    private final CampusUserDetailsService userDetailsService;
-
     @Autowired
-    public WebAuthConfig(CampusUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+    private CampusUserDetailsService userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
