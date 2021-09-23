@@ -3,7 +3,7 @@
 
 <html>
 <head>
-    <title><spring:message code="user.page.title" htmlEscape="true"/></title>
+    <title><spring:message code="campus.page.title" htmlEscape="true"/></title>
     <c:import url="config/generalHead.jsp"/>
 
 </head>

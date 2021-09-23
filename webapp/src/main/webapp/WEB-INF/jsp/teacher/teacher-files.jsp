@@ -4,7 +4,7 @@
 <%@page pageEncoding="UTF-8" %>
 <html>
 <head>
-    <title><spring:message code="teacher.file.page.title" htmlEscape="true" arguments="${course.subject.name}"/></title>
+    <title><spring:message code="page.title.course.subject.name" htmlEscape="true" arguments="${course.subject.name}"/></title>
     <c:import url="../config/generalHead.jsp"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
@@ -24,7 +24,7 @@
     <jsp:include page="../components/navbar.jsp">
         <jsp:param name="successMessage" value="${successMessage}"/>
     </jsp:include>
-    <h2 class="course-section-name"><spring:message code="teacher.file.course.name" htmlEscape="true" arguments="${course.subject.name}"/></h2>
+    <h2 class="course-section-name"><spring:message code="subject.name" htmlEscape="true" arguments="${course.subject.name}"/></h2>
     <div class="page-container" style="padding-top: 0">
         <div class="course-page-wrapper">
             <jsp:include page="../components/courseSectionsCol.jsp">

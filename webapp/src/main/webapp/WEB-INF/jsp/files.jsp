@@ -33,7 +33,7 @@
                             <p class="file-name"><spring:message code="files.file.name" htmlEscape="true" arguments="${file.name}"/></p>
                         </a>
                         <a href="<c:url value="/course/${file.course.courseId}"/>" class="styleless-anchor">
-                            <p class="file-name"><spring:message code="files.file.subject.name" htmlEscape="true" arguments="${file.course.subject.name}"/></p>
+                            <p class="file-name"><spring:message code="subject.name" htmlEscape="true" arguments="${file.course.subject.name}"/></p>
                         </a>
                     </div>
                 </c:forEach>

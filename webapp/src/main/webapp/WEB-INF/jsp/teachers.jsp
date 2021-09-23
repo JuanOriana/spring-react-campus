@@ -3,13 +3,13 @@
 
 <html>
 <head>
-    <title><spring:message code="teachers.page.title" htmlEscape="true" arguments="${course.subject.name}"/></title>
+    <title><spring:message code="page.title.course.subject.name" htmlEscape="true" arguments="${course.subject.name}"/></title>
     <c:import url="config/generalHead.jsp"/>
 </head>
 <body>
 <div class="page-organizer">
 <%@ include file="components/navbar.jsp" %>
-<h2 class="course-section-name"><spring:message code="teachers.course.name" htmlEscape="true" arguments="${course.subject.name}"/></h2>
+<h2 class="course-section-name"><spring:message code="subject.name" htmlEscape="true" arguments="${course.subject.name}"/></h2>
 <div class="page-container" style="padding-top: 0">
     <div class="course-page-wrapper">
         <jsp:include page="components/courseSectionsCol.jsp">
