@@ -1,7 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@page pageEncoding="UTF-8" %>
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <title>Campus - ${course.subject.name}</title>
     <c:import url="config/generalHead.jsp"/>

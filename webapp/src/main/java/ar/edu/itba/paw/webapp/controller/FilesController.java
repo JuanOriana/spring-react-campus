@@ -50,15 +50,12 @@ public class FilesController extends AuthController {
                               @RequestParam(value = "order-by",required = false,defaultValue = "DESC")
                                           String orderBy){
 
-        final List<FileModel> files = fileService.listByCriteria(OrderCriterias.valueOf(orderBy),
-                SearchingCriterias.valueOf(orderClass),
-                query,extensionType,categoryType,authFacade.getCurrentUser().getUserId());
-        final List<FileCategory> categories = fileCategoryService.getCategories();
-        final List<FileExtension> extensions = fileExtensionService.getExtensions();
         ModelAndView mav = new ModelAndView("files");
-        mav.addObject("categories",categories);
-        mav.addObject("files",files);
-        mav.addObject("extensions",extensions);
+        mav.addObject("categories", fileCategoryService.getCategories());
+        mav.addObject("files", fileService.listByCriteria(OrderCriterias.valueOf(orderBy),
+                                            SearchingCriterias.valueOf(orderClass),
+                                            query,extensionType,categoryType,authFacade.getCurrentUser().getUserId()));
+        mav.addObject("extensions", fileExtensionService.getExtensions());
         mav.addObject("categoryType",categoryType);
         mav.addObject("extensionType",extensionType);
         mav.addObject("query",query);

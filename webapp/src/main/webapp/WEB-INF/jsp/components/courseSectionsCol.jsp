@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <body>
 <div class="course-sections-col">
   <h3 class="course-sections-col-title"><c:out value="${param.courseName}"/></h3>

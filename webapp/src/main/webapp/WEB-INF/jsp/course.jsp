@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <title>Campus - <c:out value="${course.subject.name}"/></title>
     <c:import url="config/generalHead.jsp"/>
