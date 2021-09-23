@@ -17,7 +17,8 @@ public class AuthController {
     }
 
     @ModelAttribute
-    public void getCurrentUser(Model model){
-        model.addAttribute("currentUser",authFacade.getCurrentUser());
+    public void getCurrentUser(Model model) {
+        model.addAttribute("currentUser",
+                authFacade.getCurrentUser());
     }
 }
