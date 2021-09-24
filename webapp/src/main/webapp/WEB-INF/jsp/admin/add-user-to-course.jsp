@@ -39,24 +39,26 @@
             </form:select>
             <form:errors path="roleId" element="p" cssStyle="color:red;margin-left: 10px"/>
             <button class="form-button"><spring:message code="add.user.button.add"/></button>
-            <div class="user-container">
-                <div class="user-column">
-                    <h3 class="form-label" style="margin:0"><spring:message code="add.user.students"/></h3>
-                    <ul>
-                        <c:forEach var="student" items="${courseStudents}">
-                            <li>${student.name} ${student.surname}</li>
-                        </c:forEach>
-                    </ul>
+            <c:if test="${courseTeachers.size() > 0 || courseStudents.size() > 0}">
+                <div class="user-container">
+                    <div class="user-column">
+                        <h3 class="form-label" style="margin:0"><spring:message code="add.user.students"/></h3>
+                        <ul>
+                            <c:forEach var="student" items="${courseStudents}">
+                                <li>${student.name} ${student.surname}</li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                    <div class="user-column">
+                        <h3 class="form-label" style="margin:0"><spring:message code="add.user.teachers" htmlEscape="true"/></h3>
+                        <ul>
+                            <c:forEach var="teacher" items="${courseTeachers}">
+                                <li>${teacher.name} ${teacher.surname}</li>
+                            </c:forEach>
+                        </ul>
+                    </div>
                 </div>
-                <div class="user-column">
-                    <h3 class="form-label" style="margin:0"><spring:message code="add.user.teachers" htmlEscape="true"/></h3>
-                    <ul>
-                        <c:forEach var="teacher" items="${courseTeachers}">
-                            <li>${teacher.name} ${teacher.surname}</li>
-                        </c:forEach>
-                    </ul>
-                </div>
-            </div>
+            </c:if>
         </form:form>
     </div>
     <jsp:include page="../components/footer.jsp"/>
