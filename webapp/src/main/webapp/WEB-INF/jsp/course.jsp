@@ -22,6 +22,13 @@
 
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course.section-heading.title" htmlEscape="true"/> </h3>
+
+                <c:if test="${announcementList.size() == 0}">
+                    <p class="announcement-title" style="width: 100%; text-align: center">
+                        No hay anuncios en este curso aun
+                    </p>
+                </c:if>
+
                 <c:forEach var="announcementItem" items="${announcementList}">
                     <div class="announcement-wrapper">
                         <div class="announcement-header">

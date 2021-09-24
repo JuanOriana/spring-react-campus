@@ -16,8 +16,13 @@
             <div class="user-section-wrapper">
                 <div style="display:flex; flex-direction: column; align-items: center" >
                     <h1 style="margin-bottom: 15px"><spring:message code="user.name" htmlEscape="true" arguments="${currentUser.name},${currentUser.surname}"/></h1>
-                    <img src="https://pbs.twimg.com/profile_images/758084549821730820/_HYHtD8F.jpg"
-                         class="user-section-img"/>
+                    <c:if test="${image == null}">
+                        <img src="https://pbs.twimg.com/profile_images/758084549821730820/_HYHtD8F.jpg"
+                             class="user-section-img"/>
+                    </c:if>
+                    <c:if test="${image != null}">
+                        <img src="<c:url value="/user/profile-image"/>" class="user-section-img"/>
+                    </c:if>
                 </div>
                 <div style="display:flex; flex-direction: column">
                     <p><span style="font-weight: 700"><spring:message code="user.username.title" htmlEscape="true"/></span> <spring:message code="user.username" htmlEscape="true" arguments="${currentUser.username}"/></p>

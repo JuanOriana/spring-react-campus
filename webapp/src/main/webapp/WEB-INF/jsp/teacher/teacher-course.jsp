@@ -47,6 +47,13 @@
           <button class="form-button"><spring:message code="teacher.course.button.create.announcement" htmlEscape="true"/></button>
         </form:form>
         <div class="separator reduced">.</div>
+
+        <c:if test="${announcementList.size() == 0}">
+          <p class="announcement-title" style="width: 100%; text-align: center">
+            No hay anuncios en este curso aun
+          </p>
+        </c:if>
+
         <c:forEach var="announcementItem" items="${announcementList}">
           <div class="announcement-wrapper" id="announcement-${announcementItem.announcementId}">
             <div class="announcement-header">

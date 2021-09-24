@@ -15,6 +15,11 @@
     </jsp:include>
   <div class="page-container">
       <h2 class="section-heading"><spring:message code="announcements.section-heading.title" htmlEscape="true"/></h2>
+      <c:if test="${announcementList.size() == 0}">
+          <p class="announcement-title" style="width: 100%; text-align: center">
+              No hay anuncios aun
+          </p>
+      </c:if>
       <c:forEach var="announcementItem" items="${announcementList}">
           <div class="announcement-wrapper reduced">
               <div class="announcement-header">
