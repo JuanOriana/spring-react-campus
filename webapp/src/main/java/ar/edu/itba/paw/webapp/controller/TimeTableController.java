@@ -16,7 +16,7 @@ import java.util.*;
 @Controller
 public class TimeTableController extends AuthController{
 
-    final String[] days = {"Lunes","Martes","Miercoles","Jueves","Viernes","Sabado"};
+    final String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
     final String[] hours = {"08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00",
             "17:00","18:00","19:00","20:00","21:00","22:00"};
     final String[] colors = {"#2EC4B6","#173E5C","#0D6C52","#16386D","6F9A13"};

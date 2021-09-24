@@ -18,7 +18,7 @@ import javax.validation.Payload;
 @Documented
 public @interface NotEmptyFile {
 
-    String message() default "FILE ERROR";
+    String message() default "A file must be attached.";
 
     Class<?>[] groups() default {};
 

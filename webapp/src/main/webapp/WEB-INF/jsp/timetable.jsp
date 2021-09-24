@@ -19,7 +19,7 @@
             <tr class="days">
                 <th></th>
                 <c:forEach items="${days}" var="day">
-                    <th>${day}</th>
+                    <th><spring:message code="day.${day}"/></th>
                 </c:forEach>
             </tr>
             <c:forEach items="${hours}" var="hour" varStatus="hourLoop">
