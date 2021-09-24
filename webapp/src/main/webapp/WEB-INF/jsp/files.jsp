@@ -37,9 +37,14 @@
                                  class="file-img" alt="${file.name}"/>
                             <p class="file-name"><spring:message code="files.file.name" htmlEscape="true" arguments="${file.name}"/></p>
                         </a>
-                        <a href="<c:url value="/course/${file.course.courseId}"/>" class="styleless-anchor">
-                            <p class="file-name"><spring:message code="subject.name" htmlEscape="true" arguments="${file.course.subject.name}"/></p>
-                        </a>
+                        <div style="display: flex; align-items: center">
+                            <p class="file-name" style="padding-right: 20px; border-right: 3px solid white">
+                                Descargas: <c:out value="${file.downloads}"/>
+                            </p>
+                            <a href="<c:url value="/course/${file.course.courseId}"/>" class="styleless-anchor">
+                                <p class="file-name"><spring:message code="subject.name" htmlEscape="true" arguments="${file.course.subject.name}"/></p>
+                            </a>
+                        </div>
                     </div>
                 </c:forEach>
             </div>

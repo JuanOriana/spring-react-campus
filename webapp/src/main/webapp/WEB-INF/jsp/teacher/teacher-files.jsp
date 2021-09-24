@@ -73,10 +73,15 @@
                                    style="display: flex;margin-left: 10px; align-items: center">
                                     <img src="<c:url value="/resources/images/extensions/${file.extension.fileExtensionName}.png"/>"
                                          class="file-img" alt="${file.name}"/>
-                                <p class="file-name"><spring:message code="teacher.file.course.file.name" htmlEscape="true" arguments="${file.name}"/></p>
+                                    <p class="file-name"><spring:message code="teacher.file.course.file.name" htmlEscape="true" arguments="${file.name}"/></p>
                                 </a>
-                                <img src="<c:url value="/resources/images/trash.png"/>"
-                                     alt="delete" class="medium-icon" onclick="deleteById(${file.fileId})">
+                                <div style="display: flex; align-items: center">
+                                    <p class="file-name">
+                                        Descargas: <c:out value="${file.downloads}"/>
+                                    </p>
+                                    <img src="<c:url value="/resources/images/trash.png"/>"
+                                         alt="delete" class="medium-icon" onclick="deleteById(${file.fileId})">
+                                </div>
                             </div>
                         </c:forEach>
                     </div>
