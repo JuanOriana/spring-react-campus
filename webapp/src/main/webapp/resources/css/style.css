@@ -567,3 +567,9 @@ textarea:focus, input:focus{
     width: 50%;
 
 }
+
+.back-img{
+    width: 30px;
+    transform: rotate(180deg);
+    margin: 0 10px;
+}

@@ -18,6 +18,11 @@
     <div class="page-container">
         <form:form modelAttribute="userToCourseForm" class="form-wrapper reduced" method="post"
                    acceptCharset="utf-8" cssStyle="margin: 30px 0">
+            <a href="<c:url value="/admin/course/select" />" class="styleless-anchor"
+               style="display: flex; align-items: center">
+                <img src="<c:url value="/resources/images/page-arrow.png"/>" alt="back" class="back-img">
+                <p style="font-size: 22px; font-weight: 700">Volver atras</p>
+            </a>
             <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="add.user.to.course" htmlEscape="true" arguments="${course.subject.name}"/></h1>
             <form:label path="userId" for="userId" class="form-label"><spring:message code="add.user.label.user" htmlEscape="true"/></form:label>
             <form:select path="userId" class="form-input" style="font-size: 26px">
