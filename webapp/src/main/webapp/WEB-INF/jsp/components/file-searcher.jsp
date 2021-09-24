@@ -34,12 +34,12 @@
 <form action="" class="file-query-container">
     <div style="display: flex; align-items: center; margin-bottom: 10px">
         <input class="form-input" name="query" style="width: 70%; height: 30px; border-top-right-radius: 0;
-        border-bottom-right-radius: 0; border:none" value="${param.query}">
-        <button class="form-button" style="height: 30px; margin:0; width: 120px;border-top-left-radius: 0;
+        border-bottom-right-radius: 0; border:none; margin: 0" value="${param.query}">
+        <button class="form-button" style="height: 100%; margin:0; width: 120px;border-top-left-radius: 0;
         border-bottom-left-radius: 0">
             <spring:message code="file.search.button" htmlEscape="true"/>
         </button>
-        <img src="<c:url value="/resources/images/page-arrow.png"/>"
+        <img src="<c:url value="/resources/images/outline-arrow.png"/>"
              class="pagination-arrow"  style="transform: rotate(90deg); margin-left: 10px"
              onclick="toggleFilters()" alt="toggle filters" id="filter-toggle">
     </div>
