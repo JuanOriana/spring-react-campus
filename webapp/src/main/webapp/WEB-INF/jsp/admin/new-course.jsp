@@ -26,7 +26,15 @@
             </form:select>
             <form:errors path="subjectId" element="p" cssStyle="color:red;margin-left: 10px"/>
             <form:label path="quarter" for="quarter" class="form-label"><spring:message code="new.course.quarter" htmlEscape="true"/></form:label>
-            <form:input type="number" path="quarter" class="form-input" style="font-size: 26px"/>
+            <div style="display:flex; width: 200px; align-items: center;
+            justify-content: space-between; margin-left: 20px; font-size: 20px">
+                <div>
+                    <form:radiobutton path="quarter" value="1" cssStyle="margin-right: 5px"/>1
+                </div>
+                <div>
+                    <form:radiobutton path="quarter" value="2" cssStyle="margin-right: 5px"/>2
+                </div>
+            </div>
             <form:errors path="quarter" element="p" cssStyle="color:red;margin-left: 10px"/>
             <form:label path="year" for="year" class="form-label"><spring:message code="new.course.year" htmlEscape="true"/></form:label>
             <form:input type="number" path="year" class="form-input" style="font-size: 26px"/>
