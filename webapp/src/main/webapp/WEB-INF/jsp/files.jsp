@@ -24,11 +24,16 @@
                 <jsp:param name="orderBy" value="${orderBy}"/>
             </jsp:include>
             <div class="file-grid">
+                <c:if test="${files.size() == 0}">
+                    <p class="announcement-title" style="width: 100%; text-align: center">
+                        No hay resultados que coincidan con tu busqueda
+                    </p>
+                </c:if>
                 <c:forEach var="file" items="${files}">
                     <div class="file-unit">
                         <a href="<c:url value="/files/${file.fileId}"/>" class="styleless-anchor" target="_blank"
                            style="display: flex;margin-left: 10px; align-items: center">
-                            <img src="<c:url value="/resources/images/extensions/${file.extension.fileExtension}.png"/>"
+                            <img src="<c:url value="/resources/images/extensions/${file.extension.fileExtensionName}.png"/>"
                                  class="file-img" alt="${file.name}"/>
                             <p class="file-name"><spring:message code="files.file.name" htmlEscape="true" arguments="${file.name}"/></p>
                         </a>
