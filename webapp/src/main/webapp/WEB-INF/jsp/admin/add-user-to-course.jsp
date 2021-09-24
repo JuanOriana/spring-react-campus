@@ -38,7 +38,7 @@
                 </c:forEach>
             </form:select>
             <form:errors path="roleId" element="p" cssStyle="color:red;margin-left: 10px"/>
-            <button class="form-button"><spring:message code="add.user.button.create" htmlEscape="true"/></button>
+            <button class="form-button"><spring:message code="add.user.button.add" htmlEscape="true"/></button>
             <div class="user-container">
                 <div class="user-column">
                     <h3 class="form-label" style="margin:0"><spring:message code="add.user.students" htmlEscape="true"/></h3>
