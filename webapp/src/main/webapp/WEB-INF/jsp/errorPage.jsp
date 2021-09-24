@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title><spring:message code="errorPage.page.title" htmlEscape="true"/></title>
+    <title><spring:message code="errorPage.page.title"/></title>
     <c:import url="config/generalHead.jsp"/>
 
 </head>

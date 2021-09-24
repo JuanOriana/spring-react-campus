@@ -35,13 +35,13 @@
       </jsp:include>
 
       <div class="course-data-container">
-        <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="teacher.course.section-heading" htmlEscape="true"/> </h3>
+        <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="teacher.course.section-heading"/> </h3>
         <form:form modelAttribute="announcementForm" class="form-wrapper reduced" method="post" acceptCharset="utf-8">
-          <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="teacher.course.new.announcement" htmlEscape="true"/></h1>
-          <form:label path="title" for="title" class="form-label"><spring:message code="teacher.course.new.announcement.title" htmlEscape="true"/></form:label>
+          <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="teacher.course.new.announcement"/></h1>
+          <form:label path="title" for="title" class="form-label"><spring:message code="teacher.course.new.announcement.title"/></form:label>
           <form:input type="text" path="title" class="form-input" style="font-size: 26px"/>
           <form:errors path="title" element="p" cssStyle="color:red;margin-left: 10px"/>
-          <form:label path="content" for="content" class="form-label"><spring:message code="teacher.course.new.announcement.content" htmlEscape="true"/></form:label>
+          <form:label path="content" for="content" class="form-label"><spring:message code="teacher.course.new.announcement.content"/></form:label>
           <form:textarea path="content" class="form-input" style="width: 100%;resize: none" cols="50" rows="10"></form:textarea>
             <form:errors path="content" element="p" cssStyle="color:red; margin-left: 10px"/>
           <button class="form-button"><spring:message code="teacher.course.button.create.announcement" htmlEscape="true"/></button>

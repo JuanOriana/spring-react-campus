@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title><spring:message code="campus.page.title" htmlEscape="true"/></title>
+    <title><spring:message code="campus.page.title"/></title>
     <c:import url="config/generalHead.jsp"/>
 
 </head>
@@ -25,9 +25,13 @@
                     </c:if>
                 </div>
                 <div style="display:flex; flex-direction: column">
-                    <p><span style="font-weight: 700"><spring:message code="user.username.title" htmlEscape="true"/></span> <spring:message code="user.username" htmlEscape="true" arguments="${currentUser.username}"/></p>
-                    <p><span style="font-weight: 700"><spring:message code="user.email.title" htmlEscape="true"/></span> <spring:message code="user.email" htmlEscape="true" arguments="${currentUser.email}"/></p>
-                    <p><span style="font-weight: 700"><spring:message code="user.filenumber.title" htmlEscape="true"/></span> <spring:message code="user.filenumber" htmlEscape="true" arguments="${currentUser.fileNumber.toString()}"/></p>
+                    <p><span style="font-weight: 700"><spring:message code="user.username.title"/></span>
+                        <spring:message code="user.username" htmlEscape="true" arguments="${currentUser.username}"/></p>
+                    <p><span style="font-weight: 700"><spring:message code="user.email.title"/></span>
+                        <spring:message code="user.email" htmlEscape="true" arguments="${currentUser.email}"/></p>
+                    <p><span style="font-weight: 700"><spring:message code="user.filenumber.title" /></span>
+                        <spring:message code="user.filenumber" htmlEscape="true"
+                                        arguments="${currentUser.fileNumber.toString()}"/></p>
                 </div>
             </div>
         </div>

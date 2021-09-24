@@ -4,20 +4,20 @@
 <html lang="es">
 <body>
 <nav class="navbar-container">
-    <h1 class="nav-title"><a class="styleless-anchor" href="<c:url value ="/"/>"><spring:message code="navbar.title" htmlEscape="true"/></a></h1>
+    <h1 class="nav-title"><a class="styleless-anchor" href="<c:url value ="/"/>"><spring:message code="navbar.title"/></a></h1>
     <c:if test="${!param.isAdmin}">
         <ul class="nav-sections-container">
             <li class="${param.navItem == 1? "nav-sections-item nav-sections-item-active" : "nav-sections-item" }">
-                <a href="<c:url value ="/portal"/>" class="styleless-anchor"><spring:message code="navbar.my.courses" htmlEscape="true"/></a>
+                <a href="<c:url value ="/portal"/>" class="styleless-anchor"><spring:message code="navbar.my.courses"/></a>
             </li>
             <li class="${param.navItem == 2? "nav-sections-item nav-sections-item-active" : "nav-sections-item" }">
-                <a href="<c:url value ="/announcements"/>" class="styleless-anchor"><spring:message code="navbar.my.announcements" htmlEscape="true"/></a>
+                <a href="<c:url value ="/announcements"/>" class="styleless-anchor"><spring:message code="navbar.my.announcements"/></a>
             </li>
             <li class="${param.navItem == 3? "nav-sections-item nav-sections-item-active" : "nav-sections-item" }">
-                <a href="<c:url value ="/files"/>" class="styleless-anchor"><spring:message code="navbar.my.files" htmlEscape="true"/></a>
+                <a href="<c:url value ="/files"/>" class="styleless-anchor"><spring:message code="navbar.my.files"/></a>
             </li>
             <li class="${param.navItem == 4? "nav-sections-item nav-sections-item-active" : "nav-sections-item" }">
-                <a href="<c:url value ="/timetable"/>" class="styleless-anchor"><spring:message code="navbar.my.timetable" htmlEscape="true"/></a>
+                <a href="<c:url value ="/timetable"/>" class="styleless-anchor"><spring:message code="navbar.my.timetable"/></a>
             </li>
         </ul>
     </c:if>
@@ -27,7 +27,7 @@
                 <h4><spring:message code="navbar.user" htmlEscape="true" arguments="${currentUser.name}"/></h4>
             </a>
             <a class="styleless-anchor" href="<c:url value ="/logout"/>">
-                <button class="logout-btn"><spring:message code="navbar.button.logout" htmlEscape="true"/></button>
+                <button class="logout-btn"><spring:message code="navbar.button.logout"/></button>
             </a>
         </div>
     </c:if>

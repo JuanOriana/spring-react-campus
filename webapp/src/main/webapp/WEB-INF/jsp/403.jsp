@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title><spring:message code="403.page.title" htmlEscape="true"/></title>
+    <title><spring:message code="403.page.title"/></title>
     <c:import url="config/generalHead.jsp"/>
 
 </head>
@@ -11,7 +11,7 @@
 <div class="page-organizer">
     <%@ include file="components/navbar.jsp" %>
     <div class="page-container">
-        <h1><spring:message code="403.page.message" htmlEscape="true"/></h1>
+        <h1><spring:message code="403.page.message"/></h1>
     </div>
     <jsp:include page="components/footer.jsp"/>
 </div>

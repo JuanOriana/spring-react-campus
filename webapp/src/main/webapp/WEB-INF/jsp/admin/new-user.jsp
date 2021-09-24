@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title><spring:message code="new.user.page.title" htmlEscape="true"/></title>
+    <title><spring:message code="new.user.page.title" /></title>
     <c:import url="../config/generalHead.jsp"/>
 
 </head>
@@ -18,25 +18,25 @@
     <form:form modelAttribute="userRegisterForm" class="form-wrapper reduced" method="post"
                acceptCharset="utf-8" cssStyle="margin: 30px 0">
         <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="new.user.header" htmlEscape="true"/></h1>
-        <form:label path="fileNumber" for="fileNumber" class="form-label"><spring:message code="new.user.file.number" htmlEscape="true"/></form:label>
+        <form:label path="fileNumber" for="fileNumber" class="form-label"><spring:message code="new.user.file.number" /></form:label>
         <form:input type="number" path="fileNumber" class="form-input" style="font-size: 26px"/>
         <form:errors path="fileNumber" element="p" cssStyle="color:red;margin-left: 10px"/>
-        <form:label path="name" for="name" class="form-label"><spring:message code="new.user.name" htmlEscape="true"/></form:label>
+        <form:label path="name" for="name" class="form-label"><spring:message code="new.user.name" /></form:label>
         <form:input type="text" path="name" class="form-input" style="font-size: 26px"/>
         <form:errors path="name" element="p" cssStyle="color:red;margin-left: 10px"/>
-        <form:label path="surname" for="surname" class="form-label"><spring:message code="new.user.surname" htmlEscape="true"/></form:label>
+        <form:label path="surname" for="surname" class="form-label"><spring:message code="new.user.surname" /></form:label>
         <form:input type="text" path="surname" class="form-input" style="font-size: 26px"/>
         <form:errors path="surname" element="p" cssStyle="color:red;margin-left: 10px"/>
-        <form:label path="username" for="username" class="form-label"><spring:message code="new.user.username" htmlEscape="true"/></form:label>
+        <form:label path="username" for="username" class="form-label"><spring:message code="new.user.username" /></form:label>
         <form:input type="text" path="username" class="form-input" style="font-size: 26px"/>
         <form:errors path="username" element="p" cssStyle="color:red;margin-left: 10px"/>
-        <form:label path="email" for="email" class="form-label"><spring:message code="new.user.email" htmlEscape="true"/></form:label>
+        <form:label path="email" for="email" class="form-label"><spring:message code="new.user.email" /></form:label>
         <form:input type="text" path="email" class="form-input" style="font-size: 26px"/>
         <form:errors path="email" element="p" cssStyle="color:red;margin-left: 10px"/>
-        <form:label path="password" for="password" class="form-label"><spring:message code="new.user.password" htmlEscape="true"/></form:label>
+        <form:label path="password" for="password" class="form-label"><spring:message code="new.user.password" /></form:label>
         <form:input type="password" path="password" class="form-input" style="font-size: 26px"/>
         <form:errors path="password" element="p" cssStyle="color:red;margin-left: 10px"/>
-        <button class="form-button"><spring:message code="new.user.button.create" htmlEscape="true"/></button>
+        <button class="form-button"><spring:message code="new.user.button.create"/></button>
     </form:form>
     </div>
     <jsp:include page="../components/footer.jsp"/>

@@ -18,13 +18,13 @@
         <h1 class="admin-title"><spring:message code="admin.page.header" htmlEscape="true"/></h1>
         <div style="display: flex">
             <a href="<c:url value="/admin/user/new"/>">
-                <button class="redirection-button" style="margin-right: 25px;"><spring:message code="admin.button.create.user" htmlEscape="true"/></button>
+                <button class="redirection-button" style="margin-right: 25px;"><spring:message code="admin.button.create.user"/></button>
             </a>
             <a href="<c:url value="/admin/course/new"/>">
-                <button class="redirection-button" style="margin:0 25px;"><spring:message code="admin.button.create.course" htmlEscape="true"/></button>
+                <button class="redirection-button" style="margin:0 25px;"><spring:message code="admin.button.create.course" /></button>
             </a>
             <a href="<c:url value="/admin/course/select"/>">
-                <button class="redirection-button" style="margin-left:25px;"><spring:message code="admin.button.add.user.to.course" htmlEscape="true"/></button>
+                <button class="redirection-button" style="margin-left:25px;"><spring:message code="admin.button.add.user.to.course"/></button>
             </a>
         </div>
     </div>

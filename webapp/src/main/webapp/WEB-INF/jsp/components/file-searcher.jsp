@@ -37,7 +37,7 @@
         border-bottom-right-radius: 0; border:none; margin: 0" value="${param.query}">
         <button class="form-button" style="height: 100%; margin:0; width: 120px;border-top-left-radius: 0;
         border-bottom-left-radius: 0">
-            <spring:message code="file.search.button" htmlEscape="true"/>
+            <spring:message code="file.search.button" />
         </button>
         <img src="<c:url value="/resources/images/outline-arrow.png"/>"
              class="pagination-arrow"  style="transform: rotate(90deg); margin-left: 10px"
@@ -45,7 +45,7 @@
     </div>
     <div class="file-filter-container" id="filter-container" style="display: none">
         <div style="display: flex; flex-direction: column;">
-            <label for="order-class" class="file-select-label"><spring:message code="file.search.by" htmlEscape="true"/></label>
+            <label for="order-class" class="file-select-label"><spring:message code="file.search.by" /></label>
             <select name="order-class" id="order-class" class="file-select">
                 <option value="DATE" <c:if test="${param.orderClass == 'DATE'}">selected</c:if>>
                     <spring:message code="file.search.order.by.date" htmlEscape="true"/>
@@ -54,7 +54,7 @@
                     <spring:message code="file.search.order.by.name" htmlEscape="true"/>
                 </option>
             </select>
-            <label for="order-by" class="file-select-label"><spring:message code="file.search.order" htmlEscape="true"/></label>
+            <label for="order-by" class="file-select-label"><spring:message code="file.search.order" /></label>
             <select name="order-by" id="order-by" class="file-select">
                 <option value="ASC" <c:if test="${param.orderBy == 'ASC'}">selected</c:if>>
                     <spring:message code="file.search.order.asc" htmlEscape="true"/>
@@ -68,12 +68,12 @@
 
         <div style="display: flex; flex-direction: column;">
             ${param.extensions}
-            <label class="file-select-label"><spring:message code="file.search.type" htmlEscape="true"/></label>
+            <label class="file-select-label"><spring:message code="file.search.type"/></label>
             <span>
                 <input class="file-checkbox" type="checkbox" id="extension-all" name="extension-type"
                        value="${0}" onclick="toggleAll(this)"
                        <c:if test="${requestScope.extensionType.equals(requestScope.extensions)}">checked</c:if>>
-                <label class="file-checkbox-label" for="extension-all"><spring:message code="file.search.type.all" htmlEscape="true"/></label>
+                <label class="file-checkbox-label" for="extension-all"><spring:message code="file.search.type.all" /></label>
             </span>
             <c:forEach var="extension" items="${requestScope.extensions}">
                 <span>
@@ -83,7 +83,7 @@
                     <label class="file-checkbox-label" for="extension-${extension.fileExtensionId}">
                         <c:choose>
                             <c:when test="${extension.fileExtensionName.equals('other')}">
-                                <spring:message code="file.search.type.other" htmlEscape="true"/>
+                                <spring:message code="file.search.type.other" />
                             </c:when>
                             <c:otherwise>
                                 <spring:message code="file.search.type.name" htmlEscape="true" arguments="${extension.fileExtensionName}"/>
@@ -95,12 +95,12 @@
         </div>
 
         <div style="display: flex; flex-direction: column; ">
-            <label class="file-select-label"><spring:message code="file.search.category" htmlEscape="true"/></label>
+            <label class="file-select-label"><spring:message code="file.search.category"/></label>
             <span>
                 <input class="file-checkbox" type="checkbox" id="category-all" name="category-type"
                        value="${0}" onclick="toggleAll(this)"
                        <c:if test="${requestScope.categoryType.equals(requestScope.categories)}">checked</c:if>>
-                <label class="file-checkbox-label" for="category-all"><spring:message code="file.search.category.all" htmlEscape="true"/></label>
+                <label class="file-checkbox-label" for="category-all"><spring:message code="file.search.category.all"/></label>
             </span>
             <c:forEach var="category" items="${requestScope.categories}">
                 <span>

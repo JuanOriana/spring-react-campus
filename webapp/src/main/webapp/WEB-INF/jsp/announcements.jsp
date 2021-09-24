@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title><spring:message code="announcements.page.title" htmlEscape="true"/></title>
+    <title><spring:message code="announcements.page.title"/></title>
     <c:import url="config/generalHead.jsp"/>
 </head>
 <body>
@@ -14,7 +14,7 @@
         <jsp:param name="navItem" value="${2}"/>
     </jsp:include>
   <div class="page-container">
-      <h2 class="section-heading"><spring:message code="announcements.section-heading.title" htmlEscape="true"/></h2>
+      <h2 class="section-heading"><spring:message code="announcements.section-heading.title"/></h2>
       <c:if test="${announcementList.size() == 0}">
           <p class="announcement-title" style="width: 100%; text-align: center">
               No hay anuncios aun

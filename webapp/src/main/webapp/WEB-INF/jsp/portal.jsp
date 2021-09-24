@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
-        <title><spring:message code="campus.page.title" htmlEscape="true"/></title>
+        <title><spring:message code="campus.page.title"/></title>
         <c:import url="config/generalHead.jsp"/>
     </head>
     <body>
@@ -13,7 +13,7 @@
             <jsp:param name="navItem" value="${1}"/>
         </jsp:include>
         <div class="page-container">
-            <h2 class="section-heading"><spring:message code="portal.section-heading.title" htmlEscape="true"/></h2>
+            <h2 class="section-heading"><spring:message code="portal.section-heading.title"/></h2>
             <div class="courses-container">
                 <c:forEach var="courseItem" items="${courseList}">
                     <div class="course">

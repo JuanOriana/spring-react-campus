@@ -34,14 +34,14 @@
             </jsp:include>
             <c:url value="/course/${courseId}/files" var="postUrl"/>
             <div class="course-data-container">
-                <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="teacher.file.section-heading" htmlEscape="true"/> </h3>
+                <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="teacher.file.section-heading"/> </h3>
                 <form:form modelAttribute="fileForm" method="post" enctype="multipart/form-data"
                            class="form-wrapper reduced" acceptCharset="utf-8">
-                    <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="teacher.file.new.file.title" htmlEscape="true"/></h1>
-                    <form:label path="file" for="file" class="form-label"><spring:message code="teacher.file.new.file" htmlEscape="true"/></form:label>
+                    <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="teacher.file.new.file.title"/></h1>
+                    <form:label path="file" for="file" class="form-label"><spring:message code="teacher.file.new.file"/></form:label>
                     <form:input path="file" type="file" class="form-input" style="font-size: 26px"/>
                     <form:errors path="file" element="p" cssStyle="color:red;margin-left: 10px"/>
-                    <form:label path="categoryId" for="categoryId" class="form-label"><spring:message code="teacher.file.new.file.category" htmlEscape="true"/></form:label>
+                    <form:label path="categoryId" for="categoryId" class="form-label"><spring:message code="teacher.file.new.file.category"/></form:label>
                     <form:select path="categoryId" class="form-input" style="font-size: 26px">
                         <c:forEach var="category" items="${categories}">
                             <form:option value="${category.categoryId}"><spring:message code="category.${category.categoryName}" htmlEscape="true"/></form:option>

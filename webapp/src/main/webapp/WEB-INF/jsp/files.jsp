@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title><spring:message code="files.page.title" htmlEscape="true"/></title>
+    <title><spring:message code="files.page.title"/></title>
     <c:import url="config/generalHead.jsp"/>
 </head>
 <body>
@@ -12,7 +12,7 @@
         <jsp:param name="navItem" value="${3}"/>
     </jsp:include>
     <div class="page-container">
-        <h2 class="section-heading"><spring:message code="files.section-heading.title" htmlEscape="true"/></h2>
+        <h2 class="section-heading"><spring:message code="files.section-heading.title"/></h2>
         <div class="big-wrapper">
             <c:set var="categories" value="${categories}" scope="request"/>
             <c:set var="extensions" value="${extensions}" scope="request"/>
