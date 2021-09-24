@@ -38,11 +38,15 @@
         <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="teacher.course.section-heading"/> </h3>
         <form:form modelAttribute="announcementForm" class="form-wrapper reduced" method="post" acceptCharset="utf-8">
           <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="teacher.course.new.announcement"/></h1>
-          <form:label path="title" for="title" class="form-label"><spring:message code="teacher.course.new.announcement.title"/></form:label>
+          <form:label path="title" for="title" class="form-label">
+            <spring:message code="teacher.course.new.announcement.title"/>
+          </form:label>
           <form:input type="text" path="title" class="form-input" style="font-size: 26px"/>
           <form:errors path="title" element="p" cssStyle="color:red;margin-left: 10px"/>
-          <form:label path="content" for="content" class="form-label"><spring:message code="teacher.course.new.announcement.content"/></form:label>
-          <form:textarea path="content" class="form-input" style="width: 100%;resize: none" cols="50" rows="10"></form:textarea>
+          <form:label path="content" for="content" class="form-label">
+            <spring:message code="teacher.course.new.announcement.content"/>
+          </form:label>
+          <form:textarea path="content" class="form-input" style="width: 95%;resize: none" cols="50" rows="10"></form:textarea>
             <form:errors path="content" element="p" cssStyle="color:red; margin-left: 10px"/>
           <button class="form-button"><spring:message code="teacher.course.button.create.announcement" htmlEscape="true"/></button>
         </form:form>
@@ -57,9 +61,15 @@
         <c:forEach var="announcementItem" items="${announcementList}">
           <div class="announcement-wrapper" id="announcement-${announcementItem.announcementId}">
             <div class="announcement-header">
-              <h4 class="announcement-title"><spring:message code="teacher.course.announcement.title" htmlEscape="true" arguments="${announcementItem.title}"/></h4>
+              <h4 class="announcement-title">
+                <spring:message code="teacher.course.announcement.title"
+                                htmlEscape="true" arguments="${announcementItem.title}"/>
+              </h4>
               <div style="display: flex">
-                <p style="font-size: 14px"><spring:message code="teacher.course.announcement.owner" htmlEscape="true" arguments="${announcementItem.author.name},${announcementItem.author.surname}"/></p>
+                <p style="font-size: 14px"><spring:message code="teacher.course.announcement.owner"
+                                                           htmlEscape="true" arguments="${announcementItem.author.name},
+                                                           ${announcementItem.author.surname}"/>
+                </p>
                 <img src="<c:url value="/resources/images/trash-red.png"/>"
                      alt="delete" class="small-icon" style="margin-left: 10px"
                      onclick="deleteById(${announcementItem.announcementId})">

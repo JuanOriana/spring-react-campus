@@ -18,7 +18,7 @@
             <jsp:param name="courseId" value="${course.courseId}"/>
         </jsp:include>
         <div class="course-data-container">
-            <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="teachers.section-heading.title" htmlEscape="true"/> </h3>
+            <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="teachers.section-heading.title"/> </h3>
             <div class="big-wrapper">
                 <c:forEach var="teacher" items="${teacherSet}">
                         <div class="professor-unit">
@@ -27,7 +27,7 @@
                                 <p><spring:message code="teachers.teacher.name" htmlEscape="true" arguments="${teacher.key.name},${teacher.key.surname}"/></p>
                                 <p><spring:message code="teachers.teacher.email" htmlEscape="true" arguments="${teacher.key.email}"/></p>
                             </div>
-                            <a class="styleless-anchor" href="<c:url value="/sendmail/${teacher.key.userId}"/>">
+                            <a class="styleless-anchor" href="<c:url value="/mail/${teacher.key.userId}"/>">
                                 <img alt="mail icon" class="mail-icon"
                                      src="https://i.pinimg.com/originals/3a/4e/95/3a4e95aa862636d6f22c95fded897f94.jpg"/>
                             </a>
