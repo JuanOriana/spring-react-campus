@@ -1,7 +1,4 @@
 package ar.edu.itba.paw.webapp.config;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -31,11 +28,10 @@ import java.util.Properties;
 @ComponentScan({"ar.edu.itba.paw.webapp.controller", "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebConfig.class);
-    private static final boolean devBuild = true; // Change this to a config file in the future
+    private static final boolean DEV_BUILD = true; // Change this to a config file in the future
 
     private static boolean isOnDevBuild() {
-        return devBuild;
+        return DEV_BUILD;
     }
 
     @Bean
@@ -116,17 +112,16 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         props.put("mail.debug", "true");
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.ssl.checkserveridentity", "true");
+
         props.put("mail.smtp.socketFactory.fallback", "false");
 
-        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-
+        return Session.getInstance(props, new javax.mail.Authenticator() {
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication("mpvcampus@gmail.com", "cxtwdizekebrrdhx");
             }
-
         });
-
-        return session;
     }
 
 }

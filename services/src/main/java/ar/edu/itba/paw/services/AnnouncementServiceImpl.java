@@ -9,14 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class AnnouncementServiceImpl implements AnnouncementService {
+
+    private static final int MIN_PAGE_COUNT = 1;
 
     @Autowired
     private AnnouncementDao announcementDao;
@@ -43,13 +42,12 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Override
     public int getPageCount(Long userId, Integer pageSize) {
-        if(pageSize < 1) return 0;
+        if(pageSize < MIN_PAGE_COUNT) return 0;
         return announcementDao.getPageCount(userId, pageSize);
     }
 
     @Override
     public List<Announcement> list(Long userId, Integer page, Integer pageSize, Comparator<Announcement> comparator) {
-        if(page < 1 || pageSize < 1) return new ArrayList<>();
         return list(userId, page, pageSize).stream().sorted(comparator).collect(Collectors.toList());
     }
 

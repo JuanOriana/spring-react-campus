@@ -6,6 +6,7 @@ import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.auth.CampusUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -30,15 +31,10 @@ public class AnnouncementsController extends AuthController {
                                       @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
         ModelAndView mav = new ModelAndView("announcements");
         CampusUser currentUser = authFacade.getCurrentUser();
-        int pageCount = announcementService.getPageCount(currentUser.getUserId(), pageSize);
-        if (page < 1) page = 1;
-        else if (page > pageCount) page = pageCount;
-        if(pageSize < 1) pageSize = 10;
-        else if(pageSize > 50) pageSize = 50;
         List<Announcement> announcements = announcementService.list(currentUser.getUserId(), page, pageSize, orderByDate);
         mav.addObject("announcementList", announcements);
         mav.addObject("currentPage",page);
-        mav.addObject("maxPage", pageCount);
+        mav.addObject("maxPage", announcementService.getPageCount(currentUser.getUserId(), pageSize));
         mav.addObject("pageSize",pageSize);
         mav.addObject("dateTimeFormatter",dateTimeFormatter);
         return mav;
