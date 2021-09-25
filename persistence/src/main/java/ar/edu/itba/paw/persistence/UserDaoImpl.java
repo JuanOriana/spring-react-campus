@@ -40,7 +40,7 @@ public class UserDaoImpl implements UserDao {
     public UserDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("users").usingGeneratedKeyColumns("userid");
-        jdbcInsertProfileImage = new SimpleJdbcInsert(jdbcTemplate).withTableName("profile_images").usingGeneratedKeyColumns("userid");
+        jdbcInsertProfileImage = new SimpleJdbcInsert(jdbcTemplate).withTableName("profile_images");
     }
 
     @Override
@@ -57,8 +57,8 @@ public class UserDaoImpl implements UserDao {
         final Long userId = jdbcInsert.executeAndReturnKey(args).longValue();
 
         final Map<String, Object> argsProfileImage = new HashMap<>();
-        args.put("image", null);
-        args.put("userId", userId);
+        argsProfileImage.put("image", null);
+        argsProfileImage.put("userId", userId);
         jdbcInsertProfileImage.execute(argsProfileImage);
 
         return new User.Builder()
@@ -124,6 +124,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<byte[]> getProfileImage(Long userId) {
-        return jdbcTemplate.query("SELECT image FROM profile_images WHERE userId = ?", new Object[]{userId}, (rs, rowNumber) -> rs.getBytes("image")).stream().findFirst();
+        return jdbcTemplate.query("SELECT image FROM profile_images WHERE userId = ?", new Object[]{userId}, (rs, rowNumber) ->  rs.getBytes("image")).stream().findFirst();
     }
 }

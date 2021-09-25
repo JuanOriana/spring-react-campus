@@ -12,7 +12,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
-
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -33,13 +35,10 @@ public class UserDaoImplTest {
     private final Integer ROLE_ID = 1;
     private final String ROLE_NAME = "Estudiante";
     private final String sqlInsertUserWithId = String.format("INSERT INTO users (userId,fileNumber,name,surname,username,email,password,isAdmin) VALUES (%d,%d,'%s','%s','%s','%s','%s',%s)", USER_ID, FILE_NUMBER, NAME, SURNAME, USERNAME, EMAIL, PASSWORD, IS_ADMIN);
-
-    @Autowired
-    private DataSource ds;
-
     @Autowired
     UserDaoImpl userDao;
-
+    @Autowired
+    private DataSource ds;
     private JdbcTemplate jdbcTemplate;
 
     @Before
@@ -94,7 +93,7 @@ public class UserDaoImplTest {
     }
 
     @Test
-    public void testUpdate(){
+    public void testUpdate() {
         jdbcTemplate.execute(sqlInsertUserWithId);
         assertTrue(userDao.update(USER_ID, new User.Builder()
                 .withUserId(USER_ID)
@@ -110,7 +109,7 @@ public class UserDaoImplTest {
     }
 
     @Test
-    public void testGetRole(){
+    public void testGetRole() {
         // TODO finish this test with new implemetation
 //        jdbcTemplate.execute(sqlInsertUserWithId);
 //        String sqlInsertRoleWithId = String.format("INSERT INTO roles (roleId,roleName) VALUES (%d,'%s');", ROLE_ID,ROLE_NAME);
@@ -121,5 +120,26 @@ public class UserDaoImplTest {
 //        Role role = userDao.getRole(USER_ID,);
     }
 
+    @Test
+    public void testGetProfileImage() {
+        Optional<byte[]> image = userDao.getProfileImage(USER_ID);
+        assertNotNull(image);
+        assertFalse(image.isPresent());
+    }
+
+    @Test
+    public void testUpdateProfileImage() {
+        jdbcTemplate.execute(sqlInsertUserWithId);
+        String sqlInsertProfileImageRow = String.format("INSERT INTO profile_images (image,userId) VALUES (null,%d)", USER_ID);
+        jdbcTemplate.execute(sqlInsertProfileImageRow);
+        File file = new File("src/test/resources/test.png");
+        try {
+            byte[] bytea = Files.readAllBytes(file.toPath());
+            boolean isUpdated = userDao.updateProfileImage(USER_ID, bytea);
+            assertTrue(isUpdated);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
