@@ -53,6 +53,9 @@
                 <option value="NAME" <c:if test="${param.orderClass == 'NAME'}">selected</c:if>>
                     <spring:message code="file.search.order.by.name" htmlEscape="true"/>
                 </option>
+                <option value="DOWNLOADS" <c:if test="${param.orderClass == 'DOWNLOADS'}">selected</c:if>>
+                    <spring:message code="file.search.order.by.downloads" htmlEscape="true"/>
+                </option>
             </select>
             <label for="order-by" class="file-select-label"><spring:message code="file.search.order" /></label>
             <select name="order-by" id="order-by" class="file-select">

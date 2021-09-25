@@ -45,7 +45,7 @@ public class FilesController extends AuthController {
                                           List<Long> extensionType,
                               @RequestParam(value = "query", required = false, defaultValue = "")
                                           String query,
-                              @RequestParam(value = "order-class",required = false,defaultValue = "NAME")
+                              @RequestParam(value = "order-class",required = false,defaultValue = "DATE")
                                           String orderClass,
                               @RequestParam(value = "order-by",required = false,defaultValue = "DESC")
                                           String orderBy){
@@ -75,6 +75,7 @@ public class FilesController extends AuthController {
             InputStream is = new ByteArrayInputStream(file.getFile());
             org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
             response.flushBuffer();
+            fileService.incrementDownloads(fileId);
         } catch (IOException ex) {
             LOGGER.debug(String.format("Error writing file to output stream. Filename was %s", file.getName() + ex));
             throw new RuntimeException("IOError writing file to output stream");

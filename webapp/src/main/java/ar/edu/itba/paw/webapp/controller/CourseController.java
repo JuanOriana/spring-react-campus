@@ -113,7 +113,7 @@ public class CourseController extends AuthController {
                                       List<Long> extensionType,
                               @RequestParam(value = "query", required = false, defaultValue = "")
                                       String query,
-                              @RequestParam(value = "order-class", required = false, defaultValue = "NAME")
+                              @RequestParam(value = "order-class", required = false, defaultValue = "DATE")
                                       String orderClass,
                               @RequestParam(value = "order-by", required = false, defaultValue = "DESC")
                                       String orderBy) {
@@ -156,7 +156,7 @@ public class CourseController extends AuthController {
             fileForm.setCategoryId(null);
             successMessage = "Archivo creado exitosamente";
         }
-        return files(courseId, fileForm, successMessage, new ArrayList<>(), new ArrayList<>(), "", "NAME", "DESC");
+        return files(courseId, fileForm, successMessage, new ArrayList<>(), new ArrayList<>(), "", "DATE", "DESC");
     }
 
 }
