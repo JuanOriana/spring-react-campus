@@ -151,6 +151,11 @@ public class UserDaoImplTest {
 
     @Test
     public void testGetRoleWithCourses(){
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_to_course");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "roles");
+
         int courseId = 2,subjectId=3,quarter=1,year=2021;
         String insertSubjectSql = String.format("INSERT INTO subjects (subjectId,code,subjectName) VALUES (%d,'A1','PAW')", subjectId);
         String insertCourseWithIdSql = String.format("INSERT INTO courses  VALUES (%d, %d, %d, 'S1',%d)", courseId, subjectId, quarter, year);
