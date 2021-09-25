@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -68,5 +70,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean updateProfileImage(Long userId, byte[] image) {
         return userDao.updateProfileImage(userId, image);
+    }
+
+    @Override
+    public Map<Role, List<Course>> getRolesInCourses(Long userId) {
+        return userDao.getRolesInCourses(userId);
     }
 }
