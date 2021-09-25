@@ -157,7 +157,7 @@ public interface FileService {
      * @param userId     the ID of the user that is searching
      * @return a list containing all the files that match with all the criterias given (if any).
      */
-    List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId);
+    List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId);
 
     /**
      * Attempts to get file/s from a course given some criterias of searching and filter
@@ -171,6 +171,6 @@ public interface FileService {
      * @param courseId   of the course
      * @return a list containing all the files that match with all the criterias given (if any).
      */
-    List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId);
+    List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId);
 
 }

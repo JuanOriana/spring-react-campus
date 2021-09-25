@@ -119,7 +119,7 @@ public class CourseController extends AuthController {
                                       String orderBy) {
 
         final List<FileModel> files = fileService.listByCriteria(OrderCriterias.valueOf(orderBy),
-                SearchingCriterias.valueOf(orderClass),
+                SortCriterias.valueOf(orderClass),
                 query, extensionType, categoryType, authFacade.getCurrentUser().getUserId(), courseId);
         final ModelAndView mav;
         List<FileCategory> categories = fileCategoryService.getCategories();

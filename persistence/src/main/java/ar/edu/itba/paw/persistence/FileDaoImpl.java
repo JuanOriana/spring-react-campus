@@ -217,7 +217,7 @@ public class FileDaoImpl implements FileDao {
     }
 
     // TODO: Refactor
-    public List<FileModel> listByCriteria(OrderCriterias orderCriterias, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId) {
+    public List<FileModel> listByCriteria(OrderCriterias orderCriterias, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId) {
 
         StringBuilder extensionAndCategoryQuery = new StringBuilder();
         List<Object> params = new ArrayList<>();
@@ -251,7 +251,6 @@ public class FileDaoImpl implements FileDao {
         String courseSelection = courseId < 0 ? "(SELECT courseId FROM user_to_course WHERE userId = ?)" : "(?)";
         Long courseSelectionParam = courseId < 0 ? userId : courseId;
         String selectByName = "SELECT * FROM files NATURAL JOIN courses NATURAL JOIN file_extensions NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE LOWER(fileName) LIKE ? AND courseId IN " + courseSelection;
-        String selectBydate = "SELECT *  FROM files NATURAL JOIN courses NATURAL JOIN file_extensions  NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE date_part('year', fileDate) = CAST(? AS INTEGER) AND date_part('month', fileDate) = CAST(? AS INTEGER) AND date_part('day', fileDate) = CAST(? AS INTEGER) AND courseId IN " + courseSelection;
         String selectFilterExtensionsAndCategory;
 
         if (extensions.isEmpty() && categories.isEmpty()) {
@@ -261,38 +260,18 @@ public class FileDaoImpl implements FileDao {
         }
         String selectAll = "SELECT *  FROM files NATURAL JOIN courses NATURAL JOIN file_extensions  NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE courseId IN " + courseSelection;
 
+        Object[] sqlParams = new Object[params.size() + 2];
+        sqlParams[0] = "%" + param.toLowerCase() + "%";
+        sqlParams[1] = courseSelectionParam;
+        for (int i = 0; i < params.size(); i++) {
+            sqlParams[i + 2] = params.get(i);
+        }
+
         switch (criterias) {
             case NAME:
-                Object[] sqlParams = new Object[params.size() + 2];
-                sqlParams[0] = "%" + param.toLowerCase() + "%";
-                sqlParams[1] = courseSelectionParam;
-                for (int i = 0; i < params.size(); i++) {
-                    sqlParams[i + 2] = params.get(i);
-                }
                 return new ArrayList<>(jdbcTemplate.query(selectByName + selectFilterExtensionsAndCategory + " ORDER BY fileName " + orderCriterias.getValue(), sqlParams, FILE_MODEL_ROW_MAPPER));
             case DATE:
-                String date = getDateInFormat(param);
-                /// param  to DATE must be YYYY-MM-DD
-                if (date.matches("[0-9]{4}[-/][0-9]{2}[-/][0-9]{2}")) {
-                    Object[] sqlParamsDate = new Object[params.size() + 4];
-                    sqlParamsDate[0] = date.substring(0, 4);
-                    sqlParamsDate[1] = date.substring(5, 7);
-                    sqlParamsDate[2] = date.substring(8, 10);
-                    sqlParamsDate[3] = courseSelectionParam;
-                    for (int i = 0; i < params.size(); i++) {
-                        sqlParamsDate[i + 4] = params.get(i);
-                    }
-                    return new ArrayList<>(jdbcTemplate.query(selectBydate + selectFilterExtensionsAndCategory + " ORDER BY fileDate " + orderCriterias.getValue(), sqlParamsDate, FILE_MODEL_ROW_MAPPER));
-                } else if (param.isEmpty()) {
-                    Object[] sqlParamsAll = new Object[params.size() + 1];
-                    sqlParamsAll[0] = courseSelectionParam;
-                    for (int i = 0; i < params.size(); i++) {
-                        sqlParamsAll[i + 1] = params.get(i);
-                    }
-                    return new ArrayList<>(jdbcTemplate.query(selectAll + selectFilterExtensionsAndCategory + " ORDER BY fileDate " + orderCriterias.getValue(), sqlParamsAll, FILE_MODEL_ROW_MAPPER));
-                } else {
-                    return new ArrayList<>();
-                }
+              return new ArrayList<>(jdbcTemplate.query(selectByName + selectFilterExtensionsAndCategory + " ORDER BY fileDate " + orderCriterias.getValue(), sqlParams, FILE_MODEL_ROW_MAPPER));
             case NONE:
                 Object[] sqlParamsNone = new Object[params.size() + 1];
                 sqlParamsNone[0] = courseSelectionParam;
@@ -308,22 +287,8 @@ public class FileDaoImpl implements FileDao {
     }
 
 
-    // If param date is a valid date, returns a date in yyyy-mm-dd or yyyy/mm/dd, else empty string
-    private String getDateInFormat(String date) {
-        if (date.matches("[0-9]{4}[-/][0-9]{2}[-/][0-9]{2}")) {
-            return date;
-        } else if (date.matches("[0-9]{2}[-/][0-9]{2}[-/][0-9]{4}")) { // dd-mm-yyyy
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(date, 6, 10).append("-");
-            stringBuilder.append(date, 3, 5).append("-");
-            stringBuilder.append(date, 0, 2);
-            return stringBuilder.toString();
-        }
-        return "";
-    }
-
     @Override
-    public List<FileModel> listByCriteria(OrderCriterias order, SearchingCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId) {
+    public List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId) {
         return listByCriteria(order, criterias, param, extensions, categories, userId, -1L);
     }
 }

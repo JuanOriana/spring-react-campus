@@ -53,7 +53,7 @@ public class FilesController extends AuthController {
         ModelAndView mav = new ModelAndView("files");
         mav.addObject("categories", fileCategoryService.getCategories());
         mav.addObject("files", fileService.listByCriteria(OrderCriterias.valueOf(orderBy),
-                                            SearchingCriterias.valueOf(orderClass),
+                SortCriterias.valueOf(orderClass),
                                             query,extensionType,categoryType,authFacade.getCurrentUser().getUserId()));
         mav.addObject("extensions", fileExtensionService.getExtensions());
         mav.addObject("categoryType",categoryType);
