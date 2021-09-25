@@ -73,9 +73,9 @@ public interface UserService {
 
 
     /**
-     * Attempts to get user profile image
+     * Attempts to get user profile image (if any). By default none image is set
      *
-     * @return an optional of byte[] that represents the image
+     * @return an optional of byte[] that represents the image. If none, optional.isPresent == false
      */
     Optional<byte[]> getProfileImage(Long userId);
 
