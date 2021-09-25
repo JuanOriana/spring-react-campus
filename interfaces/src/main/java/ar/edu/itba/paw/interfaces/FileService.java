@@ -173,4 +173,5 @@ public interface FileService {
      */
     List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId);
 
+    void incrementDownloads(Long fileId);
 }

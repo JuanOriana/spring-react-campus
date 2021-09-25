@@ -40,5 +40,5 @@ public interface FileDao {
 
     List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId);
 
-
+    void incrementDownloads(Long fileId);
 }

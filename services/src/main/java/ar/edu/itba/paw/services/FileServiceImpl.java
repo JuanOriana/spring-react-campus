@@ -116,4 +116,8 @@ public class FileServiceImpl implements FileService {
         return fileDao.listByCriteria(order, criterias, param, extensions, categories, userId);
     }
 
+    @Override
+    public void incrementDownloads(Long fileId) {
+        fileDao.incrementDownloads(fileId);
+    }
 }

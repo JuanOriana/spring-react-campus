@@ -291,4 +291,9 @@ public class FileDaoImpl implements FileDao {
     public List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId) {
         return listByCriteria(order, criterias, param, extensions, categories, userId, -1L);
     }
+
+    @Override
+    public void incrementDownloads(Long fileId){
+        jdbcTemplate.update("UPDATE files SET downloads = downloads + 1 WHERE fileId = ?",new Object[]{fileId});
+    }
 }
