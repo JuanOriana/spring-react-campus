@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
@@ -85,4 +87,11 @@ public interface UserService {
      * @return true if the user image was updated successfully, false otherwise
      */
     boolean updateProfileImage(Long userId, byte[] image);
+
+    /**
+     *  Attemps to get all the courses where the user has a role.
+     * @param userId of the user
+     * @return a map that for each role that the user has in any course with the corresponding list of all the courses where the user has that role
+     */
+    Map<Role,List<Course>> getRolesInCourses(Long userId);
 }

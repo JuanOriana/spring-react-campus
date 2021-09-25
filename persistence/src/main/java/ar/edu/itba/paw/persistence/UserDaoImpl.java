@@ -1,19 +1,19 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -125,5 +125,33 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Optional<byte[]> getProfileImage(Long userId) {
         return jdbcTemplate.query("SELECT image FROM profile_images WHERE userId = ?", new Object[]{userId}, (rs, rowNumber) ->  rs.getBytes("image")).stream().findFirst();
+    }
+
+
+
+    private static final ResultSetExtractor<Map<Role,List<Course>>> ROLE_AND_COURSES_EXTRACTOR= (rs -> {
+        Map<Role,List<Course>> roleMap = new HashMap();
+        while (rs.next()){
+            Role role = new Role(rs.getInt("roleId"), rs.getString("roleName"));
+            roleMap.putIfAbsent(role,new ArrayList<>());
+
+            roleMap.get(role).add( new Course.Builder()
+                    .withCourseId(rs.getLong("courseId"))
+                    .withYear(rs.getInt("year"))
+                    .withQuarter(rs.getInt("quarter"))
+                    .withBoard(rs.getString("board"))
+                    .withSubject(new Subject(rs.getLong("subjectId"), rs.getString("code"),
+                            rs.getString("subjectName")))
+                    .build());
+        }
+        return roleMap;
+    });
+
+    public Map<Role,List<Course>> getRolesInCourses(Long userId){
+        return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN user_to_course NATURAL JOIN courses NATURAL JOIN roles NATURAL JOIN subjects" +
+                " WHERE (userId,courseId,roleId) IN (SELECT userId,courseId, roleId FROM users NATURAL JOIN user_to_course NATURAL JOIN courses " +
+                " GROUP by roleId, courseId,userId) AND userId = ?",new Object[]{userId},ROLE_AND_COURSES_EXTRACTOR);
+
+
     }
 }

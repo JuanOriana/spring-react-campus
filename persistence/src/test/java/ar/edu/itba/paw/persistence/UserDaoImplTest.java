@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +17,8 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -32,8 +36,10 @@ public class UserDaoImplTest {
     private final String EMAIL = "johndoe@lorem.com";
     private final String PASSWORD = "d8d3aedd4b5d0ce0131600eaadc48dcb";
     private final boolean IS_ADMIN = true;
-    private final Integer ROLE_ID = 1;
-    private final String ROLE_NAME = "Estudiante";
+    private final Integer STUDENT_ROLE_ID = 1;
+    private final String STUDENT_ROLE_NAME = "Estudiante";
+    private final Integer TEACHER_ROLE_ID = 2;
+    private final String TEACHER_ROLE_NAME = "Profesor";
     private final String sqlInsertUserWithId = String.format("INSERT INTO users (userId,fileNumber,name,surname,username,email,password,isAdmin) VALUES (%d,%d,'%s','%s','%s','%s','%s',%s)", USER_ID, FILE_NUMBER, NAME, SURNAME, USERNAME, EMAIL, PASSWORD, IS_ADMIN);
     @Autowired
     UserDaoImpl userDao;
@@ -112,8 +118,8 @@ public class UserDaoImplTest {
     public void testGetRole() {
         // TODO finish this test with new implemetation
 //        jdbcTemplate.execute(sqlInsertUserWithId);
-//        String sqlInsertRoleWithId = String.format("INSERT INTO roles (roleId,roleName) VALUES (%d,'%s');", ROLE_ID,ROLE_NAME);
-//        String sqlInsertUserToRole = String.format("INSERT INTO user_to_role (userId,roleId) VALUES (%d,%d);", USER_ID,ROLE_ID);
+//        String sqlInsertRoleWithId = String.format("INSERT INTO roles (roleId,roleName) VALUES (%d,'%s');", STUDENT_ROLE_ID,STUDENT_ROLE_NAME);
+//        String sqlInsertUserToRole = String.format("INSERT INTO user_to_role (userId,roleId) VALUES (%d,%d);", USER_ID,STUDENT_ROLE_ID);
 //        jdbcTemplate.execute(sqlInsertRoleWithId);
 //        jdbcTemplate.execute(sqlInsertUserToRole);
 //
@@ -140,6 +146,34 @@ public class UserDaoImplTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Test
+    public void testGetRoleWithCourses(){
+        int courseId = 2,subjectId=3,quarter=1,year=2021;
+        String insertSubjectSql = String.format("INSERT INTO subjects (subjectId,code,subjectName) VALUES (%d,'A1','PAW')", subjectId);
+        String insertCourseWithIdSql = String.format("INSERT INTO courses  VALUES (%d, %d, %d, 'S1',%d)", courseId, subjectId, quarter, year);
+        String insertUserToCourseSql = String.format("INSERT INTO user_to_course VALUES (%d,%d,%d)", courseId, USER_ID, STUDENT_ROLE_ID);
+        String insertUserToCourseSql2 = String.format("INSERT INTO user_to_course VALUES (%d,%d,%d)", courseId, USER_ID, TEACHER_ROLE_ID);
+        String sqlInsertRoleWithId = String.format("INSERT INTO roles (roleId,roleName) VALUES (%d,'%s')", STUDENT_ROLE_ID,STUDENT_ROLE_NAME);
+        String sqlInsertRoleWithId2 = String.format("INSERT INTO roles (roleId,roleName) VALUES (%d,'%s')", TEACHER_ROLE_ID,TEACHER_ROLE_NAME);
+        jdbcTemplate.execute(sqlInsertUserWithId);
+        jdbcTemplate.execute(sqlInsertRoleWithId);
+        jdbcTemplate.execute(sqlInsertRoleWithId2);
+        jdbcTemplate.execute(insertSubjectSql);
+        jdbcTemplate.execute(insertCourseWithIdSql);
+        jdbcTemplate.execute(insertUserToCourseSql);
+        jdbcTemplate.execute(insertUserToCourseSql2);
+        Role studentRole = new Role(STUDENT_ROLE_ID,STUDENT_ROLE_NAME);
+        Role teacherRole = new Role(TEACHER_ROLE_ID,TEACHER_ROLE_NAME);
+
+        Map<Role, List<Course>> roleListMap = userDao.getRolesInCourses(USER_ID);
+
+        assertNotNull(roleListMap);
+        assertEquals(2, roleListMap.size());
+        assertEquals(1, roleListMap.get(studentRole).size());
+        assertEquals(1, roleListMap.get(teacherRole).size());
     }
 
 }
