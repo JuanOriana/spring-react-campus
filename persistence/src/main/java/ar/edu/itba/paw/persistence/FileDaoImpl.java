@@ -72,6 +72,7 @@ public class FileDaoImpl implements FileDao {
         args.put("fileSize", size);
         args.put("file", file);
         args.put("fileName", name);
+        args.put("downloads",0);
         args.put("fileDate", Timestamp.valueOf(date));
         args.put("fileExtensionId", fileExtensionModel.getFileExtensionId());
         args.put("courseId", course.getCourseId());
@@ -267,23 +268,22 @@ public class FileDaoImpl implements FileDao {
             sqlParams[i + 2] = params.get(i);
         }
 
+        StringBuilder orderBy = new StringBuilder().append(" ORDER BY ");
         switch (criterias) {
             case NAME:
-                return new ArrayList<>(jdbcTemplate.query(selectByName + selectFilterExtensionsAndCategory + " ORDER BY fileName " + orderCriterias.getValue(), sqlParams, FILE_MODEL_ROW_MAPPER));
-            case DATE:
-              return new ArrayList<>(jdbcTemplate.query(selectByName + selectFilterExtensionsAndCategory + " ORDER BY fileDate " + orderCriterias.getValue(), sqlParams, FILE_MODEL_ROW_MAPPER));
-            case NONE:
-                Object[] sqlParamsNone = new Object[params.size() + 1];
-                sqlParamsNone[0] = courseSelectionParam;
-                for (int i = 0; i < params.size(); i++) {
-                    sqlParamsNone[i + 1] = params.get(i);
-                }
-                return new ArrayList<>(jdbcTemplate.query(selectAll + selectFilterExtensionsAndCategory, sqlParamsNone, FILE_MODEL_ROW_MAPPER));
-            default:
+                orderBy.append(" fileName ");
                 break;
-
+            case DATE:
+                orderBy.append(" fileDate ");
+                break;
+            case DOWNLOADS:
+                orderBy.append(" downloads ");
+                break;
+            default:
+                return new ArrayList<>();
         }
-        return new ArrayList<>();
+        return new ArrayList<>(jdbcTemplate.query(selectByName + selectFilterExtensionsAndCategory + orderBy.toString() + orderCriterias.getValue(), sqlParams, FILE_MODEL_ROW_MAPPER));
+
     }
 
 

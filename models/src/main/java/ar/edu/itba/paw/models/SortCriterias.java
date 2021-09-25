@@ -3,7 +3,8 @@ package ar.edu.itba.paw.models;
 public enum SortCriterias {
     NONE(0,"NONE"),
     NAME(1,"NAME"),
-    DATE(2,"DATE");
+    DATE(2,"DATE"),
+    DOWNLOADS(3,"DOWNLOADS");
     private final int identifier;
     private final String value;
     SortCriterias(int identifier, String value){

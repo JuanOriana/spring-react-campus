@@ -471,7 +471,7 @@ public class FileDaoImplTest {
         jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
-        List<FileModel> list = fileDao.listByCriteria(OrderCriterias.ASC, SortCriterias.NONE, "", new ArrayList<>(), Collections.singletonList(INEXISTENCE_FILE_CATEGORY_ID), USER_ID, COURSE_ID);
+        List<FileModel> list = fileDao.listByCriteria(OrderCriterias.ASC, SortCriterias.NAME, "", new ArrayList<>(), Collections.singletonList(INEXISTENCE_FILE_CATEGORY_ID), USER_ID, COURSE_ID);
 
         assertEquals(0, list.size());
     }
@@ -484,7 +484,7 @@ public class FileDaoImplTest {
         jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
-        List<FileModel> list = fileDao.listByCriteria(OrderCriterias.ASC, SortCriterias.NONE, "", new ArrayList<>(), new ArrayList<>(), USER_ID, 999L);
+        List<FileModel> list = fileDao.listByCriteria(OrderCriterias.ASC, SortCriterias.NAME, "", new ArrayList<>(), new ArrayList<>(), USER_ID, 999L);
 
         assertEquals(0, list.size());
     }
