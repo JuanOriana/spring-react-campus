@@ -5,6 +5,10 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CourseForm {
 
@@ -26,6 +30,10 @@ public class CourseForm {
     @Min(0)
     @NotNull
     private Integer year;
+
+    private List<Integer> startTimes = Arrays.asList(new Integer[7]);
+
+    private List<Integer> endTimes = Arrays.asList(new Integer[7]);
 
     public Long getSubjectId() {
         return subjectId;
@@ -57,5 +65,21 @@ public class CourseForm {
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    public List<Integer> getStartTimes() {
+        return startTimes;
+    }
+
+    public void setStartTimes(List<Integer> startTimes) {
+        this.startTimes = startTimes;
+    }
+
+    public List<Integer> getEndTimes() {
+        return endTimes;
+    }
+
+    public void setEndTimes(List<Integer> endTimes) {
+        this.endTimes = endTimes;
     }
 }

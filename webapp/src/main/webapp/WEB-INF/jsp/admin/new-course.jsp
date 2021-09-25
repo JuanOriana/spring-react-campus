@@ -42,6 +42,21 @@
             <form:label path="board" for="board" class="form-label"><spring:message code="new.course.board"/></form:label>
             <form:input type="text" path="board" class="form-input" style="font-size: 26px"/>
             <form:errors path="board" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <div style="display: grid; grid-template-columns: 400px 400px; margin: 20px 20px 0 20px">
+                <c:forEach var="day" items="${days}" varStatus="dayStatus">
+                    <div style="display: flex; flex-direction: column">
+                        <p class="form-label"><spring:message code="day.${day}"/></p>
+                        <div style="display: flex">
+                            <form:input cssStyle="width: 3em" type="number" path="startTimes[${dayStatus.index}]"
+                                        min="8" max="22"/>
+                            <p>:00 ----  </p>
+                            <form:input cssStyle="width: 3em" type="number" path="endTimes[${dayStatus.index}]"
+                                        min="8" max="22"/>
+                            <p>:00</p>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
             <button class="form-button"><spring:message code="new.course.button.create"/></button>
         </form:form>
     </div>

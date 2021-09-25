@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.interfaces.CourseService;
-import ar.edu.itba.paw.interfaces.RoleService;
-import ar.edu.itba.paw.interfaces.SubjectService;
-import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.interfaces.*;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.form.CourseForm;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.sql.Time;
 import java.util.List;
 import java.util.Set;
 
@@ -26,15 +25,18 @@ public class AdminController extends AuthController {
     private final SubjectService subjectService;
     private final CourseService courseService;
     private final RoleService roleService;
+    private final TimetableService timetableService;
+    final String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
 
     @Autowired
     public AdminController(AuthFacade authFacade, UserService userService, SubjectService subjectService,
-                           CourseService courseService, RoleService roleService) {
+                           CourseService courseService, RoleService roleService, TimetableService timetableService) {
         super(authFacade);
         this.userService = userService;
         this.subjectService = subjectService;
         this.courseService = courseService;
         this.roleService = roleService;
+        this.timetableService = timetableService;
     }
 
     @RequestMapping(value = "/portal")
@@ -68,14 +70,24 @@ public class AdminController extends AuthController {
         mav.addObject("courseForm",courseForm);
         mav.addObject("subjects", subjectService.list());
         mav.addObject("users",userService.list());
+        mav.addObject("days",days);
         return mav;
     }
 
     @PostMapping(value = "/course/new")
     public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult errors){
         if (!errors.hasErrors()) {
-            courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
+            Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
                     , courseForm.getSubjectId());
+            List<Integer> startTimes = courseForm.getStartTimes();
+            List<Integer> endTimes = courseForm.getEndTimes();
+            for (int i =0; i < days.length; i++){
+                Integer startHour = startTimes.get(i);
+                Integer endHour = endTimes.get(i);
+                if (startHour != null && endHour != null){
+                    timetableService.create(course,i,new Time(startHour,0,0),new Time(endHour,0,0));
+                }
+            }
             return adminPortal("Curso creado exitosamente");
         }
         return newCourse(courseForm);
