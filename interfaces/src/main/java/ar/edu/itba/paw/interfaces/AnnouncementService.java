@@ -4,10 +4,13 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
 
 public interface AnnouncementService {
     /**
@@ -38,34 +41,6 @@ public interface AnnouncementService {
     boolean delete(Long id);
 
     /**
-     * Gets all the current available announcements for the given user depending on which courses he is taking
-     * @param userId of the user to get the announcements from
-     * @param page offset to be retrieved
-     * @param pageSize size of the page to be retrieved
-     * @return list containing all the current available announcements (if any)
-     */
-    List<Announcement> list(Long userId, Integer page, Integer pageSize);
-
-    /**
-     * Gets the amount of pages based on the page size
-     * @param userId of the related user
-     * @param pageSize size of a page from a list query
-     * @return amount of pages for the given page size
-     */
-    int getPageCount(Long userId, Integer pageSize);
-
-    /**
-     * Returns an arbitrary ordered list of announcements with pagination for the given user depending on which courses
-     * he is taking
-     * @param userId of the user to get the announcements from
-     * @param page offset to be retrieved
-     * @param pageSize size of the page to be retrieved
-     * @param comparator identifies the order expected in the response list
-     * @return list of announcements of size pageSize (or smaller)
-     */
-    List<Announcement> list(Long userId, Integer page, Integer pageSize, Comparator<Announcement> comparator);
-
-    /**
      * Gets all the current available announcements for a specific course
      *
      * @param courseId identifier of the course to get the announcements from
@@ -89,4 +64,9 @@ public interface AnnouncementService {
      * @return the announcement corresponding to the given id if it exists, null otherwise
      */
     Optional<Announcement> getById(Long id);
+
+
+    Page<Announcement> findAnnouncementByPage(Long userId, Pageable pageable);
+
+    boolean isPaginationValid(Long userId, Integer page, Integer pageSize);
 }

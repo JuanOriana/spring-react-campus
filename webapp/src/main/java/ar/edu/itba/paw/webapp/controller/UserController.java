@@ -28,16 +28,16 @@ public class UserController extends AuthController {
     public ModelAndView user() {
         Optional<byte[]> optionalImage = userService.getProfileImage(authFacade.getCurrentUser().getUserId());
         ModelAndView mav = new ModelAndView("user");
-        //optionalImage.ifPresent(bytes -> mav.addObject("image", bytes));
+        optionalImage.ifPresent(bytes -> mav.addObject("image", bytes));
         return mav;
     }
 
     @RequestMapping("/user/profile-image")
     public void profileImage(HttpServletResponse response) throws IOException {
-//        byte[] image = userService.getProfileImage(authFacade.getCurrentUser().getUserId())
-//                .orElseThrow(RuntimeException::new);
-//        InputStream is = new ByteArrayInputStream(image);
-//        IOUtils.copy(is,response.getOutputStream());
+        byte[] image = userService.getProfileImage(authFacade.getCurrentUser().getUserId())
+               .orElseThrow(RuntimeException::new);
+       InputStream is = new ByteArrayInputStream(image);
+       IOUtils.copy(is,response.getOutputStream());
     }
 
 

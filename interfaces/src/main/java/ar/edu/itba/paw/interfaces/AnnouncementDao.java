@@ -3,6 +3,8 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,7 +15,7 @@ public interface AnnouncementDao {
     boolean update(Long id, Announcement announcement);
     boolean delete(Long id);
     int getPageCount(Long userId, Integer pageSize);
-    List<Announcement> list(Long userId, Integer page, Integer pageSize);
     List<Announcement> listByCourse(Long courseId);
     Optional<Announcement> getById(Long id);
+    Page<Announcement> findAnnouncementByPage(Long userId, Pageable pageable);
 }

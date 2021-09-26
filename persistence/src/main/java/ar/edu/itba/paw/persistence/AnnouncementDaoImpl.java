@@ -6,6 +6,10 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCountCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
@@ -119,15 +123,6 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         return (int) Math.ceil((double)countCallback.getRowCount() / pageSize);
     }
 
-    @Override
-    public List<Announcement> list(Long userId, Integer page, Integer pageSize) {
-        return new ArrayList<>(jdbcTemplate.query(
-                "SELECT * FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
-                "NATURAL JOIN user_to_course " +
-                "WHERE courseid IN (SELECT courseid FROM user_to_course WHERE userid = ?) " +
-                "LIMIT ? OFFSET ?",new Object[]{ userId, pageSize, (page - 1) * pageSize }, COURSE_ANNOUNCEMENT_ROW_MAPPER));
-    }
-
 
     public List<Announcement> listByCourse(Long courseId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT * FROM announcements NATURAL JOIN users WHERE courseId = ?",
@@ -139,5 +134,38 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         return jdbcTemplate.query("SELECT * " +
                 "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
                 "WHERE announcementId = ?", new Object[]{id}, COURSE_ANNOUNCEMENT_ROW_MAPPER).stream().findFirst();
+    }
+
+    @Override
+    public Page<Announcement> findAnnouncementByPage(Long userId, Pageable pageable) {
+        String rowCountSql = "SELECT count(1) AS row_count " +
+                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
+                "NATURAL JOIN user_to_course " +
+                "WHERE courseid IN (SELECT courseid FROM user_to_course WHERE userid = ?)";
+        int total =
+                jdbcTemplate.queryForObject(
+                        rowCountSql,
+                        new Object[]{userId}, (rs, rowNum) -> rs.getInt(1)
+                );
+        String querySql = "SELECT * " +
+                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users NATURAL JOIN user_to_course " +
+                "WHERE courseid IN (SELECT courseid FROM user_to_course WHERE userid = ?) " +
+                getSqlOrder(pageable.getSort()) + " " +
+                "LIMIT " + pageable.getPageSize() + " " +
+                "OFFSET " + pageable.getOffset();
+        List<Announcement> announcements = jdbcTemplate.query(
+                querySql,
+                new Object[]{userId}, COURSE_ANNOUNCEMENT_ROW_MAPPER);
+        return new PageImpl<>(announcements, pageable, total);
+    }
+
+    private String getSqlOrder(Sort sort) {
+        if(sort.isEmpty()) return "";
+        StringBuilder orderByBuilder = new StringBuilder("ORDER BY ");
+        for(Sort.Order o : sort) {
+            orderByBuilder.append(o.getProperty()).append(" ").append(o.getDirection());
+            if(orderByBuilder.length() != 0) orderByBuilder.append(", ");
+        }
+        return orderByBuilder.toString().replaceAll(", $", "");
     }
 }

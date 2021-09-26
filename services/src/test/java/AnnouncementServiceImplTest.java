@@ -10,6 +10,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +32,7 @@ public class AnnouncementServiceImplTest {
     private final String USER_EMAIL = "paw2021@itba.edu.ar";
     private final String USER_PASSWORD = "asd123";
     private final Integer PAGE_SIZE = 1;
-    private final Integer PAGE = 1;
+    private final Integer PAGE = 0;
 
     private final Long COURSE_ID = 1L;
     private final int COURSE_YEAR = 2021;
@@ -142,8 +145,9 @@ public class AnnouncementServiceImplTest {
     @Test
     public void testList() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.list(USER_ID, PAGE, PAGE_SIZE)).thenReturn(new ArrayList<Announcement>(){{ add(announcement); }});
-        List<Announcement> announcements = announcementService.list(USER_ID, PAGE, PAGE_SIZE);
+        when(mockDao.findAnnouncementByPage(USER_ID, PageRequest.of(PAGE, PAGE_SIZE)))
+                .thenReturn(new PageImpl<>(new ArrayList<Announcement>(){{ add(announcement); }}));
+        List<Announcement> announcements = announcementService.findAnnouncementByPage(USER_ID, PageRequest.of(PAGE, PAGE_SIZE)).toList();
         Assert.assertTrue(announcements.size() > 0);
         Assert.assertEquals(announcement.getCourse().getCourseId(), announcements.get(0).getCourse().getCourseId());
     }

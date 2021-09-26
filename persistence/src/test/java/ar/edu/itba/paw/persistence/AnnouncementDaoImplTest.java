@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -20,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
+import java.awt.print.Pageable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -62,7 +64,7 @@ public class AnnouncementDaoImplTest {
     private final String SUBJECT_CODE = "A1";
     private final String SUBJECT_NAME = "Protos";
 
-    private final Integer PAGE = 1;
+    private final Integer PAGE = 0;
     private final Integer PAGE_SIZE = 1;
 
     private final Integer ROLE_ID = 1;
@@ -258,7 +260,7 @@ public class AnnouncementDaoImplTest {
     @Test
     public void testList() {
         insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
-        List<Announcement> list = announcementDao.list(USER_ID, PAGE, PAGE_SIZE);
+        List<Announcement> list = announcementDao.findAnnouncementByPage(USER_ID, PageRequest.of(PAGE, PAGE_SIZE)).toList();
         assertNotNull(list);
         assertEquals(1, list.size());
         assertEquals(ANNOUNCEMENT_ID, list.get(0).getAnnouncementId());
