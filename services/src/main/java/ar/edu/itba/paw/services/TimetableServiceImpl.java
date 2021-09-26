@@ -13,6 +13,7 @@ import java.util.List;
 @Service
 public class TimetableServiceImpl implements TimetableService {
 
+
     private final TimetableDao timetableDaoDao;
 
     @Autowired

@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.CourseService;
+import ar.edu.itba.paw.interfaces.TimetableService;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Permissions;
@@ -10,6 +11,8 @@ import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,10 +24,24 @@ public class CourseServiceImpl implements CourseService {
     private CourseDao courseDao;
     @Autowired
     private  UserDao userDao;
+    @Autowired
+    private TimetableService timetableService;
+
+    final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
     @Override
-    public Course create(Integer year, Integer quarter, String board, Long subjectId) {
-        return courseDao.create(year, quarter, board, subjectId);
+    public Course create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
+                         List<Integer> endTimes) {
+        Course course = courseDao.create(year, quarter, board, subjectId);
+        for (int i = 0; i < days.length; i++) {
+            Integer startHour = startTimes.get(i);
+            Integer endHour = endTimes.get(i);
+            if (startHour != null && endHour != null) {
+                timetableService.create(course, i, new Time(startHour, 0, 0),
+                        new Time(endHour, 0, 0));
+            }
+        }
+        return course;
     }
 
     @Override
@@ -96,6 +113,16 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public boolean enroll(Long userId, Long courseId, Integer roleId) {
         return courseDao.enroll(userId, courseId, roleId);
+    }
+
+    @Override
+    public List<User> listUnenrolledUsers(Long courseId) {
+        return courseDao.listUnenrolledUsers(courseId);
+    }
+
+    @Override
+    public List<Course> getCoursesWhereStudent(Long userId) {
+        return courseDao.getCoursesWhereStudent(userId);
     }
 
 }

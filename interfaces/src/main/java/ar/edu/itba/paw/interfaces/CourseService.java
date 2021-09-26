@@ -17,7 +17,8 @@ public interface CourseService {
      * @param subjectId of the subject associated to the course
      * @return a Course instance holding the passed values
      */
-    Course create(Integer year, Integer quarter, String board, Long subjectId);
+    Course create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
+                  List<Integer> endTimes);
 
     /**
      * Attempts to update a course
@@ -116,4 +117,18 @@ public interface CourseService {
      * @return true if the user was enrolled successfully, false otherwise
      */
     boolean enroll(Long userId, Long courseId, Integer roleId);
+
+    /**
+     * Gets a list of Users not enrolled in a course
+     * @param courseId of the queried course
+     * @return list of Users not enrolled in a course
+     */
+    List<User> listUnenrolledUsers(Long courseId);
+
+    /**
+     * Attempts to get all courses where the user is a student
+     * @param userId of the queried user
+     * @return a list of courses where the given user is a student
+     */
+    List<Course> getCoursesWhereStudent(Long userId);
 }

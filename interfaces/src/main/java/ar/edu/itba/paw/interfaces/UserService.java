@@ -89,9 +89,10 @@ public interface UserService {
     boolean updateProfileImage(Long userId, byte[] image);
 
     /**
-     *  Attemps to get all the courses where the user has a role.
+     *  Attempts to get all the courses where the user has a role.
      * @param userId of the user
      * @return a map that for each role that the user has in any course with the corresponding list of all the courses where the user has that role
      */
     Map<Role,List<Course>> getRolesInCourses(Long userId);
+
 }
