@@ -25,18 +25,15 @@ public class AdminController extends AuthController {
     private final SubjectService subjectService;
     private final CourseService courseService;
     private final RoleService roleService;
-    private final TimetableService timetableService;
-    final String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
-
+    final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
     @Autowired
     public AdminController(AuthFacade authFacade, UserService userService, SubjectService subjectService,
-                           CourseService courseService, RoleService roleService, TimetableService timetableService) {
+                           CourseService courseService, RoleService roleService) {
         super(authFacade);
         this.userService = userService;
         this.subjectService = subjectService;
         this.courseService = courseService;
         this.roleService = roleService;
-        this.timetableService = timetableService;
     }
 
     @RequestMapping(value = "/portal")
@@ -77,17 +74,8 @@ public class AdminController extends AuthController {
     @PostMapping(value = "/course/new")
     public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult errors){
         if (!errors.hasErrors()) {
-            Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
-                    , courseForm.getSubjectId());
-            List<Integer> startTimes = courseForm.getStartTimes();
-            List<Integer> endTimes = courseForm.getEndTimes();
-            for (int i =0; i < days.length; i++){
-                Integer startHour = startTimes.get(i);
-                Integer endHour = endTimes.get(i);
-                if (startHour != null && endHour != null){
-                    timetableService.create(course,i,new Time(startHour,0,0),new Time(endHour,0,0));
-                }
-            }
+            courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
+                    , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
             return adminPortal("Curso creado exitosamente");
         }
         return newCourse(courseForm);
@@ -107,11 +95,9 @@ public class AdminController extends AuthController {
         ModelAndView mav = new ModelAndView("admin/add-user-to-course");
         List<User> courseStudents = courseService.getStudents(courseId);
         Set<User> courseTeachers = courseService.getTeachers(courseId).keySet();
-        List<User> remainingUsers = userService.list();
-        remainingUsers.removeAll(courseStudents);
-        remainingUsers.removeAll(courseTeachers);
+        List<User> unenrolledUsers = courseService.listUnenrolledUsers(courseId);
         mav.addObject("userToCourseForm",userToCourseForm);
-        mav.addObject("users",remainingUsers);
+        mav.addObject("users", unenrolledUsers);
         mav.addObject("course",courseService.getById(courseId).orElseThrow(RuntimeException::new));
         mav.addObject("roles",roleService.list());
         mav.addObject("courseStudents", courseStudents);

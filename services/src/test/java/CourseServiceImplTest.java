@@ -53,7 +53,7 @@ public class CourseServiceImplTest {
                 .withBoard(BOARD)
                 .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
                 .build());
-        Course newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID);
+        Course newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID, null, null);
         Assert.assertEquals(newCourse.getCourseId(), COURSE_ID);
     }
 
@@ -70,7 +70,7 @@ public class CourseServiceImplTest {
     public void testCreateCourseDuplicate() {
         Course course = getMockCourse();
         when(mockDao.create(eq(YEAR), eq(QUARTER), eq(BOARD), eq(SUBJECT_ID))).thenThrow(new RuntimeException());
-        Course newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID);
+        Course newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID, null, null);
         Assert.fail("Should have thrown runtime exception for duplicate course creation");
     }
 

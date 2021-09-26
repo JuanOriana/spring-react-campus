@@ -136,7 +136,8 @@ public class CourseDaoImpl implements CourseDao {
     @Override
     public Map<User, Role> getTeachers(Long courseId) {
         return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN user_to_course NATURAL JOIN roles WHERE " +
-                "courseId = ? AND roleId BETWEEN ? AND ?", new Object[]{courseId, Permissions.HELPER.getValue(), Permissions.TEACHER.getValue()},
+                "courseId = ? AND roleId BETWEEN ? AND ?", new Object[]{courseId, Permissions.HELPER.getValue(),
+                        Permissions.TEACHER.getValue()},
                 MAP_RESULT_SET_EXTRACTOR);
     }
 
@@ -147,5 +148,26 @@ public class CourseDaoImpl implements CourseDao {
         return jdbcTemplate.query("SELECT * FROM user_to_course WHERE courseId = ? AND userId = ?",
                 new Object[]{courseId, userId}, BELONGS_MAPPER).stream().findFirst().isPresent();
     }
+
+    private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) ->
+            new User.Builder()
+                .withUserId(rs.getLong("userId"))
+                .withUsername(rs.getString("username"))
+                .withEmail(rs.getString("email"))
+                .withFileNumber(rs.getInt("fileNumber"))
+                .withName(rs.getString("name"))
+                .withSurname(rs.getString("surname"))
+            .build();
+
+    @Override
+    public List<User> listUnenrolledUsers(Long courseId) {
+        return new ArrayList<>(jdbcTemplate.query("SELECT userId, name, surname, fileNumber, username, email " +
+                                                    "FROM users " +
+                                                    "EXCEPT " +
+                                                    "SELECT userId, name, surname, fileNumber, username, email " +
+                                                    "FROM users NATURAL JOIN user_to_course " +
+                                                    "WHERE courseId = ?", new Object[]{courseId}, USER_ROW_MAPPER));
+    }
+
 
 }
