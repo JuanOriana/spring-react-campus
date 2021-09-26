@@ -124,13 +124,14 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<byte[]> getProfileImage(Long userId) {
-        return jdbcTemplate.query("SELECT image FROM profile_images WHERE userId = ?", new Object[]{userId}, (rs, rowNumber) ->  rs.getBytes("image")).stream().findFirst();
+        return jdbcTemplate.query("SELECT image FROM profile_images WHERE userId = ?",
+                new Object[]{userId}, (rs, rowNumber) ->  rs.getBytes("image")).stream().findFirst();
     }
 
 
 
     private static final ResultSetExtractor<Map<Role,List<Course>>> ROLE_AND_COURSES_EXTRACTOR= (rs -> {
-        Map<Role,List<Course>> roleMap = new HashMap();
+        Map<Role,List<Course>> roleMap = new HashMap<>();
         while (rs.next()){
             Role role = new Role(rs.getInt("roleId"), rs.getString("roleName"));
             roleMap.putIfAbsent(role,new ArrayList<>());
