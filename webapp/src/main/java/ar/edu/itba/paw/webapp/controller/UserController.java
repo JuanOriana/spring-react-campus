@@ -16,11 +16,12 @@ import java.util.Optional;
 @Controller
 public class UserController extends AuthController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
-    public UserController(AuthFacade authFacade) {
+    public UserController(AuthFacade authFacade, UserService userService) {
         super(authFacade);
+        this.userService = userService;
     }
 
     @RequestMapping("/user")
