@@ -120,4 +120,9 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.listUnenrolledUsers(courseId);
     }
 
+    @Override
+    public List<Course> getCoursesWhereStudent(Long userId) {
+        return courseDao.getCoursesWhereStudent(userId);
+    }
+
 }

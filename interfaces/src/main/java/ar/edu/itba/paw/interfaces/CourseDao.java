@@ -20,4 +20,5 @@ public interface CourseDao {
     boolean belongs(Long userId, Long courseId);
     boolean enroll(Long userId, Long courseId, Integer roleId);
     List<User> listUnenrolledUsers(Long courseId);
+    List<Course> getCoursesWhereStudent(Long userId);
 }

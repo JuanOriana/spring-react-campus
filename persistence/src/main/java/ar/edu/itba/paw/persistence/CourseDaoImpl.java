@@ -169,5 +169,14 @@ public class CourseDaoImpl implements CourseDao {
                                                     "WHERE courseId = ?", new Object[]{courseId}, USER_ROW_MAPPER));
     }
 
+    @Override
+    public List<Course> getCoursesWhereStudent(Long userId) {
+        return new ArrayList<>(jdbcTemplate.query(  "SELECT * " +
+                                                    "FROM courses NATURAL JOIN user_to_course NATURAL JOIN subjects " +
+                                                    "WHERE userId = ? " +
+                                                    "AND roleId = (SELECT roleId FROM roles WHERE rolename='Alumno')",
+                                                    new Object[]{userId}, COURSE_ROW_MAPPER));
+    }
+
 
 }

@@ -124,4 +124,11 @@ public interface CourseService {
      * @return list of Users not enrolled in a course
      */
     List<User> listUnenrolledUsers(Long courseId);
+
+    /**
+     * Attempts to get all courses where the user is a student
+     * @param userId of the queried user
+     * @return a list of courses where the given user is a student
+     */
+    List<Course> getCoursesWhereStudent(Long userId);
 }
