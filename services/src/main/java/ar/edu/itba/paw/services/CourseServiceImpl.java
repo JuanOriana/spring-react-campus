@@ -32,17 +32,13 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
                          List<Integer> endTimes) {
-        Calendar startTime = Calendar.getInstance();
-        Calendar endTime = Calendar.getInstance();
         Course course = courseDao.create(year, quarter, board, subjectId);
         for (int i = 0; i < days.length; i++) {
             Integer startHour = startTimes.get(i);
             Integer endHour = endTimes.get(i);
             if (startHour != null && endHour != null) {
-                startTime.set(Calendar.HOUR, startHour);
-                endTime.set(Calendar.HOUR, endHour);
-                timetableService.create(course, i, new Time(startTime.getTimeInMillis()),
-                        new Time(endTime.getTimeInMillis()));
+                timetableService.create(course, i, new Time(startHour, 0, 0),
+                        new Time(endHour, 0, 0));
             }
         }
         return course;
