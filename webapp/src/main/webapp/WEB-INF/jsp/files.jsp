@@ -26,7 +26,7 @@
             <div class="file-grid">
                 <c:if test="${files.size() == 0}">
                     <p class="announcement-title" style="width: 100%; text-align: center">
-                        No hay resultados que coincidan con tu busqueda
+                        <spring:message code="no.results" htmlEscape="true"/>
                     </p>
                 </c:if>
                 <c:forEach var="file" items="${files}">
@@ -39,7 +39,7 @@
                         </a>
                         <div style="display: flex; align-items: center">
                             <p class="file-name" style="padding-right: 20px; border-right: 3px solid white">
-                                Descargas: <c:out value="${file.downloads}"/>
+                                <spring:message code="files.file.downloads" htmlEscape="true" arguments="${file.downloads}"/>
                             </p>
                             <a href="<c:url value="/course/${file.course.courseId}"/>" class="styleless-anchor">
                                 <p class="file-name"><spring:message code="subject.name" htmlEscape="true" arguments="${file.course.subject.name}"/></p>

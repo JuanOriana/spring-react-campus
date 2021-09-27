@@ -21,7 +21,7 @@
             <a href="<c:url value="/admin/course/select" />" class="styleless-anchor"
                style="display: flex; align-items: center">
                 <img src="<c:url value="/resources/images/page-arrow.png"/>" alt="back" class="back-img">
-                <p style="font-size: 22px; font-weight: 700">Volver atras</p>
+                <p style="font-size: 22px; font-weight: 700"><spring:message code="back.button"/></p>
             </a>
             <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="add.user.to.course" htmlEscape="true" arguments="${course.subject.name}"/></h1>
             <form:label path="userId" for="userId" class="form-label"><spring:message code="add.user.label.user"/></form:label>
@@ -34,7 +34,7 @@
             <form:label path="roleId" for="roleId" class="form-label"><spring:message code="add.user.label.role"/></form:label>
             <form:select path="roleId" class="form-input" style="font-size: 26px">
                 <c:forEach var="role" items="${roles}">
-                    <form:option value="${role.roleId}"><spring:message code="add.user.role.name" htmlEscape="true" arguments="${role.roleName}"/></form:option>
+                    <form:option value="${role.roleId}"><spring:message code="role.${role.roleName}" htmlEscape="true"/></form:option>
                 </c:forEach>
             </form:select>
             <form:errors path="roleId" element="p" cssStyle="color:red;margin-left: 10px"/>

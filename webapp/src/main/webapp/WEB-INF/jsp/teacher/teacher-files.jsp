@@ -64,7 +64,7 @@
                     <div class="file-grid">
                         <c:if test="${files.size() == 0}">
                             <p class="announcement-title" style="width: 100%; text-align: center">
-                                No hay resultados que coincidan con tu busqueda
+                                <spring:message code="no.results"/>
                             </p>
                         </c:if>
                         <c:forEach var="file" items="${files}">
@@ -77,7 +77,7 @@
                                 </a>
                                 <div style="display: flex; align-items: center">
                                     <p class="file-name">
-                                        Descargas: <c:out value="${file.downloads}"/>
+                                        <spring:message code="files.file.downloads" htmlEscape="true" arguments="${file.downloads}"/>
                                     </p>
                                     <img src="<c:url value="/resources/images/trash.png"/>"
                                          alt="delete" class="medium-icon" onclick="deleteById(${file.fileId})">
