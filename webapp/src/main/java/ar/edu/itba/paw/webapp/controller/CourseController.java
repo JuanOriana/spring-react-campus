@@ -126,13 +126,15 @@ public class CourseController extends AuthController {
                                       Integer page,
                               @RequestParam(value = "pageSize", required = false, defaultValue = "10")
                                       Integer pageSize) {
+        CampusUser user = authFacade.getCurrentUser();
+        if(!fileService.isPaginationValid(query, extensionType, categoryType, user.getUserId(), courseId, page, pageSize))
+            throw new PaginationException();
         Page<FileModel> files = fileService.findFileByPage(query, extensionType, categoryType,
-                authFacade.getCurrentUser().getUserId(), courseId,
-                AppPageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, orderProperty))).orElseThrow(PaginationException::new);
+                user.getUserId(), AppPageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, orderProperty)));
         final ModelAndView mav;
         List<FileCategory> categories = fileCategoryService.getCategories();
         final List<FileExtension> extensions = fileExtensionService.getExtensions();
-        if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
+        if (courseService.isPrivileged(user.getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-files");
             mav.addObject("fileForm", fileForm);
             mav.addObject("successMessage", successMessage);

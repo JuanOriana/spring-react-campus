@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.FileExtensionService;
 import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
+import ar.edu.itba.paw.webapp.auth.CampusUser;
 import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
 import ar.edu.itba.paw.webapp.exception.PaginationException;
 import ar.edu.itba.paw.webapp.implementation.AppPageRequest;
@@ -58,14 +59,11 @@ public class FilesController extends AuthController {
                                       Integer page,
                               @RequestParam(value = "pageSize", required = false, defaultValue = "10")
                                       Integer pageSize) {
-        Page<FileModel> files;
-        try {
-            files = fileService.findFileByPage(query, extensionType, categoryType,
-                    authFacade.getCurrentUser().getUserId(), AppPageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, orderProperty)))
-                    .orElseThrow(PaginationException::new);
-        } catch (IllegalArgumentException e) {
+        CampusUser user = authFacade.getCurrentUser();
+        if(!fileService.isPaginationValid(query, extensionType, categoryType, user.getUserId(), -1L, page, pageSize))
             throw new PaginationException();
-        }
+        Page<FileModel> files = fileService.findFileByPage(query, extensionType, categoryType,
+                user.getUserId(), AppPageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, orderProperty)));
         ModelAndView mav = new ModelAndView("files");
         mav.addObject("categories", fileCategoryService.getCategories());
         mav.addObject("files", files.getContent());

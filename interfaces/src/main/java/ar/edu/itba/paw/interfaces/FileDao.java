@@ -38,7 +38,7 @@ public interface FileDao {
     boolean hasAccess(Long fileId, Long userId);
 
     // Course id must be negative when looking for all the courses.
-    Optional<Page<FileModel>> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
+    Page<FileModel> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
                                    Long userId, Long courseId, Pageable pageable);
 
     void incrementDownloads(Long fileId);

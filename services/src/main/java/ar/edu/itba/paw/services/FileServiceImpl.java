@@ -113,17 +113,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Optional<Page<FileModel>> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
+    public Page<FileModel> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
                                           Long userId, Long courseId, Pageable pageable) {
-        if(pageable.getPageSize() < MIN_PAGE_SIZE || pageable.getPageSize() > MAX_PAGE_SIZE ||
-           pageable.getPageNumber() < MIN_PAGE_COUNT ||
-           pageable.getPageNumber() > fileDao.getPageCount(keyword, extensions, categories, userId, courseId, pageable.getPageSize()))
-            return Optional.empty();
         return fileDao.findFileByPage(keyword, extensions, categories, userId, courseId, pageable);
     }
 
     @Override
-    public Optional<Page<FileModel>> findFileByPage(String param, List<Long> extensions, List<Long> categories,
+    public Page<FileModel> findFileByPage(String param, List<Long> extensions, List<Long> categories,
                                           Long userId, Pageable pageable) {
         return findFileByPage(param, extensions, categories, userId, -1L, pageable);
     }
@@ -131,6 +127,14 @@ public class FileServiceImpl implements FileService {
     @Override
     public void incrementDownloads(Long fileId) {
         fileDao.incrementDownloads(fileId);
+    }
+
+    @Override
+    public boolean isPaginationValid(String keyword, List<Long> extensions, List<Long> categories, Long userId,
+                                     Long courseId, Integer page, Integer pageSize) {
+        return pageSize >= MIN_PAGE_SIZE && pageSize <= MAX_PAGE_SIZE &&
+                page >= MIN_PAGE_COUNT &&
+                page <= fileDao.getPageCount(keyword, extensions, categories, userId, courseId, pageSize);
     }
 
 }

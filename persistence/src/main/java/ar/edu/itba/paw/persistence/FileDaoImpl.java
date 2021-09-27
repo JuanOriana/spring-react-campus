@@ -270,14 +270,14 @@ public class  FileDaoImpl implements FileDao {
     }
 
 
-    public Optional<Page<FileModel>> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
+    public Page<FileModel> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
                                           Long userId, Long courseId, Pageable pageable) {
         List<Object> params = new ArrayList<>();
         String unOrderedQuery = buildFilteredQuery(extensions, categories, params, courseId);
         Object[] sqlParams = getQueryParams(params, keyword, courseId, userId);
         List<FileModel> files = jdbcTemplate.query(unOrderedQuery + getOrderBySql(pageable.getSort()) + " LIMIT " + pageable.getPageSize() + " OFFSET " + pageable.getOffset(),
                 sqlParams, FILE_MODEL_ROW_MAPPER);
-        return !files.isEmpty() ? Optional.of(new PageImpl<>(files, pageable, getPageRowCount(unOrderedQuery, sqlParams))) : Optional.empty();
+        return new PageImpl<>(files, pageable, getPageRowCount(unOrderedQuery, sqlParams));
     }
 
     @Override
