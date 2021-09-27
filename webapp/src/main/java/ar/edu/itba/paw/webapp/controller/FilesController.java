@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -57,10 +58,14 @@ public class FilesController extends AuthController {
                                       Integer page,
                               @RequestParam(value = "pageSize", required = false, defaultValue = "10")
                                       Integer pageSize) {
-        Page<FileModel> files = fileService.findFileByPage(query, extensionType, categoryType,
-                authFacade.getCurrentUser().getUserId(),
-                AppPageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, orderProperty)))
-                .orElseThrow(PaginationException::new);
+        Page<FileModel> files;
+        try {
+            files = fileService.findFileByPage(query, extensionType, categoryType,
+                    authFacade.getCurrentUser().getUserId(), AppPageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, orderProperty)))
+                    .orElseThrow(PaginationException::new);
+        } catch (IllegalArgumentException e) {
+            throw new PaginationException();
+        }
         ModelAndView mav = new ModelAndView("files");
         mav.addObject("categories", fileCategoryService.getCategories());
         mav.addObject("files", files.getContent());
