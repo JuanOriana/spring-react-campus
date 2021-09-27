@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,9 +38,12 @@ public interface FileDao {
     boolean hasAccess(Long fileId, Long userId);
 
     // Course id must be negative when looking for all the courses.
-    List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId);
-
-    List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId);
+    Optional<Page<FileModel>> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
+                                   Long userId, Long courseId, Pageable pageable);
 
     void incrementDownloads(Long fileId);
+
+    Integer getPageCount(String keyword, List<Long> extensions, List<Long> categories,
+                         Long userId, Long courseId, Integer pageSize);
+
 }

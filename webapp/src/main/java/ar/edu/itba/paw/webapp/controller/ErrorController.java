@@ -2,12 +2,14 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
+import org.aopalliance.intercept.Invocation;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.InvocationTargetException;
 
 /*
     Extracted implementation from:
@@ -36,6 +38,12 @@ public class ErrorController {
         ModelAndView mav = new ModelAndView("errorPage");
         mav.addObject("errorMsg", "File does not exist");
         return mav;
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    public ModelAndView invalidRequestParameter() {
+        return new ModelAndView("errorPage");
     }
 
     @GetMapping(value = "error")

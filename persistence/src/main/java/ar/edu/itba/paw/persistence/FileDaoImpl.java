@@ -5,6 +5,10 @@ import ar.edu.itba.paw.interfaces.FileDao;
 import ar.edu.itba.paw.interfaces.FileExtensionDao;
 import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -16,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
-public class FileDaoImpl implements FileDao {
+public class  FileDaoImpl implements FileDao {
 
     @Autowired
     private FileExtensionDao fileExtensionDao;
@@ -217,83 +221,94 @@ public class FileDaoImpl implements FileDao {
         return extension;
     }
 
-    // TODO: Refactor
-    public List<FileModel> listByCriteria(OrderCriterias orderCriterias, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId) {
-
-        StringBuilder extensionAndCategoryQuery = new StringBuilder();
-        List<Object> params = new ArrayList<>();
+    private String buildFilteredQuery(List<Long> extensions, List<Long> categories,
+                                      List<Object> params, Long courseId) {
+        StringBuilder query = new StringBuilder();
         // Armado del string para filtrar por extensiones (si hay )
         if (!extensions.isEmpty()) {
-            extensionAndCategoryQuery.append(" ( ");
+            query.append(" ( ");
             for (Long extension : extensions) {
-                Optional<String> exten = fileExtensionDao.getExtension(extension);
-                params.add(exten.orElse("other"));
-                extensionAndCategoryQuery.append(" fileExtension = ? OR ");
+                Optional<java.lang.String> extensionName = fileExtensionDao.getExtension(extension);
+                params.add(extensionName.orElse("other"));
+                query.append(" fileExtension = ? OR ");
             }
-            extensionAndCategoryQuery.delete(extensionAndCategoryQuery.length() - 4, extensionAndCategoryQuery.length()); // Removed the last AND
-            extensionAndCategoryQuery.append(" ) ");
+            query.delete(query.length() - 4, query.length());
+            query.append(" ) ");
         }
         // Armado del string para filtrar por categorias (si hay )
         if (!categories.isEmpty()) {
             if (!extensions.isEmpty()) {
-                extensionAndCategoryQuery.append(" AND ");
+                query.append(" AND ");
             }
-            extensionAndCategoryQuery.append(" ( ");
+            query.append(" ( ");
             for (Long category : categories) {
                 Optional<String> cat = fileCategoryDao.getCategory(category);
                 params.add(cat.orElse("none"));
-                extensionAndCategoryQuery.append("categoryname = ? OR ");
+                query.append("categoryname = ? OR ");
             }
-            extensionAndCategoryQuery.delete(extensionAndCategoryQuery.length() - 4, extensionAndCategoryQuery.length()); // Removed the last AND
-            extensionAndCategoryQuery.append(" ) ");
+            query.delete(query.length() - 4, query.length());
+            query.append(" ) ");
         }
-
-
         String courseSelection = courseId < 0 ? "(SELECT courseId FROM user_to_course WHERE userId = ?)" : "(?)";
-        Long courseSelectionParam = courseId < 0 ? userId : courseId;
         String selectByName = "SELECT * FROM files NATURAL JOIN courses NATURAL JOIN file_extensions NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE LOWER(fileName) LIKE ? AND courseId IN " + courseSelection;
-        String selectFilterExtensionsAndCategory;
+        String selectFilterExtensionsAndCategory = "";
 
-        if (extensions.isEmpty() && categories.isEmpty()) {
-            selectFilterExtensionsAndCategory = "";
-        } else {
-            selectFilterExtensionsAndCategory = " INTERSECT SELECT * FROM files NATURAL JOIN courses NATURAL JOIN file_extensions  NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE " + extensionAndCategoryQuery;
+        if (!extensions.isEmpty() || !categories.isEmpty()) {
+            selectFilterExtensionsAndCategory = " INTERSECT SELECT * FROM files NATURAL JOIN courses NATURAL JOIN file_extensions  NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE " + query;
         }
-        String selectAll = "SELECT *  FROM files NATURAL JOIN courses NATURAL JOIN file_extensions  NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE courseId IN " + courseSelection;
+        return selectByName + selectFilterExtensionsAndCategory;
+    }
 
+    private Object[] getQueryParams(List<Object> params, String keyword, Long courseId, Long userId) {
         Object[] sqlParams = new Object[params.size() + 2];
-        sqlParams[0] = "%" + param.toLowerCase() + "%";
-        sqlParams[1] = courseSelectionParam;
+        sqlParams[0] = "%" + keyword.toLowerCase() + "%";
+        sqlParams[1] = courseId < 0 ? userId : courseId;
         for (int i = 0; i < params.size(); i++) {
             sqlParams[i + 2] = params.get(i);
         }
-
-        StringBuilder orderBy = new StringBuilder().append(" ORDER BY ");
-        switch (criterias) {
-            case NAME:
-                orderBy.append(" fileName ");
-                break;
-            case DATE:
-                orderBy.append(" fileDate ");
-                break;
-            case DOWNLOADS:
-                orderBy.append(" downloads ");
-                break;
-            default:
-                return new ArrayList<>();
-        }
-        return new ArrayList<>(jdbcTemplate.query(selectByName + selectFilterExtensionsAndCategory + orderBy.toString() + orderCriterias.getValue(), sqlParams, FILE_MODEL_ROW_MAPPER));
-
+        return sqlParams;
     }
 
 
-    @Override
-    public List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId) {
-        return listByCriteria(order, criterias, param, extensions, categories, userId, -1L);
+    public Optional<Page<FileModel>> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
+                                          Long userId, Long courseId, Pageable pageable) {
+        List<Object> params = new ArrayList<>();
+        String unOrderedQuery = buildFilteredQuery(extensions, categories, params, courseId);
+        Object[] sqlParams = getQueryParams(params, keyword, courseId, userId);
+        List<FileModel> files = jdbcTemplate.query(unOrderedQuery + getOrderBySql(pageable.getSort()) + " LIMIT " + pageable.getPageSize() + " OFFSET " + pageable.getOffset(),
+                sqlParams, FILE_MODEL_ROW_MAPPER);
+        return !files.isEmpty() ? Optional.of(new PageImpl<>(files, pageable, getPageRowCount(unOrderedQuery, sqlParams))) : Optional.empty();
     }
 
     @Override
     public void incrementDownloads(Long fileId){
-        jdbcTemplate.update("UPDATE files SET downloads = downloads + 1 WHERE fileId = ?",new Object[]{fileId});
+        jdbcTemplate.update("UPDATE files SET downloads = downloads + 1 WHERE fileId = ?", new Object[]{fileId});
+    }
+
+    @Override
+    public Integer getPageCount(String keyword, List<Long> extensions, List<Long> categories,
+                                Long userId, Long courseId, Integer pageSize) {
+        List<Object> params = new ArrayList<>();
+        String unOrderedQuery = buildFilteredQuery(extensions, categories, params, courseId);
+        Object[] sqlParams = getQueryParams(params, keyword, courseId, userId);
+        return (int) Math.ceil((double)getPageRowCount(unOrderedQuery, sqlParams) / pageSize);
+    }
+
+    private int getPageRowCount(String rowCountSql, Object[] args) {
+        return jdbcTemplate.queryForObject(
+                "SELECT count(1) AS row_count FROM (" + rowCountSql + ") as foo",
+                args, (rs, rowNum) -> rs.getInt(1)
+        );
+    }
+
+    private String getOrderBySql(Sort sort) {
+        if(sort.isEmpty()) return "";
+        StringBuilder orderByBuilder = new StringBuilder(" ORDER BY ");
+        for(Sort.Order o : sort) {
+            String property = SortCriterias.valueOf(o.getProperty()).getTranslation();
+            orderByBuilder.append(property).append(" ").append(o.getDirection());
+            if(orderByBuilder.length() != 0) orderByBuilder.append(", ");
+        }
+        return orderByBuilder.toString().replaceAll(", $", "");
     }
 }

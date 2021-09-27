@@ -20,8 +20,8 @@
             <c:set var="categoryType" value="${categoryType}" scope="request"/>
             <jsp:include page="components/file-searcher.jsp">
                 <jsp:param name="query" value="${query}"/>
-                <jsp:param name="orderClass" value="${orderClass}"/>
-                <jsp:param name="orderBy" value="${orderBy}"/>
+                <jsp:param name="order-property" value="${orderProperty}"/>
+                <jsp:param name="order-direction" value="${orderDirection}"/>
             </jsp:include>
             <div class="file-grid">
                 <c:if test="${files.size() == 0}">

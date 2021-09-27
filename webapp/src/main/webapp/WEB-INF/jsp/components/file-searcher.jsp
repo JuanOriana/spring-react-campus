@@ -45,8 +45,8 @@
     </div>
     <div class="file-filter-container" id="filter-container" style="display: none">
         <div style="display: flex; flex-direction: column;">
-            <label for="order-class" class="file-select-label"><spring:message code="file.search.by" /></label>
-            <select name="order-class" id="order-class" class="file-select">
+            <label for="order-property" class="file-select-label"><spring:message code="file.search.by" /></label>
+            <select name="order-property" id="order-property" class="file-select">
                 <option value="DATE" <c:if test="${param.orderClass == 'DATE'}">selected</c:if>>
                     <spring:message code="file.search.order.by.date" htmlEscape="true"/>
                 </option>
@@ -57,8 +57,8 @@
                     <spring:message code="file.search.order.by.downloads" htmlEscape="true"/>
                 </option>
             </select>
-            <label for="order-by" class="file-select-label"><spring:message code="file.search.order" /></label>
-            <select name="order-by" id="order-by" class="file-select">
+            <label for="order-direction" class="file-select-label"><spring:message code="file.search.order" /></label>
+            <select name="order-direction" id="order-direction" class="file-select">
                 <option value="ASC" <c:if test="${param.orderBy == 'ASC'}">selected</c:if>>
                     <spring:message code="file.search.order.asc" htmlEscape="true"/>
                 </option>

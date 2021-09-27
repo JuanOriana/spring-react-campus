@@ -4,6 +4,8 @@ import ar.edu.itba.paw.interfaces.FileDao;
 import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,10 @@ import java.util.stream.Collectors;
 public class FileServiceImpl implements FileService {
 
     private final FileDao fileDao;
+
+    private static final int MIN_PAGE_COUNT = 1;
+    private static final int MIN_PAGE_SIZE = 1;
+    private static final int MAX_PAGE_SIZE = 50;
 
     @Autowired
     public FileServiceImpl(FileDao fileDao) {
@@ -107,17 +113,24 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId) {
-        return fileDao.listByCriteria(order, criterias, param, extensions, categories, userId, courseId);
+    public Optional<Page<FileModel>> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
+                                          Long userId, Long courseId, Pageable pageable) {
+        if(pageable.getPageSize() < MIN_PAGE_SIZE || pageable.getPageSize() > MAX_PAGE_SIZE ||
+           pageable.getPageNumber() < MIN_PAGE_COUNT ||
+           pageable.getPageNumber() > fileDao.getPageCount(keyword, extensions, categories, userId, courseId, pageable.getPageSize()))
+            return Optional.empty();
+        return fileDao.findFileByPage(keyword, extensions, categories, userId, courseId, pageable);
     }
 
     @Override
-    public List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId) {
-        return fileDao.listByCriteria(order, criterias, param, extensions, categories, userId);
+    public Optional<Page<FileModel>> findFileByPage(String param, List<Long> extensions, List<Long> categories,
+                                          Long userId, Pageable pageable) {
+        return findFileByPage(param, extensions, categories, userId, -1L, pageable);
     }
 
     @Override
     public void incrementDownloads(Long fileId) {
         fileDao.incrementDownloads(fileId);
     }
+
 }

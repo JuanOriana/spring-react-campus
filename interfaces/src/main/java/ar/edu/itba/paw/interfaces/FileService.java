@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -149,29 +151,28 @@ public interface FileService {
     /**
      * Attempts to get file/s that the user is authorized given some criterias of searching and filter
      *
-     * @param order      that is expected in the list that is return
-     * @param criterias  establish the search criteria.Example, name, date...
-     * @param param      establish de key word to be search. In case of not searching nothing can be null or ""
+     * @param keyword      establish the key word to be search. In case of not searching nothing can be null or ""
      * @param extensions List of ids of the extensions that are expected in the return list. To get all send a empty list
      * @param categories List of ids of the categories that are expected in the return list. To get all send a empty list
      * @param userId     the ID of the user that is searching
      * @return a list containing all the files that match with all the criterias given (if any).
      */
-    List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId);
+    Optional<Page<FileModel>> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
+                                   Long userId, Pageable pageable);
 
     /**
      * Attempts to get file/s from a course given some criterias of searching and filter
      *
-     * @param order      that is expected in the list that is return
-     * @param criterias  establish the search criteria.Example, name, date...
-     * @param param      establish de key word to be search. In case of not searching nothing can be null or ""
+     * @param keyword      establish the key word to be search. In case of not searching nothing can be null or ""
      * @param extensions List of ids of the extensions that are expected in the return list. To get all send a empty list
      * @param categories List of ids of the categories that are expected in the return list. To get all send a empty list
      * @param userId     the ID of the user that is searching
      * @param courseId   of the course
      * @return a list containing all the files that match with all the criterias given (if any).
      */
-    List<FileModel> listByCriteria(OrderCriterias order, SortCriterias criterias, String param, List<Long> extensions, List<Long> categories, Long userId, Long courseId);
+    Optional<Page<FileModel>> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
+                                   Long userId, Long courseId, Pageable pageable);
 
     void incrementDownloads(Long fileId);
+
 }

@@ -136,30 +136,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
                 "WHERE announcementId = ?", new Object[]{id}, COURSE_ANNOUNCEMENT_ROW_MAPPER).stream().findFirst();
     }
 
-    @Override
-    public Page<Announcement> findAnnouncementByPage(Long userId, Pageable pageable) {
-        String rowCountSql = "SELECT count(1) AS row_count " +
-                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
-                "NATURAL JOIN user_to_course " +
-                "WHERE courseid IN (SELECT courseid FROM user_to_course WHERE userid = ?)";
-        int total =
-                jdbcTemplate.queryForObject(
-                        rowCountSql,
-                        new Object[]{userId}, (rs, rowNum) -> rs.getInt(1)
-                );
-        String querySql = "SELECT * " +
-                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users NATURAL JOIN user_to_course " +
-                "WHERE courseid IN (SELECT courseid FROM user_to_course WHERE userid = ?) " +
-                getSqlOrder(pageable.getSort()) + " " +
-                "LIMIT " + pageable.getPageSize() + " " +
-                "OFFSET " + pageable.getOffset();
-        List<Announcement> announcements = jdbcTemplate.query(
-                querySql,
-                new Object[]{userId}, COURSE_ANNOUNCEMENT_ROW_MAPPER);
-        return new PageImpl<>(announcements, pageable, total);
-    }
-
-    private String getSqlOrder(Sort sort) {
+    private String getOrderBySql(Sort sort) {
         if(sort.isEmpty()) return "";
         StringBuilder orderByBuilder = new StringBuilder("ORDER BY ");
         for(Sort.Order o : sort) {
@@ -168,4 +145,31 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         }
         return orderByBuilder.toString().replaceAll(", $", "");
     }
+
+    private int getTotalPageCount(Long userId) {
+        String rowCountSql = "SELECT count(1) AS row_count " +
+                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
+                "NATURAL JOIN user_to_course " +
+                "WHERE courseid IN (SELECT courseid FROM user_to_course WHERE userid = ?)";
+       return jdbcTemplate.queryForObject(
+                        rowCountSql,
+                        new Object[]{userId}, (rs, rowNum) -> rs.getInt(1)
+                );
+    }
+
+    @Override
+    public Page<Announcement> findAnnouncementByPage(Long userId, Pageable pageable) {
+        String querySql = "SELECT * " +
+                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users NATURAL JOIN user_to_course " +
+                "WHERE courseid IN (SELECT courseid FROM user_to_course WHERE userid = ?) " +
+                getOrderBySql(pageable.getSort()) + " " +
+                "LIMIT " + pageable.getPageSize() + " " +
+                "OFFSET " + pageable.getOffset();
+        List<Announcement> announcements = jdbcTemplate.query(
+                querySql,
+                new Object[]{userId}, COURSE_ANNOUNCEMENT_ROW_MAPPER);
+        return new PageImpl<>(announcements, pageable, getTotalPageCount(userId));
+    }
+
+
 }

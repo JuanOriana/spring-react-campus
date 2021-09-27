@@ -6,9 +6,13 @@ import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
+import ar.edu.itba.paw.webapp.exception.PaginationException;
+import ar.edu.itba.paw.webapp.implementation.AppPageRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -42,25 +46,30 @@ public class FilesController extends AuthController {
     public ModelAndView files(@RequestParam(value = "category-type", required = false, defaultValue = "")
                                       List<Long> categoryType,
                               @RequestParam(value = "extension-type", required = false, defaultValue = "")
-                                          List<Long> extensionType,
+                                      List<Long> extensionType,
                               @RequestParam(value = "query", required = false, defaultValue = "")
-                                          String query,
-                              @RequestParam(value = "order-class",required = false,defaultValue = "DATE")
-                                          String orderClass,
-                              @RequestParam(value = "order-by",required = false,defaultValue = "DESC")
-                                          String orderBy){
-
+                                      String query,
+                              @RequestParam(value = "order-property", required = false, defaultValue = "DATE")
+                                      String orderProperty,
+                              @RequestParam(value = "order-direction", required = false, defaultValue = "DESC")
+                                      Sort.Direction orderDirection,
+                              @RequestParam(value = "page", required = false, defaultValue = "1")
+                                      Integer page,
+                              @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+                                      Integer pageSize) {
+        Page<FileModel> files = fileService.findFileByPage(query, extensionType, categoryType,
+                authFacade.getCurrentUser().getUserId(),
+                AppPageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, orderProperty)))
+                .orElseThrow(PaginationException::new);
         ModelAndView mav = new ModelAndView("files");
         mav.addObject("categories", fileCategoryService.getCategories());
-        mav.addObject("files", fileService.listByCriteria(OrderCriterias.valueOf(orderBy),
-                SortCriterias.valueOf(orderClass),
-                                            query,extensionType,categoryType,authFacade.getCurrentUser().getUserId()));
+        mav.addObject("files", files.getContent());
         mav.addObject("extensions", fileExtensionService.getExtensions());
-        mav.addObject("categoryType",categoryType);
-        mav.addObject("extensionType",extensionType);
-        mav.addObject("query",query);
-        mav.addObject("orderBy",orderBy);
-        mav.addObject("orderClass",orderClass);
+        mav.addObject("categoryType", categoryType);
+        mav.addObject("extensionType", extensionType);
+        mav.addObject("query", query);
+        mav.addObject("orderDirection", orderDirection);
+        mav.addObject("orderProperty", orderProperty);
         return mav;
     }
 
