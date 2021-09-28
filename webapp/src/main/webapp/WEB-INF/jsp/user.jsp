@@ -13,7 +13,7 @@
 <div class="page-organizer">
     <%@ include file="components/navbar.jsp" %>
     <div class="page-container">
-        <div class="big-wrapper" style="max-width: 1100px">
+        <div class="big-wrapper" style="max-width: 800px">
             <div class="user-section-wrapper">
                 <div style="display:flex; flex-direction: column; align-items: center" >
                     <h1 style="margin-bottom: 15px"><spring:message code="user.name" htmlEscape="true" arguments="${currentUser.name},${currentUser.surname}"/></h1>
@@ -24,11 +24,12 @@
                         <img src="<c:url value="/user/profile-image"/>" class="user-section-img"/>
                     </c:if>
                     <form:form modelAttribute="userProfileForm" method="post" enctype="multipart/form-data"
-                               acceptCharset="utf-8" cssStyle="margin: 30px 0; display: flex; flex-direction: column">
-                        <form:label path="image">Insertar imagen</form:label>
+                               acceptCharset="utf-8" cssStyle="margin: 30px 0; display: flex; padding:10px;
+                               flex-direction: column; border: 2px solid #2EC4B6; border-radius:12px">
+                        <form:label path="image" class="form-label" cssStyle="margin: 0">Insertar imagen</form:label>
                         <form:input type="file" path="image" accept="image/png, image/jpeg" />
                         <form:errors path="image" element="p" cssStyle="color:red;margin-left: 10px"/>
-                        <button>Confirmar</button>
+                        <button style="border-radius:4px; padding:4px; font-size: 18px; margin-top: 5px">Confirmar</button>
                     </form:form>
                 </div>
                 <div style="display:flex; flex-direction: column">
