@@ -128,6 +128,9 @@ public class UserDaoImplTest {
 
     @Test
     public void testGetProfileImage() {
+        jdbcTemplate.execute(sqlInsertUserWithId);
+        String sqlInsertProfileImageRow = String.format("INSERT INTO profile_images (image,userId) VALUES (null,%d)", USER_ID);
+        jdbcTemplate.execute(sqlInsertProfileImageRow);
         Optional<byte[]> image = userDao.getProfileImage(USER_ID);
         assertNotNull(image);
         assertFalse(image.isPresent());
