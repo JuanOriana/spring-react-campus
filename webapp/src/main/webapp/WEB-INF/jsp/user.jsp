@@ -17,8 +17,7 @@
                 <div style="display:flex; flex-direction: column; align-items: center" >
                     <h1 style="margin-bottom: 15px"><spring:message code="user.name" htmlEscape="true" arguments="${currentUser.name},${currentUser.surname}"/></h1>
                     <c:if test="${image == null}">
-                        <img src="https://pbs.twimg.com/profile_images/758084549821730820/_HYHtD8F.jpg"
-                             class="user-section-img"/>
+                        <img src="<c:url value="/resources/images/default-user-image.png"/>" class="user-section-img"/>
                     </c:if>
                     <c:if test="${image != null}">
                         <img src="<c:url value="/user/profile-image"/>" class="user-section-img"/>
