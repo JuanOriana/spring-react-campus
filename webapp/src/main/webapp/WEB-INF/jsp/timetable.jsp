@@ -6,6 +6,7 @@
 <head>
     <title><spring:message code="timetable.page.title"/></title>
     <c:import url="config/generalHead.jsp"/>
+    <link href="<c:url value = "/resources/css/timetable.css" />" rel="stylesheet" >
 </head>
 <body>
 <div class="page-organizer">
