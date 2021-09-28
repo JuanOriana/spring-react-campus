@@ -37,8 +37,12 @@ public class PortalController extends AuthController{
     @RequestMapping("/portal")
     public ModelAndView portal() {
         ModelAndView mav = new ModelAndView("portal");
-        List<Course> courses = courseService.list(authFacade.getCurrentUser().getUserId());
+        Long userId = authFacade.getCurrentUser().getUserId();
+        List<Course> courses = courseService.list(userId);
+        List<Course> coursesAsStudent = courseService.getCoursesWhereStudent(userId);
+        System.out.println(coursesAsStudent);
         mav.addObject("courseList", courses);
+        mav.addObject("coursesAsStudent", coursesAsStudent);
         return mav;
     }
 

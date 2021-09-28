@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.models;
 
+import java.util.Objects;
+
 public class Course {
 
     private Long courseId;
@@ -129,5 +131,18 @@ public class Course {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return Objects.equals(courseId, course.courseId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(courseId);
     }
 }
