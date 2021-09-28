@@ -17,11 +17,15 @@
             <div class="courses-container">
                 <c:forEach var="courseItem" items="${courseList}">
                     <div class="course">
-                        <p class="course-name">
+                        <div class="course-name" style="display: flex; align-items: center">
                             <a href="<c:url value="course/${courseItem.courseId}"/>" class="styleless-anchor">
                                 <spring:message code="subject.name" htmlEscape="true" arguments="${courseItem.subject.name}"/>
                             </a>
-                        </p>
+                            <c:if test="${!coursesAsStudent.contains(courseItem)}">
+                                <img src="<c:url value="/resources/images/graduation-hat.png"/>"
+                                     alt="teacher" style="margin-left: 10px" width="28px"/>
+                            </c:if>
+                        </div>
                         <p class="course-extra-info"><spring:message code="portal.course.info" htmlEscape="true" arguments="${courseItem.year},${courseItem.quarter}"/></p>
                     </div>
                 </c:forEach>
