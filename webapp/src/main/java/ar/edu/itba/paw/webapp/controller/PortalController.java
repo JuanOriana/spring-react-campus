@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -39,8 +41,8 @@ public class PortalController extends AuthController{
         ModelAndView mav = new ModelAndView("portal");
         Long userId = authFacade.getCurrentUser().getUserId();
         List<Course> courses = courseService.list(userId);
+        courses.sort(Comparator.comparing(Course::getYear).reversed().thenComparing(Course::getQuarter));
         List<Course> coursesAsStudent = courseService.getCoursesWhereStudent(userId);
-        System.out.println(coursesAsStudent);
         mav.addObject("courseList", courses);
         mav.addObject("coursesAsStudent", coursesAsStudent);
         return mav;

@@ -27,7 +27,10 @@
             <form:label path="userId" for="userId" class="form-label"><spring:message code="add.user.label.user"/></form:label>
             <form:select path="userId" class="form-input" style="font-size: 26px">
                 <c:forEach var="user" items="${users}">
-                    <form:option value="${user.userId}"><spring:message code="add.user.name.and.surname" htmlEscape="true" arguments="${user.name},${user.surname}"/></form:option>
+                    <form:option value="${user.userId}">
+                        <spring:message code="add.user.name.and.surname" htmlEscape="true"
+                                        arguments="${user.fileNumber},${user.name},${user.surname}"/>
+                    </form:option>
                 </c:forEach>
             </form:select>
             <form:errors path="userId" element="p" cssStyle="color:red;margin-left: 10px"/>
@@ -45,7 +48,7 @@
                         <h3 class="form-label" style="margin:0"><spring:message code="add.user.students"/></h3>
                         <ul>
                             <c:forEach var="student" items="${courseStudents}">
-                                <li>${student.name} ${student.surname}</li>
+                                <li><c:out value="${student.name} ${student.surname}"/></li>
                             </c:forEach>
                         </ul>
                     </div>
@@ -53,7 +56,7 @@
                         <h3 class="form-label" style="margin:0"><spring:message code="add.user.teachers" htmlEscape="true"/></h3>
                         <ul>
                             <c:forEach var="teacher" items="${courseTeachers}">
-                                <li>${teacher.name} ${teacher.surname}</li>
+                                <li><c:out value="${teacher.name} ${teacher.surname}"/></li>
                             </c:forEach>
                         </ul>
                     </div>

@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.*;
+import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.form.CourseForm;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -62,9 +65,10 @@ public class AdminController extends AuthController {
     @GetMapping(value = "/course/new")
     public ModelAndView newCourse(final CourseForm courseForm){
         ModelAndView mav = new ModelAndView("admin/new-course");
+        List<Subject> subjects = subjectService.list();
+        subjects.sort(Comparator.comparing(Subject::getName));
         mav.addObject("courseForm",courseForm);
-        mav.addObject("subjects", subjectService.list());
-        mav.addObject("users",userService.list());
+        mav.addObject("subjects", subjects);
         mav.addObject("days",days);
         return mav;
     }
@@ -82,7 +86,9 @@ public class AdminController extends AuthController {
     @GetMapping(value = "/course/select")
     public ModelAndView selectCourse(){
         ModelAndView mav = new ModelAndView("admin/select-course");
-        mav.addObject("courses",courseService.list());
+        List<Course> courses = courseService.list();
+        courses.sort(Comparator.comparing(Course::getYear).reversed().thenComparing(Course::getQuarter));
+        mav.addObject("courses",courses);
         return mav;
     }
 
@@ -94,6 +100,7 @@ public class AdminController extends AuthController {
         List<User> courseStudents = courseService.getStudents(courseId);
         Set<User> courseTeachers = courseService.getTeachers(courseId).keySet();
         List<User> unenrolledUsers = courseService.listUnenrolledUsers(courseId);
+        unenrolledUsers.sort(Comparator.comparingInt(User::getFileNumber));
         mav.addObject("userToCourseForm",userToCourseForm);
         mav.addObject("users", unenrolledUsers);
         mav.addObject("course",courseService.getById(courseId).orElseThrow(RuntimeException::new));
