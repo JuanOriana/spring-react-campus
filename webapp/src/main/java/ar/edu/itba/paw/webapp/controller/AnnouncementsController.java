@@ -2,13 +2,11 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.AnnouncementService;
 import ar.edu.itba.paw.models.Announcement;
+import ar.edu.itba.paw.models.CampusPage;
+import ar.edu.itba.paw.models.CampusPageRequest;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.auth.CampusUser;
-import ar.edu.itba.paw.webapp.exception.PaginationException;
-import ar.edu.itba.paw.webapp.implementation.AppPageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,16 +28,17 @@ public class AnnouncementsController extends AuthController {
                                       @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
         ModelAndView mav = new ModelAndView("announcements");
         CampusUser currentUser = authFacade.getCurrentUser();
-        if(!announcementService.isPaginationValid(currentUser.getUserId(), page, pageSize)) throw new PaginationException();
-        Page<Announcement> announcements = announcementService.findAnnouncementByPage(currentUser.getUserId(),
-                AppPageRequest.of(page, pageSize, Sort.by("date").descending()));
+        CampusPage<Announcement> announcements = announcementService.listByUser(currentUser.getUserId(),
+                new CampusPageRequest(page, pageSize));
         mav.addObject("announcementList", announcements.getContent());
-        mav.addObject("currentPage", announcements.getPageable().getPageNumber());
-        mav.addObject("maxPage", announcements.getTotalPages());
-        mav.addObject("pageSize", announcements.getPageable().getPageSize());
+        mav.addObject("currentPage", announcements.getPage());
+        mav.addObject("maxPage", announcements.getTotal());
+        mav.addObject("pageSize", announcements.getSize());
         mav.addObject("dateTimeFormatter", dateTimeFormatter);
         return mav;
     }
+
+
 
     @DeleteMapping(value = "/announcements/{announcementId}")
     @ResponseBody

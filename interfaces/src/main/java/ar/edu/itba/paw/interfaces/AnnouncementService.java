@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 
-import ar.edu.itba.paw.models.Announcement;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -41,23 +39,6 @@ public interface AnnouncementService {
     boolean delete(Long id);
 
     /**
-     * Gets all the current available announcements for a specific course
-     *
-     * @param courseId identifier of the course to get the announcements from
-     * @return list containing all the current course available announcements (if any)
-     */
-    List<Announcement> listByCourse(Long courseId);
-
-    /**
-     * Gets all the current available announcements for a specific course
-     *
-     * @param courseId   identifier of the course to get the announcements from
-     * @param comparator identifies the order expected in the response list
-     * @return list containing all the current course available announcements (if any)
-     */
-    List<Announcement> listByCourse(Long courseId, Comparator<Announcement> comparator);
-
-    /**
      * Attempts to get an announcement given an id
      *
      * @param id of the announcement to be retrieved
@@ -65,8 +46,18 @@ public interface AnnouncementService {
      */
     Optional<Announcement> getById(Long id);
 
+    /**
+     * Gets all the current available announcements for an user
+     *
+     * @param userId identifier of the user to get the announcements from
+     * @return list containing all the current user available announcements (if any)
+     */
+    CampusPage<Announcement> listByUser(Long userId, CampusPageRequest pageRequest);
 
-    Page<Announcement> findAnnouncementByPage(Long userId, Pageable pageable);
-
-    boolean isPaginationValid(Long userId, Integer page, Integer pageSize);
+    /**
+     * Gets all the current available announcements for a specific course
+     * @param courseId   identifier of the course to get the announcements from
+     * @return list containing all the current course available announcements (if any)
+     */
+    CampusPage<Announcement> listByCourse(Long courseId, CampusPageRequest pageRequest);
 }

@@ -47,22 +47,22 @@
         <div style="display: flex; flex-direction: column;">
             <label for="order-property" class="file-select-label"><spring:message code="file.search.by" /></label>
             <select name="order-property" id="order-property" class="file-select">
-                <option value="DATE" <c:if test="${param.orderClass == 'DATE'}">selected</c:if>>
+                <option value="date" <c:if test="${param.orderClass == 'date'}">selected</c:if>>
                     <spring:message code="file.search.order.by.date" htmlEscape="true"/>
                 </option>
-                <option value="NAME" <c:if test="${param.orderClass == 'NAME'}">selected</c:if>>
+                <option value="name" <c:if test="${param.orderClass == 'name'}">selected</c:if>>
                     <spring:message code="file.search.order.by.name" htmlEscape="true"/>
                 </option>
-                <option value="DOWNLOADS" <c:if test="${param.orderClass == 'DOWNLOADS'}">selected</c:if>>
+                <option value="downloads" <c:if test="${param.orderClass == 'downloads'}">selected</c:if>>
                     <spring:message code="file.search.order.by.downloads" htmlEscape="true"/>
                 </option>
             </select>
             <label for="order-direction" class="file-select-label"><spring:message code="file.search.order" /></label>
             <select name="order-direction" id="order-direction" class="file-select">
-                <option value="ASC" <c:if test="${param.orderBy == 'ASC'}">selected</c:if>>
+                <option value="asc" <c:if test="${param.orderBy == 'asc'}">selected</c:if>>
                     <spring:message code="file.search.order.asc" htmlEscape="true"/>
                 </option>
-                <option value="DESC" <c:if test="${param.orderBy == 'DESC'}">selected</c:if>>
+                <option value="desc" <c:if test="${param.orderBy == 'desc'}">selected</c:if>>
                     <spring:message code="file.search.order.desc" htmlEscape="true"/>
                 </option>
             </select>

@@ -4,11 +4,9 @@ import ar.edu.itba.paw.interfaces.FileCategoryDao;
 import ar.edu.itba.paw.interfaces.FileDao;
 import ar.edu.itba.paw.interfaces.FileExtensionDao;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -21,6 +19,10 @@ import java.util.*;
 
 @Repository
 public class  FileDaoImpl implements FileDao {
+
+    private static final int MIN_PAGE_COUNT = 1;
+    private static final int MIN_PAGE_SIZE = 1;
+    private static final int MAX_PAGE_SIZE = 50;
 
     @Autowired
     private FileExtensionDao fileExtensionDao;
@@ -212,6 +214,23 @@ public class  FileDaoImpl implements FileDao {
         return userResponse.isPresent();
     }
 
+    @Override
+    public CampusPage<FileModel> listByCourse(String keyword, List<Long> extensions,
+                                              List<Long> categories, Long userId, Long courseId,
+                                              CampusPageRequest pageRequest,
+                                              CampusPageSort sort) throws PaginationArgumentException {
+
+        return findFileByPage(keyword, extensions, categories, userId, courseId, pageRequest, sort);
+    }
+
+    @Override
+    public CampusPage<FileModel> listByUser(String keyword, List<Long> extensions,
+                                            List<Long> categories, Long userId,
+                                            CampusPageRequest pageRequest,
+                                            CampusPageSort sort) throws PaginationArgumentException {
+        return findFileByPage(keyword, extensions, categories, userId, -1L, pageRequest, sort);
+    }
+
     private String getExtension(String filename) {
         String extension = "";
         int i = filename.lastIndexOf('.');
@@ -224,7 +243,7 @@ public class  FileDaoImpl implements FileDao {
     private String buildFilteredQuery(List<Long> extensions, List<Long> categories,
                                       List<Object> params, Long courseId) {
         StringBuilder query = new StringBuilder();
-        // Armado del string para filtrar por extensiones (si hay )
+
         if (!extensions.isEmpty()) {
             query.append(" ( ");
             for (Long extension : extensions) {
@@ -235,7 +254,7 @@ public class  FileDaoImpl implements FileDao {
             query.delete(query.length() - 4, query.length());
             query.append(" ) ");
         }
-        // Armado del string para filtrar por categorias (si hay )
+
         if (!categories.isEmpty()) {
             if (!extensions.isEmpty()) {
                 query.append(" AND ");
@@ -270,27 +289,28 @@ public class  FileDaoImpl implements FileDao {
     }
 
 
-    public Page<FileModel> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
-                                          Long userId, Long courseId, Pageable pageable) {
+    private CampusPage<FileModel> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
+                                          Long userId, Long courseId, CampusPageRequest pageRequest,
+                                          CampusPageSort sort) {
         List<Object> params = new ArrayList<>();
         String unOrderedQuery = buildFilteredQuery(extensions, categories, params, courseId);
         Object[] sqlParams = getQueryParams(params, keyword, courseId, userId);
-        List<FileModel> files = jdbcTemplate.query(unOrderedQuery + getOrderBySql(pageable.getSort()) + " LIMIT " + pageable.getPageSize() + " OFFSET " + pageable.getOffset(),
+        int pageCount = getPageCount(unOrderedQuery, sqlParams, pageRequest.getPageSize());
+        if(pageCount == 0) return new CampusPage<>();
+        if(pageRequest.getPage() > pageCount) throw new PaginationArgumentException();
+        List<FileModel> files = jdbcTemplate.query(unOrderedQuery + " " +
+                        "ORDER BY " + sort.getProperty() + " " + sort.getDirection() + " " +
+                        "LIMIT " + pageRequest.getPageSize() + " OFFSET " + (pageRequest.getPage() - 1) * pageRequest.getPageSize(),
                 sqlParams, FILE_MODEL_ROW_MAPPER);
-        return new PageImpl<>(files, pageable, getPageRowCount(unOrderedQuery, sqlParams));
+        return new CampusPage<>(files, pageRequest.getPageSize(), pageRequest.getPage(), pageCount);
     }
 
     @Override
     public void incrementDownloads(Long fileId){
-        jdbcTemplate.update("UPDATE files SET downloads = downloads + 1 WHERE fileId = ?", new Object[]{fileId});
+        jdbcTemplate.update("UPDATE files SET downloads = downloads + 1 WHERE fileId = ?", fileId);
     }
 
-    @Override
-    public Integer getPageCount(String keyword, List<Long> extensions, List<Long> categories,
-                                Long userId, Long courseId, Integer pageSize) {
-        List<Object> params = new ArrayList<>();
-        String unOrderedQuery = buildFilteredQuery(extensions, categories, params, courseId);
-        Object[] sqlParams = getQueryParams(params, keyword, courseId, userId);
+    private Integer getPageCount(String unOrderedQuery, Object[] sqlParams, Integer pageSize) {
         return (int) Math.ceil((double)getPageRowCount(unOrderedQuery, sqlParams) / pageSize);
     }
 
@@ -301,14 +321,4 @@ public class  FileDaoImpl implements FileDao {
         );
     }
 
-    private String getOrderBySql(Sort sort) {
-        if(sort.isEmpty()) return "";
-        StringBuilder orderByBuilder = new StringBuilder(" ORDER BY ");
-        for(Sort.Order o : sort) {
-            String property = SortCriterias.valueOf(o.getProperty()).getTranslation();
-            orderByBuilder.append(property).append(" ").append(o.getDirection());
-            if(orderByBuilder.length() != 0) orderByBuilder.append(", ");
-        }
-        return orderByBuilder.toString().replaceAll(", $", "");
-    }
 }

@@ -12,9 +12,6 @@ public class CourseVoter {
     private CourseService courseService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private FileDao fileDao;
 
     public boolean hasCourseAccess(Authentication authentication, Long courseId) {

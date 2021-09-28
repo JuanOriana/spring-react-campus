@@ -16,13 +16,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfFilter;
+
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableWebSecurity
-@ComponentScan("ar.edu.itba.paw.webapp.auth")
+@ComponentScan({"ar.edu.itba.paw.webapp.auth"})
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -81,5 +82,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
                 .antMatchers("/resources/css/**", "/resources/js/**", "/resources/images/**", "/403");
     }
+
+
 
 }

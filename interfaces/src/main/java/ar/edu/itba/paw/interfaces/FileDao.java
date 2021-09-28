@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -37,13 +38,14 @@ public interface FileDao {
 
     boolean hasAccess(Long fileId, Long userId);
 
-    // Course id must be negative when looking for all the courses.
-    Page<FileModel> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
-                                   Long userId, Long courseId, Pageable pageable);
+    CampusPage<FileModel> listByCourse(String keyword, List<Long> extensions, List<Long> categories,
+                                       Long userId, Long courseId, CampusPageRequest pageRequest,
+                                       CampusPageSort sort) throws PaginationArgumentException;
+
+    CampusPage<FileModel> listByUser(String keyword, List<Long> extensions, List<Long> categories,
+                                     Long userId, CampusPageRequest pageRequest,
+                                     CampusPageSort sort) throws PaginationArgumentException;
 
     void incrementDownloads(Long fileId);
-
-    Integer getPageCount(String keyword, List<Long> extensions, List<Long> categories,
-                         Long userId, Long courseId, Integer pageSize);
 
 }

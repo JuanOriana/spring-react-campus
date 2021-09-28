@@ -1,8 +1,5 @@
 import ar.edu.itba.paw.interfaces.AnnouncementDao;
-import ar.edu.itba.paw.models.Announcement;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Subject;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.AnnouncementServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,8 +28,8 @@ public class AnnouncementServiceImplTest {
     private final String USER_USERNAME = "paw2021";
     private final String USER_EMAIL = "paw2021@itba.edu.ar";
     private final String USER_PASSWORD = "asd123";
-    private final Integer PAGE_SIZE = 1;
-    private final Integer PAGE = 0;
+    private final Integer PAGE_SIZE = 10;
+    private final Integer PAGE = 1;
 
     private final Long COURSE_ID = 1L;
     private final int COURSE_YEAR = 2021;
@@ -142,14 +139,5 @@ public class AnnouncementServiceImplTest {
         Assert.assertFalse(announcementUpdateResult);
     }
 
-    @Test
-    public void testList() {
-        Announcement announcement = getMockAnnouncement();
-        when(mockDao.findAnnouncementByPage(USER_ID, PageRequest.of(PAGE, PAGE_SIZE)))
-                .thenReturn(new PageImpl<>(new ArrayList<Announcement>(){{ add(announcement); }}));
-        List<Announcement> announcements = announcementService.findAnnouncementByPage(USER_ID, PageRequest.of(PAGE, PAGE_SIZE)).toList();
-        Assert.assertTrue(announcements.size() > 0);
-        Assert.assertEquals(announcement.getCourse().getCourseId(), announcements.get(0).getCourse().getCourseId());
-    }
 
 }

@@ -7,13 +7,9 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.auth.CampusUser;
 import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
-import ar.edu.itba.paw.webapp.exception.PaginationException;
-import ar.edu.itba.paw.webapp.implementation.AppPageRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -51,28 +48,29 @@ public class FilesController extends AuthController {
                                       List<Long> extensionType,
                               @RequestParam(value = "query", required = false, defaultValue = "")
                                       String query,
-                              @RequestParam(value = "order-property", required = false, defaultValue = "DATE")
+                              @RequestParam(value = "order-property", required = false, defaultValue = "date")
                                       String orderProperty,
-                              @RequestParam(value = "order-direction", required = false, defaultValue = "DESC")
-                                      Sort.Direction orderDirection,
+                              @RequestParam(value = "order-direction", required = false, defaultValue = "desc")
+                                      String orderDirection,
                               @RequestParam(value = "page", required = false, defaultValue = "1")
                                       Integer page,
                               @RequestParam(value = "pageSize", required = false, defaultValue = "10")
                                       Integer pageSize) {
         CampusUser user = authFacade.getCurrentUser();
-        if(!fileService.isPaginationValid(query, extensionType, categoryType, user.getUserId(), -1L, page, pageSize))
-            throw new PaginationException();
-        Page<FileModel> files = fileService.findFileByPage(query, extensionType, categoryType,
-                user.getUserId(), AppPageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, orderProperty)));
+        CampusPage<FileModel> filePage = fileService.listByUser(query, extensionType, categoryType, user.getUserId(),
+                new CampusPageRequest(page, pageSize), new CampusPageSort(orderDirection, orderProperty));
         ModelAndView mav = new ModelAndView("files");
         mav.addObject("categories", fileCategoryService.getCategories());
-        mav.addObject("files", files.getContent());
+        mav.addObject("files", filePage.getContent());
         mav.addObject("extensions", fileExtensionService.getExtensions());
         mav.addObject("categoryType", categoryType);
         mav.addObject("extensionType", extensionType);
         mav.addObject("query", query);
         mav.addObject("orderDirection", orderDirection);
         mav.addObject("orderProperty", orderProperty);
+        mav.addObject("currentPage", filePage.getPage());
+        mav.addObject("maxPage", filePage.getTotal());
+        mav.addObject("pageSize", filePage.getSize());
         return mav;
     }
 

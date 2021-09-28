@@ -97,6 +97,11 @@ public class FileDaoImplTest {
     private final String PASSWORD = "d8d3aedd4b5d0ce0131600eaadc48dcb";
     private final boolean IS_ADMIN = true;
 
+    private final String SORT_DIRECTION = "desc";
+    private final String SORT_PROPERTY = "fileDate";
+    private final Integer PAGE = 1;
+    private final Integer PAGE_SIZE = 10;
+
 
     private FileModel createFileModelObject() throws FileNotFoundException {
         FileExtension fExtension = new FileExtension(FILE_EXTENSION_ID_OTHER, FILE_EXTENSION_OTHER);
@@ -442,8 +447,9 @@ public class FileDaoImplTest {
         jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory2.getCategoryId(), fileModel2.getFileId()));
         assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
-        List<FileModel> list = fileDao.findFileByPage("",
-                Collections.singletonList(FILE_EXTENSION_ID_OTHER), new ArrayList<>(), USER_ID, COURSE_ID, PageRequest.of(0,10)).toList();
+        List<FileModel> list = fileDao.listByCourse("",
+                Collections.singletonList(FILE_EXTENSION_ID_OTHER), new ArrayList<>(), USER_ID, COURSE_ID,
+                new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertEquals(2, list.size());
     }
 
@@ -459,8 +465,9 @@ public class FileDaoImplTest {
         jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory2.getCategoryId(), fileModel2.getFileId()));
         assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
-        List<FileModel> list = fileDao.findFileByPage("", new ArrayList<>(),
-                Collections.singletonList(FILE_CATEGORY_ID), USER_ID, COURSE_ID, PageRequest.of(0,10)).toList();
+        List<FileModel> list = fileDao.listByCourse("",
+                new ArrayList<>(), Collections.singletonList(FILE_CATEGORY_ID), USER_ID, COURSE_ID,
+                new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertEquals(1, list.size());
         assertEquals(FILE_ID, list.get(0).getFileId());
     }
@@ -473,21 +480,22 @@ public class FileDaoImplTest {
         jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
-        List<FileModel> list = fileDao.findFileByPage("", new ArrayList<>(),
-                Collections.singletonList(INEXISTENCE_FILE_CATEGORY_ID), USER_ID, COURSE_ID, PageRequest.of(0,10)).toList();
+        List<FileModel> list = fileDao.listByCourse("",
+                new ArrayList<>(), Collections.singletonList(INEXISTENCE_FILE_CATEGORY_ID), USER_ID, COURSE_ID,
+                new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertTrue(list.isEmpty());
     }
 
     @Test
-    public void testListByCriteriaEmptyCouse() throws FileNotFoundException {
+    public void testListByCriteriaEmptyCourse() throws FileNotFoundException {
         FileModel fileModel = createFileModelObject();
         insertFileModelToDB(fileModel);
         FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
         jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
-        List<FileModel> list = fileDao.findFileByPage("", new ArrayList<>(), new ArrayList<>(),
-                USER_ID, 999L, PageRequest.of(0,10)).toList();
+        List<FileModel> list = fileDao.listByCourse("", new ArrayList<>(), new ArrayList<>(), USER_ID, 999L,
+                new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertTrue(list.isEmpty());
     }
 
@@ -499,8 +507,9 @@ public class FileDaoImplTest {
         jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
-        List<FileModel> list = fileDao.findFileByPage("", new ArrayList<>(),
-                new ArrayList<>(Collections.singleton(FILE_CATEGORY_ID)), USER_ID, COURSE_ID,PageRequest.of(0,10)).toList();
+        List<FileModel> list = fileDao.listByCourse("", new ArrayList<>(),
+                Collections.singletonList(FILE_CATEGORY_ID), USER_ID, COURSE_ID,
+                new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertEquals(1, list.size());
     }
 
@@ -516,8 +525,9 @@ public class FileDaoImplTest {
         jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory2.getCategoryId(), fileModel2.getFileId()));
         assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
-        List<FileModel> list = fileDao.findFileByPage(FILE_NAME2, new ArrayList<>(), new ArrayList<>(),
-                USER_ID, COURSE_ID, PageRequest.of(0,10)).toList();
+        List<FileModel> list = fileDao.listByCourse(FILE_NAME2, new ArrayList<>(), new ArrayList<>(),
+                USER_ID, COURSE_ID, new CampusPageRequest(PAGE, PAGE_SIZE),
+                new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertEquals(1, list.size());
         assertEquals(FILE_ID2, list.get(0).getFileId());
     }
@@ -533,8 +543,9 @@ public class FileDaoImplTest {
         jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
         jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory2.getCategoryId(), fileModel2.getFileId()));
         assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
-        List<FileModel> list = fileDao.findFileByPage("test", new ArrayList<>(),
-                new ArrayList<>(), USER_ID, COURSE_ID, PageRequest.of(0,10)).toList();
+        List<FileModel> list = fileDao.listByCourse("test", new ArrayList<>(),
+                new ArrayList<>(), USER_ID, COURSE_ID, new CampusPageRequest(PAGE, PAGE_SIZE),
+                new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertFalse(list.isEmpty());
         assertEquals(2, list.size());
     }

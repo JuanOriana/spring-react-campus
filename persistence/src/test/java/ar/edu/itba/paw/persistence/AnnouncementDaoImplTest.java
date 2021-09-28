@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Announcement;
+import ar.edu.itba.paw.models.*;
 
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Subject;
-import ar.edu.itba.paw.models.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,8 +61,8 @@ public class AnnouncementDaoImplTest {
     private final String SUBJECT_CODE = "A1";
     private final String SUBJECT_NAME = "Protos";
 
-    private final Integer PAGE = 0;
-    private final Integer PAGE_SIZE = 1;
+    private final Integer PAGE = 1;
+    private final Integer PAGE_SIZE = 10;
 
     private final Integer ROLE_ID = 1;
 
@@ -260,7 +257,7 @@ public class AnnouncementDaoImplTest {
     @Test
     public void testList() {
         insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
-        List<Announcement> list = announcementDao.findAnnouncementByPage(USER_ID, PageRequest.of(PAGE, PAGE_SIZE)).toList();
+        List<Announcement> list = announcementDao.listByUser(USER_ID, new CampusPageRequest(PAGE, PAGE_SIZE)).getContent();
         assertNotNull(list);
         assertEquals(1, list.size());
         assertEquals(ANNOUNCEMENT_ID, list.get(0).getAnnouncementId());
@@ -269,7 +266,7 @@ public class AnnouncementDaoImplTest {
     @Test
     public void testListCourseAnnouncements() {
         insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
-        List<Announcement> list = announcementDao.listByCourse(COURSE_ID);
+        List<Announcement> list = announcementDao.listByCourse(COURSE_ID, new CampusPageRequest(PAGE, PAGE_SIZE)).getContent();
         assertNotNull(list);
         assertEquals(1, list.size());
         assertEquals(ANNOUNCEMENT_ID, list.get(0).getAnnouncementId());
@@ -278,7 +275,7 @@ public class AnnouncementDaoImplTest {
     @Test
     public void testListCourseAnnouncementsNonExistentId() {
         insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
-        List<Announcement> list = announcementDao.listByCourse(COURSE_ID + 1);
+        List<Announcement> list = announcementDao.listByCourse(COURSE_ID + 1, new CampusPageRequest(PAGE, PAGE_SIZE)).getContent();
         assertNotNull(list);
         assertEquals(0, list.size());
     }

@@ -157,8 +157,9 @@ public interface FileService {
      * @param userId     the ID of the user that is searching
      * @return a list containing all the files that match with all the criterias given (if any).
      */
-    Page<FileModel> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
-                                   Long userId, Pageable pageable);
+    CampusPage<FileModel> listByUser(String keyword, List<Long> extensions, List<Long> categories,
+                                     Long userId, CampusPageRequest pageRequest,
+                                     CampusPageSort sort);
 
     /**
      * Attempts to get file/s from a course given some criterias of searching and filter
@@ -170,13 +171,13 @@ public interface FileService {
      * @param courseId   of the course
      * @return a list containing all the files that match with all the criterias given (if any).
      */
-    Page<FileModel> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
-                                   Long userId, Long courseId, Pageable pageable);
+    CampusPage<FileModel> listByCourse(String keyword, List<Long> extensions, List<Long> categories,
+                                       Long userId, Long courseId, CampusPageRequest pageRequest,
+                                       CampusPageSort sort);
+
+
 
     void incrementDownloads(Long fileId);
-
-    boolean isPaginationValid(String keyword, List<Long> extensions, List<Long> categories,
-                              Long userId, Long courseId, Integer page, Integer pageSize);
 
 
 }

@@ -17,10 +17,6 @@ public class FileServiceImpl implements FileService {
 
     private final FileDao fileDao;
 
-    private static final int MIN_PAGE_COUNT = 1;
-    private static final int MIN_PAGE_SIZE = 1;
-    private static final int MAX_PAGE_SIZE = 50;
-
     @Autowired
     public FileServiceImpl(FileDao fileDao) {
         this.fileDao = fileDao;
@@ -113,15 +109,17 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Page<FileModel> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
-                                          Long userId, Long courseId, Pageable pageable) {
-        return fileDao.findFileByPage(keyword, extensions, categories, userId, courseId, pageable);
+    public CampusPage<FileModel> listByUser(String keyword, List<Long> extensions, List<Long> categories,
+                                            Long userId, CampusPageRequest pageRequest,
+                                            CampusPageSort sort) {
+        return fileDao.listByUser(keyword, extensions, categories, userId, pageRequest, sort);
     }
 
     @Override
-    public Page<FileModel> findFileByPage(String param, List<Long> extensions, List<Long> categories,
-                                          Long userId, Pageable pageable) {
-        return findFileByPage(param, extensions, categories, userId, -1L, pageable);
+    public CampusPage<FileModel> listByCourse(String keyword, List<Long> extensions, List<Long> categories,
+                                              Long userId, Long courseId, CampusPageRequest pageRequest,
+                                              CampusPageSort sort) {
+        return fileDao.listByCourse(keyword, extensions, categories, userId, courseId, pageRequest, sort);
     }
 
     @Override
@@ -129,12 +127,5 @@ public class FileServiceImpl implements FileService {
         fileDao.incrementDownloads(fileId);
     }
 
-    @Override
-    public boolean isPaginationValid(String keyword, List<Long> extensions, List<Long> categories, Long userId,
-                                     Long courseId, Integer page, Integer pageSize) {
-        return pageSize >= MIN_PAGE_SIZE && pageSize <= MAX_PAGE_SIZE &&
-                page >= MIN_PAGE_COUNT &&
-                page <= fileDao.getPageCount(keyword, extensions, categories, userId, courseId, pageSize);
-    }
 
 }

@@ -5,13 +5,9 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.auth.CampusUser;
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
-import ar.edu.itba.paw.webapp.exception.PaginationException;
 import ar.edu.itba.paw.webapp.form.AnnouncementForm;
 import ar.edu.itba.paw.webapp.form.FileForm;
-import ar.edu.itba.paw.webapp.implementation.AppPageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +27,8 @@ public class CourseController extends AuthController {
     private final FileService fileService;
     private final MailingService mailingService;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-    private final Comparator<Announcement> orderByDate = (o1, o2) -> o2.getDate().compareTo(o1.getDate());
-
+    private static final int DEFAULT_PAGE = 1;
+    private static final int DEFAULT_PAGE_SIZE = 10;
     @Autowired
     public CourseController(AuthFacade authFacade, AnnouncementService announcementService,
                             CourseService courseService, FileCategoryService fileCategoryService,
@@ -55,9 +51,12 @@ public class CourseController extends AuthController {
 
     @GetMapping(value = "/{courseId}/announcements")
     public ModelAndView announcements(@PathVariable Long courseId, final AnnouncementForm announcementForm,
-                                      String successMessage) {
+                                      String successMessage,
+                                      @RequestParam(value = "page", required = false, defaultValue = "1")
+                                                  Integer page,
+                                      @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+                                                  Integer pageSize) {
         final ModelAndView mav;
-        List<Announcement> announcements = announcementService.listByCourse(courseId, orderByDate);
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-course");
             mav.addObject("announcementForm", announcementForm);
@@ -66,7 +65,8 @@ public class CourseController extends AuthController {
             mav = new ModelAndView("course");
         }
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
-        mav.addObject("announcementList", announcements);
+        CampusPage<Announcement> announcements = announcementService.listByCourse(courseId, new CampusPageRequest(page, pageSize));
+        mav.addObject("announcementList", announcements.getContent());
         mav.addObject("dateTimeFormatter",dateTimeFormatter);
         return mav;
     }
@@ -97,7 +97,7 @@ public class CourseController extends AuthController {
             announcementForm.setTitle("");
             successMessage = "Anuncio publicado exitosamente";
         }
-        return announcements(courseId, announcementForm, successMessage);
+        return announcements(courseId, announcementForm, successMessage, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
 
     @RequestMapping("/{courseId}/teachers")
@@ -118,19 +118,17 @@ public class CourseController extends AuthController {
                                       List<Long> extensionType,
                               @RequestParam(value = "query", required = false, defaultValue = "")
                                       String query,
-                              @RequestParam(value = "order-property", required = false, defaultValue = "DATE")
+                              @RequestParam(value = "order-property", required = false, defaultValue = "date")
                                       String orderProperty,
-                              @RequestParam(value = "order-direction", required = false, defaultValue = "DESC")
-                                          Sort.Direction orderDirection,
+                              @RequestParam(value = "order-direction", required = false, defaultValue = "desc")
+                                      String orderDirection,
                               @RequestParam(value = "page", required = false, defaultValue = "1")
                                       Integer page,
                               @RequestParam(value = "pageSize", required = false, defaultValue = "10")
                                       Integer pageSize) {
         CampusUser user = authFacade.getCurrentUser();
-        if(!fileService.isPaginationValid(query, extensionType, categoryType, user.getUserId(), courseId, page, pageSize))
-            throw new PaginationException();
-        Page<FileModel> files = fileService.findFileByPage(query, extensionType, categoryType,
-                user.getUserId(), AppPageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, orderProperty)));
+        CampusPage<FileModel> filePage = fileService.listByCourse(query, extensionType, categoryType, user.getUserId(),
+                courseId, new CampusPageRequest(page, pageSize), new CampusPageSort(orderDirection, orderProperty));
         final ModelAndView mav;
         List<FileCategory> categories = fileCategoryService.getCategories();
         final List<FileExtension> extensions = fileExtensionService.getExtensions();
@@ -143,13 +141,16 @@ public class CourseController extends AuthController {
         }
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("categories", categories);
-        mav.addObject("files", files.getContent());
+        mav.addObject("files", filePage.getContent());
         mav.addObject("extensions", extensions);
         mav.addObject("categoryType", categoryType);
         mav.addObject("extensionType", extensionType);
         mav.addObject("query", query);
         mav.addObject("orderDirection", orderDirection);
         mav.addObject("orderProperty", orderProperty);
+        mav.addObject("currentPage", filePage.getPage());
+        mav.addObject("maxPage", filePage.getTotal());
+        mav.addObject("pageSize", filePage.getSize());
         return mav;
     }
 
@@ -167,7 +168,7 @@ public class CourseController extends AuthController {
             successMessage = "Archivo creado exitosamente";
         }
         return files(courseId, fileForm, successMessage, new ArrayList<>(),
-                new ArrayList<>(), "", "DATE", Sort.Direction.DESC, 1, 10);
+                new ArrayList<>(), "", "date", "desc", DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
 
 }

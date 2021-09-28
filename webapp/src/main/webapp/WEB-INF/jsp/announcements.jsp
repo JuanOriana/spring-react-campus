@@ -44,7 +44,7 @@
                      alt="Next page" class="pagination-arrow x-rotated">
               </a>
           </c:if>
-          <spring:message code="announcements.page.actual" htmlEscape="true" arguments="${currentPage},${maxPage}" />
+          <spring:message code="page.actual" htmlEscape="true" arguments="${currentPage},${maxPage}" />
           <c:if test="${currentPage < maxPage}">
               <a href="<c:url value="/announcements?page=${currentPage+1}&pageSize=${pageSize}"/>">
                   <img src="<c:url value="/resources/images/page-arrow.png"/>"

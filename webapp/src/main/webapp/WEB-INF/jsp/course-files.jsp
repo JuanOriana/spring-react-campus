@@ -59,6 +59,21 @@
                         </c:forEach>
                     </div>
                 </div>
+                <div class="pagination-wrapper">
+                    <c:if test="${currentPage > 1}">
+                        <a href="<c:url value="/course/${courseId}/files?page=${currentPage-1}&pageSize=${pageSize}"/>">
+                            <img src="<c:url value="/resources/images/page-arrow.png"/>"
+                                 alt="Next page" class="pagination-arrow x-rotated">
+                        </a>
+                    </c:if>
+                    <spring:message code="page.actual" htmlEscape="true" arguments="${currentPage},${maxPage}" />
+                    <c:if test="${currentPage < maxPage}">
+                        <a href="<c:url value="/course/${courseId}/files?page=${currentPage+1}&pageSize=${pageSize}"/>">
+                            <img src="<c:url value="/resources/images/page-arrow.png"/>"
+                                 alt="Next page" class="pagination-arrow">
+                        </a>
+                    </c:if>
+                </div>
             </div>
         </div>
     </div>
