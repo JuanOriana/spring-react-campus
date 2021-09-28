@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"  %>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -22,6 +23,13 @@
                     <c:if test="${image != null}">
                         <img src="<c:url value="/user/profile-image"/>" class="user-section-img"/>
                     </c:if>
+                    <form:form modelAttribute="userProfileForm" method="post" enctype="multipart/form-data"
+                               acceptCharset="utf-8" cssStyle="margin: 30px 0; display: flex; flex-direction: column">
+                        <form:label path="image">Insertar imagen</form:label>
+                        <form:input type="file" path="image" accept="image/png, image/jpeg" />
+                        <form:errors path="image" element="p" cssStyle="color:red;margin-left: 10px"/>
+                        <button>Confirmar</button>
+                    </form:form>
                 </div>
                 <div style="display:flex; flex-direction: column">
                     <p><span style="font-weight: 700"><spring:message code="user.username.title"/></span>
