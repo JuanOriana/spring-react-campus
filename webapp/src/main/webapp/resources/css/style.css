@@ -518,6 +518,9 @@ textarea:focus, input:focus{
 
 .user-section-img{
     height: 280px;
+    width: 280px;
+    overflow: hidden;
+    object-fit: cover;
     border-radius: 50%;
 }
 
