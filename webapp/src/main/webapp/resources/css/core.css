@@ -17,7 +17,7 @@ body{
 *{
     margin: 0;
 }
-
+/*                  NAVBAR                  */
 .navbar-container{
     width: 100vw;
     max-width: 100vw;
@@ -70,6 +70,16 @@ body{
     cursor: pointer;
 }
 
+.success-box{
+    background: var(--success-back);
+    color: var(--success-front);
+    border-bottom: 2px solid var(--success-front);
+    padding: 3px;
+    padding-left: 20px;
+    font-weight: 700;
+}
+
+/*                  CORE-PAGE-CONTAINERS                  */
 .page-organizer{
     display: flex;
     flex-direction: column;
@@ -131,6 +141,8 @@ body{
     width: 100%;
 }
 
+/*                  COURSE-SECTIONS-COl                  */
+
 .course-sections-col{
     display: flex;
     flex-direction: column;
@@ -190,19 +202,7 @@ body{
     margin: 0 0 6px 2px;
 }
 
-.form-wrapper{
-    align-self: center;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    border: 10px solid var(--cyan-dark);
-    width: 95%;
-    border-radius: 12px;
-    min-height: 200px;
-    padding: 20px;
-    border-bottom: 10px solid var(--cyan-darkest);
-    margin-bottom: 5px;
-}
+/*                  UTILS                  */
 
 .separator{
     height: 3px;
@@ -221,6 +221,8 @@ body{
 .reduced{
     width: 90%;
 }
+
+/*                  TIMETABLE                  */
 
 .timetable {
     color: #efefef;
@@ -324,22 +326,6 @@ body{
 
 }
 
-.professor-icon{
-    height: 32px;
-    width: 32px;
-    border-radius: 50%;
-    border: 2px solid var(--cyan-dark);
-    margin-right: 10px;
-}
-
-.mail-icon{
-    height: 52px;
-    width: 52px;
-    border-radius: 50%;
-    margin-left:10px;
-    cursor:pointer;
-}
-
 .pagination-wrapper{
     display: flex;
     align-items: center;
@@ -368,6 +354,8 @@ body{
     font-size: 16px;
     padding: 6px;
 }
+
+/*                  LOGIN                  */
 
 .login-wrapper{
     background: white;
@@ -406,6 +394,23 @@ body{
     font-size: 22px;
     cursor: pointer;
 }
+
+
+.form-wrapper{
+    align-self: center;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    border: 10px solid var(--cyan-dark);
+    width: 95%;
+    border-radius: 12px;
+    min-height: 200px;
+    padding: 20px;
+    border-bottom: 10px solid var(--cyan-darkest);
+    margin-bottom: 5px;
+}
+
+/*                  FORMS                  */
 
 .form-button{
     border-radius: 12px;
@@ -446,6 +451,8 @@ textarea:focus, input:focus{
     flex-wrap: wrap;
     flex-direction: column;
 }
+
+/*                  FILES                  */
 
 .file-unit{
     width: calc(100% - 40px);
@@ -507,14 +514,7 @@ textarea:focus, input:focus{
     color: var(--cyan-light);
 }
 
-.success-box{
-    background: var(--success-back);
-    color: var(--success-front);
-    border-bottom: 2px solid var(--success-front);
-    padding: 3px;
-    padding-left: 20px;
-    font-weight: 700;
-}
+/*                  USER-SECTION                  */
 
 .user-section-img{
     height: 280px;
@@ -529,31 +529,6 @@ textarea:focus, input:focus{
     flex-direction: column;
     align-items: center;
     padding:20px
-}
-
-.medium-icon{
-    width: 48px;
-    cursor: pointer;
-}
-
-.small-icon{
-    width: 32px;
-    cursor: pointer;
-}
-
-.admin-title{
-    color: var(--cyan-darkest);
-    margin: 40px 0;
-}
-
-.redirection-button{
-    font-size: 32px;
-    padding: 30px;
-    background: var(--cyan-darkest);
-    border-radius: 10px;
-    color: white;
-    border: 3px solid var(--cyan-dark);
-    cursor: pointer;
 }
 
 .user-container{
@@ -571,8 +546,51 @@ textarea:focus, input:focus{
 
 }
 
+/*                  ICONS AND IMAGES                  */
+
+.medium-icon{
+    width: 48px;
+    cursor: pointer;
+}
+
+.small-icon{
+    width: 32px;
+    cursor: pointer;
+}
+
 .back-img{
     width: 30px;
     transform: rotate(180deg);
     margin: 0 10px;
 }
+
+.professor-icon{
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--cyan-dark);
+    margin-right: 10px;
+}
+
+.mail-icon{
+    height: 52px;
+    width: 52px;
+    border-radius: 50%;
+    margin-left:10px;
+    cursor:pointer;
+}
+.admin-title{
+    color: var(--cyan-darkest);
+    margin: 40px 0;
+}
+
+.redirection-button{
+    font-size: 32px;
+    padding: 30px;
+    background: var(--cyan-darkest);
+    border-radius: 10px;
+    color: white;
+    border: 3px solid var(--cyan-dark);
+    cursor: pointer;
+}
+
