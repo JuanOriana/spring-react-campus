@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.MailingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.*;
@@ -36,6 +37,7 @@ public class MailingServiceImpl implements MailingService {
         }
     }
 
+    @Async
     @Override
     public void sendBroadcastEmail(List<String> to, String subject, String content, String contentType) {
         sendEmail(new MimeMessage(session), to, subject, content, contentType);
