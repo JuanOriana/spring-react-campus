@@ -10,6 +10,7 @@ import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Time;
 import java.util.Calendar;
@@ -29,6 +30,7 @@ public class CourseServiceImpl implements CourseService {
 
     final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
+    @Transactional
     @Override
     public Course create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
                          List<Integer> endTimes) {
@@ -44,11 +46,13 @@ public class CourseServiceImpl implements CourseService {
         return course;
     }
 
+    @Transactional
     @Override
     public boolean update(Long id, Course course) {
         return courseDao.update(id, course);
     }
 
+    @Transactional
     @Override
     public boolean delete(Long id) {
         return courseDao.delete(id);
@@ -110,6 +114,7 @@ public class CourseServiceImpl implements CourseService {
         return roleId == Permissions.TEACHER.getValue() || roleId == Permissions.HELPER.getValue();
     }
 
+    @Transactional
     @Override
     public boolean enroll(Long userId, Long courseId, Integer roleId) {
         return courseDao.enroll(userId, courseId, roleId);

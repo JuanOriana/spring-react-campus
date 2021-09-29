@@ -27,7 +27,6 @@ public class MailingServiceImpl implements MailingService {
     public void sendEmail(String replyTo, String to, String subject, String content, String contentType) {
         try {
             MimeMessage message = new MimeMessage(session);
-
             String from = String.format("\"%s\" <%s>", replyTo, SERVER_MAIL);
             message.setFrom(new InternetAddress(from));
             message.setReplyTo(new Address[]{new InternetAddress(replyTo)});

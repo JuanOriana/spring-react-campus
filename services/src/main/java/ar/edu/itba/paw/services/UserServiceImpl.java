@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -26,17 +27,20 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     @Override
     public User create(Integer fileNumber, String name, String surname, String username, String email, String password,
                        boolean isAdmin) {
         return userDao.create(fileNumber, name, surname, username, email, passwordEncoder.encode(password), isAdmin);
     }
 
+    @Transactional
     @Override
     public boolean update(Long userId, User user) {
         return userDao.update(userId, user);
     }
 
+    @Transactional
     @Override
     public boolean delete(Long userId) {
         return userDao.delete(userId);
@@ -67,6 +71,7 @@ public class UserServiceImpl implements UserService {
         return userDao.getProfileImage(userId);
     }
 
+    @Transactional
     @Override
     public boolean updateProfileImage(Long userId, byte[] image) {
         return userDao.updateProfileImage(userId, image);

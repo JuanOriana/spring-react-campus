@@ -1,12 +1,17 @@
 import ar.edu.itba.paw.interfaces.AnnouncementDao;
+import ar.edu.itba.paw.interfaces.CourseDao;
+import ar.edu.itba.paw.interfaces.CourseService;
+import ar.edu.itba.paw.interfaces.MailingService;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.services.AnnouncementServiceImpl;
+import ar.edu.itba.paw.services.CourseServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
@@ -74,25 +79,32 @@ public class AnnouncementServiceImplTest {
     }
 
     @Mock
-    private AnnouncementDao mockDao;
+    private AnnouncementDao announcementDao;
 
     @InjectMocks
     private final AnnouncementServiceImpl announcementService = new AnnouncementServiceImpl();
 
+    @Mock
+    private CourseService courseService;
+
+    @Mock
+    private MailingService mailingService;
+
+
     @Test
     public void testCreateAnnouncement() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.create(any(LocalDateTime.class), anyString(), anyString(),
+        when(announcementDao.create(any(LocalDateTime.class), anyString(), anyString(),
                 any(User.class), any(Course.class))).thenReturn(announcement);
         final Announcement newAnnouncement = announcementService.create(ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT,
                 announcement.getAuthor(), announcement.getCourse());
-        Assert.assertEquals(newAnnouncement.getAnnouncementId(), ANNOUNCEMENT_ID);
+        Assert.assertEquals(ANNOUNCEMENT_ID, newAnnouncement.getAnnouncementId());
     }
 
     @Test
     public void testFindByCourseId() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.getById(eq(ANNOUNCEMENT_ID))).thenReturn(Optional.of(announcement));
+        when(announcementDao.getById(eq(ANNOUNCEMENT_ID))).thenReturn(Optional.of(announcement));
         final Optional<Announcement> queriedAnnouncement = announcementService.getById(ANNOUNCEMENT_ID);
 
         Assert.assertTrue(queriedAnnouncement.isPresent());
@@ -102,7 +114,7 @@ public class AnnouncementServiceImplTest {
     @Test(expected =  RuntimeException.class)
     public void testCreateAnnouncementDuplicate() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.create(any(LocalDateTime.class), anyString(), anyString(),
+        when(announcementDao.create(any(LocalDateTime.class), anyString(), anyString(),
                 any(User.class), any(Course.class))).thenThrow(RuntimeException.class);
         announcementService.create(ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT,
                 announcement.getAuthor(), announcement.getCourse());
@@ -112,7 +124,7 @@ public class AnnouncementServiceImplTest {
     @Test
     public void testUpdate() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.update(eq(ANNOUNCEMENT_ID), eq(announcement))).thenReturn(true);
+        when(announcementDao.update(eq(ANNOUNCEMENT_ID), eq(announcement))).thenReturn(true);
         boolean announcementUpdateResult = announcementService.update(ANNOUNCEMENT_ID, announcement);
         Assert.assertTrue(announcementUpdateResult);
     }
@@ -120,22 +132,34 @@ public class AnnouncementServiceImplTest {
     @Test
     public void testUpdateDoesNotExist() {
         Announcement announcement = getMockAnnouncement();
-        when(mockDao.update(eq(INVALID_ANNOUNCEMENT_ID), eq(announcement))).thenReturn(false);
+        when(announcementDao.update(eq(INVALID_ANNOUNCEMENT_ID), eq(announcement))).thenReturn(false);
         boolean announcementUpdateResult = announcementService.update(INVALID_ANNOUNCEMENT_ID, announcement);
         Assert.assertFalse(announcementUpdateResult);
     }
 
     @Test
     public void testDelete() {
-        when(mockDao.delete(eq(ANNOUNCEMENT_ID))).thenReturn(true);
+        when(announcementDao.delete(eq(ANNOUNCEMENT_ID))).thenReturn(true);
         boolean announcementUpdateResult = announcementService.delete(ANNOUNCEMENT_ID);
         Assert.assertTrue(announcementUpdateResult);
     }
 
     @Test
     public void testDeleteDoesNotExit() {
-        when(mockDao.delete(eq(INVALID_ANNOUNCEMENT_ID))).thenReturn(false);
+        when(announcementDao.delete(eq(INVALID_ANNOUNCEMENT_ID))).thenReturn(false);
         boolean announcementUpdateResult = announcementService.delete(INVALID_ANNOUNCEMENT_ID);
         Assert.assertFalse(announcementUpdateResult);
     }
+
+    @Test
+  public void testList() {
+              Announcement announcement = getMockAnnouncement();
+              CampusPageRequest pageRequest = new CampusPageRequest(PAGE, PAGE_SIZE);
+              when(announcementDao.listByUser(USER_ID, pageRequest))
+                              .thenReturn(new CampusPage<>(new ArrayList<Announcement>(){{ add(announcement); }},
+                                      pageRequest.getPageSize(), pageRequest.getPage(), PAGE));
+              List<Announcement> announcements = announcementService.listByUser(USER_ID, pageRequest).getContent();
+              Assert.assertTrue(announcements.size() > 0);
+              Assert.assertEquals(announcement.getCourse().getCourseId(), announcements.get(0).getCourse().getCourseId());
+          }
 }

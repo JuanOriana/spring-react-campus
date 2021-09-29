@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -22,11 +23,13 @@ public class FileServiceImpl implements FileService {
         this.fileDao = fileDao;
     }
 
+    @Transactional
     @Override
     public FileModel create(Long size, String name, byte[] file, Course course) {
         return fileDao.create(size, LocalDateTime.now(), name, file, course);
     }
 
+    @Transactional
     @Override
     public FileModel create(Long size, String name, byte[] file, Course course, Long fileCategoryId) {
         FileModel fileModel = this.create(size, name, file, course);
@@ -34,11 +37,13 @@ public class FileServiceImpl implements FileService {
         return fileModel;
     }
 
+    @Transactional
     @Override
     public boolean update(Long fileId, FileModel file) {
         return fileDao.update(fileId, file);
     }
 
+    @Transactional
     @Override
     public boolean delete(Long fileId) {
         return fileDao.delete(fileId);
@@ -69,11 +74,13 @@ public class FileServiceImpl implements FileService {
         return fileDao.getByExtension(extension);
     }
 
+    @Transactional
     @Override
     public boolean addCategory(Long fileId, Long fileCategoryId) {
         return fileDao.addCategory(fileId, fileCategoryId);
     }
 
+    @Transactional
     @Override
     public boolean removeCategory(Long fileId, Long fileCategoryId) {
         return fileDao.removeCategory(fileId, fileCategoryId);
@@ -122,6 +129,7 @@ public class FileServiceImpl implements FileService {
         return fileDao.listByCourse(keyword, extensions, categories, userId, courseId, pageRequest, sort);
     }
 
+    @Transactional
     @Override
     public void incrementDownloads(Long fileId) {
         fileDao.incrementDownloads(fileId);

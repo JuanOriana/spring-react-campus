@@ -10,7 +10,6 @@ import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -87,7 +85,7 @@ public class FilesController extends AuthController {
             response.flushBuffer();
             fileService.incrementDownloads(fileId);
         } catch (IOException ex) {
-            LOGGER.debug(String.format("Error writing file to output stream. Filename was %s", file.getName() + ex));
+            LOGGER.error(String.format("Error writing file to output stream. Filename was %s", file.getName() + ex));
             throw new RuntimeException("IOError writing file to output stream");
         }
     }

@@ -25,22 +25,20 @@ public class CourseController extends AuthController {
     private final FileCategoryService fileCategoryService;
     private final FileExtensionService fileExtensionService;
     private final FileService fileService;
-    private final MailingService mailingService;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private static final int DEFAULT_PAGE = 1;
     private static final int DEFAULT_PAGE_SIZE = 10;
+
     @Autowired
     public CourseController(AuthFacade authFacade, AnnouncementService announcementService,
                             CourseService courseService, FileCategoryService fileCategoryService,
-                            FileExtensionService fileExtensionService, FileService fileService,
-                            MailingService mailingService) {
+                            FileExtensionService fileExtensionService, FileService fileService) {
         super(authFacade);
         this.announcementService = announcementService;
         this.courseService = courseService;
         this.fileCategoryService = fileCategoryService;
         this.fileExtensionService = fileExtensionService;
         this.fileService = fileService;
-        this.mailingService = mailingService;
     }
 
     @GetMapping(value = "/{courseId}")
@@ -88,11 +86,6 @@ public class CourseController extends AuthController {
                     .build();
             announcementService.create(announcementForm.getTitle(), announcementForm.getContent(), currentUser,
                     courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
-            List<User> userList = courseService.getStudents(courseId);
-            List<String> emailList = new ArrayList<>();
-            userList.forEach(u->emailList.add(u.getEmail()));
-            mailingService.sendBroadcastEmail(emailList, "Nuevo anuncio en curso " + announcementForm.getTitle(),
-                    announcementForm.getContent(), "text/plain");
             announcementForm.setContent("");
             announcementForm.setTitle("");
             successMessage = "Anuncio publicado exitosamente";
@@ -103,9 +96,9 @@ public class CourseController extends AuthController {
     @RequestMapping("/{courseId}/teachers")
     public ModelAndView professors(@PathVariable Long courseId) {
         final ModelAndView mav = new ModelAndView("teachers");
+        mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         Map<User, Role> teachers = courseService.getTeachers(courseId);
         Set<Map.Entry<User, Role>> teacherSet = teachers.entrySet();
-        mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("teacherSet", teacherSet);
         return mav;
     }
@@ -130,7 +123,7 @@ public class CourseController extends AuthController {
         CampusPage<FileModel> filePage = fileService.listByCourse(query, extensionType, categoryType, user.getUserId(),
                 courseId, new CampusPageRequest(page, pageSize), new CampusPageSort(orderDirection, orderProperty));
         final ModelAndView mav;
-        List<FileCategory> categories = fileCategoryService.getCategories();
+        final List<FileCategory> categories = fileCategoryService.getCategories();
         final List<FileExtension> extensions = fileExtensionService.getExtensions();
         if (courseService.isPrivileged(user.getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-files");
@@ -160,9 +153,8 @@ public class CourseController extends AuthController {
         if (!errors.hasErrors()) {
             CommonsMultipartFile file = fileForm.getFile();
             String filename = file.getOriginalFilename();
-            FileModel newFile = fileService.create(file.getSize(), filename, file.getBytes(),
-                    courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
-            fileService.addCategory(newFile.getFileId(), fileForm.getCategoryId());
+            fileService.create(file.getSize(), filename, file.getBytes(),
+                    courseService.getById(courseId).orElseThrow(CourseNotFoundException::new), fileForm.getCategoryId());
             fileForm.setFile(null);
             fileForm.setCategoryId(null);
             successMessage = "Archivo creado exitosamente";

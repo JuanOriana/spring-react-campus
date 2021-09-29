@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Timetable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Time;
 import java.util.List;
@@ -21,16 +22,19 @@ public class TimetableServiceImpl implements TimetableService {
         this.timetableDaoDao = timetableDaoDao;
     }
 
+    @Transactional
     @Override
     public boolean create(Course course, int dayOfWeek, Time start, Time end) {
         return timetableDaoDao.create(course, dayOfWeek, start, end);
     }
 
+    @Transactional
     @Override
     public boolean update(Long courseId, int dayOfWeek, Time start, Time end) {
         return timetableDaoDao.update(courseId, dayOfWeek, start, end);
     }
 
+    @Transactional
     @Override
     public boolean delete(Long courseId) {
         return timetableDaoDao.delete(courseId);

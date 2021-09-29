@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.MailingService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
+import ar.edu.itba.paw.webapp.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.form.MailForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,14 +44,9 @@ public class MailController extends AuthController{
                                          @Valid MailForm mailForm, final BindingResult errors){
         String successMessage = null;
         if (!errors.hasErrors()) {
-            Optional<User> user = userService.findById(userId);
-            if (user.isPresent()) {
-                mailingService.sendEmail(authFacade.getCurrentUser().getEmail(), user.get().getEmail(),
+            User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
+            mailingService.sendEmail(authFacade.getCurrentUser().getEmail(), user.getEmail(),
                         mailForm.getSubject(), mailForm.getContent(), "text/plain"); // todo desharcodear el content type
-            }
-            else{
-                // todo: Manejo
-            }
             mailForm.setSubject("");
             mailForm.setContent("");
             successMessage = "Email enviado exitosamente";
