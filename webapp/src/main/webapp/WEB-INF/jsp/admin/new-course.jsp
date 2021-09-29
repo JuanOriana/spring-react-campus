@@ -30,7 +30,6 @@
 <body>
 <div class="page-organizer">
     <jsp:include page="../components/navbar.jsp" >
-        <jsp:param name="isAdmin" value="${true}"/>
     </jsp:include>
     <div class="page-container">
         <form:form modelAttribute="courseForm" class="form-wrapper reduced" method="post"

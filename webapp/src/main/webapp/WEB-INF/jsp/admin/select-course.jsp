@@ -12,7 +12,6 @@
 <body>
 <div class="page-organizer">
     <jsp:include page="../components/navbar.jsp" >
-        <jsp:param name="isAdmin" value="${true}"/>
     </jsp:include>
     <div class="page-container">
         <form action="<c:url value="/admin/course/enroll"/>" class="form-wrapper reduced" method="get" css="margin: 30px 0">

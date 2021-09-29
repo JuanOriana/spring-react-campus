@@ -12,7 +12,7 @@ public class CampusUser extends User {
     private String name;
     private String surname;
     private String email;
-    private final boolean isAdmin;
+    private boolean isAdmin;
 
     public CampusUser(String username, String password, Collection<? extends GrantedAuthority> authorities,
                       Integer fileNumber, Long userId, String name, String surname, String email,
@@ -68,6 +68,10 @@ public class CampusUser extends User {
 
     public boolean isAdmin() {
         return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     @Override
