@@ -138,6 +138,4 @@ public class AnnouncementServiceImplTest {
         boolean announcementUpdateResult = announcementService.delete(INVALID_ANNOUNCEMENT_ID);
         Assert.assertFalse(announcementUpdateResult);
     }
-
-
 }

@@ -104,11 +104,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         return (int) Math.ceil((double)rowCount / pageSize);
     }
 
-    private CampusPage<Announcement> listBy(Long property, CampusPageRequest pageRequest) {
-        String selectQuery = "SELECT * " +
-                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users NATURAL JOIN user_to_course " +
-                "WHERE courseid IN (SELECT courseid FROM user_to_course WHERE userid = ?) " +
-                "ORDER BY date DESC";
+    private CampusPage<Announcement> listBy(String selectQuery, Long property, CampusPageRequest pageRequest) {
         int pageCount = getTotalPageCount(selectQuery, new Object[]{property}, pageRequest.getPageSize());
         if(pageCount == 0) return new CampusPage<>();
         if(pageRequest.getPage() > pageCount) throw new PaginationArgumentException();
@@ -122,12 +118,20 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
 
     @Override
     public CampusPage<Announcement> listByUser(Long userId, CampusPageRequest pageRequest) {
-       return listBy(userId, pageRequest);
+        String selectQuery = "SELECT * " +
+                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users NATURAL JOIN user_to_course " +
+                "WHERE courseId IN (SELECT courseId FROM user_to_course WHERE userid = ?) " +
+                "ORDER BY date DESC";
+       return listBy(selectQuery, userId, pageRequest);
     }
 
     @Override
     public CampusPage<Announcement> listByCourse(Long courseId, CampusPageRequest pageRequest) {
-        return listBy(courseId, pageRequest);
+        String selectQuery = "SELECT * " +
+                "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users NATURAL JOIN user_to_course " +
+                "WHERE courseId = ?" +
+                "ORDER BY date DESC";
+        return listBy(selectQuery, courseId, pageRequest);
     }
 
 }

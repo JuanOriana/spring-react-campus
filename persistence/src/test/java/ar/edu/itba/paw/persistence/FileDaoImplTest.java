@@ -98,7 +98,7 @@ public class FileDaoImplTest {
     private final boolean IS_ADMIN = true;
 
     private final String SORT_DIRECTION = "desc";
-    private final String SORT_PROPERTY = "fileDate";
+    private final String SORT_PROPERTY = "date";
     private final Integer PAGE = 1;
     private final Integer PAGE_SIZE = 10;
 

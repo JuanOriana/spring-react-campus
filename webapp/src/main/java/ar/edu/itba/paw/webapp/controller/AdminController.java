@@ -8,6 +8,8 @@ import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import ar.edu.itba.paw.webapp.form.UserToCourseForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -27,6 +29,7 @@ public class AdminController extends AuthController {
     private final CourseService courseService;
     private final RoleService roleService;
     final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
     @Autowired
     public AdminController(AuthFacade authFacade, UserService userService, SubjectService subjectService,
                            CourseService courseService, RoleService roleService) {
@@ -47,16 +50,16 @@ public class AdminController extends AuthController {
     @GetMapping(value = "/user/new")
     public ModelAndView newUser(final UserRegisterForm userRegisterForm){
         ModelAndView mav = new ModelAndView("admin/new-user");
-        mav.addObject("userRegisterForm",userRegisterForm);
+        mav.addObject("userRegisterForm", userRegisterForm);
         return mav;
     }
 
     @PostMapping(value = "/user/new")
     public ModelAndView newUser(@Valid UserRegisterForm userRegisterForm, final BindingResult errors){
         if (!errors.hasErrors()) {
-            userService.create(userRegisterForm.getFileNumber(),userRegisterForm.getName(),userRegisterForm.getSurname(),
-                    userRegisterForm.getUsername(),userRegisterForm.getEmail(),
-                    userRegisterForm.getPassword(),false);
+            userService.create(userRegisterForm.getFileNumber(), userRegisterForm.getName(), userRegisterForm.getSurname(),
+                    userRegisterForm.getUsername(), userRegisterForm.getEmail(),
+                    userRegisterForm.getPassword(), false);
             return adminPortal("Usuario creado exitosamente");
         }
         return newUser(userRegisterForm);
