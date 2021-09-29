@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
+import ar.edu.itba.paw.webapp.auth.CampusUser;
 import ar.edu.itba.paw.webapp.form.UserProfileForm;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +50,13 @@ public class UserController extends AuthController {
 
     @RequestMapping("/user/profile-image")
     public void profileImage(HttpServletResponse response) throws IOException {
-        byte[] image = userService.getProfileImage(authFacade.getCurrentUser().getUserId())
+        CampusUser user = authFacade.getCurrentUser();
+        byte[] image = userService.getProfileImage(user.getUserId())
                .orElseThrow(RuntimeException::new);
-       InputStream is = new ByteArrayInputStream(image);
-       IOUtils.copy(is,response.getOutputStream());
+        response.setContentType("image/*");
+        response.setHeader("Content-Disposition", "filename=\"" + user.getUsername() + "-profile-img\"");
+        InputStream is = new ByteArrayInputStream(image);
+        IOUtils.copy(is,response.getOutputStream());
     }
 
 
