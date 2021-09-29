@@ -22,6 +22,10 @@ public interface UserDao {
 
     Optional<User> findByUsername(String username);
 
+    Optional<User> findByFileNumber(Integer fileNumber);
+
+    Optional<User> findByEmail(String email);
+
     List<User> list();
 
     Optional<byte[]> getProfileImage(Long userId);

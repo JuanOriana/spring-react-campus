@@ -4,19 +4,12 @@ import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.TimetableService;
 import ar.edu.itba.paw.interfaces.UserDao;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Permissions;
-import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.sql.Time;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -32,8 +25,14 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Course create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
-                         List<Integer> endTimes) {
+    public Either<Course, Collection<Errors>> create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
+                                                     List<Integer> endTimes) {
+        boolean existsCourse = getBy(subjectId, year, quarter, board).isPresent();
+        if(existsCourse) {
+            Collection<Errors> errors = new ArrayList<>();
+            errors.add(Errors.COURSE_ALREADY_EXISTS);
+            return Either.alternative(errors);
+        }
         Course course = courseDao.create(year, quarter, board, subjectId);
         for (int i = 0; i < days.length; i++) {
             Integer startHour = startTimes.get(i);
@@ -43,7 +42,7 @@ public class CourseServiceImpl implements CourseService {
                         new Time(endHour, 0, 0));
             }
         }
-        return course;
+        return Either.value(course);
     }
 
     @Transactional
@@ -71,6 +70,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Optional<Course> getById(Long id) {
         return courseDao.getById(id);
+    }
+
+    @Override
+    public Optional<Course> getBy(Long subjectId, Integer year, Integer quarter, String board) {
+        return courseDao.getBy(subjectId, year, quarter, board);
     }
 
     @Override

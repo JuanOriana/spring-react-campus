@@ -1,9 +1,8 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,10 +18,10 @@ public interface UserService {
      * @param email      of the user
      * @param password   of the user
      * @param isAdmin    determines if the user is a full-fledged admin
-     * @return the generated User instance
+     * @return the generated User instance if it was created successfully, a collection of errors if any key was violated
      */
-    User create(Integer fileNumber, String name, String surname, String username, String email, String password,
-                boolean isAdmin);
+    Either<User, Collection<Errors>> create(Integer fileNumber, String name, String surname, String username, String email, String password,
+                                            boolean isAdmin);
 
     /**
      * Attempts to update the user entry
@@ -65,6 +64,10 @@ public interface UserService {
      * @return the user that has the given username
      */
     Optional<User> findByUsername(String username);
+
+    Optional<User> findByFileNumber(Integer fileNumber);
+
+    Optional<User> findByEmail(String email);
 
     /**
      * Gets all the users (if any)

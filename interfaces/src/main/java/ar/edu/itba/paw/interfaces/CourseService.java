@@ -1,9 +1,8 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,8 +16,8 @@ public interface CourseService {
      * @param subjectId of the subject associated to the course
      * @return a Course instance holding the passed values
      */
-    Course create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
-                  List<Integer> endTimes);
+    Either<Course, Collection<Errors>> create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
+                                                   List<Integer> endTimes);
 
     /**
      * Attempts to update a course
@@ -54,6 +53,9 @@ public interface CourseService {
      * @return the course corresponding to the given id if it exists, null otherwise
      */
     Optional<Course> getById(Long courseId);
+
+
+    Optional<Course> getBy(Long subjectId, Integer year, Integer quarter, String board);
 
     /**
      * Gets the map of teachers for the given course

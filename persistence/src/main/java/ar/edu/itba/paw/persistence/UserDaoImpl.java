@@ -111,6 +111,18 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public Optional<User> findByFileNumber(Integer fileNumber) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE fileNumber = ?",
+                new Object[]{fileNumber}, USER_ROW_MAPPER).stream().findFirst();
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE email = ?",
+                new Object[]{email}, USER_ROW_MAPPER).stream().findFirst();
+    }
+
+    @Override
     public List<User> list() {
         return jdbcTemplate.query("SELECT * FROM users", USER_ROW_MAPPER);
     }

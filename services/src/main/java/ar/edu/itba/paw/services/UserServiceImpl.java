@@ -2,17 +2,13 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,9 +25,20 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User create(Integer fileNumber, String name, String surname, String username, String email, String password,
-                       boolean isAdmin) {
-        return userDao.create(fileNumber, name, surname, username, email, passwordEncoder.encode(password), isAdmin);
+    public Either<User, Collection<Errors>> create(Integer fileNumber, String name, String surname, String username, String email, String password,
+                                                   boolean isAdmin) {
+        boolean existsUsername = findByUsername(username).isPresent();
+        boolean existsFileNumber = findByFileNumber(fileNumber).isPresent();
+        boolean existsEmail = findByEmail(email).isPresent();
+        if(existsEmail || existsFileNumber || existsUsername) {
+            Collection<Errors> errors = new ArrayList<>();
+            if(existsEmail) errors.add(Errors.MAIL_ALREADY_IN_USE);
+            if(existsFileNumber) errors.add(Errors.FILE_NUMBER_ALREADY_IN_USE);
+            if(existsUsername) errors.add(Errors.USERNAME_ALREADY_IN_USE);
+            return Either.alternative(errors);
+        }
+        return Either.value(userDao.create(fileNumber, name, surname, username,
+                email, passwordEncoder.encode(password), isAdmin));
     }
 
     @Transactional
@@ -59,6 +66,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findByUsername(String username) {
         return userDao.findByUsername(username);
+    }
+
+    @Override
+    public Optional<User> findByFileNumber(Integer fileNumber) {
+        return userDao.findByFileNumber(fileNumber);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userDao.findByEmail(email);
     }
 
     @Override

@@ -1,5 +1,8 @@
 import ar.edu.itba.paw.interfaces.CourseDao;
+import ar.edu.itba.paw.interfaces.TimetableService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Either;
+import ar.edu.itba.paw.models.Errors;
 import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.services.CourseServiceImpl;
 import ar.edu.itba.paw.services.TimetableServiceImpl;
@@ -39,47 +42,46 @@ public class CourseServiceImplTest {
     }
 
     @InjectMocks
-    private CourseServiceImpl courseService = new CourseServiceImpl();
+    private final CourseServiceImpl courseService = new CourseServiceImpl();
 
     @Mock
     private CourseDao mockDao;
 
-    /*@Test Fix this test
+    @Mock
+    private TimetableService timetableService;
+
+    @Test
     public void testCreateCourse() {
-        when(mockDao.create(eq(YEAR), eq(QUARTER), eq(BOARD), eq(SUBJECT_ID))).thenReturn(new Course.Builder()
+        when(mockDao.create(YEAR, QUARTER, BOARD, SUBJECT_ID)).thenReturn(new Course.Builder()
                 .withCourseId(COURSE_ID)
                 .withYear(YEAR)
                 .withQuarter(QUARTER)
                 .withBoard(BOARD)
                 .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
                 .build());
-        List<Integer> startTime = Collections.singletonList(12);
-        List<Integer> endTime = Collections.singletonList(14);
-        Course newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID, startTime, endTime);
-        Assert.assertEquals(newCourse.getCourseId(), COURSE_ID);
-    }*/
+        Integer[] start = {0, 0, 0, 0, 0, 0};
+        Integer[] end = {0, 0, 0, 0, 0, 0};
+        List<Integer> startTime = new ArrayList<>(Arrays.asList(start));
+        List<Integer> endTime = new ArrayList<>(Arrays.asList(end));
+        Either<Course, Collection<Errors>> newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID, startTime, endTime);
+        Assert.assertTrue(newCourse.isValuePresent());
+        Course course = newCourse.getValue();
+        Assert.assertEquals(course.getCourseId(), COURSE_ID);
+    }
 
     @Test
     public void testFindByCourseId() {
         Course course = getMockCourse();
-        when(mockDao.getById(eq(COURSE_ID))).thenReturn(Optional.of(course));
+        when(mockDao.getById(COURSE_ID)).thenReturn(Optional.of(course));
         final Optional<Course> queriedCourse = courseService.getById(COURSE_ID);
         Assert.assertTrue(queriedCourse.isPresent());
         Assert.assertEquals(COURSE_ID, queriedCourse.get().getCourseId());
     }
 
-    @Test(expected =  RuntimeException.class)
-    public void testCreateCourseDuplicate() {
-        Course course = getMockCourse();
-        when(mockDao.create(eq(YEAR), eq(QUARTER), eq(BOARD), eq(SUBJECT_ID))).thenThrow(new RuntimeException());
-        Course newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID, null, null);
-        Assert.fail("Should have thrown runtime exception for duplicate course creation");
-    }
-
     @Test
     public void testUpdate() {
         Course course = getMockCourse();
-        when(mockDao.update(eq(COURSE_ID), eq(course))).thenReturn(true);
+        when(mockDao.update(COURSE_ID, course)).thenReturn(true);
         boolean courseUpdateResult = courseService.update(COURSE_ID, course);
         Assert.assertTrue(courseUpdateResult);
     }
@@ -87,21 +89,21 @@ public class CourseServiceImplTest {
     @Test
     public void testUpdateDoesNotExist() {
         Course course = getMockCourse();
-        when(mockDao.update(eq(INVALID_COURSE_ID), eq(course))).thenReturn(false);
+        when(mockDao.update(INVALID_COURSE_ID, course)).thenReturn(false);
         boolean courseUpdateResult = courseService.update(INVALID_COURSE_ID, course);
         Assert.assertFalse(courseUpdateResult);
     }
 
     @Test
     public void testDelete() {
-        when(mockDao.delete(eq(COURSE_ID))).thenReturn(true);
+        when(mockDao.delete(COURSE_ID)).thenReturn(true);
         boolean courseUpdateResult = courseService.delete(COURSE_ID);
         Assert.assertTrue(courseUpdateResult);
     }
 
     @Test
     public void testDeleteDoesNotExit() {
-        when(mockDao.delete(eq(INVALID_COURSE_ID))).thenReturn(false);
+        when(mockDao.delete(INVALID_COURSE_ID)).thenReturn(false);
         boolean courseUpdateResult = courseService.delete(INVALID_COURSE_ID);
         Assert.assertFalse(courseUpdateResult);
     }
