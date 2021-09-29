@@ -49,7 +49,7 @@
                 </c:forEach>
             </div>
         </div>
-        <div class="pagination-wrapper">
+        <div class="pagination-wrapper" style="align-self: center">
             <c:if test="${currentPage > 1}">
                 <a href="<c:url value="/files?page=${currentPage-1}&pageSize=${pageSize}"/>">
                     <img src="<c:url value="/resources/images/page-arrow.png"/>"
