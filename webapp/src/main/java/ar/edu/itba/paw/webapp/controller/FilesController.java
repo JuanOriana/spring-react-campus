@@ -78,6 +78,7 @@ public class FilesController extends AuthController {
         if (!file.getExtension().getFileExtensionName().equals("pdf"))
             response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
         else
+            response.setHeader("Content-Disposition", "filename=\"" + file.getName() + "\"");
             response.setContentType("application/pdf");
         try {
             InputStream is = new ByteArrayInputStream(file.getFile());
