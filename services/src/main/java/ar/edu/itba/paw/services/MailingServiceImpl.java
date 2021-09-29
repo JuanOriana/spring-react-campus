@@ -23,23 +23,27 @@ public class MailingServiceImpl implements MailingService {
         this.session = session;
     }
 
+
+    @Async
     @Override
-    public void sendEmail(String replyTo, String to, String subject, String content, String contentType) {
-        try {
-            MimeMessage message = new MimeMessage(session);
-            String from = String.format("\"%s\" <%s>", replyTo, SERVER_MAIL);
-            message.setFrom(new InternetAddress(from));
-            message.setReplyTo(new Address[]{new InternetAddress(replyTo)});
-            sendEmail(message, Collections.singletonList(to), subject, content, contentType);
-        } catch (MessagingException mex) {
-            throw new RuntimeException(mex.getMessage());
-        }
+    public void sendTextPlainBroadcastEmail(List<String> to, String subject, String content) {
+        sendEmail(new MimeMessage(session), to, subject, content, "text/plain");
     }
 
     @Async
     @Override
-    public void sendBroadcastEmail(List<String> to, String subject, String content, String contentType) {
-        sendEmail(new MimeMessage(session), to, subject, content, contentType);
+    public void sendHtmlBroadcastEmail(List<String> to, String subject, String content) {
+        sendEmail(new MimeMessage(session), to, subject, content, "text/html");
+    }
+
+    @Override
+    public void sendTextPlainEmail(String replyTo, String to, String subject, String content){
+        sendEmail(getMimeMessage(replyTo, to), Collections.singletonList(to), subject, content, "text/plain");
+    }
+
+    @Override
+    public void sendHtmlEmail(String replyTo, String to, String subject, String content){
+        sendEmail(getMimeMessage(replyTo, to), Collections.singletonList(to), subject, content, "text/html");
     }
 
     private void sendEmail(Message message, List<String> to, String subject, String content, String contentType) {
@@ -55,5 +59,17 @@ public class MailingServiceImpl implements MailingService {
         }
     }
 
+    private MimeMessage getMimeMessage(String replyTo, String to){
+        try {
+            MimeMessage message = new MimeMessage(session);
+            String from = String.format("\"%s\" <%s>", replyTo, SERVER_MAIL);
+            message.setFrom(new InternetAddress(from));
+            message.setReplyTo(new Address[]{new InternetAddress(replyTo)});
+            return message;
+         } catch (MessagingException mex) {
+        throw new RuntimeException(mex.getMessage());
+    }
+
+    }
 
 }

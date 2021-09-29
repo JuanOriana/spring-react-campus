@@ -45,8 +45,8 @@ public class MailController extends AuthController{
         String successMessage = null;
         if (!errors.hasErrors()) {
             User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
-            mailingService.sendEmail(authFacade.getCurrentUser().getEmail(), user.getEmail(),
-                        mailForm.getSubject(), mailForm.getContent(), "text/plain"); // todo desharcodear el content type
+            mailingService.sendTextPlainEmail(authFacade.getCurrentUser().getEmail(), user.getEmail(),
+                        mailForm.getSubject(), mailForm.getContent());
             mailForm.setSubject("");
             mailForm.setContent("");
             successMessage = "Email enviado exitosamente";
