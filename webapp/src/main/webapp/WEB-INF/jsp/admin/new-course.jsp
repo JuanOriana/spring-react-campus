@@ -7,6 +7,24 @@
 <head>
     <title><spring:message code="new.course.page.title"/></title>
     <c:import url="../config/generalHead.jsp"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            for (let i = 0; i < 7; i ++) {
+                $("#startTimes"+i).on("input", function () {
+                    const end = $("#endTimes"+i);
+                    const startTime = parseInt($(this).val());
+                    const endTime = parseInt(end.val());
+                    if (isNaN(endTime) || endTime < startTime) end.val(startTime);
+                });
+                $("#endTimes"+i).on("input", function () {
+                    const startTime = parseInt($("#startTimes"+i).val());
+                    const endTime = parseInt($(this).val());
+                    if (startTime != null && startTime > endTime) $(this).val(startTime);
+                });
+            }
+        });
+    </script>
 
 </head>
 <body>
