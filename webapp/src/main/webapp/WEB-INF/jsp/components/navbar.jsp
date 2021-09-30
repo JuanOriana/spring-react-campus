@@ -37,7 +37,7 @@
 </nav>
 <c:if test="${param.successMessage != null && !param.successMessage.equals('')}">
     <div class="success-box">
-        <spring:message code="navbar.success.message" htmlEscape="true" arguments="${param.successMessage}"/>
+        <spring:message code="${param.successMessage}" htmlEscape="true" />
     </div>
 </c:if>
 </body>

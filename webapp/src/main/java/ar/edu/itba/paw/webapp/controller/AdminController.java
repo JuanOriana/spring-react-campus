@@ -57,7 +57,7 @@ public class AdminController extends AuthController {
                     userRegisterForm.getUsername(), userRegisterForm.getEmail(),
                     userRegisterForm.getPassword(), false);
             if(response.isValuePresent()) {
-                return adminPortal("Usuario creado exitosamente");
+                return adminPortal("admin.success.message");
             } else {
                 ModelAndView mav = newUser(userRegisterForm);
                 Collection<Errors> errors = response.getAlternative();
@@ -88,7 +88,7 @@ public class AdminController extends AuthController {
             response = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
                     , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
             if(response.isValuePresent()) {
-                return adminPortal("Curso creado exitosamente");
+                return adminPortal("course.success.message");
             } else {
                 ModelAndView mav = newCourse(courseForm);
                 Collection<Errors> errors = response.getAlternative();
@@ -141,7 +141,7 @@ public class AdminController extends AuthController {
         String successMessage = "";
         if (!errors.hasErrors()) {
             courseService.enroll(userToCourseForm.getUserId(),courseId,userToCourseForm.getRoleId());
-            successMessage ="Usuario agregado exitosamente";
+            successMessage ="user.success.message";
         }
         return addUserToCourse(userToCourseForm,courseId,successMessage);
     }
