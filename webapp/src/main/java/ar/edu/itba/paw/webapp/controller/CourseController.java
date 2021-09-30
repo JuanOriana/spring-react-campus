@@ -88,7 +88,7 @@ public class CourseController extends AuthController {
                     courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
             announcementForm.setContent("");
             announcementForm.setTitle("");
-            successMessage = "Anuncio publicado exitosamente";
+            successMessage = "announcement.success.message";
         }
         return announcements(courseId, announcementForm, successMessage, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
@@ -157,7 +157,7 @@ public class CourseController extends AuthController {
                     courseService.getById(courseId).orElseThrow(CourseNotFoundException::new), fileForm.getCategoryId());
             fileForm.setFile(null);
             fileForm.setCategoryId(null);
-            successMessage = "Archivo creado exitosamente";
+            successMessage = "file.success.message";
         }
         return files(courseId, fileForm, successMessage, new ArrayList<>(),
                 new ArrayList<>(), "", "date", "desc", DEFAULT_PAGE, DEFAULT_PAGE_SIZE);

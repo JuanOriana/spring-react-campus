@@ -49,7 +49,7 @@ public class MailController extends AuthController{
                         mailForm.getSubject(), mailForm.getContent(), "text/plain"); // todo desharcodear el content type
             mailForm.setSubject("");
             mailForm.setContent("");
-            successMessage = "Email enviado exitosamente";
+            successMessage = "email.success.message";
         }
         //TODO: REDIRECCIONAR A PROFESRES
         return sendmail(userId, mailForm, successMessage);
