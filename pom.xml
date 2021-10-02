@@ -28,6 +28,7 @@
         <commons-io.version>2.4</commons-io.version>
         <javax.mail.version>1.4</javax.mail.version>
         <org.springframework.data.version>2.5.4</org.springframework.data.version>
+        <org.thymeleaf.version>3.0.11.RELEASE</org.thymeleaf.version>
     </properties>
 
     <dependencyManagement>
@@ -163,6 +164,16 @@
                 <groupId>javax.mail</groupId>
                 <artifactId>mail</artifactId>
                 <version>${javax.mail.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.thymeleaf</groupId>
+                <artifactId>thymeleaf</artifactId>
+                <version>${org.thymeleaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.thymeleaf</groupId>
+                <artifactId>thymeleaf-spring4</artifactId>
+                <version>${org.thymeleaf.version}</version>
             </dependency>
 
         </dependencies>
