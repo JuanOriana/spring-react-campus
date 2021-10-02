@@ -1,0 +1,31 @@
+/*                  COURSE-TABLE                  */
+
+.course-table {
+    background: #efefef;
+    border-collapse: collapse;
+    margin: 50px 0;
+
+}
+
+.course-table th, .course-table td {
+    padding: 1em;
+    width: 8em;
+    border: 1px solid black;
+}
+
+
+.course-table-header {
+    color: #efefef;
+    background: var(--cyan-darkest);
+    text-transform: uppercase;
+    font-size: 1em;
+    text-align: center;
+}
+
+.course-table-form{
+    background: white;
+    padding:10px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+}

@@ -7,7 +7,6 @@
 <head>
     <title><spring:message code="new.user.page.title" /></title>
     <c:import url="../config/generalHead.jsp"/>
-
 </head>
 <body>
 <div class="page-organizer">
