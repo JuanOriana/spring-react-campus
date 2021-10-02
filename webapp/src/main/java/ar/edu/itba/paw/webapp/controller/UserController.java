@@ -32,9 +32,7 @@ public class UserController extends AuthController {
 
     @GetMapping("/user")
     public ModelAndView user(final UserProfileForm userProfileForm) {
-        Optional<byte[]> optionalImage = userService.getProfileImage(authFacade.getCurrentUser().getUserId());
         ModelAndView mav = new ModelAndView("user");
-        optionalImage.ifPresent(bytes -> mav.addObject("image", bytes));
         mav.addObject("userProfileForm",userProfileForm);
         return mav;
     }

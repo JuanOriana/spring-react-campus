@@ -7,8 +7,10 @@ import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import ar.edu.itba.paw.webapp.form.UserToCourseForm;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,7 +25,6 @@ public class AdminController extends AuthController {
     private final SubjectService subjectService;
     private final CourseService courseService;
     private final RoleService roleService;
-    final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
     @Autowired
     public AdminController(AuthFacade authFacade, UserService userService, SubjectService subjectService,
@@ -63,6 +64,7 @@ public class AdminController extends AuthController {
     @GetMapping(value = "/course/new")
     public ModelAndView newCourse(final CourseForm courseForm){
         ModelAndView mav = new ModelAndView("admin/new-course");
+        final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         List<Subject> subjects = subjectService.list();
         subjects.sort(Comparator.comparing(Subject::getName));
         mav.addObject("courseForm",courseForm);
@@ -118,5 +120,20 @@ public class AdminController extends AuthController {
             successMessage ="user.success.message";
         }
         return addUserToCourse(userToCourseForm,courseId,successMessage);
+    }
+
+    @GetMapping(value = "/course/all")
+    public ModelAndView allCourses(@RequestParam(value = "year", defaultValue = "") Integer year,
+                                   @RequestParam(value = "quarter", defaultValue = "1") Integer quarter) {
+        //TODO: MANEJAR quarter <0 >2 en la funcion y setear valoresa utomaticamente de no estar seteados
+        ModelAndView mav = new ModelAndView("admin/all-courses");
+        if (year == null){
+            year = Calendar.getInstance().get(Calendar.YEAR);
+        }
+        mav.addObject("courses", courseService.listByYearQuarter(year,quarter));
+        mav.addObject("year",year);
+        mav.addObject("allYears",courseService.getAvailableYears());
+        mav.addObject("quarter",quarter);
+        return mav;
     }
 }

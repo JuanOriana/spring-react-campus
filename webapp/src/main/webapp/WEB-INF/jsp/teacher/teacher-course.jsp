@@ -42,12 +42,12 @@
             <spring:message code="teacher.course.new.announcement.title"/>
           </form:label>
           <form:input type="text" path="title" class="form-input" style="font-size: 26px"/>
-          <form:errors path="title" element="p" cssStyle="color:red;margin-left: 10px"/>
+          <form:errors path="title" element="p" cssClass="error-message"/>
           <form:label path="content" for="content" class="form-label">
             <spring:message code="teacher.course.new.announcement.content"/>
           </form:label>
           <form:textarea path="content" class="form-input" style="width: 95%;resize: none" cols="50" rows="10"></form:textarea>
-            <form:errors path="content" element="p" cssStyle="color:red; margin-left: 10px"/>
+            <form:errors path="content" element="p" cssClass="error-message"/>
           <button class="form-button"><spring:message code="teacher.course.button.create.announcement" htmlEscape="true"/></button>
         </form:form>
         <div class="separator reduced">.</div>

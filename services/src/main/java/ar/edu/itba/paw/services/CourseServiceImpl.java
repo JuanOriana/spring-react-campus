@@ -35,7 +35,7 @@ public class CourseServiceImpl implements CourseService {
         try {
             course = courseDao.create(year, quarter, board, subjectId);
         } catch (DuplicateKeyException dke) {
-            throw new DuplicateCourseException(dke.getMessage());
+            throw new DuplicateCourseException();
         } catch (DataAccessException dae) {
             throw new SystemUnavailableException(dae.getMessage());
         }
@@ -75,11 +75,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Optional<Course> getById(Long id) {
         return courseDao.getById(id);
-    }
-
-    @Override
-    public Optional<Course> getBy(Long subjectId, Integer year, Integer quarter, String board) {
-        return courseDao.getBy(subjectId, year, quarter, board);
     }
 
     @Override
@@ -135,8 +130,18 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> getCoursesWhereStudent(Long userId) {
-        return courseDao.getCoursesWhereStudent(userId);
+    public List<Course> listWhereStudent(Long userId) {
+        return courseDao.listWhereStudent(userId);
+    }
+
+    @Override
+    public List<Course> listByYearQuarter(Integer year, Integer quarter) {
+        return courseDao.listByYearQuarter(year, quarter);
+    }
+
+    @Override
+    public List<Integer> getAvailableYears() {
+        return courseDao.getAvailableYears();
     }
 
 }

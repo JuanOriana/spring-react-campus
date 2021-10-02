@@ -98,14 +98,6 @@ public class CourseDaoImpl implements CourseDao {
         return jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects WHERE courseId = ?", new Object[]{id}, COURSE_ROW_MAPPER).stream().findFirst();
     }
 
-    @Override
-    public Optional<Course> getBy(Long subjectId, Integer year, Integer quarter, String board) {
-        return jdbcTemplate.query("SELECT * " +
-                        "FROM courses NATURAL JOIN subjects " +
-                        "WHERE subjectId = ? AND year = ? AND quarter = ? AND board = ?",
-                new Object[]{subjectId, year, quarter, board}, COURSE_ROW_MAPPER).stream().findFirst();
-    }
-
     private static final ResultSetExtractor<Map<User, Role>> MAP_RESULT_SET_EXTRACTOR = (rs -> {
         Map<User, Role> result = new HashMap<>();
         while(rs.next()) {
@@ -178,12 +170,25 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public List<Course> getCoursesWhereStudent(Long userId) {
+    public List<Course> listWhereStudent(Long userId) {
         return new ArrayList<>(jdbcTemplate.query(  "SELECT * " +
                                                     "FROM courses NATURAL JOIN user_to_course NATURAL JOIN subjects " +
                                                     "WHERE userId = ? " +
-                                                    "AND roleId = (SELECT roleId FROM roles WHERE rolename='Alumno')",
-                                                    new Object[]{userId}, COURSE_ROW_MAPPER));
+                                                    "AND roleId = (SELECT roleId FROM roles WHERE roleId = ?)",
+                                                    new Object[]{userId, Roles.STUDENT.getValue()}, COURSE_ROW_MAPPER));
+    }
+
+    @Override
+    public List<Course> listByYearQuarter(Integer year, Integer quarter) {
+        return new ArrayList<>(jdbcTemplate.query(  "SELECT * " +
+                        "FROM courses NATURAL JOIN subjects " +
+                        "WHERE year = ? AND quarter = ?", new Object[]{year, quarter}, COURSE_ROW_MAPPER));
+    }
+
+    @Override
+    public List<Integer> getAvailableYears() {
+        return new ArrayList<>(jdbcTemplate.query(  "SELECT DISTINCT year FROM courses ORDER BY year ASC",
+                (rs, rowNum) -> rs.getInt("year")));
     }
 
 

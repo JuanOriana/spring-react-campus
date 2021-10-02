@@ -15,15 +15,18 @@
     </jsp:include>
     <div class="page-container" >
         <h1 class="admin-title"><spring:message code="admin.page.header" htmlEscape="true"/></h1>
-        <div style="display: flex">
-            <a href="<c:url value="/admin/user/new"/>">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center">
+            <a href="<c:url value="/admin/user/new"/>" class="styleless-anchor">
                 <button class="redirection-button" style="margin-right: 25px;"><spring:message code="admin.button.create.user"/></button>
             </a>
-            <a href="<c:url value="/admin/course/new"/>">
+            <a href="<c:url value="/admin/course/new"/>" class="styleless-anchor">
                 <button class="redirection-button" style="margin:0 25px;"><spring:message code="admin.button.create.course" /></button>
             </a>
-            <a href="<c:url value="/admin/course/select"/>">
+            <a href="<c:url value="/admin/course/select"/>" class="styleless-anchor">
                 <button class="redirection-button" style="margin-left:25px;"><spring:message code="admin.button.add.user.to.course"/></button>
+            </a>
+            <a href="<c:url value="/admin/course/all"/>">
+                <button class="redirection-button" style="margin-left:25px;"><spring:message code="admin.button.all.courses"/></button>
             </a>
         </div>
     </div>
