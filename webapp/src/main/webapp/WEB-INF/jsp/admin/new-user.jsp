@@ -21,6 +21,9 @@
         <form:label path="fileNumber" for="fileNumber" class="form-label"><spring:message code="new.user.file.number" /></form:label>
         <form:input type="number" path="fileNumber" class="form-input" style="font-size: 26px"/>
         <form:errors path="fileNumber" element="p" cssClass="error-message"/>
+        <c:if test="${isFileNumberDuplicated}">
+            <p class="error-message">Ya existia un usuario con el mismo legajo</p>
+        </c:if>
         <form:label path="name" for="name" class="form-label"><spring:message code="new.user.name" /></form:label>
         <form:input type="text" path="name" class="form-input" style="font-size: 26px"/>
         <form:errors path="name" element="p" cssClass="error-message"/>
@@ -30,9 +33,15 @@
         <form:label path="username" for="username" class="form-label"><spring:message code="new.user.username" /></form:label>
         <form:input type="text" path="username" class="form-input" style="font-size: 26px"/>
         <form:errors path="username" element="p" cssClass="error-message"/>
+        <c:if test="${isUsernameDuplicated}">
+            <p class="error-message">Ya existia un usuario con el mismo nombre de usuario</p>
+        </c:if>
         <form:label path="email" for="email" class="form-label"><spring:message code="new.user.email" /></form:label>
         <form:input type="text" path="email" class="form-input" style="font-size: 26px"/>
         <form:errors path="email" element="p" cssClass="error-message"/>
+        <c:if test="${isEmailDuplicated}">
+            <p class="error-message">Ya existia un usuario con el mismo email</p>
+        </c:if>
         <form:label path="password" for="password" class="form-label"><spring:message code="new.user.password" /></form:label>
         <form:input type="password" path="password" class="form-input" style="font-size: 26px"/>
         <form:errors path="password" element="p" cssClass="error-message"/>
