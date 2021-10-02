@@ -30,11 +30,12 @@ public class UserDaoImpl implements UserDao {
                     .withUsername(rs.getString("username"))
                     .withEmail(rs.getString("email"))
                     .withPassword(rs.getString("password"))
+                    .withProfileImage(rs.getBytes("image"))
                     .isAdmin(rs.getBoolean("isAdmin"))
                     .build();
 
     private static final RowMapper<Role> ROLE_ROW_MAPPER = (rs, rowNum) ->
-        new Role(rs.getInt("roleId"), rs.getString("roleName"));
+            new Role(rs.getInt("roleId"), rs.getString("roleName"));
 
     @Autowired
     public UserDaoImpl(final DataSource ds) {
@@ -69,6 +70,7 @@ public class UserDaoImpl implements UserDao {
                 .withUsername(username)
                 .withEmail(email)
                 .withPassword(password)
+                .withProfileImage(null)
                 .isAdmin(isAdmin)
                 .build();
     }
@@ -76,20 +78,24 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean update(Long userId, User user) {
         return jdbcTemplate.update("UPDATE users " +
-                "SET fileNumber = ?," +
-                "name = ?," +
-                "surname = ?," +
-                "username = ?, " +
-                "email = ?, " +
-                "password = ? ," +
-                "isAdmin = ? " +
-                "WHERE userId = ?;", user.getFileNumber(), user.getName(), user.getSurname(),
+                        "SET fileNumber = ?," +
+                        "name = ?," +
+                        "surname = ?," +
+                        "username = ?, " +
+                        "email = ?, " +
+                        "password = ? ," +
+                        "isAdmin = ? " +
+                        "WHERE userId = ?;", user.getFileNumber(), user.getName(), user.getSurname(),
                 user.getUsername(), user.getEmail(), user.getPassword(), user.isAdmin(), userId) == 1;
     }
 
     @Override
     public boolean delete(Long userId) {
-        return jdbcTemplate.update("DELETE FROM users WHERE userId = ?", userId) == 1;
+        if(jdbcTemplate.update("DELETE FROM users WHERE userId = ?", userId) == 1){
+            jdbcTemplate.update("DELETE FROM profile_images WHERE userId = ? ",userId);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -100,31 +106,31 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> findById(Long userId) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE userId = ?",
+        return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN profile_images WHERE userId = ?",
                 new Object[]{userId}, USER_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE username = ?",
+        return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN profile_images  WHERE username = ?",
                 new Object[]{username}, USER_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public Optional<User> findByFileNumber(Integer fileNumber) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE fileNumber = ?",
+        return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN profile_images   WHERE fileNumber = ?",
                 new Object[]{fileNumber}, USER_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE email = ?",
+        return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN profile_images   WHERE email = ?",
                 new Object[]{email}, USER_ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public List<User> list() {
-        return jdbcTemplate.query("SELECT * FROM users", USER_ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN profile_images", USER_ROW_MAPPER);
     }
 
     @Override
@@ -137,18 +143,17 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Optional<byte[]> getProfileImage(Long userId) {
         return jdbcTemplate.query("SELECT image FROM profile_images WHERE userId = ?",
-                new Object[]{userId}, (rs, rowNumber) ->  Optional.ofNullable(rs.getBytes("image"))).stream().findFirst().get();
+                new Object[]{userId}, (rs, rowNumber) -> Optional.ofNullable(rs.getBytes("image"))).stream().findFirst().get();
     }
 
 
-
-    private static final ResultSetExtractor<Map<Role,List<Course>>> ROLE_AND_COURSES_EXTRACTOR= (rs -> {
-        Map<Role,List<Course>> roleMap = new HashMap<>();
-        while (rs.next()){
+    private static final ResultSetExtractor<Map<Role, List<Course>>> ROLE_AND_COURSES_EXTRACTOR = (rs -> {
+        Map<Role, List<Course>> roleMap = new HashMap<>();
+        while (rs.next()) {
             Role role = new Role(rs.getInt("roleId"), rs.getString("roleName"));
-            roleMap.putIfAbsent(role,new ArrayList<>());
+            roleMap.putIfAbsent(role, new ArrayList<>());
 
-            roleMap.get(role).add( new Course.Builder()
+            roleMap.get(role).add(new Course.Builder()
                     .withCourseId(rs.getLong("courseId"))
                     .withYear(rs.getInt("year"))
                     .withQuarter(rs.getInt("quarter"))
@@ -160,10 +165,10 @@ public class UserDaoImpl implements UserDao {
         return roleMap;
     });
 
-    public Map<Role,List<Course>> getRolesInCourses(Long userId){
+    public Map<Role, List<Course>> getRolesInCourses(Long userId) {
         return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN user_to_course NATURAL JOIN courses NATURAL JOIN roles NATURAL JOIN subjects" +
                 " WHERE (userId,courseId,roleId) IN (SELECT userId,courseId, roleId FROM users NATURAL JOIN user_to_course NATURAL JOIN courses " +
-                " GROUP by roleId, courseId,userId) AND userId = ?",new Object[]{userId},ROLE_AND_COURSES_EXTRACTOR);
+                " GROUP by roleId, courseId,userId) AND userId = ?", new Object[]{userId}, ROLE_AND_COURSES_EXTRACTOR);
 
 
     }
