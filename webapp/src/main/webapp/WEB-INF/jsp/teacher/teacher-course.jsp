@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
@@ -76,7 +77,8 @@
               </div>
             </div>
             <p class="announcement-date"><spring:message code="teacher.course.announcement.date" htmlEscape="true" arguments="${announcementItem.date.format(dateTimeFormatter)}"/></p>
-            <spring:message code="teacher.course.announcement.content" htmlEscape="true" arguments="${announcementItem.content}"/>
+            <c:set var="newline" value="<%= \"\n\" %>" />
+              ${fn:replace(announcementItem.content, newline, "<br />")}
           </div>
         </c:forEach>
       </div>
