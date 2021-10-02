@@ -6,12 +6,10 @@ import javax.validation.constraints.Size;
 
 public class AnnouncementForm {
 
-    @Min(2)
-    @Max(50)
+    @Size(min=2,max=50)
     private String title;
 
-    @Min(2)
-    @Max(1024)
+    @Size(min=2,max=1024)
     private String content;
 
     public String getTitle() {
