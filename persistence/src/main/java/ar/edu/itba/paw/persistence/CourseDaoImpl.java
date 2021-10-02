@@ -178,12 +178,25 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public List<Course> getCoursesWhereStudent(Long userId) {
+    public List<Course> listWhereStudent(Long userId) {
         return new ArrayList<>(jdbcTemplate.query(  "SELECT * " +
                                                     "FROM courses NATURAL JOIN user_to_course NATURAL JOIN subjects " +
                                                     "WHERE userId = ? " +
-                                                    "AND roleId = (SELECT roleId FROM roles WHERE rolename='Alumno')",
-                                                    new Object[]{userId}, COURSE_ROW_MAPPER));
+                                                    "AND roleId = (SELECT roleId FROM roles WHERE roleId = ?)",
+                                                    new Object[]{userId, Roles.STUDENT.getValue()}, COURSE_ROW_MAPPER));
+    }
+
+    @Override
+    public List<Course> listByYearQuarter(Integer year, Integer quarter) {
+        return new ArrayList<>(jdbcTemplate.query(  "SELECT * " +
+                        "FROM courses NATURAL JOIN subjects " +
+                        "WHERE year = ? AND quarter = ?", new Object[]{year, quarter}, COURSE_ROW_MAPPER));
+    }
+
+    @Override
+    public List<Integer> getAvailableYears() {
+        return new ArrayList<>(jdbcTemplate.query(  "SELECT DISTINCT year FROM courses",
+                (rs, rowNum) -> rs.getInt("year")));
     }
 
 
