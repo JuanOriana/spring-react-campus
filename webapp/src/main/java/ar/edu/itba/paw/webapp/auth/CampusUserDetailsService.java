@@ -20,7 +20,7 @@ public class CampusUserDetailsService implements UserDetailsService {
 
     private final PasswordEncoder encoder;
 
-    private final Pattern BCRYPT_HASH_PATTERN = Pattern.compile("\\A\\$2a?\\$\\d\\d\\$[0-9A-Za-z]{53}");
+    private final Pattern BCRYPT_HASH_PATTERN = Pattern.compile("^\\$2[ayb]\\$.{56}$");
 
     private final UserService userService;
 
@@ -38,8 +38,9 @@ public class CampusUserDetailsService implements UserDetailsService {
         authorities.add(new SimpleGrantedAuthority(user.isAdmin() ? "ADMIN" : "USER"));
         final String password;
         if(user.getPassword() == null || !BCRYPT_HASH_PATTERN.matcher(user.getPassword()).matches()) {
-            // TO-DO: Add method to update password in db to be hashed
             password = encoder.encode(user.getPassword());
+            user.setPassword(password);
+            userService.update(user.getUserId(), user);
         } else {
             password = user.getPassword();
         }

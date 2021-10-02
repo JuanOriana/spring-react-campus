@@ -26,10 +26,10 @@
                     <form:form modelAttribute="userProfileForm" method="post" enctype="multipart/form-data"
                                acceptCharset="utf-8" cssStyle="margin: 30px 0; display: flex; padding:10px;
                                flex-direction: column; border: 2px solid #2EC4B6; border-radius:12px">
-                        <form:label path="image" class="form-label" cssStyle="margin: 0">Insertar imagen</form:label>
+                        <form:label path="image" class="form-label" cssStyle="margin: 0"><spring:message code="user.insert.image.title"/></form:label>
                         <form:input type="file" path="image" accept="image/png, image/jpeg" />
                         <form:errors path="image" element="p" cssStyle="color:red;margin-left: 10px"/>
-                        <button style="border-radius:4px; padding:4px; font-size: 18px; margin-top: 5px">Confirmar</button>
+                        <button style="border-radius:4px; padding:4px; font-size: 18px; margin-top: 5px"><spring:message code="user.insert.image.button"/></button>
                     </form:form>
                 </div>
                 <div style="display:flex; flex-direction: column">
