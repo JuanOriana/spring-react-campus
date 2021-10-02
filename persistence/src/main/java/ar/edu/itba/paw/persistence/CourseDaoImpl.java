@@ -187,7 +187,7 @@ public class CourseDaoImpl implements CourseDao {
 
     @Override
     public List<Integer> getAvailableYears() {
-        return new ArrayList<>(jdbcTemplate.query(  "SELECT DISTINCT year FROM courses",
+        return new ArrayList<>(jdbcTemplate.query(  "SELECT DISTINCT year FROM courses ORDER BY year ASC",
                 (rs, rowNum) -> rs.getInt("year")));
     }
 
