@@ -93,7 +93,7 @@ public class CourseController extends AuthController {
         return announcements(courseId, announcementForm, successMessage, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
 
-    @RequestMapping("/{courseId}/teachers")
+    @GetMapping("/{courseId}/teachers")
     public ModelAndView professors(@PathVariable Long courseId) {
         final ModelAndView mav = new ModelAndView("teachers");
         mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
