@@ -11,22 +11,30 @@
     <jsp:include page="../components/navbar.jsp"/>
     <div class="page-container">
         <h2 class="section-heading">Todos los cursos del ${year}/${quarter}Q</h2>
-        <form method="get">
-            <label for="year">Anio</label>
-            <select name="year" id="year" >
-                <option value="2021" <c:if test="${year == 2021}">selected</c:if>>2021</option>
-                <option value="2020"<c:if test="${year == 2020}">selected</c:if>>2020</option>
-            </select>
-            Cuatrimestre
-            <label>
-                <input type="radio" value="1" name="quarter" <c:if test="${quarter == 1}">checked</c:if>>
-                <span>1</span>
-            </label>
-            <label>
-                <input type="radio" value="2" name="quarter" <c:if test="${quarter == 2}">checked</c:if>>
-                <span>2</span>
-            </label>
-            <button>Buscar</button>
+        <form method="get" class="course-table-form">
+            <div style="display: flex">
+                <div style="display: flex;flex-direction: column">
+                    <label for="year" class="form-label">Anio</label>
+                    <select name="year" id="year" class="form-input">
+                        <option value="2021" <c:if test="${year == 2021}">selected</c:if>>2021</option>
+                        <option value="2020"<c:if test="${year == 2020}">selected</c:if>>2020</option>
+                    </select>
+                </div>
+                <div style="display: flex;flex-direction: column; align-items: center">
+                    <p class="form-label">Cuatrimestre</p>
+                    <div style="display: flex; width: 70%; justify-content: space-between">
+                        <label class="form-label" style="margin:0">
+                            <input type="radio" value="1" name="quarter" <c:if test="${quarter == 1}">checked</c:if>>
+                            <span>1</span>
+                        </label>
+                        <label class="form-label" style="margin:0">
+                            <input type="radio" value="2" name="quarter" <c:if test="${quarter == 2}">checked</c:if>>
+                            <span>2</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button class="form-button">Buscar</button>
         </form>
         <table class="course-table">
             <tr class="course-table-header">

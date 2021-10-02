@@ -21,3 +21,11 @@
     font-size: 1em;
     text-align: center;
 }
+
+.course-table-form{
+    background: white;
+    padding:10px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+}
