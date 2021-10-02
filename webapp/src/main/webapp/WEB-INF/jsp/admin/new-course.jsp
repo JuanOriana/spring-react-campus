@@ -42,7 +42,7 @@
                     <form:option value="${subject.subjectId}"><spring:message code="subject.name" htmlEscape="true" arguments="${subject.name}"/></form:option>
                 </c:forEach>
             </form:select>
-            <form:errors path="subjectId" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <form:errors path="subjectId" element="p" cssClass="error-message"/>
             <form:label path="quarter" for="quarter" class="form-label"><spring:message code="new.course.quarter"/></form:label>
             <div style="display:flex; width: 200px; align-items: center;
             justify-content: space-between; margin-left: 20px; font-size: 20px">
@@ -53,13 +53,13 @@
                     <form:radiobutton path="quarter" value="2" cssStyle="margin-right: 5px"/>2
                 </div>
             </div>
-            <form:errors path="quarter" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <form:errors path="quarter" element="p" cssClass="error-message"/>
             <form:label path="year" for="year" class="form-label"><spring:message code="new.course.year"/></form:label>
             <form:input type="number" path="year" class="form-input" style="font-size: 26px"/>
-            <form:errors path="year" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <form:errors path="year" element="p" cssClass="error-message"/>
             <form:label path="board" for="board" class="form-label"><spring:message code="new.course.board"/></form:label>
             <form:input type="text" path="board" class="form-input" style="font-size: 26px"/>
-            <form:errors path="board" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <form:errors path="board" element="p" cssClass="error-message"/>
             <div style="display: grid; grid-template-columns: 400px 400px; margin: 20px 20px 0 20px">
                 <c:forEach var="day" items="${days}" varStatus="dayStatus">
                     <div style="display: flex; flex-direction: column">

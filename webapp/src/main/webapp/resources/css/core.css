@@ -312,9 +312,16 @@ body{
     padding:5px;
 }
 
+.error-message{
+    color:red;
+    margin-left: 10px;
+}
+
 textarea:focus, input:focus{
     outline: none;
 }
+
+/*                  FILES                  */
 
 .file-grid{
     display: flex;
@@ -322,8 +329,6 @@ textarea:focus, input:focus{
     flex-wrap: wrap;
     flex-direction: column;
 }
-
-/*                  FILES                  */
 
 .file-unit{
     width: calc(100% - 40px);

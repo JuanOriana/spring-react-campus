@@ -32,14 +32,14 @@
                     </form:option>
                 </c:forEach>
             </form:select>
-            <form:errors path="userId" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <form:errors path="userId" element="p" cssClass="error-message"/>
             <form:label path="roleId" for="roleId" class="form-label"><spring:message code="add.user.label.role"/></form:label>
             <form:select path="roleId" class="form-input" style="font-size: 26px">
                 <c:forEach var="role" items="${roles}">
                     <form:option value="${role.roleId}"><spring:message code="role.${role.roleName}" htmlEscape="true"/></form:option>
                 </c:forEach>
             </form:select>
-            <form:errors path="roleId" element="p" cssStyle="color:red;margin-left: 10px"/>
+            <form:errors path="roleId" element="p" cssClass="error-message"/>
             <button class="form-button"><spring:message code="add.user.button.add"/></button>
             <c:if test="${courseTeachers.size() > 0 || courseStudents.size() > 0}">
                 <div class="user-container">

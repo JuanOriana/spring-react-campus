@@ -40,14 +40,14 @@
                     <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="teacher.file.new.file.title"/></h1>
                     <form:label path="file" for="file" class="form-label"><spring:message code="teacher.file.new.file"/></form:label>
                     <form:input path="file" type="file" class="form-input" style="font-size: 26px"/>
-                    <form:errors path="file" element="p" cssStyle="color:red;margin-left: 10px"/>
+                    <form:errors path="file" element="p" cssClass="error-message"/>
                     <form:label path="categoryId" for="categoryId" class="form-label"><spring:message code="teacher.file.new.file.category"/></form:label>
                     <form:select path="categoryId" class="form-input" style="font-size: 26px">
                         <c:forEach var="category" items="${categories}">
                             <form:option value="${category.categoryId}"><spring:message code="category.${category.categoryName}" htmlEscape="true"/></form:option>
                         </c:forEach>
                     </form:select>
-                    <form:errors path="categoryId" element="p" cssStyle="color:red;margin-left: 10px"/>
+                    <form:errors path="categoryId" element="p" cssClass="error-message"/>
                     <button class="form-button"><spring:message code="teacher.file.button.upload.file" htmlEscape="true"/></button>
                 </form:form>
                 <div class="separator reduced">.</div>
