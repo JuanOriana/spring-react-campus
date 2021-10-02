@@ -1,13 +1,17 @@
 package ar.edu.itba.paw.webapp.form;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 public class AnnouncementForm {
 
-    @Size(min=2,max=50)
+    @Min(2)
+    @Max(50)
     private String title;
-    
-    @Size(min=2,max=256)
+
+    @Min(2)
+    @Max(1024)
     private String content;
 
     public String getTitle() {

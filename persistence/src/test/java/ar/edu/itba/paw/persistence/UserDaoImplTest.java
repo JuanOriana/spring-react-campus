@@ -41,6 +41,7 @@ public class UserDaoImplTest {
     private final Integer TEACHER_ROLE_ID = 2;
     private final String TEACHER_ROLE_NAME = "Profesor";
     private final String sqlInsertUserWithId = String.format("INSERT INTO users (userId,fileNumber,name,surname,username,email,password,isAdmin) VALUES (%d,%d,'%s','%s','%s','%s','%s',%s)", USER_ID, FILE_NUMBER, NAME, SURNAME, USERNAME, EMAIL, PASSWORD, IS_ADMIN);
+    private final String sqlInsertProfileImageWithId = String.format("INSERT INTO profile_images (image,userid) VALUES(null,%d)",USER_ID);
     @Autowired
     UserDaoImpl userDao;
     @Autowired
@@ -72,6 +73,7 @@ public class UserDaoImplTest {
     @Test
     public void testDeleteInvalidId() {
         jdbcTemplate.execute(sqlInsertUserWithId);
+        jdbcTemplate.execute(sqlInsertProfileImageWithId);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "users"));
         assertFalse(userDao.delete(USER_ID_INEXISTENCE));
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "users"));
@@ -80,6 +82,7 @@ public class UserDaoImplTest {
     @Test
     public void testFindById() {
         jdbcTemplate.execute(sqlInsertUserWithId);
+        jdbcTemplate.execute(sqlInsertProfileImageWithId);
         Optional<User> userOptional = userDao.findById(USER_ID);
 
         assertNotNull(userOptional);
@@ -92,6 +95,7 @@ public class UserDaoImplTest {
     @Test
     public void testFindByIdInvalidId() {
         jdbcTemplate.execute(sqlInsertUserWithId);
+        jdbcTemplate.execute(sqlInsertProfileImageWithId);
         Optional<User> userOptional = userDao.findById(USER_ID_INEXISTENCE);
 
         assertNotNull(userOptional);
@@ -111,7 +115,6 @@ public class UserDaoImplTest {
                 .withPassword(PASSWORD)
                 .isAdmin(IS_ADMIN)
                 .build()));
-
     }
 
     @Test
@@ -129,8 +132,7 @@ public class UserDaoImplTest {
     @Test
     public void testGetProfileImage() {
         jdbcTemplate.execute(sqlInsertUserWithId);
-        String sqlInsertProfileImageRow = String.format("INSERT INTO profile_images (image,userId) VALUES (null,%d)", USER_ID);
-        jdbcTemplate.execute(sqlInsertProfileImageRow);
+        jdbcTemplate.execute(sqlInsertProfileImageWithId);
         Optional<byte[]> image = userDao.getProfileImage(USER_ID);
         assertNotNull(image);
         assertFalse(image.isPresent());
@@ -139,8 +141,7 @@ public class UserDaoImplTest {
     @Test
     public void testUpdateProfileImage() {
         jdbcTemplate.execute(sqlInsertUserWithId);
-        String sqlInsertProfileImageRow = String.format("INSERT INTO profile_images (image,userId) VALUES (null,%d)", USER_ID);
-        jdbcTemplate.execute(sqlInsertProfileImageRow);
+        jdbcTemplate.execute(sqlInsertProfileImageWithId);
         File file = new File("src/test/resources/test.png");
         try {
             byte[] bytea = Files.readAllBytes(file.toPath());
