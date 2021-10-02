@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -25,7 +25,7 @@
 
                 <c:if test="${announcementList.size() == 0}">
                     <p class="announcement-title" style="width: 100%; text-align: center">
-                        No hay anuncios en este curso aun
+                        <spring:message code="announcement.no.announcement"/>
                     </p>
                 </c:if>
 
@@ -36,7 +36,8 @@
                             <p style="font-size: 14px"><spring:message code="course.announcement.owner" htmlEscape="true" arguments="${announcementItem.author.name},${announcementItem.author.surname}"/></p>
                         </div>
                         <p class="announcement-date"><spring:message code="course.announcement.date" htmlEscape="true" arguments="${announcementItem.date.format(dateTimeFormatter)}"/></p>
-                        <spring:message code="course.announcement.content" htmlEscape="true" arguments="${announcementItem.content}"/>
+                        <c:set var="newline" value="<%= \"\n\" %>" />
+                            ${fn:replace(announcementItem.content, newline, "<br />")}
                     </div>
                 </c:forEach>
             </div>
