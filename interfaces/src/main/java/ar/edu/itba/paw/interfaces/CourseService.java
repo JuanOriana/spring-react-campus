@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.*;
-
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -53,9 +51,6 @@ public interface CourseService {
      * @return the course corresponding to the given id if it exists, null otherwise
      */
     Optional<Course> getById(Long courseId);
-
-
-    Optional<Course> getBy(Long subjectId, Integer year, Integer quarter, String board);
 
     /**
      * Gets the map of teachers for the given course
@@ -132,5 +127,20 @@ public interface CourseService {
      * @param userId of the queried user
      * @return a list of courses where the given user is a student
      */
-    List<Course> getCoursesWhereStudent(Long userId);
+    List<Course> listWhereStudent(Long userId);
+
+    /**
+     * Attempts to get all courses in the pair year-quarter
+     * @param year to get the courses from
+     * @param quarter to get the courses from
+     * @return list of courses for the specific year and quarter
+     */
+    List<Course> listByYearQuarter(Integer year, Integer quarter);
+
+    /**
+     * Attempts to get a list of years where there are courses present
+     * @return list of years where there are courses present
+     */
+    List<Integer> getAvailableYears();
+
 }

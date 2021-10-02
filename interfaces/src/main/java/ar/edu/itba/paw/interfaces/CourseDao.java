@@ -15,11 +15,12 @@ public interface CourseDao {
     List<Course> list();
     List<Course> list(Long userId);
     Optional<Course> getById(Long id);
-    Optional<Course> getBy(Long subjectId, Integer year, Integer quarter, String board);
     List<User> getStudents(Long courseId);
     Map<User, Role> getTeachers(Long courseId);
     boolean belongs(Long userId, Long courseId);
     boolean enroll(Long userId, Long courseId, Integer roleId);
     List<User> listUnenrolledUsers(Long courseId);
-    List<Course> getCoursesWhereStudent(Long userId);
+    List<Course> listWhereStudent(Long userId);
+    List<Course> listByYearQuarter(Integer year, Integer quarter);
+    List<Integer> getAvailableYears();
 }

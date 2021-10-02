@@ -38,8 +38,10 @@ public class ErrorControllerAdvice {
     @ExceptionHandler(DuplicateCourseException.class)
     public ModelAndView courseKeyViolation() {
         ModelAndView mav = new ModelAndView("admin/new-course");
+        final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         mav.addObject("courseForm", new CourseForm());
         mav.addObject("isCourseDuplicated", true);
+        mav.addObject("days",days);
         return mav;
     }
 
