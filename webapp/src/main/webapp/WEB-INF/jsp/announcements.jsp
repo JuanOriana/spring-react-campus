@@ -17,7 +17,7 @@
       <h2 class="section-heading"><spring:message code="announcements.section-heading.title"/></h2>
       <c:if test="${announcementList.size() == 0}">
           <p class="announcement-title" style="width: 100%; text-align: center">
-              No hay anuncios aun
+              <spring:message code="announcement.no.announcement"/>
           </p>
       </c:if>
       <c:forEach var="announcementItem" items="${announcementList}">
