@@ -75,6 +75,9 @@
                     </div>
                 </c:forEach>
             </div>
+            <c:if test="${isCourseDuplicated}">
+                <p class="error-message">Existe un curso con estos mismos datos</p>
+            </c:if>
             <button class="form-button"><spring:message code="new.course.button.create"/></button>
         </form:form>
     </div>
