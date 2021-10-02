@@ -25,7 +25,7 @@
             <c:url value="/course/${courseId}/files" var="postUrl"/>
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course.file.section-heading.title" htmlEscape="true"/> </h3>
-                <div class="big-wrapper">
+                <div class="big-wrapper" style="display: flex; flex-direction: column">
                     <c:set var="categories" value="${categories}" scope="request"/>
                     <c:set var="extensions" value="${extensions}" scope="request"/>
                     <c:set var="extensionType" value="${extensionType}" scope="request"/>
