@@ -54,7 +54,7 @@
 
         <c:if test="${announcementList.size() == 0}">
           <p class="announcement-title" style="width: 100%; text-align: center">
-            No hay anuncios en este curso aun
+            <spring:message code="teacher.course.no.announcement"/>
           </p>
         </c:if>
 
