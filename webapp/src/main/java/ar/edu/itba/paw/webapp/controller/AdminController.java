@@ -23,7 +23,6 @@ public class AdminController extends AuthController {
     private final SubjectService subjectService;
     private final CourseService courseService;
     private final RoleService roleService;
-    final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
     @Autowired
     public AdminController(AuthFacade authFacade, UserService userService, SubjectService subjectService,
@@ -63,6 +62,7 @@ public class AdminController extends AuthController {
     @GetMapping(value = "/course/new")
     public ModelAndView newCourse(final CourseForm courseForm){
         ModelAndView mav = new ModelAndView("admin/new-course");
+        final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         List<Subject> subjects = subjectService.list();
         subjects.sort(Comparator.comparing(Subject::getName));
         mav.addObject("courseForm",courseForm);

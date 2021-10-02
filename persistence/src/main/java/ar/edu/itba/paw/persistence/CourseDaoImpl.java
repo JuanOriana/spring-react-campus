@@ -98,14 +98,6 @@ public class CourseDaoImpl implements CourseDao {
         return jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects WHERE courseId = ?", new Object[]{id}, COURSE_ROW_MAPPER).stream().findFirst();
     }
 
-    @Override
-    public Optional<Course> getBy(Long subjectId, Integer year, Integer quarter, String board) {
-        return jdbcTemplate.query("SELECT * " +
-                        "FROM courses NATURAL JOIN subjects " +
-                        "WHERE subjectId = ? AND year = ? AND quarter = ? AND board = ?",
-                new Object[]{subjectId, year, quarter, board}, COURSE_ROW_MAPPER).stream().findFirst();
-    }
-
     private static final ResultSetExtractor<Map<User, Role>> MAP_RESULT_SET_EXTRACTOR = (rs -> {
         Map<User, Role> result = new HashMap<>();
         while(rs.next()) {
