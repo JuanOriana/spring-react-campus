@@ -23,8 +23,18 @@
             </ul>
         </c:if>
         <div class="user-nav-wrapper">
-            <a href="<c:url value="/user"/>" class="styleless-anchor">
-                <h4><spring:message code="navbar.user" htmlEscape="true" arguments="${currentUser.name}"/></h4>
+            <a href="<c:url value="/user"/>" class="styleless-anchor" style="display: flex">
+                <c:if test="${!isImageSet}">
+                    <img src="<c:url value="/resources/images/default-user-image.png"/>"
+                         class="user-section-img" style="width: 32px; height: 32px"/>
+                </c:if>
+                <c:if test="${isImageSet}">
+                    <img src="<c:url value="/user/profile-image"/>"
+                         class="user-section-img" style="width: 32px; height: 32px"/>
+                </c:if>
+                <h4 style="margin-left: 10px">
+                    <spring:message code="navbar.user" htmlEscape="true" arguments="${currentUser.name}"/>
+                </h4>
             </a>
             <a class="styleless-anchor" href="<c:url value ="/logout"/>">
                 <button class="logout-btn"><spring:message code="navbar.button.logout"/></button>
