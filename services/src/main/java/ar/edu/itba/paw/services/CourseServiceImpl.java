@@ -5,7 +5,11 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.TimetableService;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.exception.DuplicateCourseException;
+import ar.edu.itba.paw.models.exception.SystemUnavailableException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.sql.Time;
@@ -25,15 +29,16 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Either<Course, Collection<Errors>> create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
+    public Course create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
                                                      List<Integer> endTimes) {
-        boolean existsCourse = getBy(subjectId, year, quarter, board).isPresent();
-        if(existsCourse) {
-            Collection<Errors> errors = new ArrayList<>();
-            errors.add(Errors.COURSE_ALREADY_EXISTS);
-            return Either.alternative(errors);
+        Course course = null;
+        try {
+            course = courseDao.create(year, quarter, board, subjectId);
+        } catch (DuplicateKeyException dke) {
+            throw new DuplicateCourseException(dke.getMessage());
+        } catch (DataAccessException dae) {
+            throw new SystemUnavailableException(dae.getMessage());
         }
-        Course course = courseDao.create(year, quarter, board, subjectId);
         for (int i = 0; i < days.length; i++) {
             Integer startHour = startTimes.get(i);
             Integer endHour = endTimes.get(i);
@@ -42,7 +47,7 @@ public class CourseServiceImpl implements CourseService {
                         new Time(endHour, 0, 0));
             }
         }
-        return Either.value(course);
+        return course;
     }
 
     @Transactional

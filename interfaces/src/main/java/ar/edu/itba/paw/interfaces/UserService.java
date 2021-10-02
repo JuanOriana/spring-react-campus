@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.*;
-
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +18,7 @@ public interface UserService {
      * @param isAdmin    determines if the user is a full-fledged admin
      * @return the generated User instance if it was created successfully, a collection of errors if any key was violated
      */
-    Either<User, Collection<Errors>> create(Integer fileNumber, String name, String surname, String username, String email, String password,
+    User create(Integer fileNumber, String name, String surname, String username, String email, String password,
                                             boolean isAdmin);
 
     /**

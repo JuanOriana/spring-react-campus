@@ -16,7 +16,7 @@ public interface CourseService {
      * @param subjectId of the subject associated to the course
      * @return a Course instance holding the passed values
      */
-    Either<Course, Collection<Errors>> create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
+    Course create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
                                                    List<Integer> endTimes);
 
     /**

@@ -51,21 +51,11 @@ public class AdminController extends AuthController {
 
     @PostMapping(value = "/user/new")
     public ModelAndView newUser(@Valid UserRegisterForm userRegisterForm, final BindingResult validation) {
-        Either<User, Collection<Errors>> response;
         if (!validation.hasErrors()) {
-            response = userService.create(userRegisterForm.getFileNumber(), userRegisterForm.getName(), userRegisterForm.getSurname(),
+           userService.create(userRegisterForm.getFileNumber(), userRegisterForm.getName(), userRegisterForm.getSurname(),
                     userRegisterForm.getUsername(), userRegisterForm.getEmail(),
                     userRegisterForm.getPassword(), false);
-            if(response.isValuePresent()) {
-                return adminPortal("admin.success.message");
-            } else {
-                ModelAndView mav = newUser(userRegisterForm);
-                Collection<Errors> errors = response.getAlternative();
-                if(errors.contains(Errors.COURSE_ALREADY_EXISTS)) {
-                    mav.addObject("existsCourse", true);
-                }
-                return mav;
-            }
+            return adminPortal("admin.success.message");
         }
         return newUser(userRegisterForm);
     }
@@ -83,26 +73,10 @@ public class AdminController extends AuthController {
 
     @PostMapping(value = "/course/new")
     public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult validation) {
-        Either<Course, Collection<Errors>> response;
-        if (!validation.hasErrors()) {
-            response = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
+        if(!validation.hasErrors()) {
+            courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
                     , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
-            if(response.isValuePresent()) {
-                return adminPortal("course.success.message");
-            } else {
-                ModelAndView mav = newCourse(courseForm);
-                Collection<Errors> errors = response.getAlternative();
-                if(errors.contains(Errors.MAIL_ALREADY_IN_USE)) {
-                    mav.addObject("existsEmail", true);
-                }
-                if(errors.contains(Errors.USERNAME_ALREADY_IN_USE)) {
-                    mav.addObject("existsUsername", true);
-                }
-                if(errors.contains(Errors.FILE_NUMBER_ALREADY_IN_USE)) {
-                    mav.addObject("existsFileNumber", true);
-                }
-                return mav;
-            }
+            return adminPortal("course.success.message");
         }
         return newCourse(courseForm);
     }

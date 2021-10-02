@@ -63,9 +63,7 @@ public class CourseServiceImplTest {
         Integer[] end = {0, 0, 0, 0, 0, 0};
         List<Integer> startTime = new ArrayList<>(Arrays.asList(start));
         List<Integer> endTime = new ArrayList<>(Arrays.asList(end));
-        Either<Course, Collection<Errors>> newCourse = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID, startTime, endTime);
-        Assert.assertTrue(newCourse.isValuePresent());
-        Course course = newCourse.getValue();
+        Course course = courseService.create(YEAR, QUARTER, BOARD, SUBJECT_ID, startTime, endTime);
         Assert.assertEquals(course.getCourseId(), COURSE_ID);
     }
 
