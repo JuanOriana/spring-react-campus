@@ -35,7 +35,7 @@ public class CourseServiceImpl implements CourseService {
         try {
             course = courseDao.create(year, quarter, board, subjectId);
         } catch (DuplicateKeyException dke) {
-            throw new DuplicateCourseException(dke.getMessage());
+            throw new DuplicateCourseException();
         } catch (DataAccessException dae) {
             throw new SystemUnavailableException(dae.getMessage());
         }
