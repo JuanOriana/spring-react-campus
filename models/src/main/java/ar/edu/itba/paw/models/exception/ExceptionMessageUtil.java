@@ -16,4 +16,13 @@ public class ExceptionMessageUtil {
         }
         return res;
     }
+    public static String getField(String errorMessage) {
+        String res = "";
+        Pattern p = Pattern.compile( "\\(([^)]+)\\)" );
+        Matcher m = p.matcher( errorMessage );
+        if ( m.find() ) {
+            res = m.group(1);
+        }
+        return res;
+    }
 }

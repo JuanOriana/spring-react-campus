@@ -6,6 +6,8 @@ import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import ar.edu.itba.paw.models.exception.SystemUnavailableException;
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
+import ar.edu.itba.paw.webapp.form.CourseForm;
+import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,14 +28,18 @@ public class ErrorControllerAdvice {
     @ExceptionHandler(DuplicateUserException.class)
     public ModelAndView userKeyViolation(DuplicateUserException ex) {
         ModelAndView mav = new ModelAndView("admin/new-user");
-        mav.addObject("duplicateMessage", ex.getErrorMessage());
+        mav.addObject("userRegisterForm", new UserRegisterForm());
+        mav.addObject("isUsernameDuplicated", ex.isUsernameDuplicated());
+        mav.addObject("isFileNumberDuplicated", ex.isFileNumberDuplicated());
+        mav.addObject("isEmailDuplicated", ex.isEmailDuplicated());
         return mav;
     }
 
     @ExceptionHandler(DuplicateCourseException.class)
-    public ModelAndView courseKeyViolation(DuplicateCourseException ex) {
+    public ModelAndView courseKeyViolation() {
         ModelAndView mav = new ModelAndView("admin/new-course");
-        mav.addObject("duplicateMessage", ex.getErrorMessage());
+        mav.addObject("courseForm", new CourseForm());
+        mav.addObject("isCourseDuplicated", true);
         return mav;
     }
 
