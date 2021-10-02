@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.models.exception;
 
 
-import ar.edu.itba.paw.models.ExceptionMessageUtil;
-
 public class DuplicateUserException extends RuntimeException {
     private final String errorMessage;
     public DuplicateUserException(String message) {

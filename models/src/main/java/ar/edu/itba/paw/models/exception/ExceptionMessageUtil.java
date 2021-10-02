@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.models;
+package ar.edu.itba.paw.models.exception;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
