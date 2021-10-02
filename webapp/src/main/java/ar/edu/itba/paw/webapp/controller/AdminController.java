@@ -127,8 +127,12 @@ public class AdminController extends AuthController {
                                    @RequestParam(value = "quarter", defaultValue = "1") Integer quarter) {
         //TODO: MANEJAR quarter <0 >2 en la funcion y setear valoresa utomaticamente de no estar seteados
         ModelAndView mav = new ModelAndView("admin/all-courses");
-        mav.addObject("courses", courseService.list());
+        if (year == null){
+            year = Calendar.getInstance().get(Calendar.YEAR);
+        }
+        mav.addObject("courses", courseService.listByYearQuarter(year,quarter));
         mav.addObject("year",year);
+        mav.addObject("allYears",courseService.getAvailableYears());
         mav.addObject("quarter",quarter);
         return mav;
     }

@@ -16,8 +16,11 @@
                 <div style="display: flex;flex-direction: column">
                     <label for="year" class="form-label">Anio</label>
                     <select name="year" id="year" class="form-input">
-                        <option value="2021" <c:if test="${year == 2021}">selected</c:if>>2021</option>
-                        <option value="2020"<c:if test="${year == 2020}">selected</c:if>>2020</option>
+                        <c:forEach var="optionYear" items="${allYears}">
+                            <option value="${optionYear}" <c:if test="${year == optionYear}">selected</c:if>>
+                                    <c:out value="${optionYear}"/>
+                            </option>
+                        </c:forEach>
                     </select>
                 </div>
                 <div style="display: flex;flex-direction: column; align-items: center">
@@ -36,20 +39,25 @@
             </div>
             <button class="form-button">Buscar</button>
         </form>
-        <table class="course-table">
-            <tr class="course-table-header">
-                <th>Codigo</th>
-                <th style="width: 300px">Nombre</th>
-                <th>Comision</th>
-            </tr>
-            <c:forEach var="course" items="${courses}">
-                <tr>
-                    <td><c:out value="${course.subject.code}"/> </td>
-                    <td><c:out value="${course.subject.name}"/></td>
-                    <td><c:out value="${course.board}"/></td>
+        <c:if test="${empty courses}">
+            <h2 style="margin-top: 20px">No hay cursos para este cuatrimestre</h2>
+        </c:if>
+        <c:if test="${not empty courses}">
+            <table class="course-table">
+                <tr class="course-table-header">
+                    <th>Codigo</th>
+                    <th style="width: 300px">Nombre</th>
+                    <th>Comision</th>
                 </tr>
-            </c:forEach>
-        </table>
+                <c:forEach var="course" items="${courses}">
+                    <tr>
+                        <td><c:out value="${course.subject.code}"/> </td>
+                        <td><c:out value="${course.subject.name}"/></td>
+                        <td><c:out value="${course.board}"/></td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:if>
     </div>
     <jsp:include page="../components/footer.jsp"/>
 </div>
