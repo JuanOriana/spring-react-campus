@@ -25,6 +25,9 @@
             <a href="<c:url value="/admin/course/select"/>">
                 <button class="redirection-button" style="margin-left:25px;"><spring:message code="admin.button.add.user.to.course"/></button>
             </a>
+            <a href="<c:url value="/admin/course/all"/>">
+                <button class="redirection-button" style="margin-left:25px;"><spring:message code="admin.button.all.courses"/></button>
+            </a>
         </div>
     </div>
     <jsp:include page="../components/footer.jsp"/>

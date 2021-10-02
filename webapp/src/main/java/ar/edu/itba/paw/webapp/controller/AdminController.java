@@ -7,8 +7,10 @@ import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import ar.edu.itba.paw.webapp.form.UserToCourseForm;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -118,5 +120,16 @@ public class AdminController extends AuthController {
             successMessage ="user.success.message";
         }
         return addUserToCourse(userToCourseForm,courseId,successMessage);
+    }
+
+    @GetMapping(value = "/course/all")
+    public ModelAndView allCourses(@RequestParam(value = "year", defaultValue = "") Integer year,
+                                   @RequestParam(value = "quarter", defaultValue = "1") Integer quarter) {
+        //TODO: MANEJAR quarter <0 >2 en la funcion y setear valoresa utomaticamente de no estar seteados
+        ModelAndView mav = new ModelAndView("admin/all-courses");
+        mav.addObject("courses", courseService.list());
+        mav.addObject("year",year);
+        mav.addObject("quarter",quarter);
+        return mav;
     }
 }
