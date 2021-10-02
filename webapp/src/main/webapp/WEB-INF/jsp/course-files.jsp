@@ -53,8 +53,6 @@
                                     <p class="file-name">
                                         Descargas: <c:out value="${file.downloads}"/>
                                     </p>
-                                    <img src="<c:url value="/resources/images/trash.png"/>"
-                                         alt="delete" class="medium-icon" onclick="deleteById(${file.fileId})">
                                 </div>
                             </div>
                         </c:forEach>
@@ -66,7 +64,7 @@
                 <c:set var="prevUrl">
                     <my:replaceParam name="page" value="${currentPage - 1}" baseUrl="/course/${courseId}/files?"/>
                 </c:set>
-                <div class="pagination-wrapper">
+                <div class="pagination-wrapper" style="align-self: center">
                     <c:if test="${currentPage > 1}">
                         <a href="<c:url value="${prevUrl}"/>">
                             <img src="<c:url value="/resources/images/page-arrow.png"/>"

@@ -79,8 +79,6 @@
                                     <p class="file-name">
                                         <spring:message code="files.file.downloads" htmlEscape="true" arguments="${file.downloads}"/>
                                     </p>
-                                    <img src="<c:url value="/resources/images/trash.png"/>"
-                                         alt="delete" class="medium-icon" onclick="deleteById(${file.fileId})">
                                 </div>
                             </div>
                         </c:forEach>
