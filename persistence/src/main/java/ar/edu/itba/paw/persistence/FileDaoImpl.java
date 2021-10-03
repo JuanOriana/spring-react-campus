@@ -47,6 +47,25 @@ public class  FileDaoImpl implements FileDao {
                             .build())
                     .build();
 
+    private static final RowMapper<FileModel> FILE_PREVIEW_ROW_MAPPER = (rs, rowNum) ->
+            new FileModel.Builder()
+                    .withFileId(rs.getLong("fileId"))
+                    .withSize(rs.getLong("fileSize"))
+                    .withName(rs.getString("fileName"))
+                    .withDate(rs.getTimestamp("fileDate").toLocalDateTime())
+                    .withExtension(new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension")))
+                    .withDownloads(rs.getLong("downloads"))
+                    .withCourse(new Course.Builder()
+                            .withCourseId(rs.getLong("courseId"))
+                            .withYear(rs.getInt("year"))
+                            .withQuarter(rs.getInt("quarter"))
+                            .withBoard(rs.getString("board"))
+                            .withSubject(new Subject(rs.getLong("subjectId"), rs.getString("code"),
+                                    rs.getString("subjectName")))
+                            .build())
+                    .withoutFileData()
+                    .build();
+
 
     private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) ->
         new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
@@ -162,7 +181,8 @@ public class  FileDaoImpl implements FileDao {
 
     @Override
     public boolean associateCategory(Long fileId, Long fileCategoryId) {
-        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", new Object[]{fileId, fileCategoryId}, Integer.class);
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM category_file_relationship WHERE fileId = ? AND categoryId = ?",
+                new Object[]{fileId, fileCategoryId}, Integer.class);
         if (count == 0) {
             final Map<String, Object> args = new HashMap<>();
             args.put("fileId", fileId);
@@ -202,7 +222,7 @@ public class  FileDaoImpl implements FileDao {
                 new Object[]{courseId}, FILE_MODEL_ROW_MAPPER));
     }
 
-    private RowMapper<Integer> ACCESS_ROW_MAPPER = ((rs, rowNum) -> rs.getInt("userId"));
+    private final RowMapper<Integer> ACCESS_ROW_MAPPER = ((rs, rowNum) -> rs.getInt("userId"));
 
     @Override
     public boolean hasAccess(Long fileId, Long userId) {
@@ -270,11 +290,21 @@ public class  FileDaoImpl implements FileDao {
             query.append(" ) ");
         }
         String courseSelection = courseId < 0 ? "(SELECT courseId FROM user_to_course WHERE userId = ?)" : "(?)";
-        String selectByName = "SELECT * FROM files NATURAL JOIN courses NATURAL JOIN file_extensions NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE LOWER(fileName) LIKE ? AND courseId IN " + courseSelection;
+        String selectByName = "SELECT categoryid, fileid, subjectid, fileextensionid, courseid, filesize, filename, " +
+                "filedate, downloads, quarter, board, year, fileextension, code, subjectname, categoryname " +
+                "FROM files NATURAL JOIN courses " +
+                "NATURAL JOIN file_extensions NATURAL JOIN subjects " +
+                "NATURAL JOIN category_file_relationship NATURAL JOIN file_categories " +
+                "WHERE LOWER(fileName) LIKE ? AND courseId IN " + courseSelection;
         String selectFilterExtensionsAndCategory = "";
 
         if (!extensions.isEmpty() || !categories.isEmpty()) {
-            selectFilterExtensionsAndCategory = " INTERSECT SELECT * FROM files NATURAL JOIN courses NATURAL JOIN file_extensions  NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories WHERE " + query;
+            selectFilterExtensionsAndCategory = " INTERSECT SELECT categoryid, fileid, subjectid, fileextensionid, " +
+                    "courseid, filesize, filename, filedate, downloads, quarter, board, year, fileextension, " +
+                    "code, subjectname, categoryname " +
+                    "FROM files NATURAL JOIN courses NATURAL JOIN file_extensions " +
+                    "NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories " +
+                    "WHERE " + query;
         }
         return selectByName + selectFilterExtensionsAndCategory;
     }
@@ -302,7 +332,7 @@ public class  FileDaoImpl implements FileDao {
         List<FileModel> files = jdbcTemplate.query(unOrderedQuery + " " +
                         "ORDER BY " + sort.getProperty() + " " + sort.getDirection() + " " +
                         "LIMIT " + pageRequest.getPageSize() + " OFFSET " + (pageRequest.getPage() - 1) * pageRequest.getPageSize(),
-                sqlParams, FILE_MODEL_ROW_MAPPER);
+                sqlParams, FILE_PREVIEW_ROW_MAPPER);
         return new CampusPage<>(files, pageRequest.getPageSize(), pageRequest.getPage(), pageCount);
     }
 

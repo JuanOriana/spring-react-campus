@@ -33,7 +33,7 @@
               </div>
               <p class="announcement-date"><spring:message code="announcement.date" htmlEscape="true" arguments="${announcementItem.date.format(dateTimeFormatter)}"/></p>
               <c:set var="newline" value="<%= \"\n\" %>" />
-                  ${fn:replace(announcementItem.content, newline, "<br />")}
+              <c:out value="${fn:replace(announcementItem.content, newline, '<br />')}" />
           </div>
       </c:forEach>
 
