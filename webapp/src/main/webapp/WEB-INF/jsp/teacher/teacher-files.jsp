@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix="my" tagdir="/WEB-INF/tags" %>
 <%@page pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="es">
@@ -86,16 +87,22 @@
                         </c:forEach>
                     </div>
                 </div>
+                <c:set var="nextUrl">
+                    <my:replaceParam name="page" value="${currentPage + 1}" baseUrl="/course/${courseId}/files?"/>
+                </c:set>
+                <c:set var="prevUrl">
+                    <my:replaceParam name="page" value="${currentPage - 1}" baseUrl="/course/${courseId}/files?"/>
+                </c:set>
                 <div class="pagination-wrapper" style="align-self: center">
                     <c:if test="${currentPage > 1}">
-                        <a href="<c:url value="/course/${courseId}/files?page=${currentPage-1}&pageSize=${pageSize}"/>">
+                        <a href="<c:url value="${prevUrl}"/>">
                             <img src="<c:url value="/resources/images/page-arrow.png"/>"
                                  alt="Next page" class="pagination-arrow x-rotated">
                         </a>
                     </c:if>
                     <spring:message code="page.actual" htmlEscape="true" arguments="${currentPage},${maxPage}" />
                     <c:if test="${currentPage < maxPage}">
-                        <a href="<c:url value="/course/${courseId}/files?page=${currentPage+1}&pageSize=${pageSize}"/>">
+                        <a href="<c:url value="${nextUrl}"/>">
                             <img src="<c:url value="/resources/images/page-arrow.png"/>"
                                  alt="Next page" class="pagination-arrow">
                         </a>

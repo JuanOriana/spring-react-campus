@@ -58,14 +58,14 @@
         </c:set>
         <div class="pagination-wrapper" style="align-self: center">
             <c:if test="${currentPage > 1}">
-                <a href="<c:url value="${prevUrl}"/>">
+                <a href="<c:out value="${prevUrl}"/>">
                     <img src="<c:url value="/resources/images/page-arrow.png"/>"
                          alt="Next page" class="pagination-arrow x-rotated">
                 </a>
             </c:if>
             <spring:message code="page.actual" htmlEscape="true" arguments="${currentPage},${maxPage}" />
             <c:if test="${currentPage < maxPage}">
-                <a href="<c:url value="${nextUrl}"/>">
+                <a href="<c:out value="${nextUrl}"/>">
                     <img src="<c:url value="/resources/images/page-arrow.png"/>"
                          alt="Next page" class="pagination-arrow">
                 </a>
