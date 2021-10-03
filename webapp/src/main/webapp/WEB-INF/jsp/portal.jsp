@@ -16,7 +16,7 @@
             <h2 class="section-heading"><spring:message code="portal.section-heading.title"/></h2>
             <div class="courses-container">
                 <c:forEach var="courseItem" items="${courseList}">
-                    <div class="course">
+                    <div class="course" style="<c:if test="${currentCourses.contains(courseItem)}">color:gray</c:if>">
                         <div class="course-name" style="display: flex; align-items: center">
                             <a href="<c:url value="course/${courseItem.courseId}"/>" class="styleless-anchor">
                                 <spring:message code="portal.subject.board.name" htmlEscape="true" arguments="${courseItem.subject.name},${courseItem.board}"/>
