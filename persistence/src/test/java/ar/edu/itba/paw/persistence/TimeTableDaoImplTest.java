@@ -10,10 +10,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.Time;
@@ -25,6 +27,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Sql("classpath:schema.sql")
+@Rollback
+@Transactional
 public class TimeTableDaoImplTest {
 
     @Autowired
@@ -51,9 +55,6 @@ public class TimeTableDaoImplTest {
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
         String sqlInsertSubject = String.format("INSERT INTO subjects  VALUES (%d, '%s', '%s')", SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         String sqlInsertCourse = String.format("INSERT INTO courses  VALUES (%d, %d, %d,'%s', %d)", COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
         jdbcTemplate.execute(sqlInsertSubject);

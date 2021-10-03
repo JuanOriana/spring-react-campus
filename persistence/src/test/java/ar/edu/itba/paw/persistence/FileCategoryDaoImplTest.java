@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 
@@ -23,6 +25,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Sql("classpath:schema.sql")
+@Rollback
+@Transactional
 public class FileCategoryDaoImplTest{
 
     @Autowired
@@ -44,8 +48,6 @@ public class FileCategoryDaoImplTest{
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
-        JdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("file_categories");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_categories");
         jdbcTemplate.execute(String.format("INSERT INTO file_categories VALUES (%d, '%s')", FILE_CATEGORY_ID, FILE_CATEGORY));
     }
 

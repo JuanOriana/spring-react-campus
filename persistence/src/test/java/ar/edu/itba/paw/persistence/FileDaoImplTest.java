@@ -7,15 +7,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.io.*;
@@ -27,6 +27,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Sql("classpath:schema.sql")
+@Rollback
+@Transactional
 public class FileDaoImplTest {
 
 
@@ -192,15 +194,6 @@ public class FileDaoImplTest {
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
         JdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("files");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "category_file_relationship");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "files");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_categories");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_extensions");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_to_course");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "roles");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
         insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
         jdbcTemplate.execute(String.format("INSERT INTO users (userId,fileNumber,name,surname,username,email,password,isAdmin) VALUES (%d,%d,'%s','%s','%s','%s','%s',%s)", USER_ID, FILE_NUMBER, NAME, SURNAME, USERNAME, EMAIL, PASSWORD, IS_ADMIN));

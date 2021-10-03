@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -23,6 +25,8 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Sql("classpath:schema.sql")
+@Rollback
+@Transactional
 public class FileExtensionDaoImplTest {
 
     @Autowired
@@ -45,7 +49,6 @@ public class FileExtensionDaoImplTest {
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
         JdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("file_extensions");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_extensions");
     }
 
     @Test

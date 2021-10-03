@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import ar.edu.itba.paw.models.exception.SystemUnavailableException;
 import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
+import ar.edu.itba.paw.webapp.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import org.slf4j.Logger;
@@ -55,6 +56,12 @@ public class ErrorControllerAdvice {
     @ExceptionHandler(FileNotFoundException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public ModelAndView noSuchFile() {
+        return new ModelAndView("404");
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    public ModelAndView noSuchUser() {
         return new ModelAndView("404");
     }
 

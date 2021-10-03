@@ -31,7 +31,7 @@ public class MailController extends AuthController{
     public ModelAndView sendmail(@PathVariable Long userId, final MailForm mailForm,
                                  String successMessage) {
         ModelAndView mav = new ModelAndView("sendmail");
-        mav.addObject("user", userService.findById(userId).orElseThrow(RuntimeException::new));
+        mav.addObject("user", userService.findById(userId).orElseThrow(UserNotFoundException::new));
         mav.addObject("mailForm",mailForm);
         mav.addObject("successMessage",successMessage);
         return mav;
