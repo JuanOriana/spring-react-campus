@@ -58,6 +58,10 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.POST, "/course/{courseId}/announcements").access("@courseVoter.hasCoursePrivileges(authentication,#courseId)")
                     .antMatchers(HttpMethod.POST, "/course/{courseId}/files").access("@courseVoter.hasCoursePrivileges(authentication,#courseId)")
                     .antMatchers(HttpMethod.GET, "/course/{courseId}/**").access("@courseVoter.hasCourseAccess(authentication,#courseId)")
+                    .antMatchers("/portal").hasAuthority("USER")
+                    .antMatchers("/announcements").hasAuthority("USER")
+                    .antMatchers("/timetable").hasAuthority("USER")
+                    .antMatchers("/files").hasAuthority("USER")
                     .antMatchers("/**").authenticated()
                 .and().formLogin()
                     .usernameParameter("username")
@@ -80,7 +84,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(final WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers("/resources/css/**", "/resources/js/**", "/resources/images/**", "/403");
+                .antMatchers("/resources/css/**", "/resources/js/**", "/resources/images/**", "/403", "/404");
     }
 
 

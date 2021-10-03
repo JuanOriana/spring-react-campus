@@ -37,8 +37,9 @@ import java.util.Properties;
 @ComponentScan({"ar.edu.itba.paw.webapp.controller", "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
-    private static final boolean DEV_BUILD = true; // Change this to a config file in the future
 
+
+    private static final boolean DEV_BUILD = true; // Change this to a config file in the future
     private static boolean isOnDevBuild() {
         return DEV_BUILD;
     }
