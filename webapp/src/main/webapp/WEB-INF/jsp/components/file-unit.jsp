@@ -23,7 +23,7 @@
                 <img src="<c:url value="/resources/images/extensions/${requestScope.file.extension.fileExtensionName}.png"/>"
                      class="file-img" alt="${requestScope.file.name}"/>
                 <p class="file-name">
-                    <spring:message code="teacher.file.course.file.name" htmlEscape="true" arguments="${requestScope.file.name}"/>
+                    <spring:message code="file.unit.file.name" htmlEscape="true" arguments="${requestScope.file.name}"/>
                 </p>
             </a>
             <c:forEach var="category" items="${requestScope.file.categories}">
@@ -34,7 +34,7 @@
         </div>
         <div style="display: flex; align-items: center">
             <p class="file-name">
-                <spring:message code="files.file.downloads" htmlEscape="true" arguments="${requestScope.file.downloads}"/>
+                <spring:message code="file.unit.file.downloads" htmlEscape="true" arguments="${requestScope.file.downloads}"/>
             </p>
             <c:if test="${param.isTeacher}">
                 <img src="<c:url value="/resources/images/trash.png"/>"
