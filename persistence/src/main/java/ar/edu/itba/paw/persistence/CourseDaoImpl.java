@@ -89,7 +89,7 @@ public class CourseDaoImpl implements CourseDao {
 
     @Override
     public List<User> getStudents(Long courseId){
-         return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN user_to_course NATURAL JOIN roles WHERE courseId = ? AND roleId = ?", new Object[]{courseId, Permissions.STUDENT.getValue()},
+         return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN profile_images NATURAL JOIN user_to_course NATURAL JOIN roles WHERE courseId = ? AND roleId = ?", new Object[]{courseId, Permissions.STUDENT.getValue()},
                  LIST_RESULT_SET_EXTRACTOR_USERS);
     }
 
@@ -128,6 +128,7 @@ public class CourseDaoImpl implements CourseDao {
                 .withEmail(rs.getString("email"))
                 .withPassword(rs.getString("password"))
                 .isAdmin(rs.getBoolean("isAdmin"))
+                .withProfileImage(rs.getBytes("image"))
                 .build();
         result.add(user);
     }
@@ -135,7 +136,7 @@ public class CourseDaoImpl implements CourseDao {
 });
     @Override
     public Map<User, Role> getTeachers(Long courseId) {
-        return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN user_to_course NATURAL JOIN roles WHERE " +
+        return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN profile_images NATURAL JOIN user_to_course NATURAL JOIN roles WHERE " +
                 "courseId = ? AND roleId BETWEEN ? AND ?", new Object[]{courseId, Permissions.HELPER.getValue(),
                         Permissions.TEACHER.getValue()},
                 MAP_RESULT_SET_EXTRACTOR);
@@ -162,7 +163,7 @@ public class CourseDaoImpl implements CourseDao {
     @Override
     public List<User> listUnenrolledUsers(Long courseId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT userId, name, surname, fileNumber, username, email " +
-                                                    "FROM users " +
+                                                    "FROM users NATURAL JOIN profile_images " +
                                                     "EXCEPT " +
                                                     "SELECT userId, name, surname, fileNumber, username, email " +
                                                     "FROM users NATURAL JOIN user_to_course " +

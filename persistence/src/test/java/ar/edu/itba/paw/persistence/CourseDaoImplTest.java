@@ -146,6 +146,8 @@ public class CourseDaoImplTest {
 
     @Test
     public void testGetStudents(){
+        String sqlInsertProfileImageWithId = String.format("INSERT INTO profile_images (image,userid) VALUES(null,%d)",USER_ID);
+        jdbcTemplate.execute(sqlInsertProfileImageWithId);
         List<User> list = courseDao.getStudents(COURSE_ID);
 
         assertNotNull(list);
