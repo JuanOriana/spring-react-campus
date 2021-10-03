@@ -26,10 +26,4 @@ public interface MailingService {
      */
     void sendNewAnnouncementNotification(List<String> to,String title,String content, Course course, User author);
 
-    /**
-     * Attempts to email the new enrolled user
-     * @param to The new user email address
-     */
-    void sendNewUserNotification(String to);
-
 }

@@ -48,13 +48,6 @@ public class MailingServiceImpl implements MailingService {
         sendThymeleafTemplateEmail(to, "Nuevo anuncio en curso: " + course.getSubject().getName(), model, "new-announcement-notification.html");
     }
 
-    @Override
-    @Async
-    public void sendNewUserNotification(String to) {
-        Map<String, Object> model = new HashMap<>();
-        sendThymeleafTemplateEmail(new ArrayList<>(Collections.singleton(to)), "Bienvenido a nuestra institucion!", model, "new-user-notification.html");
-    }
-
     private void sendEmail(Message message, List<String> to, String subject, String content, String contentType) {
         try {
             for (String destination : to) {
