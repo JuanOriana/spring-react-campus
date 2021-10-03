@@ -22,7 +22,12 @@
             <div class="big-wrapper">
                 <c:forEach var="teacher" items="${teacherSet}">
                         <div class="professor-unit">
-                            <img alt="professor icon" class="professor-icon" src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/user.png"/>
+                            <c:if test="${teacher.key.profileImage == null}">
+                                <img alt="professor icon" class="professor-icon" src="<c:url value="/resources/images/default-user-image.png"/>"/>
+                            </c:if>
+                            <c:if test="${teacher.key.profileImage != null}">
+                                <img alt="professor icon" class="professor-icon" src="<c:url value="/user/profile-image/${teacher.key.userId}"/>"/>
+                            </c:if>
                             <div style="display: flex; width:200px; flex-direction: column">
                                 <p><spring:message code="teachers.teacher.name" htmlEscape="true" arguments="${teacher.key.name},${teacher.key.surname}"/></p>
                                 <p><spring:message code="teachers.teacher.email" htmlEscape="true" arguments="${teacher.key.email}"/></p>

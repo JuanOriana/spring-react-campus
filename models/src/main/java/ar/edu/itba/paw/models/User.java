@@ -26,8 +26,6 @@ public class User {
         private boolean isAdmin;
         private byte[] profileImage;
 
-
-
         public Builder() {
         }
 
@@ -121,7 +119,8 @@ public class User {
                         + "Please set the value by \"userId()\". "
                         + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
             }
-           return new User(this);
+
+            return new User(this);
         }
     }
 
@@ -134,7 +133,6 @@ public class User {
         this.fileNumber = builder.fileNumber;
         this.userId = builder.userId;
         this.isAdmin = builder.isAdmin;
-
     }
 
     public String getName() {
@@ -208,8 +206,6 @@ public class User {
     public void setProfileImage(byte[] profileImage) {
         this.profileImage = profileImage;
     }
-
-
 
     @Override
     public boolean equals(Object o) {
