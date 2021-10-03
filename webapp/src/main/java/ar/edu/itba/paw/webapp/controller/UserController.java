@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.auth.CampusUser;
 import ar.edu.itba.paw.webapp.form.UserProfileForm;
@@ -7,9 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
@@ -54,6 +53,19 @@ public class UserController extends AuthController {
         response.setContentType("image/*");
         response.setHeader("Content-Disposition", "filename=\"" + user.getUsername() + "-profile-img\"");
         InputStream is = new ByteArrayInputStream(image);
+        IOUtils.copy(is,response.getOutputStream());
+    }
+
+    @RequestMapping("/user/profile-image/{userId}")
+    public void profileImage(@PathVariable(value = "userId") Long userId,
+                             HttpServletResponse response) throws IOException {
+        Optional<byte[]> image = userService.getProfileImage(userId);
+        if (!image.isPresent()){
+            return;
+        }
+        response.setContentType("image/*");
+        response.setHeader("Content-Disposition", "filename=\"" + "profile-img-" + userId +"\"");
+        InputStream is = new ByteArrayInputStream(image.get());
         IOUtils.copy(is,response.getOutputStream());
     }
 
