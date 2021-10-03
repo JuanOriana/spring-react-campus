@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.MailingService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -36,12 +37,14 @@ public class MailingServiceImpl implements MailingService {
 
     @Override
     @Async
-    public void sendNewAnnouncementNotification(List<String> to, String title, String content, Course course) {
+    public void sendNewAnnouncementNotification(List<String> to, String title, String content, Course course, User author) {
         Map<String, Object> model = new HashMap<>();
         model.put("title", title);
         model.put("content", content);
         model.put("subjectName", course.getSubject().getName());
         model.put("year", "2021");
+        model.put("courseId", course.getCourseId());
+        model.put("author", author);
         sendThymeleafTemplateEmail(to, "Nuevo anuncio en curso: " + course.getSubject().getName(), model, "new-announcement-notification.html");
     }
 

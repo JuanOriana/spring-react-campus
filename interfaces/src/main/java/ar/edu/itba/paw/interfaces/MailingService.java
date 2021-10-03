@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.User;
 
 import java.util.List;
 
@@ -21,8 +22,9 @@ public interface MailingService {
      * @param title The title of the new announcement
      * @param content The content of the new announcement
      * @param course The course where de announcement what published
+     * @param author The author of the announcement
      */
-    void sendNewAnnouncementNotification(List<String> to,String title,String content, Course course);
+    void sendNewAnnouncementNotification(List<String> to,String title,String content, Course course, User author);
 
     /**
      * Attempts to email the new enrolled user
