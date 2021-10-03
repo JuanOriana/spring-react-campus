@@ -12,6 +12,7 @@ public class User {
     private Integer fileNumber;
     private Long userId;
     private boolean isAdmin;
+    private byte[] profileImage;
 
     public static class Builder {
 
@@ -196,6 +197,14 @@ public class User {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public byte[] getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(byte[] profileImage) {
+        this.profileImage = profileImage;
     }
 
     @Override
