@@ -32,8 +32,10 @@ public class CourseDaoImpl implements CourseDao {
     @Autowired
     public CourseDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
-        courseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses").usingGeneratedKeyColumns("courseid");
-        userToCourseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("user_to_course");
+        courseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses")
+                .usingGeneratedKeyColumns("courseid");
+        userToCourseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("user_to_course");
     }
 
     @Override
@@ -43,7 +45,8 @@ public class CourseDaoImpl implements CourseDao {
         args.put("board", board);
         args.put("year", year);
         args.put("subjectId", subjectId);
-        final Long courseId = courseJdbcInsert.executeAndReturnKey(args).longValue();
+        final Long courseId = courseJdbcInsert
+                .executeAndReturnKey(args).longValue();
         return new Course.Builder()
                 .withCourseId(courseId)
                 .withYear(year)
@@ -69,7 +72,8 @@ public class CourseDaoImpl implements CourseDao {
                 "year = ?," +
                 "quarter = ?," +
                 "board = ? " +
-                "WHERE courseId = ?;", course.getSubject().getSubjectId(), course.getYear(), course.getQuarter(), course.getBoard(), id) == 1;
+                "WHERE courseId = ?;", course.getSubject().getSubjectId(),
+                    course.getYear(), course.getQuarter(), course.getBoard(), id) == 1;
 
     }
 
@@ -100,13 +104,16 @@ public class CourseDaoImpl implements CourseDao {
 
     @Override
     public List<User> getStudents(Long courseId){
-         return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN profile_images NATURAL JOIN user_to_course NATURAL JOIN roles WHERE courseId = ? AND roleId = ?", new Object[]{courseId, Permissions.STUDENT.getValue()},
+         return jdbcTemplate.query("SELECT * " +
+                         "FROM users NATURAL JOIN profile_images NATURAL JOIN user_to_course NATURAL JOIN roles " +
+                         "WHERE courseId = ? AND roleId = ?", new Object[]{courseId, Permissions.STUDENT.getValue()},
                  LIST_RESULT_SET_EXTRACTOR_USERS);
     }
 
     @Override
     public Optional<Course> getById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects WHERE courseId = ?", new Object[]{id}, COURSE_ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects WHERE courseId = ?",
+                new Object[]{id}, COURSE_ROW_MAPPER).stream().findFirst();
     }
 
     private static final ResultSetExtractor<Map<User, Role>> MAP_RESULT_SET_EXTRACTOR = (rs -> {
@@ -147,9 +154,10 @@ public class CourseDaoImpl implements CourseDao {
 });
     @Override
     public Map<User, Role> getTeachers(Long courseId) {
-        return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN profile_images NATURAL JOIN user_to_course NATURAL JOIN roles WHERE " +
-                "courseId = ? AND roleId BETWEEN ? AND ?", new Object[]{courseId, Permissions.HELPER.getValue(),
-                        Permissions.TEACHER.getValue()},
+        return jdbcTemplate.query("SELECT * " +
+                        "FROM users NATURAL JOIN profile_images NATURAL JOIN user_to_course NATURAL JOIN roles " +
+                        "WHERE courseId = ? AND roleId BETWEEN ? AND ?",
+                new Object[]{courseId, Permissions.HELPER.getValue(), Permissions.TEACHER.getValue()},
                 MAP_RESULT_SET_EXTRACTOR);
     }
 
@@ -174,11 +182,13 @@ public class CourseDaoImpl implements CourseDao {
     @Override
     public List<User> listUnenrolledUsers(Long courseId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT userId, name, surname, fileNumber, username, email " +
-                                                    "FROM users NATURAL JOIN profile_images " +
+                                                    "FROM users " +
+                                                    "WHERE isAdmin = false " +
                                                     "EXCEPT " +
                                                     "SELECT userId, name, surname, fileNumber, username, email " +
                                                     "FROM users NATURAL JOIN user_to_course " +
-                                                    "WHERE courseId = ?", new Object[]{courseId}, USER_ROW_MAPPER));
+                                                    "WHERE courseId = ?",
+                new Object[]{courseId}, USER_ROW_MAPPER));
     }
 
     @Override
