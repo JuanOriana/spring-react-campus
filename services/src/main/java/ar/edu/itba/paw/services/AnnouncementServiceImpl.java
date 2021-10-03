@@ -29,10 +29,11 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     @Override
     public Announcement create(String title, String content, User author, Course course) {
         Announcement announcement = announcementDao.create(LocalDateTime.now(), title, content, author, course);
-        List<User> userList = courseService.getStudents(announcement.getCourse().getCourseId());
-        List<String> emailList = new ArrayList<>();
-        userList.forEach(u->emailList.add(u.getEmail()));
-        mailingService.sendNewAnnouncementNotification(emailList, title, content, course, author);
+        //TODO: uncomment these lines to enable mailing
+//        List<User> userList = courseService.getStudents(announcement.getCourse().getCourseId());
+//        List<String> emailList = new ArrayList<>();
+//        userList.forEach(u->emailList.add(u.getEmail()));
+//        mailingService.sendNewAnnouncementNotification(emailList, title, content, course, author);
         return announcement;
     }
 
