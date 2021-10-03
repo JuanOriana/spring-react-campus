@@ -391,6 +391,15 @@ textarea:focus, input:focus{
     color: var(--cyan-light);
 }
 
+.file-category-name{
+    background: var(--cyan-darkest);
+    color:white;
+    border-radius: 12px;
+    padding:6px;
+    font-weight: 700;
+    margin-left: 15px;
+}
+
 /*                  USER-SECTION                  */
 
 .user-section-img{
