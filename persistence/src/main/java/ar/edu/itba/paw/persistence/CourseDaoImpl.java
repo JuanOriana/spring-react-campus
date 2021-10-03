@@ -156,8 +156,7 @@ public class CourseDaoImpl implements CourseDao {
     @Override
     public Map<User, Role> getTeachers(Long courseId) {
         return jdbcTemplate.query("SELECT * " +
-                        "FROM users NATURAL JOIN profile_images " +
-                        "NATURAL JOIN user_to_course NATURAL JOIN roles NATURAL JOIN profile_images " +
+                        "FROM users NATURAL JOIN profile_images NATURAL JOIN user_to_course NATURAL JOIN roles " +
                         "WHERE courseId = ? AND roleId BETWEEN ? AND ?",
                 new Object[]{courseId, Permissions.HELPER.getValue(), Permissions.TEACHER.getValue()},
                 MAP_RESULT_SET_EXTRACTOR);

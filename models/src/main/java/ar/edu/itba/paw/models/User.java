@@ -29,7 +29,8 @@ public class User {
         public Builder() {
         }
 
-        Builder(String name, String surname, String username, String email, String password, Integer fileNumber, Long userId, boolean isAdmin,byte[] image) {
+        Builder(String name, String surname, String username, String email, String password, Integer fileNumber,
+                Long userId, boolean isAdmin, byte[] profileImage) {
             this.name = name;
             this.surname = surname;
             this.username = username;
@@ -38,10 +39,8 @@ public class User {
             this.fileNumber = fileNumber;
             this.userId = userId;
             this.isAdmin = isAdmin;
-            this.profileImage = image;
+            this.profileImage = profileImage;
         }
-
-
 
         public Builder withName(String name){
             this.name = name;
@@ -133,6 +132,7 @@ public class User {
         this.fileNumber = builder.fileNumber;
         this.userId = builder.userId;
         this.isAdmin = builder.isAdmin;
+        this.profileImage = builder.profileImage;
     }
 
     public String getName() {
