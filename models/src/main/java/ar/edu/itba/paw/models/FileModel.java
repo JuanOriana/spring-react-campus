@@ -86,6 +86,11 @@ public class FileModel {
             return Builder.this;
         }
 
+        public Builder withoutFileData() {
+            this.file = null;
+            return Builder.this;
+        }
+
         public FileModel build() {
             if(this.fileId == null){
                 throw new NullPointerException("The property \"fileId\" is null. "
