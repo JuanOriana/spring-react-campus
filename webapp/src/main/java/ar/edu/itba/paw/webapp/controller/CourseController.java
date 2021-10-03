@@ -83,6 +83,7 @@ public class CourseController extends AuthController {
                     .withName(springUser.getName())
                     .withSurname(springUser.getSurname())
                     .withUsername(springUser.getUsername())
+                    .withProfileImage(springUser.getImage())
                     .build();
             announcementService.create(announcementForm.getTitle(), announcementForm.getContent(), currentUser,
                     courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));

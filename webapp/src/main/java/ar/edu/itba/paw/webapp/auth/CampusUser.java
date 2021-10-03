@@ -12,11 +12,12 @@ public class CampusUser extends User {
     private String name;
     private String surname;
     private String email;
+    private byte[] image;
     private boolean isAdmin;
 
     public CampusUser(String username, String password, Collection<? extends GrantedAuthority> authorities,
                       Integer fileNumber, Long userId, String name, String surname, String email,
-                      boolean isAdmin) {
+                      boolean isAdmin,byte[] image) {
         super(username, password, authorities);
         this.fileNumber = fileNumber;
         this.userId = userId;
@@ -24,6 +25,15 @@ public class CampusUser extends User {
         this.surname = surname;
         this.email = email;
         this.isAdmin = isAdmin;
+        this.image = image;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public Integer getFileNumber() {
