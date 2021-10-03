@@ -38,7 +38,7 @@ public class TimeTableController extends AuthController{
         Map<Course,String> courseColors = new HashMap<>();
         Map<Course, List<Timetable>> courseTimetables = new HashMap<>();
 
-        List<Course> courses = courseService.list(authFacade.getCurrentUser().getUserId());
+        List<Course> courses = courseService.listCurrent(authFacade.getCurrentUser().getUserId());
         for (Course course: courses) {
             courseTimetables.put(course, timetableService.getById(course.getCourseId()));
             if (colorIdx >= colors.length) colorIdx = 0;

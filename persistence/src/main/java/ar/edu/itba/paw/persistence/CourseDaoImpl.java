@@ -10,6 +10,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.*;
 
 @Repository
@@ -85,6 +87,15 @@ public class CourseDaoImpl implements CourseDao {
     public List<Course> list(Long userId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects " +
                 "NATURAL JOIN user_to_course WHERE userId = ?", new Object[]{userId}, COURSE_ROW_MAPPER));
+    }
+
+    @Override
+    public List<Course> listCurrent(Long userId) {
+        LocalDateTime time = LocalDateTime.now();
+        int quarter = time.getMonthValue() >= Month.JULY.getValue() ? 2 : 1;
+        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects " +
+                "NATURAL JOIN user_to_course WHERE userId = ? AND year = ? AND quarter = ?",
+                new Object[]{userId, time.getYear(), quarter}, COURSE_ROW_MAPPER));
     }
 
     @Override

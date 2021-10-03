@@ -1,11 +1,10 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.interfaces.FileCategoryDao;
 import ar.edu.itba.paw.interfaces.FileDao;
 import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +17,12 @@ public class FileServiceImpl implements FileService {
 
     private final FileDao fileDao;
 
+    private final FileCategoryDao fileCategoryDao;
+
     @Autowired
-    public FileServiceImpl(FileDao fileDao) {
+    public FileServiceImpl(FileDao fileDao, FileCategoryDao fileCategoryDao) {
         this.fileDao = fileDao;
+        this.fileCategoryDao = fileCategoryDao;
     }
 
     @Transactional
@@ -31,9 +33,9 @@ public class FileServiceImpl implements FileService {
 
     @Transactional
     @Override
-    public FileModel create(Long size, String name, byte[] file, Course course, Long fileCategoryId) {
+    public FileModel create(Long size, String name, byte[] file, Course course, List<Long> categories) {
         FileModel fileModel = this.create(size, name, file, course);
-        this.addCategory(fileModel.getFileId(), fileCategoryId);
+        fileModel.setCategories(associateCategories(fileModel.getFileId(), categories));
         return fileModel;
     }
 
@@ -75,9 +77,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Transactional
-    @Override
-    public boolean addCategory(Long fileId, Long fileCategoryId) {
-        return fileDao.addCategory(fileId, fileCategoryId);
+    public List<FileCategory> associateCategories(Long fileId, List<Long> categories) {
+        List<FileCategory> fileCategories = new ArrayList<>();
+        categories.forEach(queriedId -> {
+           fileDao.associateCategory(fileId, queriedId);
+           fileCategoryDao.getById(queriedId).ifPresent(fileCategories::add);
+        });
+        return fileCategories;
     }
 
     @Transactional
@@ -119,14 +125,22 @@ public class FileServiceImpl implements FileService {
     public CampusPage<FileModel> listByUser(String keyword, List<Long> extensions, List<Long> categories,
                                             Long userId, CampusPageRequest pageRequest,
                                             CampusPageSort sort) {
-        return fileDao.listByUser(keyword, extensions, categories, userId, pageRequest, sort);
+        CampusPage<FileModel> campusPage = fileDao.listByUser(keyword, extensions,
+                categories, userId, pageRequest, sort);
+        List<FileModel> files = campusPage.getContent();
+        files.forEach(f -> f.setCategories(fileDao.getFileCategories(f.getFileId())));
+        return campusPage;
     }
 
     @Override
     public CampusPage<FileModel> listByCourse(String keyword, List<Long> extensions, List<Long> categories,
                                               Long userId, Long courseId, CampusPageRequest pageRequest,
                                               CampusPageSort sort) {
-        return fileDao.listByCourse(keyword, extensions, categories, userId, courseId, pageRequest, sort);
+        CampusPage<FileModel> campusPage = fileDao.listByCourse(keyword, extensions,
+                categories, userId, courseId, pageRequest, sort);
+        List<FileModel> files = campusPage.getContent();
+        files.forEach(f -> f.setCategories(fileDao.getFileCategories(f.getFileId())));
+        return campusPage;
     }
 
     @Transactional

@@ -327,7 +327,7 @@ public class FileDaoImplTest {
         insertFileModelToDB(fModel);
         FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
 
-        boolean categoryAdded = fileDao.addCategory(fModel.getFileId(), fCategory.getCategoryId());
+        boolean categoryAdded = fileDao.associateCategory(fModel.getFileId(), fCategory.getCategoryId());
         assertTrue(categoryAdded);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
     }

@@ -39,11 +39,18 @@ public interface CourseService {
     List<Course> list();
 
     /**
-     * Gets all the current available courses of a user
+     * Gets all the available courses of a user
      * @param userId of the user to retrieve the courses from
      * @return list containing all the current available courses (if any)
      */
     List<Course> list(Long userId);
+
+    /**
+     * Gets all the current available courses of a user
+     * @param userId of the user to retrieve the courses from
+     * @return list containing all the current available courses (if any)
+     */
+    List<Course> listCurrent(Long userId);
 
     /**
      * Attempts to get a course given an id

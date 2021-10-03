@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -27,10 +24,10 @@ public interface FileService {
      * @param name           of the file
      * @param file           representation in byte array
      * @param course         where the file belongs to
-     * @param fileCategoryId of the category of the file
+     * @param fileCategories list of categories
      * @return the file if it was successfully added
      */
-    FileModel create(Long size, String name, byte[] file, Course course, Long fileCategoryId);
+    FileModel create(Long size, String name, byte[] file, Course course, List<Long> fileCategories);
 
     /**
      * Attempts to update a file
@@ -89,15 +86,6 @@ public interface FileService {
     List<FileModel> getByExtension(String extension);
 
     /**
-     * Attempts to get add a category to a file
-     *
-     * @param fileId         of the file/s to add a category
-     * @param fileCategoryId of the category to add
-     * @return true if the category was successfully added, false otherwise
-     */
-    boolean addCategory(Long fileId, Long fileCategoryId);
-
-    /**
      * Attempts to get remove a category of a file
      *
      * @param fileId         of the file/s to remove a category from
@@ -152,8 +140,8 @@ public interface FileService {
      * Attempts to get file/s that the user is authorized given some criterias of searching and filter
      *
      * @param keyword      establish the key word to be search. In case of not searching nothing can be null or ""
-     * @param extensions List of ids of the extensions that are expected in the return list. To get all send a empty list
-     * @param categories List of ids of the categories that are expected in the return list. To get all send a empty list
+     * @param extensions List of ids of the extensions that are expected in the return list. To get all send an empty list
+     * @param categories List of ids of the categories that are expected in the return list. To get all send an empty list
      * @param userId     the ID of the user that is searching
      * @return a list containing all the files that match with all the criterias given (if any).
      */
@@ -165,8 +153,8 @@ public interface FileService {
      * Attempts to get file/s from a course given some criterias of searching and filter
      *
      * @param keyword      establish the key word to be search. In case of not searching nothing can be null or ""
-     * @param extensions List of ids of the extensions that are expected in the return list. To get all send a empty list
-     * @param categories List of ids of the categories that are expected in the return list. To get all send a empty list
+     * @param extensions List of ids of the extensions that are expected in the return list. To get all send an empty list
+     * @param categories List of ids of the categories that are expected in the return list. To get all send an empty list
      * @param userId     the ID of the user that is searching
      * @param courseId   of the course
      * @return a list containing all the files that match with all the criterias given (if any).

@@ -2,9 +2,6 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.PaginationArgumentException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +23,7 @@ public interface FileDao {
 
     List<FileModel> getByExtension(String extension);
 
-    boolean addCategory(Long fileId, Long fileCategoryId);
+    boolean associateCategory(Long fileId, Long fileCategoryId);
 
     boolean removeCategory(Long fileId, Long fileCategoryId);
 

@@ -9,5 +9,5 @@ public interface FileCategoryDao {
     boolean update(long fileCategoryId, String newFileCategory);
     boolean delete(long fileCategoryId);
     List<FileCategory> getCategories();
-    Optional<String> getCategory(Long categoryId);
+    Optional<FileCategory> getById(Long categoryId);
 }

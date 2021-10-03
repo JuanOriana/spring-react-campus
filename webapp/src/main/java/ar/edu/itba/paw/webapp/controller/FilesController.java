@@ -39,7 +39,7 @@ public class FilesController extends AuthController {
         this.fileExtensionService = fileExtensionService;
     }
 
-    @RequestMapping("/files")
+    @GetMapping("/files")
     public ModelAndView files(@RequestParam(value = "category-type", required = false, defaultValue = "")
                                       List<Long> categoryType,
                               @RequestParam(value = "extension-type", required = false, defaultValue = "")

@@ -73,6 +73,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<Course> listCurrent(Long userId) {
+        return courseDao.listCurrent(userId);
+    }
+
+    @Override
     public Optional<Course> getById(Long id) {
         return courseDao.getById(id);
     }

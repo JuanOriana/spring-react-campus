@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class FileModel {
 
@@ -12,6 +13,7 @@ public class FileModel {
     private byte[] file;
     private Course course;
     private Long downloads;
+    private List<FileCategory> categories;
 
     public static class Builder {
         private Long fileId;
@@ -22,12 +24,12 @@ public class FileModel {
         private byte[] file;
         private Course course;
         private Long downloads;
-
+        private List<FileCategory> categories;
         public Builder() {
         }
 
         Builder(Long fileId, Long size, FileExtension extension, String name, LocalDateTime date, byte[] file,
-                Course course, Long downloads) {
+                Course course, Long downloads, List<FileCategory> categories) {
             this.fileId = fileId;
             this.size = size;
             this.extension = extension;
@@ -36,6 +38,7 @@ public class FileModel {
             this.file = file;
             this.course = course;
             this.downloads = downloads;
+            this.categories = categories;
         }
 
         public Builder withFileId(Long fileId){
@@ -75,6 +78,11 @@ public class FileModel {
 
         public Builder withDownloads(Long downloads) {
             this.downloads = downloads;
+            return Builder.this;
+        }
+
+        public Builder withCategories(List<FileCategory> categories) {
+            this.categories = categories;
             return Builder.this;
         }
 
@@ -123,6 +131,7 @@ public class FileModel {
         this.file = builder.file;
         this.course = builder.course;
         this.downloads = builder.downloads;
+        this.categories = builder.categories;
     }
 
     public Long getFileId() {
@@ -187,5 +196,13 @@ public class FileModel {
 
     public void setDownloads(Long downloads) {
         this.downloads = downloads;
+    }
+
+    public List<FileCategory> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<FileCategory> categories) {
+        this.categories = categories;
     }
 }

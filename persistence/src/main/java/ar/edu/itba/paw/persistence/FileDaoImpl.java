@@ -6,7 +6,6 @@ import ar.edu.itba.paw.interfaces.FileExtensionDao;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -20,10 +19,6 @@ import java.util.*;
 @Repository
 public class  FileDaoImpl implements FileDao {
 
-    private static final int MIN_PAGE_COUNT = 1;
-    private static final int MIN_PAGE_SIZE = 1;
-    private static final int MAX_PAGE_SIZE = 50;
-
     @Autowired
     private FileExtensionDao fileExtensionDao;
 
@@ -34,7 +29,6 @@ public class  FileDaoImpl implements FileDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final SimpleJdbcInsert jdbcInsertCategory;
     private static final RowMapper<FileModel> FILE_MODEL_ROW_MAPPER = (rs, rowNum) ->
-
             new FileModel.Builder()
                     .withFileId(rs.getLong("fileId"))
                     .withSize(rs.getLong("fileSize"))
@@ -53,6 +47,7 @@ public class  FileDaoImpl implements FileDao {
                             .build())
                     .build();
 
+
     private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) ->
         new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
 
@@ -69,11 +64,12 @@ public class  FileDaoImpl implements FileDao {
     @Override
     public FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course) {
         String fileExtension = getExtension(name);
-        FileExtension fileExtensionModel;
-        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension}, Integer.class);
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM file_extensions WHERE fileExtension = ?",
+                new Object[]{fileExtension}, Integer.class);
         if (count == 0) fileExtension = "other";
-        List<FileExtension> list = jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions WHERE fileExtension = ?", new Object[]{fileExtension}, FILE_EXTENSION_ROW_MAPPER);
-        fileExtensionModel = list.get(0);
+        List<FileExtension> list = jdbcTemplate.query("SELECT fileExtensionId, fileExtension FROM file_extensions WHERE fileExtension = ?",
+                new Object[]{fileExtension}, FILE_EXTENSION_ROW_MAPPER);
+        FileExtension fileExtensionModel = list.get(0);
         final Map<String, Object> args = new HashMap<>();
         args.put("fileSize", size);
         args.put("file", file);
@@ -165,7 +161,7 @@ public class  FileDaoImpl implements FileDao {
     }
 
     @Override
-    public boolean addCategory(Long fileId, Long fileCategoryId) {
+    public boolean associateCategory(Long fileId, Long fileCategoryId) {
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", new Object[]{fileId, fileCategoryId}, Integer.class);
         if (count == 0) {
             final Map<String, Object> args = new HashMap<>();
@@ -184,7 +180,8 @@ public class  FileDaoImpl implements FileDao {
 
     @Override
     public List<FileCategory> getFileCategories(Long fileId) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT categoryId, categoryName FROM category_file_relationship NATURAL JOIN file_categories WHERE fileId = ?", new Object[]{fileId}, FILE_CATEGORY_ROW_MAPPER));
+        return new ArrayList<>(jdbcTemplate.query("SELECT categoryId, categoryName FROM category_file_relationship NATURAL JOIN file_categories WHERE fileId = ?",
+                new Object[]{fileId}, FILE_CATEGORY_ROW_MAPPER));
     }
 
     @Override
@@ -260,9 +257,13 @@ public class  FileDaoImpl implements FileDao {
                 query.append(" AND ");
             }
             query.append(" ( ");
-            for (Long category : categories) {
-                Optional<String> cat = fileCategoryDao.getCategory(category);
-                params.add(cat.orElse("none"));
+            for (Long categoryId : categories) {
+                Optional<FileCategory> fileCategory = fileCategoryDao.getById(categoryId);
+                if (fileCategory.isPresent()) {
+                    params.add(fileCategory.get().getCategoryName());
+                } else {
+                    params.add("none");
+                }
                 query.append("categoryname = ? OR ");
             }
             query.delete(query.length() - 4, query.length());

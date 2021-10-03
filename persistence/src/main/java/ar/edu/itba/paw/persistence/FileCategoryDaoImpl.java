@@ -19,8 +19,6 @@ public class FileCategoryDaoImpl implements FileCategoryDao {
     private static final RowMapper<FileCategory> FILE_CATEGORY_ROW_MAPPER = (rs, rowNum) ->
         new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
 
-    private static final RowMapper<String> FILE_CATEGORY_STRING_ROW_MAPPER = (rs, rowNum) -> rs.getString("categoryName");
-
 
 
     @Autowired
@@ -55,7 +53,8 @@ public class FileCategoryDaoImpl implements FileCategoryDao {
     }
 
     @Override
-    public Optional<String> getCategory(Long categoryId) {
-        return jdbcTemplate.query("SELECT categoryName FROM file_categories WHERE categoryId = ?",new Object[]{categoryId}, FILE_CATEGORY_STRING_ROW_MAPPER).stream().findFirst();
+    public Optional<FileCategory> getById(Long categoryId) {
+        return jdbcTemplate.query("SELECT * FROM file_categories WHERE categoryId = ?",
+                new Object[]{categoryId}, FILE_CATEGORY_ROW_MAPPER).stream().findFirst();
     }
 }

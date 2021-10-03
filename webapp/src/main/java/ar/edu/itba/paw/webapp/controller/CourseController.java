@@ -153,8 +153,10 @@ public class CourseController extends AuthController {
         if (!errors.hasErrors()) {
             CommonsMultipartFile file = fileForm.getFile();
             String filename = file.getOriginalFilename();
+            // Function is expanded already for multiple categories in the future, passing only one for now
             fileService.create(file.getSize(), filename, file.getBytes(),
-                    courseService.getById(courseId).orElseThrow(CourseNotFoundException::new), fileForm.getCategoryId());
+                    courseService.getById(courseId).orElseThrow(CourseNotFoundException::new),
+                    Collections.singletonList(fileForm.getCategoryId()));
             fileForm.setFile(null);
             fileForm.setCategoryId(null);
             successMessage = "file.success.message";
