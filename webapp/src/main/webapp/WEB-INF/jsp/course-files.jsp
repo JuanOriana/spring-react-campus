@@ -38,7 +38,7 @@
                     <div class="file-grid">
                         <c:if test="${files.size() == 0}">
                             <p class="announcement-title" style="width: 100%; text-align: center">
-                                No hay resultados que coincidan con tu busqueda
+                                <spring:message code="no.results" htmlEscape="true"/>
                             </p>
                         </c:if>
                         <c:forEach var="file" items="${files}">
