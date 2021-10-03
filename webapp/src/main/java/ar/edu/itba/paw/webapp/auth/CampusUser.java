@@ -17,7 +17,7 @@ public class CampusUser extends User {
 
     public CampusUser(String username, String password, Collection<? extends GrantedAuthority> authorities,
                       Integer fileNumber, Long userId, String name, String surname, String email,
-                      boolean isAdmin,byte[] image) {
+                      boolean isAdmin, byte[] image) {
         super(username, password, authorities);
         this.fileNumber = fileNumber;
         this.userId = userId;
