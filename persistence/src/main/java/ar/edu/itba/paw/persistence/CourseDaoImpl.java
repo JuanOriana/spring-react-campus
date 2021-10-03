@@ -128,6 +128,7 @@ public class CourseDaoImpl implements CourseDao {
                     .withEmail(rs.getString("email"))
                     .withPassword(rs.getString("password"))
                     .isAdmin(rs.getBoolean("isAdmin"))
+                    .withProfileImage(rs.getBytes("image"))
                     .build();
             Role role = new Role(rs.getInt("roleId"), rs.getString("roleName"));
             result.put(user, role);
@@ -155,7 +156,8 @@ public class CourseDaoImpl implements CourseDao {
     @Override
     public Map<User, Role> getTeachers(Long courseId) {
         return jdbcTemplate.query("SELECT * " +
-                        "FROM users NATURAL JOIN profile_images NATURAL JOIN user_to_course NATURAL JOIN roles " +
+                        "FROM users NATURAL JOIN profile_images " +
+                        "NATURAL JOIN user_to_course NATURAL JOIN roles NATURAL JOIN profile_images " +
                         "WHERE courseId = ? AND roleId BETWEEN ? AND ?",
                 new Object[]{courseId, Permissions.HELPER.getValue(), Permissions.TEACHER.getValue()},
                 MAP_RESULT_SET_EXTRACTOR);
