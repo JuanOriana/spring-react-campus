@@ -85,7 +85,7 @@ public class AdminController extends AuthController {
     public ModelAndView selectCourse(){
         ModelAndView mav = new ModelAndView("admin/select-course");
         List<Course> courses = courseService.list();
-        courses.sort(Comparator.comparing(Course::getYear).reversed().thenComparing(Course::getQuarter).reversed());
+        courses.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
         mav.addObject("courses",courses);
         return mav;
     }
