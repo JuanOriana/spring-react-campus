@@ -21,20 +21,10 @@
           </p>
       </c:if>
       <c:forEach var="announcementItem" items="${announcementList}">
-          <div class="announcement-wrapper reduced">
-              <div class="announcement-header">
-                  <h4 class="announcement-title"><spring:message code="announcement.title" htmlEscape="true" arguments="${announcementItem.title}"/></h4>
-                  <div style="display: flex;flex-direction: column;font-size: 14px">
-                      <p><spring:message code="announcement.publisher.owner" htmlEscape="true" arguments="${announcementItem.author.name},${announcementItem.author.surname}"/></p>
-                      <a href="<c:url value="/course/${announcementItem.course.courseId}"/>" class="styleless-anchor">
-                        <p><spring:message code="announcement.publisher.course" htmlEscape="true" arguments="${announcementItem.course.subject.name}"/></p>
-                      </a>
-                  </div>
-              </div>
-              <p class="announcement-date"><spring:message code="announcement.date" htmlEscape="true" arguments="${announcementItem.date.format(dateTimeFormatter)}"/></p>
-              <c:set var="newline" value="<%= \"\n\" %>" />
-                  ${fn:replace(fn:escapeXml(announcementItem.content), newline, '<br />')}
-          </div>
+          <c:set var="announcementItem" value="${announcementItem}" scope="request"/>
+          <jsp:include page="components/announcement-unit.jsp">
+              <jsp:param name="isGlobal" value="${true}"/>
+          </jsp:include>
       </c:forEach>
 
 

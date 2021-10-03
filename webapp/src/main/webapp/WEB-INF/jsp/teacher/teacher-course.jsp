@@ -9,18 +9,6 @@
 <head>
   <title><spring:message code="page.title.course.subject.name" htmlEscape="true" arguments="${course.subject.name}"/></title>
   <c:import url="../config/generalHead.jsp"/>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-  <script>
-    function deleteById(announcementId){
-      $.ajax({
-        url: '${pageContext.request.contextPath}/announcements/' + announcementId,
-        type: 'DELETE',
-        success: function (result) {
-          $("#announcement-"+ announcementId).remove();
-        }
-      });
-    }
-  </script>
 </head>
 <body>
 <div class="page-organizer">
@@ -60,26 +48,10 @@
         </c:if>
 
         <c:forEach var="announcementItem" items="${announcementList}">
-          <div class="announcement-wrapper" id="announcement-${announcementItem.announcementId}">
-            <div class="announcement-header">
-              <h4 class="announcement-title">
-                <spring:message code="teacher.course.announcement.title"
-                                htmlEscape="true" arguments="${announcementItem.title}"/>
-              </h4>
-              <div style="display: flex">
-                <p style="font-size: 14px"><spring:message code="teacher.course.announcement.owner"
-                                                           htmlEscape="true" arguments="${announcementItem.author.name},
-                                                           ${announcementItem.author.surname}"/>
-                </p>
-                <img src="<c:url value="/resources/images/trash-red.png"/>"
-                     alt="delete" class="small-icon" style="margin-left: 10px"
-                     onclick="deleteById(${announcementItem.announcementId})">
-              </div>
-            </div>
-            <p class="announcement-date"><spring:message code="teacher.course.announcement.date" htmlEscape="true" arguments="${announcementItem.date.format(dateTimeFormatter)}"/></p>
-            <c:set var="newline" value="<%= \"\n\" %>" />
-              ${fn:replace(fn:escapeXml(announcementItem.content), newline, '<br />')}
-          </div>
+          <c:set var="announcementItem" value="${announcementItem}" scope="request"/>
+          <jsp:include page="../components/announcement-unit.jsp">
+            <jsp:param name="isTeacher" value="${true}"/>
+          </jsp:include>
         </c:forEach>
       </div>
 

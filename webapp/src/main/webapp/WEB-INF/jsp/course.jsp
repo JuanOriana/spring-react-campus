@@ -30,15 +30,10 @@
                 </c:if>
 
                 <c:forEach var="announcementItem" items="${announcementList}">
-                    <div class="announcement-wrapper">
-                        <div class="announcement-header">
-                            <h4 class="announcement-title"><spring:message code="course.announcement.title" htmlEscape="true" arguments="${announcementItem.title}"/></h4>
-                            <p style="font-size: 14px"><spring:message code="course.announcement.owner" htmlEscape="true" arguments="${announcementItem.author.name},${announcementItem.author.surname}"/></p>
-                        </div>
-                        <p class="announcement-date"><spring:message code="course.announcement.date" htmlEscape="true" arguments="${announcementItem.date.format(dateTimeFormatter)}"/></p>
-                        <c:set var="newline" value="<%= \"\n\" %>" />
-                            ${fn:replace(fn:escapeXml(announcementItem.content), newline, '<br />')}
-                    </div>
+                    <c:set var="announcementItem" value="${announcementItem}" scope="request"/>
+                    <jsp:include page="components/announcement-unit.jsp">
+                        <jsp:param name="isGlobal" value="${false}"/>
+                    </jsp:include>
                 </c:forEach>
             </div>
         </div>
