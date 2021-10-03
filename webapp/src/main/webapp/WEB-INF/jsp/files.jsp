@@ -32,12 +32,19 @@
                 </c:if>
                 <c:forEach var="file" items="${files}">
                     <div class="file-unit">
-                        <a href="<c:url value="/files/${file.fileId}"/>" class="styleless-anchor" target="_blank"
-                           style="display: flex;margin-left: 10px; align-items: center">
-                            <img src="<c:url value="/resources/images/extensions/${file.extension.fileExtensionName}.png"/>"
-                                 class="file-img" alt="${file.name}"/>
-                            <p class="file-name"><spring:message code="files.file.name" htmlEscape="true" arguments="${file.name}"/></p>
-                        </a>
+                        <div style="display: flex; align-items: center">
+                            <a href="<c:url value="/files/${file.fileId}"/>" class="styleless-anchor" target="_blank"
+                               style="display: flex;margin-left: 10px; align-items: center">
+                                <img src="<c:url value="/resources/images/extensions/${file.extension.fileExtensionName}.png"/>"
+                                     class="file-img" alt="${file.name}"/>
+                                <p class="file-name"><spring:message code="files.file.name" htmlEscape="true" arguments="${file.name}"/></p>
+                            </a>
+                            <c:forEach var="category" items="${file.categories}">
+                                <p class="file-category-name">
+                                    <spring:message code="category.${category.categoryName}" htmlEscape="true"/>
+                                </p>
+                            </c:forEach>
+                        </div>
                         <div style="display: flex; align-items: center">
                             <p class="file-name" style="padding-right: 20px; border-right: 3px solid white">
                                 <spring:message code="files.file.downloads" htmlEscape="true" arguments="${file.downloads}"/>
