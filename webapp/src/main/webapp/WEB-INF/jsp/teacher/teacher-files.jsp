@@ -8,18 +8,6 @@
 <head>
     <title><spring:message code="page.title.course.subject.name" htmlEscape="true" arguments="${course.subject.name}"/></title>
     <c:import url="../config/generalHead.jsp"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script>
-        function deleteById(fileId){
-            $.ajax({
-                url: '${pageContext.request.contextPath}/files/' + fileId,
-                type: 'DELETE',
-                success: function (result) {
-                    $("#file-"+ fileId).remove();
-                }
-            });
-        }
-    </script>
 </head>
 <body>
 <div class="page-organizer">
@@ -69,28 +57,10 @@
                             </p>
                         </c:if>
                         <c:forEach var="file" items="${files}">
-                            <div class="file-unit" id="file-${file.fileId}">
-                                <div style="display: flex; align-items: center">
-                                    <a href="<c:url value="/files/${file.fileId}"/>" class="styleless-anchor" target="_blank"
-                                       style="display: flex;margin-left: 10px; align-items: center">
-                                        <img src="<c:url value="/resources/images/extensions/${file.extension.fileExtensionName}.png"/>"
-                                             class="file-img" alt="${file.name}"/>
-                                        <p class="file-name"><spring:message code="teacher.file.course.file.name" htmlEscape="true" arguments="${file.name}"/></p>
-                                    </a>
-                                    <c:forEach var="category" items="${file.categories}">
-                                        <p class="file-category-name">
-                                            <spring:message code="category.${category.categoryName}" htmlEscape="true"/>
-                                        </p>
-                                    </c:forEach>
-                                </div>
-                                <div style="display: flex; align-items: center">
-                                    <p class="file-name">
-                                        <spring:message code="files.file.downloads" htmlEscape="true" arguments="${file.downloads}"/>
-                                    </p>
-                                    <img src="<c:url value="/resources/images/trash.png"/>"
-                                         alt="delete" class="medium-icon" onclick="deleteById(${file.fileId})">
-                                </div>
-                            </div>
+                            <c:set var="file" value="${file}" scope="request"/>
+                            <jsp:include page="../components/file-unit.jsp">
+                                <jsp:param name="isTeacher" value="${true}"/>
+                            </jsp:include>
                         </c:forEach>
                     </div>
                 </div>
