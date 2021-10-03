@@ -12,10 +12,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.awt.print.Pageable;
@@ -28,9 +30,12 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Sql("classpath:schema.sql")
+@Rollback
+@Transactional
 public class AnnouncementDaoImplTest {
 
     @Autowired
@@ -154,12 +159,6 @@ public class AnnouncementDaoImplTest {
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "announcements");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "roles");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_to_course");
         insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
         insertUser(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, true);
