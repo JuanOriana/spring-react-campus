@@ -35,7 +35,12 @@ public class CourseServiceImpl implements CourseService {
         try {
             course = courseDao.create(year, quarter, board, subjectId);
         } catch (DuplicateKeyException dke) {
-            throw new DuplicateCourseException();
+            throw new DuplicateCourseException.Builder()
+                    .withSubjectId(subjectId)
+                    .withBoard(board)
+                    .withQuarter(quarter)
+                    .withYear(year)
+                    .build();
         } catch (DataAccessException dae) {
             throw new SystemUnavailableException(dae.getMessage());
         }

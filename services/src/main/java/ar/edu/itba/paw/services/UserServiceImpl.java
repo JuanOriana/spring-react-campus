@@ -35,7 +35,14 @@ public class UserServiceImpl implements UserService {
             user = userDao.create(fileNumber, name, surname, username,
                     email, passwordEncoder.encode(password), isAdmin);
         } catch (DuplicateKeyException dke) {
-            throw new DuplicateUserException(dke.getMessage());
+            throw new DuplicateUserException.Builder()
+                    .withError(dke.getMessage())
+                    .withUsername(username)
+                    .withSurname(surname)
+                    .withEmail(email)
+                    .withName(name)
+                    .withFileNumber(fileNumber)
+                    .build();
         } catch (DataAccessException dae) {
             throw new SystemUnavailableException(dae.getMessage());
         }

@@ -1,12 +1,11 @@
 package ar.edu.itba.paw.webapp.form;
 
+import ar.edu.itba.paw.models.Course;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +29,57 @@ public class CourseForm {
     @Min(0)
     @NotNull
     private Integer year;
+
+    public CourseForm() {}
+
+    public static class Builder {
+
+        private Long subjectId;
+        private Integer quarter;
+        private String board;
+        private Integer year;
+
+        public Builder() {
+        }
+
+        Builder(Long subjectId, Integer quarter, String board, Integer year) {
+            this.subjectId = subjectId;
+            this.quarter = quarter;
+            this.board = board;
+            this.year = year;
+        }
+
+        public Builder withSubjectId(Long subjectId){
+            this.subjectId = subjectId;
+            return Builder.this;
+        }
+
+        public Builder withQuarter(Integer quarter){
+            this.quarter = quarter;
+            return Builder.this;
+        }
+
+        public Builder withBoard(String board){
+            this.board = board;
+            return Builder.this;
+        }
+
+        public Builder withYear(Integer year){
+            this.year = year;
+            return Builder.this;
+        }
+
+        public CourseForm build() {
+            return new CourseForm(this);
+        }
+    }
+
+    private CourseForm(Builder builder) {
+        this.subjectId = builder.subjectId;
+        this.quarter = builder.quarter;
+        this.board = builder.board;
+        this.year = builder.year;
+    }
 
     private List<Integer> startTimes = Arrays.asList(new Integer[7]);
 
