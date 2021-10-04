@@ -114,6 +114,7 @@ public class AnnouncementDaoImplTest {
     private void insertUser(Long userId, int fileNumber, String name, String surname, String username, String email,
                             String password, boolean isAdmin) {
         SimpleJdbcInsert userJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("users");
+        SimpleJdbcInsert profileImageJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("profile_images");
         Map<String, Object> args = new HashMap<>();
         args.put("userId",userId);
         args.put("fileNumber",fileNumber);
@@ -124,6 +125,10 @@ public class AnnouncementDaoImplTest {
         args.put("password",password);
         args.put("isAdmin",isAdmin);
         userJdbcInsert.execute(args);
+        Map<String,Object> argsProfileImage = new HashMap<>();
+        argsProfileImage.put("image", null);
+        argsProfileImage.put("userid", userId);
+        profileImageJdbcInsert.execute(argsProfileImage);
     }
 
     private void insertAnnouncement(Long announcementId, Long userId, Long courseId, String title, String content, LocalDateTime date) {
