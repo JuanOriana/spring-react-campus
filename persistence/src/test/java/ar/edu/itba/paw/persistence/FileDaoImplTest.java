@@ -62,7 +62,8 @@ public class FileDaoImplTest {
 
     // Course & Subject
     private final Long COURSE_ID = 1L;
-    private final Long ROLE_ID = 1L;
+    private final Integer ROLE_ID = 1;
+    private final String ROLE_NAME = "Teacher";
     private final Integer COURSE_YEAR = 2021;
     private final Integer COURSE_QUARTER = 1;
     private final String COURSE_BOARD = "S1";
@@ -90,6 +91,7 @@ public class FileDaoImplTest {
     private final String FILE_NAME2 = "test2.png";
     private final String FILE_NAME = "test.png";
 
+    //User
     private final Long USER_ID = 1L;
     private final Integer FILE_NUMBER = 1;
     private final String NAME = "John";
@@ -105,7 +107,7 @@ public class FileDaoImplTest {
     private final Integer PAGE_SIZE = 10;
 
 
-    private FileModel createFileModelObject() throws FileNotFoundException {
+    private FileModel createFileModelObject(String filePath, long fileId) {
         FileExtension fExtension = new FileExtension(FILE_EXTENSION_ID_OTHER, FILE_EXTENSION_OTHER);
         Course course = new Course.Builder()
                 .withCourseId(COURSE_ID)
@@ -114,7 +116,6 @@ public class FileDaoImplTest {
                 .withBoard(COURSE_BOARD)
                 .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
                 .build();
-        String filePath = "src/test/resources/test.png";
         File fileInFileSystem = new File(filePath);
         ByteArrayOutputStream ous = null;
         InputStream ios = null;
@@ -123,7 +124,7 @@ public class FileDaoImplTest {
             buffer = new byte[(int) fileInFileSystem.length()];
             ous = new ByteArrayOutputStream();
             ios = new FileInputStream(fileInFileSystem);
-            int read = 0;
+            int read;
             while ((read = ios.read(buffer)) != -1) {
                 ous.write(buffer, 0, read);
             }
@@ -134,18 +135,20 @@ public class FileDaoImplTest {
                 if (ous != null)
                     ous.close();
             } catch (IOException e) {
+                e.printStackTrace();
             }
 
             try {
                 if (ios != null)
                     ios.close();
             } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         return new FileModel.Builder()
                 .withCourse(course)
                 .withExtension(fExtension)
-                .withFileId(FILE_ID)
+                .withFileId(fileId)
                 .withName(fileInFileSystem.getName())
                 .withSize((long) buffer.length)
                 .withFile(buffer)
@@ -162,7 +165,7 @@ public class FileDaoImplTest {
         args.put("fileName", fModel.getName());
         args.put("file", fModel.getFile());
         args.put("fileId", fModel.getFileId());
-        args.put("courseId", COURSE_ID);
+        args.put("courseId", fModel.getCourse().getCourseId());
         JdbcInsert.execute(args);
     }
 
@@ -186,6 +189,65 @@ public class FileDaoImplTest {
         courseJdbcInsert.execute(args);
     }
 
+
+    private void insertUser(Long userId, int fileNumber, String name, String surname, String username, String email,
+                            String password, boolean isAdmin) {
+        SimpleJdbcInsert userJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("users");
+        SimpleJdbcInsert profileImageJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("profile_images");
+        Map<String, Object> args = new HashMap<>();
+        args.put("userId", userId);
+        args.put("fileNumber", fileNumber);
+        args.put("name", name);
+        args.put("surname", surname);
+        args.put("username", username);
+        args.put("email", email);
+        args.put("password", password);
+        args.put("isAdmin", isAdmin);
+        userJdbcInsert.execute(args);
+        Map<String, Object> argsProfileImage = new HashMap<>();
+        argsProfileImage.put("image", null);
+        argsProfileImage.put("userid", userId);
+        profileImageJdbcInsert.execute(argsProfileImage);
+    }
+
+    private void insertRole(Integer roleId, String roleName) {
+        SimpleJdbcInsert roleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("roles");
+        Map<String, Object> args = new HashMap<>();
+        args.put("roleId", roleId);
+        args.put("roleName", roleName);
+        roleJdbcInsert.execute(args);
+    }
+
+    private void insertUserToCourse(Long userId, Long courseId, int roleId) {
+        SimpleJdbcInsert userToCourseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("user_to_course");
+        Map<String, Object> args = new HashMap<>();
+        args.put("userId", userId);
+        args.put("courseId", courseId);
+        args.put("roleId", roleId);
+        userToCourseJdbcInsert.execute(args);
+    }
+
+    private void insertFileExtension(Long fileExtensionId, String fileExtension) {
+        SimpleJdbcInsert fileExtensionsJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("file_extensions");
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("fileExtensionId", fileExtensionId);
+        args.put("fileExtension", fileExtension);
+
+        fileExtensionsJdbcInsert.execute(args);
+    }
+
+    private void insertFileCategory(Long fileCategoryId, String fileCategoryName) {
+        SimpleJdbcInsert fileCategoryJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("file_categories");
+        Map<String, Object> args = new HashMap<>();
+
+        args.put("categoryId", fileCategoryId);
+        args.put("categoryName", fileCategoryName);
+
+        fileCategoryJdbcInsert.execute(args);
+    }
+
+
     private FileCategory creatFileCategoryObject(Long fileCategoryId, String fileCategory) {
         return new FileCategory(fileCategoryId, fileCategory);
     }
@@ -196,18 +258,18 @@ public class FileDaoImplTest {
         JdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("files");
         insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
-        jdbcTemplate.execute(String.format("INSERT INTO users (userId,fileNumber,name,surname,username,email,password,isAdmin) VALUES (%d,%d,'%s','%s','%s','%s','%s',%s)", USER_ID, FILE_NUMBER, NAME, SURNAME, USERNAME, EMAIL, PASSWORD, IS_ADMIN));
-        jdbcTemplate.execute(String.format("INSERT INTO roles VALUES (%d, 'Teacher')", ROLE_ID));
-        jdbcTemplate.execute(String.format("INSERT INTO user_to_course VALUES (%d, %d, %d)", USER_ID, COURSE_ID, ROLE_ID));
-        jdbcTemplate.execute(String.format("INSERT INTO file_extensions VALUES (%d, '%s')", FILE_EXTENSION_ID_OTHER, FILE_EXTENSION_OTHER));
-        jdbcTemplate.execute(String.format("INSERT INTO file_extensions VALUES (%d, '%s')", FILE_EXTENSION_ID, FILE_EXTENSION));
-        jdbcTemplate.execute(String.format("INSERT INTO file_categories VALUES (%d, '%s')", FILE_CATEGORY_ID, FILE_CATEGORY));
-        jdbcTemplate.execute(String.format("INSERT INTO file_categories VALUES (%d, '%s')", FILE_CATEGORY_ID2, FILE_CATEGORY2));
+        insertUser(USER_ID, FILE_NUMBER, NAME, SURNAME, USERNAME, EMAIL, PASSWORD, IS_ADMIN);
+        insertRole(ROLE_ID, ROLE_NAME);
+        insertUserToCourse(USER_ID, COURSE_ID, ROLE_ID);
+        insertFileExtension(FILE_EXTENSION_ID, FILE_EXTENSION);
+        insertFileExtension(FILE_EXTENSION_ID_OTHER, FILE_EXTENSION_OTHER);
+        insertFileCategory(FILE_CATEGORY_ID, FILE_CATEGORY);
+        insertFileCategory(FILE_CATEGORY_ID2, FILE_CATEGORY2);
     }
 
     @Test
-    public void testCreate() throws FileNotFoundException {
-        FileModel mockFile = createFileModelObject();
+    public void testCreate() {
+        FileModel mockFile = createFileModelObject("src/test/resources/test.png", FILE_ID);
         FileModel fileModel = fileDao.create(mockFile.getSize(), LocalDateTime.now(), mockFile.getName(),
                 mockFile.getFile(), mockFile.getCourse());
         assertNotNull(fileModel);
@@ -215,23 +277,23 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testDelete() throws FileNotFoundException {
-        insertFileModelToDB(createFileModelObject());
+    public void testDelete() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
         fileDao.delete(FILE_ID);
         assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "files"));
     }
 
     @Test(expected = AssertionError.class)
-    public void testDeleteNoExist() throws FileNotFoundException {
-        insertFileModelToDB(createFileModelObject());
+    public void testDeleteNoExist() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
         final boolean isDeleted = fileDao.delete(FILE_ID + 1);
         Assert.fail("Should have thrown assertion error for non-existent key 'file id' ");
         assertFalse(isDeleted);
     }
 
     @Test
-    public void testGetById() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
+    public void testGetById() {
+        FileModel fModel = createFileModelObject("src/test/resources/test.png", FILE_ID);
         insertFileModelToDB(fModel);
 
         Optional<FileModel> fileFromDB = fileDao.getById(FILE_ID);
@@ -240,16 +302,15 @@ public class FileDaoImplTest {
         assertEquals(FILE_EXTENSION_ID_OTHER, fileFromDB.get().getExtension().getFileExtensionId());
         assertEquals(COURSE_ID, fileFromDB.get().getCourse().getCourseId());
         assertEquals(fModel.getSize(), fileFromDB.get().getSize());
-        assertEquals(fModel.getName(), fileFromDB.get().getName());
+        assertEquals(FILE_NAME, fileFromDB.get().getName());
         assertEquals(fModel.getDate(), fileFromDB.get().getDate());
         assertArrayEquals(fModel.getFile(), fileFromDB.get().getFile());
 
     }
 
     @Test(expected = AssertionError.class)
-    public void testGetByIdNoExist() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
-        insertFileModelToDB(fModel);
+    public void testGetByIdNoExist() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
 
         Optional<FileModel> fileFromDB = fileDao.getById(FILE_ID + 1);
         Assert.fail("Should have thrown assertion error for non-existent key 'file id' ");
@@ -257,8 +318,8 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testList() throws FileNotFoundException {
-        insertFileModelToDB(createFileModelObject());
+    public void testList() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
         List<FileModel> list = fileDao.list(USER_ID);
         assertNotNull(list);
         assertEquals(1, list.size());
@@ -266,15 +327,14 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testUpdate() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
+    public void testUpdate() {
+        FileModel fModel = createFileModelObject("src/test/resources/test.png", FILE_ID);
         insertFileModelToDB(fModel);
         fModel.setName("nuevoNombre");
         final boolean isUpdated = fileDao.update(FILE_ID, fModel);
         assertTrue(isUpdated);
 
-        String sqlGetFileOfId = String.format("SELECT * FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileId = %d;", FILE_ID);
-        FileModel fileDB = jdbcTemplate.query(sqlGetFileOfId, FILE_MODEL_ROW_MAPPER).get(0);
+        FileModel fileDB = jdbcTemplate.query("SELECT * FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileId = ?", new Object[]{FILE_ID}, FILE_MODEL_ROW_MAPPER).get(0);
 
         assertEquals(FILE_ID, fileDB.getFileId());
         assertEquals(FILE_EXTENSION_ID_OTHER, fileDB.getExtension().getFileExtensionId());
@@ -282,9 +342,8 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testGetByName() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
-        insertFileModelToDB(fModel);
+    public void testGetByName() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
 
         List<FileModel> list = fileDao.getByName(FILE_NAME);
         assertNotNull(list);
@@ -293,9 +352,8 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testGetByExtension() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
-        insertFileModelToDB(fModel);
+    public void testGetByExtension() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
 
         List<FileModel> list = fileDao.getByExtension(FILE_EXTENSION_ID_OTHER);
         assertNotNull(list);
@@ -304,9 +362,8 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testGetByExtensionName() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
-        insertFileModelToDB(fModel);
+    public void testGetByExtensionName() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
 
         List<FileModel> list = fileDao.getByExtension(FILE_EXTENSION_OTHER);
         assertNotNull(list);
@@ -315,129 +372,71 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testAddCategory() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
-        insertFileModelToDB(fModel);
+    public void testAddCategory() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
         FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
 
-        boolean categoryAdded = fileDao.associateCategory(fModel.getFileId(), fCategory.getCategoryId());
+        boolean categoryAdded = fileDao.associateCategory(FILE_ID, fCategory.getCategoryId());
         assertTrue(categoryAdded);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
     }
 
     @Test
-    public void testRemoveCategory() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
-        insertFileModelToDB(fModel);
-        FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
+    public void testRemoveCategory() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
 
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fModel.getFileId()));
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
-        boolean categoryRemoved = fileDao.removeCategory(fModel.getFileId(), fCategory.getCategoryId());
+        boolean categoryRemoved = fileDao.removeCategory(FILE_ID, FILE_CATEGORY_ID);
         assertTrue(categoryRemoved);
         assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
     }
 
     @Test
-    public void testGetFileCategories() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
-        insertFileModelToDB(fModel);
-        FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fModel.getFileId()));
+    public void testGetFileCategories() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
-        List<FileCategory> list = fileDao.getFileCategories(fModel.getFileId());
+        List<FileCategory> list = fileDao.getFileCategories(FILE_ID);
         assertEquals(1, list.size());
     }
 
     @Test
-    public void testGetByCategory() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
-        insertFileModelToDB(fModel);
-        FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fModel.getFileId()));
+    public void testGetByCategory() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
-        List<FileModel> list = fileDao.getByCategory(fCategory.getCategoryId());
+        List<FileModel> list = fileDao.getByCategory(FILE_CATEGORY_ID);
         assertEquals(1, list.size());
 
         FileModel file = list.get(0);
-        assertEquals(fModel.getName(), file.getName());
+        assertEquals(FILE_NAME, file.getName());
 
     }
 
     @Test
-    public void testGetByCourseId() throws FileNotFoundException {
-        FileModel fModel = createFileModelObject();
-        insertFileModelToDB(fModel);
+    public void testGetByCourseId() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
 
-        List<FileModel> list = fileDao.getByCourseId(fModel.getCourse().getCourseId());
+        List<FileModel> list = fileDao.getByCourseId(COURSE_ID);
         assertEquals(1, list.size());
 
         FileModel file = list.get(0);
-        assertEquals(fModel.getCourse().getCourseId(), file.getCourse().getCourseId());
+        assertEquals(COURSE_ID, file.getCourse().getCourseId());
     }
 
-    private FileModel createFileModelObject2() throws FileNotFoundException {
-        FileExtension fExtension = new FileExtension(FILE_EXTENSION_ID_OTHER, FILE_EXTENSION_OTHER);
-        Course course = new Course.Builder()
-                .withCourseId(COURSE_ID)
-                .withYear(COURSE_YEAR)
-                .withQuarter(COURSE_QUARTER)
-                .withBoard(COURSE_BOARD)
-                .withSubject(new Subject(SUBJECT_ID, SUBJECT_CODE, SUBJECT_NAME))
-                .build();
-        String filePath = "src/test/resources/test2.png";
-        File fileInFileSystem = new File(filePath);
-        ByteArrayOutputStream ous = null;
-        InputStream ios = null;
-        byte[] buffer = new byte[0];
-        try {
-            buffer = new byte[(int) fileInFileSystem.length()];
-            ous = new ByteArrayOutputStream();
-            ios = new FileInputStream(fileInFileSystem);
-            int read = 0;
-            while ((read = ios.read(buffer)) != -1) {
-                ous.write(buffer, 0, read);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (ous != null)
-                    ous.close();
-            } catch (IOException e) {
-            }
-
-            try {
-                if (ios != null)
-                    ios.close();
-            } catch (IOException e) {
-            }
-        }
-        return new FileModel.Builder()
-                .withCourse(course)
-                .withExtension(fExtension)
-                .withFileId(FILE_ID2)
-                .withName(fileInFileSystem.getName())
-                .withSize((long) buffer.length)
-                .withFile(buffer)
-                .withDownloads(0L)
-                .withDate(LocalDateTime.now())
-                .build();
-    }
 
     @Test
-    public void testListByCriteriaFilterByExtension() throws FileNotFoundException {
-        FileModel fileModel = createFileModelObject();
-        insertFileModelToDB(fileModel);
-        FileModel fileModel2 = createFileModelObject2();
-        insertFileModelToDB(fileModel2);
-        FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
-        FileCategory fCategory2 = creatFileCategoryObject(FILE_CATEGORY_ID2, FILE_CATEGORY2);
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory2.getCategoryId(), fileModel2.getFileId()));
+    public void testListByCriteriaFilterByExtension() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
+        insertFileModelToDB(createFileModelObject("src/test/resources/test2.png", FILE_ID2));
+
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID2, FILE_ID2);
+
         assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
         List<FileModel> list = fileDao.listByCourse("",
@@ -447,15 +446,11 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testListByCriteriaFilterByCategory() throws FileNotFoundException {
-        FileModel fileModel = createFileModelObject();
-        insertFileModelToDB(fileModel);
-        FileModel fileModel2 = createFileModelObject2();
-        insertFileModelToDB(fileModel2);
-        FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
-        FileCategory fCategory2 = creatFileCategoryObject(FILE_CATEGORY_ID2, FILE_CATEGORY2);
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory2.getCategoryId(), fileModel2.getFileId()));
+    public void testListByCriteriaFilterByCategory() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
+        insertFileModelToDB(createFileModelObject("src/test/resources/test2.png", FILE_ID2));
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID2, FILE_ID2);
         assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
         List<FileModel> list = fileDao.listByCourse("",
@@ -466,11 +461,9 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testListByCriteriaFilterByCategoryInexistance() throws FileNotFoundException {
-        FileModel fileModel = createFileModelObject();
-        insertFileModelToDB(fileModel);
-        FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
+    public void testListByCriteriaFilterByCategoryInexistance() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
         List<FileModel> list = fileDao.listByCourse("",
@@ -480,11 +473,9 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testListByCriteriaEmptyCourse() throws FileNotFoundException {
-        FileModel fileModel = createFileModelObject();
-        insertFileModelToDB(fileModel);
-        FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
+    public void testListByCriteriaEmptyCourse() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
         List<FileModel> list = fileDao.listByCourse("", new ArrayList<>(), new ArrayList<>(), USER_ID, 999L,
@@ -493,11 +484,9 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testListByCriteriaDateAndCategory() throws FileNotFoundException {
-        FileModel fileModel = createFileModelObject();
-        insertFileModelToDB(fileModel);
-        FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
+    public void testListByCriteriaDateAndCategory() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
         List<FileModel> list = fileDao.listByCourse("", new ArrayList<>(),
@@ -507,15 +496,11 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testListByCriteriaSearch1File() throws FileNotFoundException {
-        FileModel fileModel = createFileModelObject();
-        insertFileModelToDB(fileModel);
-        FileModel fileModel2 = createFileModelObject2();
-        insertFileModelToDB(fileModel2);
-        FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
-        FileCategory fCategory2 = creatFileCategoryObject(FILE_CATEGORY_ID2, FILE_CATEGORY2);
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory2.getCategoryId(), fileModel2.getFileId()));
+    public void testListByCriteriaSearch1File() {
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
+        insertFileModelToDB(createFileModelObject("src/test/resources/test2.png", FILE_ID2));
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID2, FILE_ID2);
         assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
         List<FileModel> list = fileDao.listByCourse(FILE_NAME2, new ArrayList<>(), new ArrayList<>(),
@@ -526,21 +511,28 @@ public class FileDaoImplTest {
     }
 
     @Test
-    public void testListByCriteriaSearch2Files() throws FileNotFoundException { // If name of file 1 or 2 is changed this test might fail
-        FileModel fileModel = createFileModelObject();
-        insertFileModelToDB(fileModel);
-        FileModel fileModel2 = createFileModelObject2();
-        insertFileModelToDB(fileModel2);
-        FileCategory fCategory = creatFileCategoryObject(FILE_CATEGORY_ID, FILE_CATEGORY);
-        FileCategory fCategory2 = creatFileCategoryObject(FILE_CATEGORY_ID2, FILE_CATEGORY2);
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory.getCategoryId(), fileModel.getFileId()));
-        jdbcTemplate.execute(String.format("INSERT INTO category_file_relationship VALUES (%d, %d);", fCategory2.getCategoryId(), fileModel2.getFileId()));
+    public void testListByCriteriaSearch2Files() { // If name of file 1 or 2 is changed this test might fail
+        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
+        insertFileModelToDB(createFileModelObject("src/test/resources/test2.png", FILE_ID2));
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
+        insertCategoryFileRelationShip(FILE_CATEGORY_ID2, FILE_ID2);
+
         assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
         List<FileModel> list = fileDao.listByCourse("test", new ArrayList<>(),
                 new ArrayList<>(), USER_ID, COURSE_ID, new CampusPageRequest(PAGE, PAGE_SIZE),
                 new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertFalse(list.isEmpty());
         assertEquals(2, list.size());
+    }
+
+    private void insertCategoryFileRelationShip(Long categoryId, Long fileId) {
+        SimpleJdbcInsert categoryFileJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("category_file_relationship");
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("categoryId", categoryId);
+        args.put("fileId", fileId);
+
+        categoryFileJdbcInsert.execute(args);
     }
 
 }
