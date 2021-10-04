@@ -18,6 +18,10 @@
             <jsp:include page="components/courseSectionsCol.jsp">
                 <jsp:param name="courseName" value="${course.subject.name}"/>
                 <jsp:param name="courseId" value="${course.courseId}"/>
+                <jsp:param name="year" value="${course.year}"/>
+                <jsp:param name="quarter" value="${course.quarter}"/>
+                <jsp:param name="code" value="${course.subject.code}"/>
+                <jsp:param name="board" value="${course.board}"/>
             </jsp:include>
 
             <div class="course-data-container">

@@ -30,10 +30,10 @@
                         <c:set var = "currentCourse" value = "${timeTableMatrix.get(dayLoop.index).get(hourLoop.index)}"/>
                         <c:if test="${currentCourse != null}">
                             <td class="active-time-td"  style="padding: 0;background:${courseColors.get(currentCourse)}"
-                                data-tooltip="${currentCourse.subject.name}">
+                                data-tooltip="${currentCourse.subject.code} [${currentCourse.board}]">
                                 <a class="styleless-anchor" style="display: block;height: 100%; padding: 1em; text-align: center"
                                    href="<c:url value="/course/${currentCourse.courseId}"/>">
-                                        ${currentCourse.subject.code} [${currentCourse.board}]
+                                        ${currentCourse.subject.name}
                                 </a>
                             </td>
                         </c:if>
