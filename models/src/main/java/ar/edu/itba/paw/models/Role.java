@@ -3,15 +3,47 @@ package ar.edu.itba.paw.models;
 import java.util.Objects;
 
 public class Role {
-    private int roleId;
+    private Integer roleId;
     private String roleName;
 
-    public Role(int roleId, String roleName) {
-        this.roleId = roleId;
-        this.roleName = roleName;
+    public Role(Builder builder) {
+        this.roleId = builder.roleId;
+        this.roleName = builder.roleName;
     }
 
-    public int getRoleId() {
+    public static class Builder {
+
+        private Integer roleId;
+        private String roleName;
+
+        public Builder() {
+        }
+        public Builder withRoleId(int roleId){
+            this.roleId= roleId;
+            return this;
+        }
+        public Builder withRoleName(String roleName){
+            this.roleName= roleName;
+            return this;
+        }
+
+        public Role build() {
+            if (this.roleId == null) {
+                throw new NullPointerException("The property \"roleId\" is null. "
+                        + "Please set the value by \"roleId()\". "
+                        + "The properties \"roleId\" and \"roleName\" are required.");
+            }
+            if (this.roleName == null) {
+                throw new NullPointerException("The property \"roleName\" is null. "
+                        + "Please set the value by \"roleName()\". "
+                        + "The properties \"roleId\" and \"roleName\" are required.");
+            }
+            return new Role(this);
+        }
+    }
+
+
+    public Integer getRoleId() {
         return roleId;
     }
 
