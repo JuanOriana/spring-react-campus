@@ -130,7 +130,8 @@ public class CourseDaoImpl implements CourseDao {
                     .isAdmin(rs.getBoolean("isAdmin"))
                     .withProfileImage(rs.getBytes("image"))
                     .build();
-            Role role = new Role(rs.getInt("roleId"), rs.getString("roleName"));
+            Role role =new Role.Builder().withRoleId(rs.getInt("roleid")).withRoleName(rs.getString("rolename")).build();
+
             result.put(user, role);
         }
         return result;

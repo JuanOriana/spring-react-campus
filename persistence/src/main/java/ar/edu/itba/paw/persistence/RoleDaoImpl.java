@@ -31,13 +31,13 @@ public class RoleDaoImpl implements RoleDao {
         final Map<String, Object> args = new HashMap<>();
         args.put("roleName", roleName);
         final int roleId = jdbcInsert.executeAndReturnKey(args).intValue();
-        return new Role(roleId, roleName);
+        return new Role.Builder().withRoleId(roleId).withRoleName(roleName).build();
     }
 
     @Override
     public boolean update(Integer roleId, String roleName) {
         return jdbcTemplate.update("UPDATE roles " +
-                "SET roleName = ?," +
+                "SET roleName = ?" +
                 "WHERE roleId = ?", roleName, roleId) == 1;
     }
 
@@ -47,7 +47,8 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     private static final RowMapper<Role> ROLE_ROW_MAPPER = (rs, rowNum) ->
-            new Role(rs.getInt("roleId"), rs.getString("roleName"));
+            new Role.Builder().withRoleId(rs.getInt("roleid")).withRoleName(rs.getString("rolename")).build();
+
 
     @Override
     public List<Role> list() {

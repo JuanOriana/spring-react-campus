@@ -35,7 +35,7 @@ public class UserDaoImpl implements UserDao {
                     .build();
 
     private static final RowMapper<Role> ROLE_ROW_MAPPER = (rs, rowNum) ->
-            new Role(rs.getInt("roleId"), rs.getString("roleName"));
+            new Role.Builder().withRoleId(rs.getInt("roleid")).withRoleName(rs.getString("rolename")).build();
 
     @Autowired
     public UserDaoImpl(final DataSource ds) {
@@ -91,8 +91,8 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean delete(Long userId) {
-        if(jdbcTemplate.update("DELETE FROM users WHERE userId = ?", userId) == 1){
-            jdbcTemplate.update("DELETE FROM profile_images WHERE userId = ? ",userId);
+        if (jdbcTemplate.update("DELETE FROM users WHERE userId = ?", userId) == 1) {
+            jdbcTemplate.update("DELETE FROM profile_images WHERE userId = ? ", userId);
             return true;
         }
         return false;
@@ -150,7 +150,7 @@ public class UserDaoImpl implements UserDao {
     private static final ResultSetExtractor<Map<Role, List<Course>>> ROLE_AND_COURSES_EXTRACTOR = (rs -> {
         Map<Role, List<Course>> roleMap = new HashMap<>();
         while (rs.next()) {
-            Role role = new Role(rs.getInt("roleId"), rs.getString("roleName"));
+            Role role = new Role.Builder().withRoleId(rs.getInt("roleid")).withRoleName(rs.getString("rolename")).build();
             roleMap.putIfAbsent(role, new ArrayList<>());
 
             roleMap.get(role).add(new Course.Builder()
