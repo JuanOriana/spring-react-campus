@@ -82,30 +82,6 @@ public interface CourseService {
     boolean belongs(Long userId, Long courseId);
 
     /**
-     * Informs if the user is a teacher in the current course
-     * @param userId of the user to check the privilege
-     * @param courseId of the course to check the privilege
-     * @return true if the user is a teacher in the current course, false otherwise
-     */
-    boolean isTeacher(Long userId, Long courseId);
-
-    /**
-     * Informs if the user is a helper in the current course
-     * @param userId of the user to check the privilege
-     * @param courseId of the course to check the privilege
-     * @return true if the user is a helper in the current course, false otherwise
-     */
-    boolean isHelper(Long userId, Long courseId);
-
-    /**
-     * Informs if the user is a student in the current course
-     * @param userId of the user to check the privilege
-     * @param courseId of the course to check the privilege
-     * @return true if the user is a student in the current course, false otherwise
-     */
-    boolean isStudent(Long userId, Long courseId);
-
-    /**
      * Informs if the user is a helper or a teacher in the current course
      * @param userId of the user to check the privilege
      * @param courseId of the course to check the privilege
@@ -118,9 +94,8 @@ public interface CourseService {
      * @param userId of the user to enroll
      * @param courseId of the course to enroll the user to
      * @param roleId of the role of the user in the course
-     * @return true if the user was enrolled successfully, false otherwise
      */
-    boolean enroll(Long userId, Long courseId, Integer roleId);
+    void enroll(Long userId, Long courseId, Integer roleId);
 
     /**
      * Gets a list of Users not enrolled in a course

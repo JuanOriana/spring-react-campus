@@ -247,24 +247,4 @@ public class UserDaoImplTest {
         }
     }
 
-
-    @Test
-    public void testGetRoleWithCourses(){
-        insertRole(STUDENT_ROLE_ID, STUDENT_ROLE_NAME);
-        insertRole(TEACHER_ROLE_ID, TEACHER_ROLE_NAME);
-        insertSubject(SUBJECT_ID,SUBJECT_NAME ,SUBJECT_CODE);
-        insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
-        insertUserToCourse(USER_ID, COURSE_ID, STUDENT_ROLE_ID);
-        insertUserToCourse(USER_ID, COURSE_ID, TEACHER_ROLE_ID);
-        Role studentRole = new Role.Builder().withRoleId(STUDENT_ROLE_ID).withRoleName(STUDENT_ROLE_NAME).build();
-        Role teacherRole = new Role.Builder().withRoleId(TEACHER_ROLE_ID).withRoleName(TEACHER_ROLE_NAME).build();
-
-        Map<Role, List<Course>> roleListMap = userDao.getRolesInCourses(USER_ID);
-
-        assertNotNull(roleListMap);
-        assertEquals(2, roleListMap.size());
-        assertEquals(1, roleListMap.get(studentRole).size());
-        assertEquals(1, roleListMap.get(teacherRole).size());
-    }
-
 }

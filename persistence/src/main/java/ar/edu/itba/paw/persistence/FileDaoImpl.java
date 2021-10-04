@@ -146,38 +146,6 @@ public class  FileDaoImpl implements FileDao {
                 new Object[]{fileId}, FILE_MODEL_ROW_MAPPER).stream().findFirst();
     }
 
-    @Override
-    public List<FileModel> getByName(String fileName) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, " +
-                        "fileExtensionId, fileExtension, courseId, year, quarter, board, " +
-                        "subjectId, code, subjectName, downloads " +
-                        "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileName = ?",
-                new Object[]{fileName}, FILE_MODEL_ROW_MAPPER));
-    }
-
-    @Override
-    public List<FileModel> getByExtension(Long extensionId) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, " +
-                "fileExtensionId, fileExtension, courseId, year, " +
-                "quarter, board, subjectId, code, subjectName, downloads " +
-                "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects " +
-                "WHERE fileExtensionId = ?", new Object[]{extensionId}, FILE_MODEL_ROW_MAPPER));
-    }
-
-    @Override
-    public List<FileModel> getByExtension(String extension) {
-        String fileExtension = extension;
-        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM file_extensions WHERE fileExtension = ?",
-                new Object[]{fileExtension}, Integer.class);
-        if (count == 0) {
-            fileExtension = "other";
-        }
-        return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, " +
-                        "fileExtensionId, fileExtension, courseId, year, " +
-                        "quarter, board, subjectId, code, subjectName, downloads " +
-                        "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileExtension = ?",
-                new Object[]{fileExtension}, FILE_MODEL_ROW_MAPPER));
-    }
 
     @Override
     public boolean associateCategory(Long fileId, Long fileCategoryId) {
@@ -193,10 +161,6 @@ public class  FileDaoImpl implements FileDao {
         return false;
     }
 
-    @Override
-    public boolean removeCategory(Long fileId, Long fileCategoryId) {
-        return jdbcTemplate.update("DELETE FROM category_file_relationship WHERE fileId = ? AND categoryId = ?", fileId, fileCategoryId) == 1;
-    }
 
     @Override
     public List<FileCategory> getFileCategories(Long fileId) {

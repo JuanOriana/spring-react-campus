@@ -62,11 +62,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<Role> getRole(Long userId, Long courseId) {
-        return userDao.getRole(userId, courseId);
-    }
-
-    @Override
     public Optional<User> findById(Long userId) {
         return userDao.findById(userId);
     }
@@ -74,16 +69,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findByUsername(String username) {
         return userDao.findByUsername(username);
-    }
-
-    @Override
-    public Optional<User> findByFileNumber(Integer fileNumber) {
-        return userDao.findByFileNumber(fileNumber);
-    }
-
-    @Override
-    public Optional<User> findByEmail(String email) {
-        return userDao.findByEmail(email);
     }
 
     @Override
@@ -98,12 +83,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public boolean updateProfileImage(Long userId, byte[] image) {
-        return userDao.updateProfileImage(userId, image);
-    }
-
-    @Override
-    public Map<Role, List<Course>> getRolesInCourses(Long userId) {
-        return userDao.getRolesInCourses(userId);
+    public void updateProfileImage(Long userId, byte[] image) {
+        userDao.updateProfileImage(userId, image);
     }
 }

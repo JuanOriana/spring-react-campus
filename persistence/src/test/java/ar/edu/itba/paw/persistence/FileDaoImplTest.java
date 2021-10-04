@@ -341,35 +341,6 @@ public class FileDaoImplTest {
         assertEquals("nuevoNombre", fileDB.getName());
     }
 
-    @Test
-    public void testGetByName() {
-        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
-
-        List<FileModel> list = fileDao.getByName(FILE_NAME);
-        assertNotNull(list);
-        assertEquals(1, list.size());
-        assertEquals(FILE_ID, list.get(0).getFileId());
-    }
-
-    @Test
-    public void testGetByExtension() {
-        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
-
-        List<FileModel> list = fileDao.getByExtension(FILE_EXTENSION_ID_OTHER);
-        assertNotNull(list);
-        assertEquals(1, list.size());
-        assertEquals(FILE_ID, list.get(0).getFileId());
-    }
-
-    @Test
-    public void testGetByExtensionName() {
-        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
-
-        List<FileModel> list = fileDao.getByExtension(FILE_EXTENSION_OTHER);
-        assertNotNull(list);
-        assertEquals(1, list.size());
-        assertEquals(FILE_ID, list.get(0).getFileId());
-    }
 
     @Test
     public void testAddCategory() {
@@ -379,18 +350,6 @@ public class FileDaoImplTest {
         boolean categoryAdded = fileDao.associateCategory(FILE_ID, fCategory.getCategoryId());
         assertTrue(categoryAdded);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
-    }
-
-    @Test
-    public void testRemoveCategory() {
-        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
-
-        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
-
-        boolean categoryRemoved = fileDao.removeCategory(FILE_ID, FILE_CATEGORY_ID);
-        assertTrue(categoryRemoved);
-        assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
     }
 
     @Test

@@ -2,7 +2,6 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.*;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
@@ -39,15 +38,6 @@ public interface UserService {
     boolean delete(Long userId);
 
     /**
-     * Returns the role of the user for a certain course
-     *
-     * @param userId   of the user to get the roles from
-     * @param courseId of the course to get the roles from
-     * @return role of the user for the specified course
-     */
-    Optional<Role> getRole(Long userId, Long courseId);
-
-    /**
      * Gets a User based on its userId
      *
      * @param userId of the user to get the data from
@@ -62,10 +52,6 @@ public interface UserService {
      * @return the user that has the given username
      */
     Optional<User> findByUsername(String username);
-
-    Optional<User> findByFileNumber(Integer fileNumber);
-
-    Optional<User> findByEmail(String email);
 
     /**
      * Gets all the users (if any)
@@ -85,15 +71,7 @@ public interface UserService {
     /**
      * Attempts to update user profile image
      *
-     * @return true if the user image was updated successfully, false otherwise
      */
-    boolean updateProfileImage(Long userId, byte[] image);
-
-    /**
-     *  Attempts to get all the courses where the user has a role.
-     * @param userId of the user
-     * @return a map that for each role that the user has in any course with the corresponding list of all the courses where the user has that role
-     */
-    Map<Role,List<Course>> getRolesInCourses(Long userId);
+    void updateProfileImage(Long userId, byte[] image);
 
 }

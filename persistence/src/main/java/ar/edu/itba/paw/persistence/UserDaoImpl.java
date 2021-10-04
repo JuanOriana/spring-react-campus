@@ -117,18 +117,6 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> findByFileNumber(Integer fileNumber) {
-        return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN profile_images   WHERE fileNumber = ?",
-                new Object[]{fileNumber}, USER_ROW_MAPPER).stream().findFirst();
-    }
-
-    @Override
-    public Optional<User> findByEmail(String email) {
-        return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN profile_images   WHERE email = ?",
-                new Object[]{email}, USER_ROW_MAPPER).stream().findFirst();
-    }
-
-    @Override
     public List<User> list() {
         return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN profile_images", USER_ROW_MAPPER);
     }
@@ -164,13 +152,5 @@ public class UserDaoImpl implements UserDao {
         }
         return roleMap;
     });
-
-    public Map<Role, List<Course>> getRolesInCourses(Long userId) {
-        return jdbcTemplate.query("SELECT * FROM users NATURAL JOIN user_to_course NATURAL JOIN courses NATURAL JOIN roles NATURAL JOIN subjects" +
-                " WHERE (userId,courseId,roleId) IN (SELECT userId,courseId, roleId FROM users NATURAL JOIN user_to_course NATURAL JOIN courses " +
-                " GROUP by roleId, courseId,userId) AND userId = ?", new Object[]{userId}, ROLE_AND_COURSES_EXTRACTOR);
-
-
-    }
 
 }

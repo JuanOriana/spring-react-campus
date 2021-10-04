@@ -61,20 +61,7 @@ public class FileServiceImpl implements FileService {
         return fileDao.getById(fileId);
     }
 
-    @Override
-    public List<FileModel> getByName(String fileName) {
-        return fileDao.getByName(fileName);
-    }
 
-    @Override
-    public List<FileModel> getByExtension(Long extensionId) {
-        return fileDao.getByExtension(extensionId);
-    }
-
-    @Override
-    public List<FileModel> getByExtension(String extension) {
-        return fileDao.getByExtension(extension);
-    }
 
     @Transactional
     public List<FileCategory> associateCategories(Long fileId, List<Long> categories) {
@@ -84,36 +71,6 @@ public class FileServiceImpl implements FileService {
            fileCategoryDao.getById(queriedId).ifPresent(fileCategories::add);
         });
         return fileCategories;
-    }
-
-    @Transactional
-    @Override
-    public boolean removeCategory(Long fileId, Long fileCategoryId) {
-        return fileDao.removeCategory(fileId, fileCategoryId);
-    }
-
-    @Override
-    public List<FileCategory> getFileCategories(Long fileId) {
-        return fileDao.getFileCategories(fileId);
-    }
-
-    @Override
-    public List<FileModel> getByCategory(Long fileCategoryId) {
-        return fileDao.getByCategory(fileCategoryId);
-    }
-
-    @Override
-    public List<FileModel> getByMultipleCategories(List<FileCategory> categories) {
-        Set<FileModel> filesContainingCategories = new HashSet<>(getByCategory(categories.get(0).getCategoryId()));
-        for (FileCategory cat : categories.subList(1, categories.size())) {
-            filesContainingCategories = filesContainingCategories.stream().filter(getByCategory(cat.getCategoryId())::contains).collect(Collectors.toSet());
-        }
-        return new ArrayList<>(filesContainingCategories);
-    }
-
-    @Override
-    public List<FileModel> getByCourseId(Long courseId) {
-        return fileDao.getByCourseId(courseId);
     }
 
     @Override

@@ -63,7 +63,7 @@ public class TimeTableController extends AuthController{
             }
         }
 
-        for (Map.Entry<Course,List<Timetable>> entry : timeMap.entrySet()){
+        for (Map.Entry<Course,List<Timetable>> entry : timeMap.entrySet()) {
             for (Timetable timetable : entry.getValue()){
                 Time begins = timetable.getBegins();
                 Time ends = timetable.getEnd();

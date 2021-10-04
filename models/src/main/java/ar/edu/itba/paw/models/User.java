@@ -14,6 +14,18 @@ public class User {
     private boolean isAdmin;
     private byte[] profileImage;
 
+    public User(User user) {
+        this.name = user.getName();
+        this.surname = user.getSurname();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.fileNumber = user.getFileNumber();
+        this.userId = user.getUserId();
+        this.isAdmin = user.isAdmin();
+        this.profileImage = user.getProfileImage();
+    }
+
     public static class Builder {
 
         private String name;

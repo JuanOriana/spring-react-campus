@@ -17,15 +17,7 @@ public interface FileDao {
 
     Optional<FileModel> getById(Long fileId);
 
-    List<FileModel> getByName(String fileName);
-
-    List<FileModel> getByExtension(Long extensionId);
-
-    List<FileModel> getByExtension(String extension);
-
     boolean associateCategory(Long fileId, Long fileCategoryId);
-
-    boolean removeCategory(Long fileId, Long fileCategoryId);
 
     List<FileCategory> getFileCategories(Long fileId);
 

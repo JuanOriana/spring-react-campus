@@ -81,17 +81,7 @@ public class CourseController extends AuthController {
                                          @Valid AnnouncementForm announcementForm, final BindingResult errors) {
         String successMessage = null;
         if (!errors.hasErrors()) {
-            CampusUser springUser = authFacade.getCurrentUser();
-            User currentUser = new User.Builder()
-                    .withUserId(springUser.getUserId())
-                    .withEmail(springUser.getEmail())
-                    .withFileNumber(springUser.getFileNumber())
-                    .withPassword(springUser.getPassword())
-                    .withName(springUser.getName())
-                    .withSurname(springUser.getSurname())
-                    .withUsername(springUser.getUsername())
-                    .withProfileImage(springUser.getImage())
-                    .build();
+            User currentUser = new User(authFacade.getCurrentUser());
             announcementService.create(announcementForm.getTitle(), announcementForm.getContent(), currentUser,
                     courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
             announcementForm.setContent("");
@@ -124,7 +114,7 @@ public class CourseController extends AuthController {
                                       Integer page,
                               @RequestParam(value = "pageSize", required = false, defaultValue = "10")
                                       Integer pageSize) {
-        CampusUser user = authFacade.getCurrentUser();
+        User user = authFacade.getCurrentUser();
         CampusPage<FileModel> filePage = fileService.listByCourse(query, extensionType, categoryType, user.getUserId(),
                 courseId, page, pageSize, orderDirection, orderProperty);
         final ModelAndView mav;

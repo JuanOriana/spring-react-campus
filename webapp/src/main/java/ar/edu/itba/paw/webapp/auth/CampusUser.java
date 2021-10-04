@@ -28,6 +28,18 @@ public class CampusUser extends User {
         this.image = image;
     }
 
+    public ar.edu.itba.paw.models.User toUser() {
+        return new ar.edu.itba.paw.models.User.Builder()
+                .withFileNumber(this.fileNumber)
+                .withUserId(this.userId)
+                .withName(this.name)
+                .withSurname(this.surname)
+                .withEmail(this.email)
+                .withProfileImage(this.image)
+                .isAdmin(this.isAdmin)
+                .build();
+    }
+
     public byte[] getImage() {
         return image;
     }

@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.AnnouncementService;
 import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.CampusPageRequest;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.auth.CampusUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class AnnouncementsController extends AuthController {
     public ModelAndView announcements(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                       @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
         ModelAndView mav = new ModelAndView("announcements");
-        CampusUser currentUser = authFacade.getCurrentUser();
+        User currentUser = authFacade.getCurrentUser();
         CampusPage<Announcement> announcements = announcementService.listByUser(currentUser.getUserId(),
                 new CampusPageRequest(page, pageSize));
         mav.addObject("announcementList", announcements.getContent());

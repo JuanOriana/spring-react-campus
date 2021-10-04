@@ -103,24 +103,6 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public boolean isTeacher(Long userId, Long courseId) {
-        Optional<Role> userRole = userDao.getRole(userId, courseId);
-        return userRole.isPresent() && userRole.get().getRoleId() == Permissions.TEACHER.getValue();
-    }
-
-    @Override
-    public boolean isHelper(Long userId, Long courseId) {
-        Optional<Role> userRole = userDao.getRole(userId, courseId);
-        return userRole.isPresent() && userRole.get().getRoleId() == Permissions.HELPER.getValue();
-    }
-
-    @Override
-    public boolean isStudent(Long userId, Long courseId) {
-        Optional<Role> userRole = userDao.getRole(userId, courseId);
-        return userRole.isPresent() && userRole.get().getRoleId() == Permissions.STUDENT.getValue();
-    }
-
-    @Override
     public boolean isPrivileged(Long userId, Long courseId) {
         Optional<Role> userRole = userDao.getRole(userId, courseId);
         if(!userRole.isPresent()) return false;
@@ -130,8 +112,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public boolean enroll(Long userId, Long courseId, Integer roleId) {
-        return courseDao.enroll(userId, courseId, roleId);
+    public void enroll(Long userId, Long courseId, Integer roleId) {
+        courseDao.enroll(userId, courseId, roleId);
     }
 
     @Override
