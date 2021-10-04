@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -20,7 +19,6 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
-import java.awt.print.Pageable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -56,6 +54,7 @@ public class AnnouncementDaoImplTest {
     private final String USER_USERNAME = "paw2021";
     private final String USER_EMAIL = "paw2021@itba.edu.ar";
     private final String USER_PASSWORD = "asd123";
+    private final boolean USER_IS_ADMIN = true;
 
     private final Long COURSE_ID = 1L;
     private final Integer COURSE_YEAR = 2021;
@@ -161,7 +160,7 @@ public class AnnouncementDaoImplTest {
         jdbcTemplate = new JdbcTemplate(ds);
         insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
-        insertUser(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, true);
+        insertUser(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, USER_IS_ADMIN);
         insertRole(ROLE_ID, "Teacher");
         insertUserToCourse(USER_ID, COURSE_ID, ROLE_ID);
     }
@@ -183,7 +182,7 @@ public class AnnouncementDaoImplTest {
                 .withUsername(USER_USERNAME)
                 .withEmail(USER_EMAIL)
                 .withPassword(USER_PASSWORD)
-                .isAdmin(true)
+                .isAdmin(USER_IS_ADMIN)
                 .build();
         return new Announcement.Builder()
             .withAnnouncementId(ANNOUNCEMENT_ID)
