@@ -12,7 +12,7 @@ public class User {
     private Integer fileNumber;
     private Long userId;
     private boolean isAdmin;
-    private byte[] profileImage;
+    private byte[] image;
 
     public User(User user) {
         this.name = user.getName();
@@ -23,7 +23,7 @@ public class User {
         this.fileNumber = user.getFileNumber();
         this.userId = user.getUserId();
         this.isAdmin = user.isAdmin();
-        this.profileImage = user.getProfileImage();
+        this.image = user.getImage();
     }
 
     public static class Builder {
@@ -36,13 +36,13 @@ public class User {
         private Integer fileNumber;
         private Long userId;
         private boolean isAdmin;
-        private byte[] profileImage;
+        private byte[] image;
 
         public Builder() {
         }
 
         Builder(String name, String surname, String username, String email, String password, Integer fileNumber,
-                Long userId, boolean isAdmin, byte[] profileImage) {
+                Long userId, boolean isAdmin, byte[] image) {
             this.name = name;
             this.surname = surname;
             this.username = username;
@@ -51,7 +51,7 @@ public class User {
             this.fileNumber = fileNumber;
             this.userId = userId;
             this.isAdmin = isAdmin;
-            this.profileImage = profileImage;
+            this.image = image;
         }
 
         public Builder withName(String name){
@@ -59,8 +59,8 @@ public class User {
             return Builder.this;
         }
 
-        public Builder withProfileImage(byte[] profileImage){
-            this.profileImage = profileImage;
+        public Builder withProfileImage(byte[] image){
+            this.image = image;
             return Builder.this;
         }
 
@@ -144,7 +144,7 @@ public class User {
         this.fileNumber = builder.fileNumber;
         this.userId = builder.userId;
         this.isAdmin = builder.isAdmin;
-        this.profileImage = builder.profileImage;
+        this.image = builder.image;
     }
 
     public String getName() {
@@ -211,12 +211,12 @@ public class User {
         isAdmin = admin;
     }
 
-    public byte[] getProfileImage() {
-        return profileImage;
+    public byte[] getImage() {
+        return image;
     }
 
-    public void setProfileImage(byte[] profileImage) {
-        this.profileImage = profileImage;
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     @Override

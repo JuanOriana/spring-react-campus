@@ -45,6 +45,6 @@ public class CampusUserDetailsService implements UserDetailsService {
             password = user.getPassword();
         }
         return new CampusUser(username, password, authorities, user.getFileNumber(), user.getUserId(), user.getName(),
-                user.getSurname(), user.getEmail(), user.isAdmin(), user.getProfileImage());
+                user.getSurname(), user.getEmail(), user.isAdmin(), user.getImage());
     }
 }

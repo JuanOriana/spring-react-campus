@@ -33,6 +33,7 @@ public class CampusUser extends User {
                 .withFileNumber(this.fileNumber)
                 .withUserId(this.userId)
                 .withName(this.name)
+                .withUsername(this.getUsername())
                 .withSurname(this.surname)
                 .withEmail(this.email)
                 .withProfileImage(this.image)
