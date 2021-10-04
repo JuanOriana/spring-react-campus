@@ -60,6 +60,9 @@
             <form:label path="board" for="board" class="form-label"><spring:message code="new.course.board"/></form:label>
             <form:input type="text" path="board" class="form-input" style="font-size: 26px"/>
             <form:errors path="board" element="p" cssClass="error-message"/>
+            <c:if test="${isCourseDuplicated}">
+                <p class="error-message"><spring:message code="new.course.duplicated"/></p>
+            </c:if>
             <div style="display: grid; grid-template-columns: 400px 400px; margin: 20px 20px 0 20px">
                 <c:forEach var="day" items="${days}" varStatus="dayStatus">
                     <div style="display: flex; flex-direction: column">
@@ -75,9 +78,6 @@
                     </div>
                 </c:forEach>
             </div>
-            <c:if test="${isCourseDuplicated}">
-                <p class="error-message"><spring:message code="new.course.duplicated"/></p>
-            </c:if>
             <button class="form-button"><spring:message code="new.course.button.create"/></button>
         </form:form>
     </div>
