@@ -49,7 +49,7 @@
         <form:label path="confirmPassword" for="confirmPassword" class="form-label">
             <spring:message code="new.user.confirmPassword" />
         </form:label>
-        <form:input type="confirmPassword" path="confirmPassword" class="form-input" style="font-size: 26px"/>
+        <form:input type="password" path="confirmPassword" class="form-input" style="font-size: 26px"/>
         <form:errors path="confirmPassword" element="p" cssClass="error-message"/>
         <button class="form-button"><spring:message code="new.user.button.create"/></button>
     </form:form>
