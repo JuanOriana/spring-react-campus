@@ -8,17 +8,19 @@
 <html lang="es">
 <head>
     <title><spring:message code="page.title.course.subject.name" htmlEscape="true" arguments="${course.subject.name}"/></title>
-    <c:import url="config/generalHead.jsp"/>
+    <c:import url="config/general-head.jsp"/>
 </head>
 <body>
 <div class="page-organizer">
     <jsp:include page="components/navbar.jsp">
         <jsp:param name="successMessage" value="${successMessage}"/>
     </jsp:include>
-    <h2 class="course-section-name"><spring:message code="subject.name" htmlEscape="true" arguments="${course.subject.name}"/></h2>
+    <h2 class="course-section-name">
+        <spring:message code="subject.name" htmlEscape="true" arguments="${course.subject.name}"/>
+    </h2>
     <div class="page-container" style="padding-top: 0">
         <div class="course-page-wrapper">
-            <jsp:include page="components/courseSectionsCol.jsp">
+            <jsp:include page="components/course-sections-col.jsp">
                 <jsp:param name="courseName" value="${course.subject.name}"/>
                 <jsp:param name="courseId" value="${course.courseId}"/>
                 <jsp:param name="year" value="${course.year}"/>
@@ -28,7 +30,9 @@
             </jsp:include>
             <c:url value="/course/${courseId}/files" var="postUrl"/>
             <div class="course-data-container">
-                <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course.file.section-heading.title" htmlEscape="true"/> </h3>
+                <h3 class="section-heading" style="margin: 0 0 20px 20px">
+                    <spring:message code="course.file.section-heading.title" htmlEscape="true"/>
+                </h3>
                 <div class="big-wrapper" style="display: flex; flex-direction: column">
                     <c:set var="categories" value="${categories}" scope="request"/>
                     <c:set var="extensions" value="${extensions}" scope="request"/>

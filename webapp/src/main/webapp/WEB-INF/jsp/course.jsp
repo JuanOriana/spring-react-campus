@@ -6,7 +6,7 @@
 <html lang="es">
 <head>
     <title><spring:message code="page.title.course.subject.name" htmlEscape="true" arguments="${course.subject.name}"/></title>
-    <c:import url="config/generalHead.jsp"/>
+    <c:import url="config/general-head.jsp"/>
 </head>
 <body>
 <div class="page-organizer">
@@ -15,7 +15,7 @@
     <div class="page-container" style="padding-top: 0">
         <div class="course-page-wrapper">
 
-            <jsp:include page="components/courseSectionsCol.jsp">
+            <jsp:include page="components/course-sections-col.jsp">
                 <jsp:param name="courseName" value="${course.subject.name}"/>
                 <jsp:param name="courseId" value="${course.courseId}"/>
                 <jsp:param name="year" value="${course.year}"/>

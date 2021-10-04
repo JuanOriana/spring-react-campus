@@ -3,14 +3,15 @@
 <html>
 <head>
     <title><spring:message code="all.courses.page.title"/></title>
-    <c:import url="../config/generalHead.jsp"/>
+    <c:import url="../config/general-head.jsp"/>
     <link href="<c:url value = "/resources/css/course-table.css" />" rel="stylesheet" >
 </head>
 <body>
 <div class="page-organizer">
     <jsp:include page="../components/navbar.jsp"/>
     <div class="page-container">
-        <h2 class="section-heading"><spring:message code="all.courses.from" htmlEscape="true" arguments="${year},${quarter}"/></h2>
+        <h2 class="section-heading"><spring:message code="all.courses.from" htmlEscape="true"
+                                                    arguments="${year},${quarter}"/></h2>
         <form method="get" class="course-table-form">
             <div style="display: flex">
                 <div style="display: flex;flex-direction: column">
@@ -18,7 +19,8 @@
                     <select name="year" id="year" class="form-input">
                         <c:forEach var="optionYear" items="${allYears}">
                             <option value="${optionYear}" <c:if test="${year == optionYear}">selected</c:if>>
-                                <spring:message code="all.courses.year" htmlEscape="true" arguments="${optionYear.toString()}"/>
+                                <spring:message code="all.courses.year" htmlEscape="true"
+                                                arguments="${optionYear.toString()}"/>
                             </option>
                         </c:forEach>
                     </select>
@@ -51,9 +53,12 @@
                 </tr>
                 <c:forEach var="course" items="${courses}">
                     <tr>
-                        <td><spring:message code="all.courses.course.code" htmlEscape="true" arguments="${course.subject.code}"/> </td>
-                        <td><spring:message code="all.courses.course.name" htmlEscape="true" arguments="${course.subject.name}"/></td>
-                        <td><spring:message code="all.courses.course.board" htmlEscape="true" arguments="${course.board}"/></td>
+                        <td><spring:message code="all.courses.course.code" htmlEscape="true"
+                                            arguments="${course.subject.code}"/> </td>
+                        <td><spring:message code="all.courses.course.name" htmlEscape="true"
+                                            arguments="${course.subject.name}"/></td>
+                        <td><spring:message code="all.courses.course.board" htmlEscape="true"
+                                            arguments="${course.board}"/></td>
                     </tr>
                 </c:forEach>
             </table>

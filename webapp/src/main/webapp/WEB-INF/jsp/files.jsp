@@ -5,7 +5,7 @@
 <html lang="es">
 <head>
     <title><spring:message code="files.page.title"/></title>
-    <c:import url="config/generalHead.jsp"/>
+    <c:import url="config/general-head.jsp"/>
 </head>
 <body>
 <div class="page-organizer">

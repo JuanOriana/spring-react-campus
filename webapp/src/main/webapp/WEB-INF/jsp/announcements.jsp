@@ -6,7 +6,7 @@
 <html lang="es">
 <head>
     <title><spring:message code="announcements.page.title"/></title>
-    <c:import url="config/generalHead.jsp"/>
+    <c:import url="config/general-head.jsp"/>
 </head>
 <body>
 <div class="page-organizer">
@@ -26,8 +26,6 @@
               <jsp:param name="isGlobal" value="${true}"/>
           </jsp:include>
       </c:forEach>
-
-
       <div class="pagination-wrapper">
           <c:if test="${currentPage > 1}">
               <a href="<c:url value="/announcements?page=${currentPage-1}&pageSize=${pageSize}"/>">

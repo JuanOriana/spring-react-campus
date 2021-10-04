@@ -6,7 +6,7 @@
 <html lang="es">
 <head>
     <title><spring:message code="campus.page.title"/></title>
-    <c:import url="config/generalHead.jsp"/>
+    <c:import url="config/general-head.jsp"/>
 
 </head>
 <body>
@@ -26,7 +26,9 @@
                     <form:form modelAttribute="userProfileForm" method="post" enctype="multipart/form-data"
                                acceptCharset="utf-8" cssStyle="margin: 30px 0; display: flex; padding:10px;
                                flex-direction: column; border: 2px solid #2EC4B6; border-radius:12px">
-                        <form:label path="image" class="form-label" cssStyle="margin: 0"><spring:message code="user.insert.image.title"/></form:label>
+                        <form:label path="image" class="form-label" cssStyle="margin: 0">
+                            <spring:message code="user.insert.image.title"/>
+                        </form:label>
                         <form:input type="file" path="image" accept="image/png, image/jpeg" />
                         <form:errors path="image" element="p" cssStyle="color:red;margin-left: 10px"/>
                         <button style="border-radius:4px; padding:4px; font-size: 18px; margin-top: 5px"><spring:message code="user.insert.image.button"/></button>
@@ -34,12 +36,15 @@
                 </div>
                 <div style="display:flex; flex-direction: column">
                     <p><span style="font-weight: 700"><spring:message code="user.username.title"/></span>
-                        <spring:message code="user.username" htmlEscape="true" arguments="${currentUser.username}"/></p>
+                        <spring:message code="user.username" htmlEscape="true" arguments="${currentUser.username}"/>
+                    </p>
                     <p><span style="font-weight: 700"><spring:message code="user.email.title"/></span>
-                        <spring:message code="user.email" htmlEscape="true" arguments="${currentUser.email}"/></p>
+                        <spring:message code="user.email" htmlEscape="true" arguments="${currentUser.email}"/>
+                    </p>
                     <p><span style="font-weight: 700"><spring:message code="user.filenumber.title" /></span>
                         <spring:message code="user.filenumber" htmlEscape="true"
-                                        arguments="${currentUser.fileNumber.toString()}"/></p>
+                                        arguments="${currentUser.fileNumber.toString()}"/>
+                    </p>
                 </div>
             </div>
         </div>

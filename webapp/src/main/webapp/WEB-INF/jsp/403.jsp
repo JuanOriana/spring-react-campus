@@ -4,7 +4,7 @@
 <html lang="es">
 <head>
     <title><spring:message code="403.page.title"/></title>
-    <c:import url="config/generalHead.jsp"/>
+    <c:import url="config/general-head.jsp"/>
 
 </head>
 <body>

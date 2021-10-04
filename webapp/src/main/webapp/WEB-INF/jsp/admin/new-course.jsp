@@ -6,7 +6,7 @@
 <html lang="es">
 <head>
     <title><spring:message code="new.course.page.title"/></title>
-    <c:import url="../config/generalHead.jsp"/>
+    <c:import url="../config/general-head.jsp"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
