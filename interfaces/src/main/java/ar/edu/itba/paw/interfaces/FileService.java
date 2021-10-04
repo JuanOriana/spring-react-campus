@@ -164,7 +164,11 @@ public interface FileService {
                                        CampusPageSort sort);
 
 
-
+    /**
+     * Attempts to increment downloads counter of file
+     *
+     * @param fileId the file's id that has been downloaded
+     */
     void incrementDownloads(Long fileId);
 
 
