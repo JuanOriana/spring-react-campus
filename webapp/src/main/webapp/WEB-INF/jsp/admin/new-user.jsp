@@ -41,9 +41,16 @@
         <c:if test="${isEmailDuplicated}">
             <p class="error-message"><spring:message code="new.user.duplicated.email"/></p>
         </c:if>
-        <form:label path="password" for="password" class="form-label"><spring:message code="new.user.password" /></form:label>
+        <form:label path="password" for="password" class="form-label">
+            <spring:message code="new.user.password" />
+        </form:label>
         <form:input type="password" path="password" class="form-input" style="font-size: 26px"/>
         <form:errors path="password" element="p" cssClass="error-message"/>
+        <form:label path="confirmPassword" for="confirmPassword" class="form-label">
+            <spring:message code="new.user.confirmPassword" />
+        </form:label>
+        <form:input type="confirmPassword" path="confirmPassword" class="form-input" style="font-size: 26px"/>
+        <form:errors path="confirmPassword" element="p" cssClass="error-message"/>
         <button class="form-button"><spring:message code="new.user.button.create"/></button>
     </form:form>
     </div>
