@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -19,6 +20,7 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,19 +35,28 @@ import static org.junit.Assert.*;
 public class UserDaoImplTest {
     private final Long USER_ID = 1L;
     private final Long USER_ID_INEXISTENCE = 999L;
-    private final Integer FILE_NUMBER = 1;
-    private final String NAME = "John";
-    private final String SURNAME = "Doe";
-    private final String USERNAME = "johndoe";
-    private final String EMAIL = "johndoe@lorem.com";
-    private final String PASSWORD = "d8d3aedd4b5d0ce0131600eaadc48dcb";
+    private final Integer USER_FILE_NUMBER = 1;
+    private final String USER_NAME = "John";
+    private final String USER_SURNAME = "Doe";
+    private final String USER_USERNAME = "johndoe";
+    private final String USER_EMAIL = "johndoe@lorem.com";
+    private final String USER_PASSWORD = "d8d3aedd4b5d0ce0131600eaadc48dcb";
     private final boolean IS_ADMIN = true;
+
+    private final Long SUBJECT_ID = 1L;
+    private final String SUBJECT_CODE = "A1";
+    private final String SUBJECT_NAME = "Protos";
+
+    private final Long COURSE_ID = 1L;
+    private final Integer COURSE_YEAR = 2021;
+    private final Integer COURSE_QUARTER = 1;
+    private final String COURSE_BOARD = "S1";
+
+
     private final Integer STUDENT_ROLE_ID = 1;
     private final String STUDENT_ROLE_NAME = "Estudiante";
     private final Integer TEACHER_ROLE_ID = 2;
     private final String TEACHER_ROLE_NAME = "Profesor";
-    private final String sqlInsertUserWithId = String.format("INSERT INTO users (userId,fileNumber,name,surname,username,email,password,isAdmin) VALUES (%d,%d,'%s','%s','%s','%s','%s',%s)", USER_ID, FILE_NUMBER, NAME, SURNAME, USERNAME, EMAIL, PASSWORD, IS_ADMIN);
-    private final String sqlInsertProfileImageWithId = String.format("INSERT INTO profile_images (image,userid) VALUES(null,%d)",USER_ID);
     @Autowired
     UserDaoImpl userDao;
     @Autowired
@@ -55,19 +66,74 @@ public class UserDaoImplTest {
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
+        insertUser(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, IS_ADMIN);
+    }
+
+    private void insertUser(Long userId, int fileNumber, String name, String surname, String username, String email,
+                            String password, boolean isAdmin) {
+        SimpleJdbcInsert userJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("users");
+        SimpleJdbcInsert profileImageJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("profile_images");
+        Map<String, Object> args = new HashMap<>();
+        args.put("userId",userId);
+        args.put("fileNumber",fileNumber);
+        args.put("name",name);
+        args.put("surname",surname);
+        args.put("username",username);
+        args.put("email",email);
+        args.put("password",password);
+        args.put("isAdmin",isAdmin);
+        userJdbcInsert.execute(args);
+        Map<String,Object> argsProfileImage = new HashMap<>();
+        argsProfileImage.put("image", null);
+        argsProfileImage.put("userid", userId);
+        profileImageJdbcInsert.execute(argsProfileImage);
+    }
+
+    private void insertRole(int roleId, String roleName) {
+        SimpleJdbcInsert roleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("roles");
+        Map<String, Object> args = new HashMap<>();
+        args.put("roleId", roleId);
+        args.put("roleName", roleName);
+        roleJdbcInsert.execute(args);
+    }
+    private void insertUserToCourse(Long userId, Long courseId, int roleId) {
+        SimpleJdbcInsert userToCourseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("user_to_course");
+        Map<String, Object> args = new HashMap<>();
+        args.put("userId",userId);
+        args.put("courseId",courseId);
+        args.put("roleId",roleId);
+        userToCourseJdbcInsert.execute(args);
+    }
+    private void insertSubject(Long subjectId, String subjectName, String code) {
+        SimpleJdbcInsert subjectJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("subjects");
+        Map<String, Object> args = new HashMap<>();
+        args.put("subjectId", subjectId);
+        args.put("subjectName", subjectName);
+        args.put("code", code);
+        subjectJdbcInsert.execute(args);
+    }
+
+    private void insertCourse(Long courseId, Long subjectId, int quarter, String board, int year) {
+        SimpleJdbcInsert courseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses");
+        Map<String, Object> args = new HashMap<>();
+        args.put("courseId", courseId);
+        args.put("subjectId", subjectId);
+        args.put("quarter", quarter);
+        args.put("board", board);
+        args.put("year", year);
+        courseJdbcInsert.execute(args);
     }
 
     @Test
     public void testCreate() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-        User user = userDao.create(FILE_NUMBER, NAME, SURNAME, USERNAME, EMAIL, PASSWORD, IS_ADMIN);
+        User user = userDao.create(USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, IS_ADMIN);
         assertNotNull(user);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "users"));
     }
 
     @Test
     public void testDelete() {
-        jdbcTemplate.execute(sqlInsertUserWithId);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "users"));
         assertTrue(userDao.delete(USER_ID));
         assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "users"));
@@ -75,8 +141,6 @@ public class UserDaoImplTest {
 
     @Test
     public void testDeleteInvalidId() {
-        jdbcTemplate.execute(sqlInsertUserWithId);
-        jdbcTemplate.execute(sqlInsertProfileImageWithId);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "users"));
         assertFalse(userDao.delete(USER_ID_INEXISTENCE));
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "users"));
@@ -84,21 +148,17 @@ public class UserDaoImplTest {
 
     @Test
     public void testFindById() {
-        jdbcTemplate.execute(sqlInsertUserWithId);
-        jdbcTemplate.execute(sqlInsertProfileImageWithId);
         Optional<User> userOptional = userDao.findById(USER_ID);
 
         assertNotNull(userOptional);
         assertTrue(userOptional.isPresent());
-        assertEquals(NAME, userOptional.get().getName());
-        assertEquals(FILE_NUMBER, userOptional.get().getFileNumber());
-        assertEquals(EMAIL, userOptional.get().getEmail());
+        assertEquals(USER_NAME, userOptional.get().getName());
+        assertEquals(USER_FILE_NUMBER, userOptional.get().getFileNumber());
+        assertEquals(USER_EMAIL, userOptional.get().getEmail());
     }
 
     @Test
     public void testFindByIdInvalidId() {
-        jdbcTemplate.execute(sqlInsertUserWithId);
-        jdbcTemplate.execute(sqlInsertProfileImageWithId);
         Optional<User> userOptional = userDao.findById(USER_ID_INEXISTENCE);
 
         assertNotNull(userOptional);
@@ -107,15 +167,14 @@ public class UserDaoImplTest {
 
     @Test
     public void testUpdate() {
-        jdbcTemplate.execute(sqlInsertUserWithId);
         assertTrue(userDao.update(USER_ID, new User.Builder()
                 .withUserId(USER_ID)
-                .withFileNumber(FILE_NUMBER)
-                .withName(NAME)
-                .withSurname(SURNAME)
-                .withUsername(USERNAME)
-                .withEmail(EMAIL)
-                .withPassword(PASSWORD)
+                .withFileNumber(USER_FILE_NUMBER)
+                .withName(USER_NAME)
+                .withSurname(USER_SURNAME)
+                .withUsername(USER_USERNAME)
+                .withEmail(USER_EMAIL)
+                .withPassword(USER_PASSWORD)
                 .isAdmin(IS_ADMIN)
                 .build()));
     }
@@ -134,8 +193,6 @@ public class UserDaoImplTest {
 
     @Test
     public void testGetProfileImage() {
-        jdbcTemplate.execute(sqlInsertUserWithId);
-        jdbcTemplate.execute(sqlInsertProfileImageWithId);
         Optional<byte[]> image = userDao.getProfileImage(USER_ID);
         assertNotNull(image);
         assertFalse(image.isPresent());
@@ -143,8 +200,6 @@ public class UserDaoImplTest {
 
     @Test
     public void testUpdateProfileImage() {
-        jdbcTemplate.execute(sqlInsertUserWithId);
-        jdbcTemplate.execute(sqlInsertProfileImageWithId);
         File file = new File("src/test/resources/test.png");
         try {
             byte[] bytea = Files.readAllBytes(file.toPath());
@@ -163,22 +218,14 @@ public class UserDaoImplTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_to_course");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "roles");
 
-        int courseId = 2,subjectId=3,quarter=1,year=2021;
-        String insertSubjectSql = String.format("INSERT INTO subjects (subjectId,code,subjectName) VALUES (%d,'A1','PAW')", subjectId);
-        String insertCourseWithIdSql = String.format("INSERT INTO courses  VALUES (%d, %d, %d, 'S1',%d)", courseId, subjectId, quarter, year);
-        String insertUserToCourseSql = String.format("INSERT INTO user_to_course VALUES (%d,%d,%d)", courseId, USER_ID, STUDENT_ROLE_ID);
-        String insertUserToCourseSql2 = String.format("INSERT INTO user_to_course VALUES (%d,%d,%d)", courseId, USER_ID, TEACHER_ROLE_ID);
-        String sqlInsertRoleWithId = String.format("INSERT INTO roles (roleId,roleName) VALUES (%d,'%s')", STUDENT_ROLE_ID,STUDENT_ROLE_NAME);
-        String sqlInsertRoleWithId2 = String.format("INSERT INTO roles (roleId,roleName) VALUES (%d,'%s')", TEACHER_ROLE_ID,TEACHER_ROLE_NAME);
-        jdbcTemplate.execute(sqlInsertUserWithId);
-        jdbcTemplate.execute(sqlInsertRoleWithId);
-        jdbcTemplate.execute(sqlInsertRoleWithId2);
-        jdbcTemplate.execute(insertSubjectSql);
-        jdbcTemplate.execute(insertCourseWithIdSql);
-        jdbcTemplate.execute(insertUserToCourseSql);
-        jdbcTemplate.execute(insertUserToCourseSql2);
-        Role studentRole = new Role(STUDENT_ROLE_ID,STUDENT_ROLE_NAME);
-        Role teacherRole = new Role(TEACHER_ROLE_ID,TEACHER_ROLE_NAME);
+        insertRole(STUDENT_ROLE_ID, STUDENT_ROLE_NAME);
+        insertRole(TEACHER_ROLE_ID, TEACHER_ROLE_NAME);
+        insertSubject(SUBJECT_ID,SUBJECT_NAME ,SUBJECT_CODE);
+        insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
+        insertUserToCourse(USER_ID, COURSE_ID, STUDENT_ROLE_ID);
+        insertUserToCourse(USER_ID, COURSE_ID, TEACHER_ROLE_ID);
+        Role studentRole = new Role.Builder().withRoleId(STUDENT_ROLE_ID).withRoleName(STUDENT_ROLE_NAME).build();
+        Role teacherRole = new Role.Builder().withRoleId(TEACHER_ROLE_ID).withRoleName(TEACHER_ROLE_NAME).build();
 
         Map<Role, List<Course>> roleListMap = userDao.getRolesInCourses(USER_ID);
 
