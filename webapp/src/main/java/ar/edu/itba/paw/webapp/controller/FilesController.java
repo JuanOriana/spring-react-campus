@@ -56,7 +56,7 @@ public class FilesController extends AuthController {
                                       Integer pageSize) {
         CampusUser user = authFacade.getCurrentUser();
         CampusPage<FileModel> filePage = fileService.listByUser(query, extensionType, categoryType, user.getUserId(),
-                new CampusPageRequest(page, pageSize), new CampusPageSort(orderDirection, orderProperty));
+                page, pageSize, orderDirection, orderProperty);
         ModelAndView mav = new ModelAndView("files");
         mav.addObject("categories", fileCategoryService.getCategories());
         mav.addObject("files", filePage.getContent());

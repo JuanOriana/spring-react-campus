@@ -123,10 +123,11 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public CampusPage<FileModel> listByUser(String keyword, List<Long> extensions, List<Long> categories,
-                                            Long userId, CampusPageRequest pageRequest,
-                                            CampusPageSort sort) {
+                                            Long userId, Integer page, Integer pageSize, String direction,
+                                            String property) {
         CampusPage<FileModel> campusPage = fileDao.listByUser(keyword, extensions,
-                categories, userId, pageRequest, sort);
+                categories, userId, new CampusPageRequest(page, pageSize),
+                new CampusPageSort(direction, property));
         List<FileModel> files = campusPage.getContent();
         files.forEach(f -> f.setCategories(fileDao.getFileCategories(f.getFileId())));
         return campusPage;
@@ -134,10 +135,11 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public CampusPage<FileModel> listByCourse(String keyword, List<Long> extensions, List<Long> categories,
-                                              Long userId, Long courseId, CampusPageRequest pageRequest,
-                                              CampusPageSort sort) {
+                                              Long userId, Long courseId, Integer page, Integer pageSize,
+                                              String direction, String property) {
         CampusPage<FileModel> campusPage = fileDao.listByCourse(keyword, extensions,
-                categories, userId, courseId, pageRequest, sort);
+                categories, userId, courseId, new CampusPageRequest(page, pageSize),
+                new CampusPageSort(direction, property));
         List<FileModel> files = campusPage.getContent();
         files.forEach(f -> f.setCategories(fileDao.getFileCategories(f.getFileId())));
         return campusPage;

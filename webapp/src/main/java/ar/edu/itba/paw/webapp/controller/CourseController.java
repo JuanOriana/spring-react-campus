@@ -126,7 +126,7 @@ public class CourseController extends AuthController {
                                       Integer pageSize) {
         CampusUser user = authFacade.getCurrentUser();
         CampusPage<FileModel> filePage = fileService.listByCourse(query, extensionType, categoryType, user.getUserId(),
-                courseId, new CampusPageRequest(page, pageSize), new CampusPageSort(orderDirection, orderProperty));
+                courseId, page, pageSize, orderDirection, orderProperty);
         final ModelAndView mav;
         if (courseService.isPrivileged(user.getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-files");

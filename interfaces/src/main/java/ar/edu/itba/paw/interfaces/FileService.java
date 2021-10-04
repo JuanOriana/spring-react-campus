@@ -146,8 +146,8 @@ public interface FileService {
      * @return a list containing all the files that match with all the criterias given (if any).
      */
     CampusPage<FileModel> listByUser(String keyword, List<Long> extensions, List<Long> categories,
-                                     Long userId, CampusPageRequest pageRequest,
-                                     CampusPageSort sort);
+                                     Long userId, Integer page, Integer pageSize, String direction,
+                                     String property);
 
     /**
      * Attempts to get file/s from a course given some criterias of searching and filter
@@ -160,8 +160,8 @@ public interface FileService {
      * @return a list containing all the files that match with all the criterias given (if any).
      */
     CampusPage<FileModel> listByCourse(String keyword, List<Long> extensions, List<Long> categories,
-                                       Long userId, Long courseId, CampusPageRequest pageRequest,
-                                       CampusPageSort sort);
+                                       Long userId, Long courseId, Integer page, Integer pageSize,
+                                       String direction, String property);
 
 
     /**
