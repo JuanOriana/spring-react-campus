@@ -9,6 +9,7 @@ import ar.edu.itba.paw.webapp.form.AnnouncementForm;
 import ar.edu.itba.paw.webapp.form.FileForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -18,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
-@RequestMapping(value = "/course")
+@RequestMapping(value = "/course/{courseId}")
 public class CourseController extends AuthController {
     private final AnnouncementService announcementService;
     private final CourseService courseService;
@@ -41,13 +42,20 @@ public class CourseController extends AuthController {
         this.fileService = fileService;
     }
 
-    @GetMapping(value = "/{courseId}")
+    @ModelAttribute
+    public void getCourse(Model model, @PathVariable Long courseId) {
+        model.addAttribute("course",
+                courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+    }
+
+
+    @GetMapping(value = "")
     public String coursePortal(@PathVariable Integer courseId) {
        return "redirect:/course/{courseId}/announcements";
 
     }
 
-    @GetMapping(value = "/{courseId}/announcements")
+    @GetMapping(value = "/announcements")
     public ModelAndView announcements(@PathVariable Long courseId, final AnnouncementForm announcementForm,
                                       String successMessage,
                                       @RequestParam(value = "page", required = false, defaultValue = "1")
@@ -62,14 +70,13 @@ public class CourseController extends AuthController {
         } else {
             mav = new ModelAndView("course");
         }
-        mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         CampusPage<Announcement> announcements = announcementService.listByCourse(courseId, new CampusPageRequest(page, pageSize));
         mav.addObject("announcementList", announcements.getContent());
         mav.addObject("dateTimeFormatter",dateTimeFormatter);
         return mav;
     }
 
-    @PostMapping(value = "/{courseId}/announcements")
+    @PostMapping(value = "/announcements")
     public ModelAndView postAnnouncement(@PathVariable Long courseId,
                                          @Valid AnnouncementForm announcementForm, final BindingResult errors) {
         String successMessage = null;
@@ -94,17 +101,14 @@ public class CourseController extends AuthController {
         return announcements(courseId, announcementForm, successMessage, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
 
-    @GetMapping("/{courseId}/teachers")
+    @GetMapping("/teachers")
     public ModelAndView professors(@PathVariable Long courseId) {
         final ModelAndView mav = new ModelAndView("teachers");
-        mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
-        Map<User, Role> teachers = courseService.getTeachers(courseId);
-        Set<Map.Entry<User, Role>> teacherSet = teachers.entrySet();
-        mav.addObject("teacherSet", teacherSet);
+        mav.addObject("teacherSet", courseService.getTeachers(courseId).entrySet());
         return mav;
     }
 
-    @GetMapping(value = "/{courseId}/files")
+    @GetMapping(value = "/files")
     public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm, String successMessage,
                               @RequestParam(value = "category-type", required = false, defaultValue = "")
                                       List<Long> categoryType,
@@ -124,8 +128,6 @@ public class CourseController extends AuthController {
         CampusPage<FileModel> filePage = fileService.listByCourse(query, extensionType, categoryType, user.getUserId(),
                 courseId, new CampusPageRequest(page, pageSize), new CampusPageSort(orderDirection, orderProperty));
         final ModelAndView mav;
-        final List<FileCategory> categories = fileCategoryService.getCategories();
-        final List<FileExtension> extensions = fileExtensionService.getExtensions();
         if (courseService.isPrivileged(user.getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-files");
             mav.addObject("fileForm", fileForm);
@@ -133,29 +135,19 @@ public class CourseController extends AuthController {
         } else {
             mav = new ModelAndView("course-files");
         }
-        mav.addObject("course", courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
-        mav.addObject("categories", categories);
+        mav.addObject("categories", fileCategoryService.getCategories());
         mav.addObject("files", filePage.getContent());
-        mav.addObject("extensions", extensions);
-        mav.addObject("categoryType", categoryType);
-        mav.addObject("extensionType", extensionType);
-        mav.addObject("query", query);
-        mav.addObject("orderDirection", orderDirection);
-        mav.addObject("orderProperty", orderProperty);
-        mav.addObject("currentPage", filePage.getPage());
-        mav.addObject("maxPage", filePage.getTotal());
-        mav.addObject("pageSize", filePage.getSize());
-        return mav;
+        mav.addObject("extensions", fileExtensionService.getExtensions());
+        return FilesController.loadFileParamsIntoModel(categoryType, extensionType, query, orderProperty, orderDirection, filePage, mav);
     }
 
-    @PostMapping(value = "/{courseId}/files")
+    @PostMapping(value = "/files")
     public ModelAndView uploadFile(@PathVariable Long courseId, @Valid FileForm fileForm, final BindingResult errors) {
         String successMessage = null;
         if (!errors.hasErrors()) {
             CommonsMultipartFile file = fileForm.getFile();
-            String filename = file.getOriginalFilename();
             // Function is expanded already for multiple categories in the future, passing only one for now
-            fileService.create(file.getSize(), filename, file.getBytes(),
+            fileService.create(file.getSize(), file.getOriginalFilename(), file.getBytes(),
                     courseService.getById(courseId).orElseThrow(CourseNotFoundException::new),
                     Collections.singletonList(fileForm.getCategoryId()));
             fileForm.setFile(null);

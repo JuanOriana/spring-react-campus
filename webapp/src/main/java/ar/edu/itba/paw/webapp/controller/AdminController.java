@@ -24,6 +24,9 @@ public class AdminController extends AuthController {
     private final CourseService courseService;
     private final RoleService roleService;
 
+    private static final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+
     @Autowired
     public AdminController(AuthFacade authFacade, UserService userService, SubjectService subjectService,
                            CourseService courseService, RoleService roleService) {
@@ -62,7 +65,6 @@ public class AdminController extends AuthController {
     @GetMapping(value = "/course/new")
     public ModelAndView newCourse(final CourseForm courseForm){
         ModelAndView mav = new ModelAndView("admin/new-course");
-        final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         List<Subject> subjects = subjectService.list();
         subjects.sort(Comparator.comparing(Subject::getName));
         mav.addObject("courseForm",courseForm);
@@ -95,16 +97,14 @@ public class AdminController extends AuthController {
                                         @RequestParam(name = "courseId") Long courseId,
                                         final String successMessage){
         ModelAndView mav = new ModelAndView("admin/add-user-to-course");
-        List<User> courseStudents = courseService.getStudents(courseId);
-        Set<User> courseTeachers = courseService.getTeachers(courseId).keySet();
         List<User> unenrolledUsers = courseService.listUnenrolledUsers(courseId);
         unenrolledUsers.sort(Comparator.comparingInt(User::getFileNumber));
         mav.addObject("userToCourseForm",userToCourseForm);
         mav.addObject("users", unenrolledUsers);
         mav.addObject("course",courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("roles",roleService.list());
-        mav.addObject("courseStudents", courseStudents);
-        mav.addObject("courseTeachers", courseTeachers);
+        mav.addObject("courseStudents", courseService.getStudents(courseId));
+        mav.addObject("courseTeachers", courseService.getTeachers(courseId).keySet());
         mav.addObject("successMessage",successMessage);
         return mav;
     }
@@ -123,7 +123,6 @@ public class AdminController extends AuthController {
     @GetMapping(value = "/course/all")
     public ModelAndView allCourses(@RequestParam(value = "year", defaultValue = "") Integer year,
                                    @RequestParam(value = "quarter", defaultValue = "1") Integer quarter) {
-        //TODO: MANEJAR quarter <0 >2 en la funcion y setear valoresa utomaticamente de no estar seteados
         ModelAndView mav = new ModelAndView("admin/all-courses");
         if (year == null){
             year = Calendar.getInstance().get(Calendar.YEAR);

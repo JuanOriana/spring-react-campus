@@ -29,7 +29,7 @@
                          class="user-section-img" style="width: 32px; height: 32px"/>
                 </c:if>
                 <c:if test="${currentUser.image != null}">
-                    <img src="<c:url value="/user/profile-image"/>"
+                    <img src="<c:url value="/user/profile-image/${currentUser.userId}"/>"
                          class="user-section-img" style="width: 32px; height: 32px"/>
                 </c:if>
                 <h4 style="margin-left: 10px">
