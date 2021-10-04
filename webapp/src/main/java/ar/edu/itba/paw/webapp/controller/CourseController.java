@@ -137,15 +137,7 @@ public class CourseController extends AuthController {
         mav.addObject("categories", categories);
         mav.addObject("files", filePage.getContent());
         mav.addObject("extensions", extensions);
-        mav.addObject("categoryType", categoryType);
-        mav.addObject("extensionType", extensionType);
-        mav.addObject("query", query);
-        mav.addObject("orderDirection", orderDirection);
-        mav.addObject("orderProperty", orderProperty);
-        mav.addObject("currentPage", filePage.getPage());
-        mav.addObject("maxPage", filePage.getTotal());
-        mav.addObject("pageSize", filePage.getSize());
-        return mav;
+        return FilesController.loadFileParamsIntoModel(categoryType, extensionType, query, orderProperty, orderDirection, filePage, mav);
     }
 
     @PostMapping(value = "/{courseId}/files")

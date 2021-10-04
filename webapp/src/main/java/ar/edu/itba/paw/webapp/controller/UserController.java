@@ -45,18 +45,7 @@ public class UserController extends AuthController {
         return user(userProfileForm);
     }
 
-    @RequestMapping("/user/profile-image")
-    public void profileImage(HttpServletResponse response) throws IOException {
-        CampusUser user = authFacade.getCurrentUser();
-        byte[] image = userService.getProfileImage(user.getUserId())
-               .orElseThrow(RuntimeException::new);
-        response.setContentType("image/*");
-        response.setHeader("Content-Disposition", "filename=\"" + user.getUsername() + "-profile-img\"");
-        InputStream is = new ByteArrayInputStream(image);
-        IOUtils.copy(is,response.getOutputStream());
-    }
-
-    @RequestMapping("/user/profile-image/{userId}")
+    @GetMapping("/user/profile-image/{userId}")
     public void profileImage(@PathVariable(value = "userId") Long userId,
                              HttpServletResponse response) throws IOException {
         Optional<byte[]> image = userService.getProfileImage(userId);

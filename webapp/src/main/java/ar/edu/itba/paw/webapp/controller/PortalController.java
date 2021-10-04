@@ -41,12 +41,10 @@ public class PortalController extends AuthController{
         ModelAndView mav = new ModelAndView("portal");
         Long userId = authFacade.getCurrentUser().getUserId();
         List<Course> courses = courseService.list(userId);
-        List<Course> currentCourses = courseService.listCurrent(userId);
         courses.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
-        List<Course> coursesAsStudent = courseService.listWhereStudent(userId);
         mav.addObject("courseList", courses);
-        mav.addObject("coursesAsStudent", coursesAsStudent);
-        mav.addObject("currentCourses",currentCourses);
+        mav.addObject("coursesAsStudent", courseService.listWhereStudent(userId));
+        mav.addObject("currentCourses",courseService.listCurrent(userId));
         return mav;
     }
 

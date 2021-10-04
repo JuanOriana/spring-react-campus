@@ -21,7 +21,7 @@
                         <img src="<c:url value="/resources/images/default-user-image.png"/>" class="user-section-img"/>
                     </c:if>
                     <c:if test="${currentUser.image != null}">
-                        <img src="<c:url value="/user/profile-image"/>" class="user-section-img"/>
+                        <img src="<c:url value="/user/profile-image/${currentUser.userId}"/>" class="user-section-img"/>
                     </c:if>
                     <form:form modelAttribute="userProfileForm" method="post" enctype="multipart/form-data"
                                acceptCharset="utf-8" cssStyle="margin: 30px 0; display: flex; padding:10px;

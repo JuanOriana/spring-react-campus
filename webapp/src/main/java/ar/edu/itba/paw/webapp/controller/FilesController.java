@@ -61,6 +61,12 @@ public class FilesController extends AuthController {
         mav.addObject("categories", fileCategoryService.getCategories());
         mav.addObject("files", filePage.getContent());
         mav.addObject("extensions", fileExtensionService.getExtensions());
+        return loadFileParamsIntoModel(categoryType, extensionType, query, orderProperty, orderDirection, filePage, mav);
+    }
+
+    static ModelAndView loadFileParamsIntoModel(List<Long> categoryType, List<Long> extensionType, String query,
+                                                String orderProperty, String orderDirection, CampusPage<FileModel> filePage,
+                                                ModelAndView mav) {
         mav.addObject("categoryType", categoryType);
         mav.addObject("extensionType", extensionType);
         mav.addObject("query", query);
