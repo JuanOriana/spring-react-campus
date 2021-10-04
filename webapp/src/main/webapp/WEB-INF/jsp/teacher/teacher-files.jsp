@@ -20,6 +20,10 @@
             <jsp:include page="../components/course-sections-col.jsp">
                 <jsp:param name="courseName" value="${course.subject.name}"/>
                 <jsp:param name="courseId" value="${course.courseId}"/>
+                <jsp:param name="year" value="${course.year}"/>
+                <jsp:param name="quarter" value="${course.quarter}"/>
+                <jsp:param name="code" value="${course.subject.code}"/>
+                <jsp:param name="board" value="${course.board}"/>
             </jsp:include>
             <c:url value="/course/${courseId}/files" var="postUrl"/>
             <div class="course-data-container">
