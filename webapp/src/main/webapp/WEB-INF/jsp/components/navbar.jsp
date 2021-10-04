@@ -24,11 +24,11 @@
         </c:if>
         <div class="user-nav-wrapper">
             <a href="<c:url value="/user"/>" class="styleless-anchor" style="display: flex">
-                <c:if test="${!isImageSet}">
+                <c:if test="${currentUser.image == null}">
                     <img src="<c:url value="/resources/images/default-user-image.png"/>"
                          class="user-section-img" style="width: 32px; height: 32px"/>
                 </c:if>
-                <c:if test="${isImageSet}">
+                <c:if test="${currentUser.image != null}">
                     <img src="<c:url value="/user/profile-image"/>"
                          class="user-section-img" style="width: 32px; height: 32px"/>
                 </c:if>

@@ -15,9 +15,6 @@ public class AuthController {
     protected final AuthFacade authFacade;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     public AuthController(AuthFacade authFacade) {
         this.authFacade = authFacade;
     }
@@ -26,11 +23,5 @@ public class AuthController {
     public void getCurrentUser(Model model) {
         model.addAttribute("currentUser",
                 authFacade.getCurrentUser());
-    }
-
-    @ModelAttribute
-    public void isUserImageSet(Model model) {
-        Optional<byte[]> optionalImage = userService.getProfileImage(authFacade.getCurrentUser().getUserId());
-        model.addAttribute("isImageSet",optionalImage.isPresent());
     }
 }

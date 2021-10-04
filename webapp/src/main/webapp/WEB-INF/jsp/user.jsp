@@ -17,10 +17,10 @@
             <div class="user-section-wrapper">
                 <div style="display:flex; flex-direction: column; align-items: center" >
                     <h1 style="margin-bottom: 15px"><spring:message code="user.name" htmlEscape="true" arguments="${currentUser.name},${currentUser.surname}"/></h1>
-                    <c:if test="${!isImageSet}">
+                    <c:if test="${currentUser.image == null}">
                         <img src="<c:url value="/resources/images/default-user-image.png"/>" class="user-section-img"/>
                     </c:if>
-                    <c:if test="${isImageSet}">
+                    <c:if test="${currentUser.image != null}">
                         <img src="<c:url value="/user/profile-image"/>" class="user-section-img"/>
                     </c:if>
                     <form:form modelAttribute="userProfileForm" method="post" enctype="multipart/form-data"
