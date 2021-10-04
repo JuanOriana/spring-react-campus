@@ -36,7 +36,7 @@ public class UserRegisterForm {
     private String password;
 
     @NotBlank
-    @NotNull(message = "not match")
+    @NotNull
     // if passwords do not match, confirmation is forced into a null value
     private String confirmPassword;
 

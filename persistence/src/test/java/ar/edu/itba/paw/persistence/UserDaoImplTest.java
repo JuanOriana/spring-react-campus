@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,6 +42,7 @@ public class UserDaoImplTest {
     private final String USER_USERNAME = "johndoe";
     private final String USER_EMAIL = "johndoe@lorem.com";
     private final String USER_PASSWORD = "d8d3aedd4b5d0ce0131600eaadc48dcb";
+    private final String USER_UPDATE_NAME = "Alan";
     private final boolean IS_ADMIN = true;
 
     private final Long SUBJECT_ID = 1L;
@@ -63,11 +65,17 @@ public class UserDaoImplTest {
     private DataSource ds;
     private JdbcTemplate jdbcTemplate;
 
-    @Before
-    public void setUp() {
-        jdbcTemplate = new JdbcTemplate(ds);
-        insertUser(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, IS_ADMIN);
-    }
+    private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) ->
+            new User.Builder()
+                    .withUserId(rs.getLong("userId"))
+                    .withFileNumber(rs.getInt("fileNumber"))
+                    .withName(rs.getString("name"))
+                    .withSurname(rs.getString("surname"))
+                    .withUsername(rs.getString("username"))
+                    .withEmail(rs.getString("email"))
+                    .withPassword(rs.getString("password"))
+                    .isAdmin(rs.getBoolean("isAdmin"))
+                    .build();
 
     private void insertUser(Long userId, int fileNumber, String name, String surname, String username, String email,
                             String password, boolean isAdmin) {
@@ -124,6 +132,12 @@ public class UserDaoImplTest {
         courseJdbcInsert.execute(args);
     }
 
+    @Before
+    public void setUp() {
+        jdbcTemplate = new JdbcTemplate(ds);
+        insertUser(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, IS_ADMIN);
+    }
+
     @Test
     public void testCreate() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
@@ -167,28 +181,51 @@ public class UserDaoImplTest {
 
     @Test
     public void testUpdate() {
-        assertTrue(userDao.update(USER_ID, new User.Builder()
+
+        User updateUser =  new User.Builder()
                 .withUserId(USER_ID)
                 .withFileNumber(USER_FILE_NUMBER)
-                .withName(USER_NAME)
+                .withName(USER_UPDATE_NAME)
                 .withSurname(USER_SURNAME)
                 .withUsername(USER_USERNAME)
                 .withEmail(USER_EMAIL)
                 .withPassword(USER_PASSWORD)
                 .isAdmin(IS_ADMIN)
-                .build()));
+                .build();
+        assertTrue(userDao.update(USER_ID, updateUser));
+
+        List<User> userDbList = jdbcTemplate.query("SELECT * FROM users  WHERE userId=?",new Object[]{USER_ID},USER_ROW_MAPPER);
+
+        assertFalse(userDbList.isEmpty());
+        assertEquals(USER_ID, userDbList.get(0).getUserId());
+        assertEquals(USER_UPDATE_NAME, userDbList.get(0).getName());
+
+
+
     }
 
     @Test
     public void testGetRole() {
-        // TODO finish this test with new implemetation
-//        jdbcTemplate.execute(sqlInsertUserWithId);
-//        String sqlInsertRoleWithId = String.format("INSERT INTO roles (roleId,roleName) VALUES (%d,'%s');", STUDENT_ROLE_ID,STUDENT_ROLE_NAME);
-//        String sqlInsertUserToRole = String.format("INSERT INTO user_to_role (userId,roleId) VALUES (%d,%d);", USER_ID,STUDENT_ROLE_ID);
-//        jdbcTemplate.execute(sqlInsertRoleWithId);
-//        jdbcTemplate.execute(sqlInsertUserToRole);
-//
-//        Role role = userDao.getRole(USER_ID,);
+        insertRole(STUDENT_ROLE_ID,STUDENT_ROLE_NAME);
+        insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
+        insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
+        insertUserToCourse(USER_ID,COURSE_ID,STUDENT_ROLE_ID);
+
+        Optional<Role> role = userDao.getRole(USER_ID, COURSE_ID);
+        assertNotNull(role);
+        assertTrue(role.isPresent());
+        assertEquals(STUDENT_ROLE_ID,role.get().getRoleId());
+    }
+
+    @Test
+    public void testGetRoleInvalidCourse() {
+        insertRole(STUDENT_ROLE_ID,STUDENT_ROLE_NAME);
+        insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
+        insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
+
+        Optional<Role> role = userDao.getRole(USER_ID, COURSE_ID); // In this case the course and the user are not releated
+        assertNotNull(role);
+        assertFalse(role.isPresent());
     }
 
     @Test
@@ -213,11 +250,6 @@ public class UserDaoImplTest {
 
     @Test
     public void testGetRoleWithCourses(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "subjects");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_to_course");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "roles");
-
         insertRole(STUDENT_ROLE_ID, STUDENT_ROLE_NAME);
         insertRole(TEACHER_ROLE_ID, TEACHER_ROLE_NAME);
         insertSubject(SUBJECT_ID,SUBJECT_NAME ,SUBJECT_CODE);
