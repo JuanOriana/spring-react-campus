@@ -257,59 +257,32 @@ public class  FileDaoImpl implements FileDao {
         return extension;
     }
 
-    private String buildFilteredQuery(List<Long> extensions, List<Long> categories,
-                                      List<Object> params, Long courseId) {
-        StringBuilder query = new StringBuilder();
-
-        if (!extensions.isEmpty()) {
-            query.append(" ( ");
-            for (Long extension : extensions) {
-                Optional<java.lang.String> extensionName = fileExtensionDao.getExtension(extension);
-                params.add(extensionName.orElse("other"));
-                query.append(" fileExtension = ? OR ");
-            }
-            query.delete(query.length() - 4, query.length());
-            query.append(" ) ");
+    private String buildFilteredQuery(List<Long> extensions, List<Long> categories, Long courseId) {
+        StringBuilder extensionQuery = new StringBuilder();
+        if(!extensions.isEmpty()) {
+            extensionQuery.append("AND (");
+            extensions.forEach(e -> extensionQuery.append("fileExtensionId = ? OR "));
+            extensionQuery.delete(extensionQuery.length() - 4, extensionQuery.length());
+            extensionQuery.append(")");
         }
-
-        if (!categories.isEmpty()) {
-            if (!extensions.isEmpty()) {
-                query.append(" AND ");
-            }
-            query.append(" ( ");
-            for (Long categoryId : categories) {
-                Optional<FileCategory> fileCategory = fileCategoryDao.getById(categoryId);
-                if (fileCategory.isPresent()) {
-                    params.add(fileCategory.get().getCategoryName());
-                } else {
-                    params.add("none");
-                }
-                query.append("categoryname = ? OR ");
-            }
-            query.delete(query.length() - 4, query.length());
-            query.append(" ) ");
+        StringBuilder categoryQuery = new StringBuilder();
+        if(!categories.isEmpty()) {
+            categoryQuery.append("AND (");
+            categories.forEach(c -> categoryQuery.append("categoryId = ? OR "));
+            categoryQuery.delete(categoryQuery.length() - 4, categoryQuery.length());
+            categoryQuery.append(")");
         }
         String courseSelection = courseId < 0 ? "(SELECT courseId FROM user_to_course WHERE userId = ?)" : "(?)";
-        String selectByName = "SELECT categoryid, fileid, subjectid, fileextensionid, courseid, filesize, filename, " +
-                "filedate, downloads, quarter, board, year, fileextension, code, subjectname, categoryname " +
+        return "SELECT categoryid, fileid, subjectid, fileextensionid, courseid, filesize, filename, " +
+                "filedate, downloads, quarter, board, year, fileextension, code, subjectname " +
                 "FROM files NATURAL JOIN courses " +
                 "NATURAL JOIN file_extensions NATURAL JOIN subjects " +
                 "NATURAL JOIN category_file_relationship NATURAL JOIN file_categories " +
-                "WHERE LOWER(fileName) LIKE ? AND courseId IN " + courseSelection;
-        String selectFilterExtensionsAndCategory = "";
-
-        if (!extensions.isEmpty() || !categories.isEmpty()) {
-            selectFilterExtensionsAndCategory = " INTERSECT SELECT categoryid, fileid, subjectid, fileextensionid, " +
-                    "courseid, filesize, filename, filedate, downloads, quarter, board, year, fileextension, " +
-                    "code, subjectname, categoryname " +
-                    "FROM files NATURAL JOIN courses NATURAL JOIN file_extensions " +
-                    "NATURAL JOIN subjects NATURAL JOIN category_file_relationship NATURAL JOIN file_categories " +
-                    "WHERE " + query;
-        }
-        return selectByName + selectFilterExtensionsAndCategory;
+                "WHERE LOWER(fileName) LIKE ? AND courseId IN " + courseSelection + " " +
+                extensionQuery.toString() + " " + categoryQuery.toString();
     }
 
-    private Object[] getQueryParams(List<Object> params, String keyword, Long courseId, Long userId) {
+    private Object[] getQueryParams(List<Long> params, String keyword, Long courseId, Long userId) {
         Object[] sqlParams = new Object[params.size() + 2];
         sqlParams[0] = "%" + keyword.toLowerCase() + "%";
         sqlParams[1] = courseId < 0 ? userId : courseId;
@@ -319,13 +292,12 @@ public class  FileDaoImpl implements FileDao {
         return sqlParams;
     }
 
-
     private CampusPage<FileModel> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
                                           Long userId, Long courseId, CampusPageRequest pageRequest,
                                           CampusPageSort sort) {
-        List<Object> params = new ArrayList<>();
-        String unOrderedQuery = buildFilteredQuery(extensions, categories, params, courseId);
-        Object[] sqlParams = getQueryParams(params, keyword, courseId, userId);
+        String unOrderedQuery = buildFilteredQuery(extensions, categories, courseId);
+        extensions.addAll(categories);
+        Object[] sqlParams = getQueryParams(extensions, keyword, courseId, userId);
         int pageCount = getPageCount(unOrderedQuery, sqlParams, pageRequest.getPageSize());
         if(pageCount == 0) return new CampusPage<>();
         if(pageRequest.getPage() > pageCount) throw new PaginationArgumentException();
