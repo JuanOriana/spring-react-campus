@@ -28,8 +28,7 @@ public class AnnouncementsController extends AuthController {
     public ModelAndView announcements(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                       @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
         ModelAndView mav = new ModelAndView("announcements");
-        User currentUser = authFacade.getCurrentUser();
-        CampusPage<Announcement> announcements = announcementService.listByUser(currentUser.getUserId(),
+        CampusPage<Announcement> announcements = announcementService.listByUser(authFacade.getCurrentUserId(),
                 new CampusPageRequest(page, pageSize));
         mav.addObject("announcementList", announcements.getContent());
         mav.addObject("currentPage", announcements.getPage());
