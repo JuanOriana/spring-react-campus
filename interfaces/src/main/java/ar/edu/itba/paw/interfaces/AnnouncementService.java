@@ -2,11 +2,6 @@ package ar.edu.itba.paw.interfaces;
 
 
 import ar.edu.itba.paw.models.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -52,12 +47,12 @@ public interface AnnouncementService {
      * @param userId identifier of the user to get the announcements from
      * @return list containing all the current user available announcements (if any)
      */
-    CampusPage<Announcement> listByUser(Long userId, CampusPageRequest pageRequest);
+    CampusPage<Announcement> listByUser(Long userId, Integer page, Integer pageSize);
 
     /**
      * Gets all the current available announcements for a specific course
      * @param courseId   identifier of the course to get the announcements from
      * @return list containing all the current course available announcements (if any)
      */
-    CampusPage<Announcement> listByCourse(Long courseId, CampusPageRequest pageRequest);
+    CampusPage<Announcement> listByCourse(Long courseId, Integer page, Integer pageSize);
 }

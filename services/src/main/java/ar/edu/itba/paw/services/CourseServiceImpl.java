@@ -118,7 +118,6 @@ public class CourseServiceImpl implements CourseService {
         return roleId == Permissions.TEACHER.getValue() || roleId == Permissions.HELPER.getValue();
     }
 
-
     @Transactional
     @Override
     public void enroll(Long userId, Long courseId, Integer roleId) {

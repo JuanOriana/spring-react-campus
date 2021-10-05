@@ -70,7 +70,7 @@ public class CourseController extends AuthController {
         } else {
             mav = new ModelAndView("course");
         }
-        CampusPage<Announcement> announcements = announcementService.listByCourse(courseId, new CampusPageRequest(page, pageSize));
+        CampusPage<Announcement> announcements = announcementService.listByCourse(courseId, page, pageSize);
         mav.addObject("announcementList", announcements.getContent());
         mav.addObject("dateTimeFormatter",dateTimeFormatter);
         return mav;
