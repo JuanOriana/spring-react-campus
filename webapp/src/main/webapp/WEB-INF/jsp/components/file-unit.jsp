@@ -5,13 +5,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
         function deleteById(fileId){
-            $.ajax({
-                url: '${pageContext.request.contextPath}/files/' + fileId,
-                type: 'DELETE',
-                success: function (result) {
-                    $("#file-"+ fileId).remove();
-                }
-            });
+            const deleteMessage = "<spring:message code="announcement.no.announcement" htmlEscape="true"/>"
+            const result = confirm(deleteMessage)
+            if (result === true){
+                $.ajax({
+                    url: '${pageContext.request.contextPath}/files/' + fileId,
+                    type: 'DELETE',
+                    success: function (result) {
+                        $("#file-"+ fileId).remove();
+                    }
+                });
+            }
         }
     </script>
 </head>
