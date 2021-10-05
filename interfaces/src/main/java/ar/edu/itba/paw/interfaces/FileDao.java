@@ -15,15 +15,15 @@ public interface FileDao {
 
     List<FileModel> list(Long userId);
 
-    Optional<FileModel> getById(Long fileId);
+    Optional<FileModel> findById(Long fileId);
 
     boolean associateCategory(Long fileId, Long fileCategoryId);
 
     List<FileCategory> getFileCategories(Long fileId);
 
-    List<FileModel> getByCategory(Long fileCategoryId);
+    List<FileModel> findByCategory(Long fileCategoryId);
 
-    List<FileModel> getByCourseId(Long courseId);
+    List<FileModel> findByCourseId(Long courseId);
 
     boolean hasAccess(Long fileId, Long userId);
 

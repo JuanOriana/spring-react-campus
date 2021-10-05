@@ -112,7 +112,7 @@ public class TimeTableDaoImplTest extends BasicPopulator {
 
     @Test
     public void testGetById() {
-        List<Timetable> timetableOptional = timetableDao.getById(COURSE_ID);
+        List<Timetable> timetableOptional = timetableDao.findById(COURSE_ID);
         assertEquals(1, timetableOptional.size());
         assertEquals(COURSE_ID, timetableOptional.get(0).getCourseId());
         assertEquals(TIME_TABLE_DAY_OF_WEEK, timetableOptional.get(0).getDayOfWeek());
@@ -122,7 +122,7 @@ public class TimeTableDaoImplTest extends BasicPopulator {
 
     @Test(expected = AssertionError.class)
     public void getByIdNoExist() {
-        List<Timetable> timetableOptional = timetableDao.getById(COURSE_ID + 1);
+        List<Timetable> timetableOptional = timetableDao.findById(COURSE_ID + 1);
         Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
         assertEquals(0, timetableOptional.size());
     }

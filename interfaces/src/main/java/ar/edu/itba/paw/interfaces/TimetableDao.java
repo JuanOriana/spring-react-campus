@@ -10,5 +10,5 @@ public interface TimetableDao {
     boolean create(Course course, int dayOfWeek, Time start, Time end);
     boolean update(Long courseId, int dayOfWeek, Time start, Time end);
     boolean delete(Long courseId);
-    public List<Timetable> getById(Long courseId);
+    List<Timetable> findById(Long courseId);
 }

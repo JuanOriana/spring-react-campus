@@ -139,7 +139,7 @@ public class  FileDaoImpl implements FileDao {
     }
 
     @Override
-    public Optional<FileModel> getById(Long fileId) {
+    public Optional<FileModel> findById(Long fileId) {
         return jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, fileExtensionId, " +
                         "fileExtension, courseId, year, quarter, board, subjectId, code, subjectName, downloads " +
                         "FROM files NATURAL JOIN file_extensions NATURAL JOIN courses NATURAL JOIN subjects WHERE fileId = ?",
@@ -169,7 +169,7 @@ public class  FileDaoImpl implements FileDao {
     }
 
     @Override
-    public List<FileModel> getByCategory(Long fileCategoryId) {
+    public List<FileModel> findByCategory(Long fileCategoryId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, " +
                 "fileExtensionId, fileExtension, courseId, year, " +
                 "quarter, board, subjectId, code, subjectName, downloads " +
@@ -178,7 +178,7 @@ public class  FileDaoImpl implements FileDao {
     }
 
     @Override
-    public List<FileModel> getByCourseId(Long courseId) {
+    public List<FileModel> findByCourseId(Long courseId) {
         return new ArrayList<>(jdbcTemplate.query("SELECT fileId, fileSize, fileName, fileDate, file, " +
                         "fileExtensionId, fileExtension, courseId, year, " +
                         "quarter, board, subjectId, code, subjectName, downloads " +

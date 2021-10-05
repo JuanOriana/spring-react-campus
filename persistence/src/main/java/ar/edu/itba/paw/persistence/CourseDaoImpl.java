@@ -111,7 +111,7 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public Optional<Course> getById(Long id) {
+    public Optional<Course> findById(Long id) {
         return jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects WHERE courseId = ?",
                 new Object[]{id}, COURSE_ROW_MAPPER).stream().findFirst();
     }

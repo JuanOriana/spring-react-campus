@@ -51,7 +51,7 @@ public class CourseController extends AuthController {
     @ModelAttribute
     public void getCourse(Model model, @PathVariable Long courseId) {
         model.addAttribute("course",
-                courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+                courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
     }
 
     @GetMapping(value = "")
@@ -87,7 +87,7 @@ public class CourseController extends AuthController {
         String successMessage = null;
         if (!errors.hasErrors()) {
             announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
-                    authFacade.getCurrentUser(), courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+                    authFacade.getCurrentUser(), courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
             announcementForm.setContent("");
             announcementForm.setTitle("");
             successMessage = "announcement.success.message";
@@ -142,7 +142,7 @@ public class CourseController extends AuthController {
             CommonsMultipartFile file = fileForm.getFile();
             // Function is expanded already for multiple categories in the future, passing only one for now
             fileService.create(file.getSize(), file.getOriginalFilename(), file.getBytes(),
-                    courseService.getById(courseId).orElseThrow(CourseNotFoundException::new),
+                    courseService.findById(courseId).orElseThrow(CourseNotFoundException::new),
                     Collections.singletonList(fileForm.getCategoryId()));
             fileForm.setFile(null);
             fileForm.setCategoryId(null);

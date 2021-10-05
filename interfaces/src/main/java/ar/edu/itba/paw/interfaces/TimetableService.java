@@ -37,6 +37,6 @@ public interface TimetableService {
      * @param courseId of the course to get the timetable from
      * @return list of timetables for the given courseId
      */
-    List<Timetable> getById(Long courseId);
+    List<Timetable> findById(Long courseId);
 
 }

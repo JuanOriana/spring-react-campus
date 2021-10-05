@@ -79,7 +79,7 @@ public class FilesController extends AuthController {
 
     @GetMapping(value = "/files/{fileId}")
     public void downloadFile(@PathVariable Long fileId, HttpServletResponse response) {
-        FileModel file = fileService.getById(fileId).orElseThrow(FileNotFoundException::new);
+        FileModel file = fileService.findById(fileId).orElseThrow(FileNotFoundException::new);
         if (!file.getExtension().getFileExtensionName().equals("pdf")) {
             response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
         }

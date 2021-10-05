@@ -57,7 +57,7 @@ public class TimetableDaoImpl implements TimetableDao {
     }
 
     @Override
-    public List<Timetable> getById(Long courseId) {
+    public List<Timetable> findById(Long courseId) {
         return jdbcTemplate.query("SELECT * FROM timetables WHERE courseId = ?",
                 new Object[]{courseId}, TIMETABLE_ROW_MAPPER);
     }

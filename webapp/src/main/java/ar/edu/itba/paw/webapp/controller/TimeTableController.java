@@ -40,7 +40,7 @@ public class TimeTableController extends AuthController{
 
         List<Course> courses = courseService.listCurrent(authFacade.getCurrentUser().getUserId());
         for (Course course: courses) {
-            courseTimetables.put(course, timetableService.getById(course.getCourseId()));
+            courseTimetables.put(course, timetableService.findById(course.getCourseId()));
             if (colorIdx >= colors.length) colorIdx = 0;
             courseColors.put(course,colors[colorIdx]);
             colorIdx++;
