@@ -169,8 +169,8 @@ public class CourseController extends AuthController {
         if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) throw new UserNotFoundException();
         if (!errors.hasErrors()) {
             User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
-            mailingService.sendTextPlainEmail(authFacade.getCurrentUser().getEmail(), user.getEmail(),
-                    mailForm.getSubject(), mailForm.getContent());
+            Course course = courseService.getById(courseId).orElseThrow(CourseNotFoundException::new);
+            mailingService.sendTeacherEmail(authFacade.getCurrentUser(),user.getEmail(), mailForm.getSubject(), mailForm.getContent(), course);
             mailForm.setSubject("");
             mailForm.setContent("");
             successMessage = "email.success.message";
