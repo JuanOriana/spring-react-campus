@@ -163,6 +163,7 @@ public class CourseDaoImplTest extends BasicPopulator {
 
     @Test
     public void testGetTeachers() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_to_course");
         insertRole(TEACHER_ROLE_ID, TEACHER_ROLE_NAME);
         insertUserToCourse(COURSE_ID, USER_ID, TEACHER_ROLE_ID);
         Map<User, Role> userRoleMap = courseDao.getTeachers(COURSE_ID);
@@ -175,6 +176,7 @@ public class CourseDaoImplTest extends BasicPopulator {
 
     @Test
     public void testEnroll() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_to_course");
         assertTrue(courseDao.enroll(USER_ID, COURSE_ID, STUDENT_ROLE_ID));
         Role role = jdbcTemplate.query("SELECT * FROM user_to_course NATURAL JOIN roles WHERE userid=? AND courseid = ?", new Object[]{USER_ID, COURSE_ID}, USER_TO_COURSE_ROW_MAPPER).get(0);
         assertNotNull(role);
