@@ -12,6 +12,8 @@ public interface CourseService {
      * @param quarter of the course
      * @param board code of the course
      * @param subjectId of the subject associated to the course
+     * @param startTimes list of starting times for the course
+     * @param endTimes list of ending times for the course
      * @return a Course instance holding the passed values
      */
     Course create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,

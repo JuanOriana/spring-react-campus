@@ -45,6 +45,8 @@ public interface AnnouncementService {
      * Gets all the current available announcements for an user
      *
      * @param userId identifier of the user to get the announcements from
+     * @param page number of the current page
+     * @param pageSize amount of announcements to bring in one page
      * @return list containing all the current user available announcements (if any)
      */
     CampusPage<Announcement> listByUser(Long userId, Integer page, Integer pageSize);
@@ -52,6 +54,8 @@ public interface AnnouncementService {
     /**
      * Gets all the current available announcements for a specific course
      * @param courseId   identifier of the course to get the announcements from
+     * @param page number of the current page
+     * @param pageSize amount of announcements to bring in one page
      * @return list containing all the current course available announcements (if any)
      */
     CampusPage<Announcement> listByCourse(Long courseId, Integer page, Integer pageSize);
