@@ -25,7 +25,7 @@ public class TestConfig {
     private Resource hsqldb;
 
     @Bean
-    public DataSource dataSource(){
+    public DataSource dataSource() {
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(JDBCDriver.class);
         ds.setUrl("jdbc:hsqldb:mem:paw");

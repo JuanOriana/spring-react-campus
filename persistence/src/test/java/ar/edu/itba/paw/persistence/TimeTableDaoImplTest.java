@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -17,7 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.sql.Time;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -29,39 +27,21 @@ import static org.junit.Assert.*;
 @Sql("classpath:schema.sql")
 @Rollback
 @Transactional
-public class TimeTableDaoImplTest {
-
-    @Autowired
-    private DataSource ds;
+public class TimeTableDaoImplTest extends BasicPopulator {
 
     @Autowired
     private TimetableDaoImpl timetableDao;
 
-    private JdbcTemplate jdbcTemplate;
-
-    private final Long COURSE_ID = 1L;
-    private final Integer COURSE_YEAR = 2021;
-    private final Integer COURSE_QUARTER = 2;
-    private final String COURSE_BOARD = "S1";
-
-    private final Long SUBJECT_ID = 1L;
-    private final String SUBJECT_CODE = "A1";
-    private final String SUBJECT_NAME = "PAW";
-
-    private final Integer TIME_TABLE_DAY_OF_WEEK = 1;
-    private final Time TIME_TABLE_START_OF_COURSE = new Time(TimeUnit.HOURS.toMillis(12));
-    private final Time TIME_TABLE_END_OF_COURSE = new Time(TimeUnit.HOURS.toMillis(14));
 
     @Before
     public void setUp() {
-        jdbcTemplate = new JdbcTemplate(ds);
-        String sqlInsertSubject = String.format("INSERT INTO subjects  VALUES (%d, '%s', '%s')", SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
-        String sqlInsertCourse = String.format("INSERT INTO courses  VALUES (%d, %d, %d,'%s', %d)", COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
-        jdbcTemplate.execute(sqlInsertSubject);
-        jdbcTemplate.execute(sqlInsertCourse);
+        super.setUp();
+        insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
+        insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
+        insertTimeTable(COURSE_ID, TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(), TIME_TABLE_END_OF_COURSE.toString());
     }
 
-    private Course getMockCourse(){
+    private Course getMockCourse() {
         return new Course.Builder()
                 .withCourseId(COURSE_ID)
                 .withYear(COURSE_YEAR)
@@ -73,8 +53,10 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testCreate() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
         final boolean timeTableEntryInsertion = timetableDao.create(getMockCourse(), TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE, TIME_TABLE_END_OF_COURSE);
-        assertEquals( 1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "timetables"));
+        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "timetables"));
+        assertTrue(timeTableEntryInsertion);
     }
 
     @Test(expected = DataIntegrityViolationException.class)
@@ -85,44 +67,36 @@ public class TimeTableDaoImplTest {
         Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
     }
 
+
     @Test
     public void testUpdate() {
-        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,'%s','%s')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
-        jdbcTemplate.execute(sqlInsertTimeTableEntry);
-
         Time startChangedTo = new Time(TimeUnit.HOURS.toMillis(16));
         Time endChangedTo = new Time(TimeUnit.HOURS.toMillis(3));
 
-        final boolean isUpdated = timetableDao.update(COURSE_ID,TIME_TABLE_DAY_OF_WEEK,startChangedTo,endChangedTo);
+        final boolean isUpdated = timetableDao.update(COURSE_ID, TIME_TABLE_DAY_OF_WEEK, startChangedTo, endChangedTo);
         assertTrue(isUpdated);
 
         String sqlGetStartTimeOfCourseId = String.format("SELECT startTime FROM timetables WHERE courseId = %d", COURSE_ID);
-        Time startTimeOfCourseIdInDB = jdbcTemplate.queryForObject(sqlGetStartTimeOfCourseId,Time.class);
+        Time startTimeOfCourseIdInDB = jdbcTemplate.queryForObject(sqlGetStartTimeOfCourseId, Time.class);
         assertEquals(startChangedTo, startTimeOfCourseIdInDB);
 
         String sqlGetDurationOfCourseId = String.format("SELECT endTime FROM timetables WHERE courseId = %d", COURSE_ID);
-        Time endTimeOfCourseIdInDB = jdbcTemplate.queryForObject(sqlGetDurationOfCourseId,Time.class);
+        Time endTimeOfCourseIdInDB = jdbcTemplate.queryForObject(sqlGetDurationOfCourseId, Time.class);
         assertEquals(endChangedTo, endTimeOfCourseIdInDB);
     }
 
     @Test(expected = AssertionError.class)
     public void testUpdateNoExist() {
-        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,'%s','%s')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
-        jdbcTemplate.execute(sqlInsertTimeTableEntry);
-
         Time startChangedTo = new Time(TimeUnit.HOURS.toMillis(16));
         Time durationChangedTo = new Time(TimeUnit.HOURS.toMillis(3));
 
-        final boolean isUpdated = timetableDao.update(COURSE_ID + 1,TIME_TABLE_DAY_OF_WEEK,startChangedTo,durationChangedTo);
+        final boolean isUpdated = timetableDao.update(COURSE_ID + 1, TIME_TABLE_DAY_OF_WEEK, startChangedTo, durationChangedTo);
         Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
         assertFalse(isUpdated);
     }
 
     @Test
     public void testDelete() {
-        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,'%s','%s')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
-        jdbcTemplate.execute(sqlInsertTimeTableEntry);
-
         final boolean isDeleted = timetableDao.delete(COURSE_ID);
         assertTrue(isDeleted);
 
@@ -131,9 +105,6 @@ public class TimeTableDaoImplTest {
 
     @Test(expected = AssertionError.class)
     public void testDeleteNoExist() {
-        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,'%s','%s')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
-        jdbcTemplate.execute(sqlInsertTimeTableEntry);
-
         final boolean isDeleted = timetableDao.delete(COURSE_ID + 1);
         Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
         assertFalse(isDeleted);
@@ -141,9 +112,6 @@ public class TimeTableDaoImplTest {
 
     @Test
     public void testGetById() {
-        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,'%s','%s')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
-        jdbcTemplate.execute(sqlInsertTimeTableEntry);
-
         List<Timetable> timetableOptional = timetableDao.getById(COURSE_ID);
         assertEquals(1, timetableOptional.size());
         assertEquals(COURSE_ID, timetableOptional.get(0).getCourseId());
@@ -154,9 +122,6 @@ public class TimeTableDaoImplTest {
 
     @Test(expected = AssertionError.class)
     public void getByIdNoExist() {
-        String sqlInsertTimeTableEntry = String.format("INSERT INTO timetables (courseId, dayOfWeek, startTime, endTime) VALUES (%d,%d,'%s','%s')",COURSE_ID,TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(),TIME_TABLE_END_OF_COURSE.toString());
-        jdbcTemplate.execute(sqlInsertTimeTableEntry);
-
         List<Timetable> timetableOptional = timetableDao.getById(COURSE_ID + 1);
         Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
         assertEquals(0, timetableOptional.size());

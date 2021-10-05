@@ -6,9 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -16,10 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -28,35 +23,16 @@ import static org.junit.Assert.*;
 @Sql("classpath:schema.sql")
 @Rollback
 @Transactional
-public class FileCategoryDaoImplTest {
-
-    @Autowired
-    private DataSource ds;
+public class FileCategoryDaoImplTest extends BasicPopulator {
 
     @Autowired
     private FileCategoryDao fileCategoryDao;
 
-    private JdbcTemplate jdbcTemplate;
-
-    private final int FILE_CATEGORY_ID = 1;
-    private final String FILE_CATEGORY = "Guia teorica";
-
-
     private static final RowMapper<FileCategory> FILE_CATEGORY_ROW_MAPPER = (rs, rowNum) -> new FileCategory(rs.getLong("categoryId"), rs.getString("categoryName"));
-
-    private void insertFileCategory(Integer fileCategoryId, String fileCategoryName) {
-        SimpleJdbcInsert fileCategoryJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("file_categories");
-        Map<String, Object> args = new HashMap<>();
-
-        args.put("categoryId", fileCategoryId);
-        args.put("categoryName", fileCategoryName);
-
-        fileCategoryJdbcInsert.execute(args);
-    }
 
     @Before
     public void setUp() {
-        jdbcTemplate = new JdbcTemplate(ds);
+        super.setUp();
         insertFileCategory(FILE_CATEGORY_ID, FILE_CATEGORY);
     }
 
@@ -73,9 +49,9 @@ public class FileCategoryDaoImplTest {
         boolean wasUpdated = fileCategoryDao.update(FILE_CATEGORY_ID, newCategoryName);
         assertTrue(wasUpdated);
 
-        FileCategory fileCategoryFromDB = jdbcTemplate.query("SELECT * FROM file_categories WHERE categoryId = ?;",new Object[]{FILE_CATEGORY_ID}, FILE_CATEGORY_ROW_MAPPER).get(0);
+        FileCategory fileCategoryFromDB = jdbcTemplate.query("SELECT * FROM file_categories WHERE categoryId = ?;", new Object[]{FILE_CATEGORY_ID}, FILE_CATEGORY_ROW_MAPPER).get(0);
 
-        assertEquals(FILE_CATEGORY_ID, fileCategoryFromDB.getCategoryId());
+        assertEquals(FILE_CATEGORY_ID.longValue(), fileCategoryFromDB.getCategoryId());
         assertEquals(newCategoryName, fileCategoryFromDB.getCategoryName());
     }
 
@@ -92,7 +68,7 @@ public class FileCategoryDaoImplTest {
         assertEquals(1, list.size());
 
         FileCategory fileCategory = list.get(0);
-        assertEquals(FILE_CATEGORY_ID, fileCategory.getCategoryId());
+        assertEquals(FILE_CATEGORY_ID.longValue(), fileCategory.getCategoryId());
 
     }
 

@@ -1,16 +1,13 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.*;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -18,12 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -34,41 +27,11 @@ import static org.junit.Assert.*;
 @Sql("classpath:schema.sql")
 @Rollback
 @Transactional
-public class AnnouncementDaoImplTest extends BasicPopulator{
-
-    @Autowired
-    private DataSource ds;
+public class AnnouncementDaoImplTest extends BasicPopulator {
 
     @Autowired
     private AnnouncementDaoImpl announcementDao;
-//
-//    private JdbcTemplate jdbcTemplate;
-    private final Long ANNOUNCEMENT_ID = 1L;
-    private final String ANNOUNCEMENT_CONTENT = "test_content";
-    private final String ANNOUNCEMENT_TITLE = "test_title";
 
-    private final Long USER_ID = 1L;
-    private final Integer USER_FILE_NUMBER = 41205221;
-    private final String USER_NAME = "Paw";
-    private final String USER_SURNAME = "2021";
-    private final String USER_USERNAME = "paw2021";
-    private final String USER_EMAIL = "paw2021@itba.edu.ar";
-    private final String USER_PASSWORD = "asd123";
-    private final boolean USER_IS_ADMIN = true;
-
-    private final Long COURSE_ID = 1L;
-    private final Integer COURSE_YEAR = 2021;
-    private final Integer COURSE_QUARTER = 1;
-    private final String COURSE_BOARD = "S1";
-
-    private final Long SUBJECT_ID = 1L;
-    private final String SUBJECT_CODE = "A1";
-    private final String SUBJECT_NAME = "Protos";
-
-    private final Integer PAGE = 1;
-    private final Integer PAGE_SIZE = 10;
-
-    private final Integer ROLE_ID = 1;
 
     private final LocalDateTime ANNOUNCEMENT_DATE = LocalDateTime.now();
 
@@ -94,14 +57,15 @@ public class AnnouncementDaoImplTest extends BasicPopulator{
 
     @Before
     public void setUp() {
-//        jdbcTemplate = new JdbcTemplate(ds);
         super.setUp();
         insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
         insertUser(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, USER_IS_ADMIN);
-        insertRole(ROLE_ID, "Teacher");
-        insertUserToCourse(USER_ID, COURSE_ID, ROLE_ID);
+        insertRole(TEACHER_ROLE_ID, TEACHER_ROLE_NAME);
+        insertUserToCourse(USER_ID, COURSE_ID, TEACHER_ROLE_ID);
     }
+
+
 
     private Announcement getMockAnnouncement() {
         Course mockCourse = new Course.Builder()
@@ -123,13 +87,13 @@ public class AnnouncementDaoImplTest extends BasicPopulator{
                 .isAdmin(USER_IS_ADMIN)
                 .build();
         return new Announcement.Builder()
-            .withAnnouncementId(ANNOUNCEMENT_ID)
-            .withDate(ANNOUNCEMENT_DATE)
-            .withTitle("test_title")
-            .withContent("test_content")
-            .withAuthor(mockUser)
-            .withCourse(mockCourse)
-        .build();
+                .withAnnouncementId(ANNOUNCEMENT_ID)
+                .withDate(ANNOUNCEMENT_DATE)
+                .withTitle("test_title")
+                .withContent("test_content")
+                .withAuthor(mockUser)
+                .withCourse(mockCourse)
+                .build();
     }
 
     @Test
@@ -137,7 +101,7 @@ public class AnnouncementDaoImplTest extends BasicPopulator{
         Announcement announcement = getMockAnnouncement();
         announcementDao.create(announcement.getDate(), announcement.getTitle(),
                 announcement.getContent(), announcement.getAuthor(), announcement.getCourse());
-        assertEquals( 1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
+        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
     }
 
 
@@ -227,7 +191,7 @@ public class AnnouncementDaoImplTest extends BasicPopulator{
         assertTrue(isUpdated);
 
         String sqlGetAnnouncementOfId = String.format("SELECT * FROM announcements NATURAL JOIN users WHERE announcementId = %d;", ANNOUNCEMENT_ID);
-        Announcement announcementDb = jdbcTemplate.query(sqlGetAnnouncementOfId,ANNOUNCEMENT_ROW_MAPPER).get(0);
+        Announcement announcementDb = jdbcTemplate.query(sqlGetAnnouncementOfId, ANNOUNCEMENT_ROW_MAPPER).get(0);
 
         assertEquals(ANNOUNCEMENT_ID, announcementDb.getAnnouncementId());
         assertEquals(USER_ID, announcementDb.getAuthor().getUserId());
