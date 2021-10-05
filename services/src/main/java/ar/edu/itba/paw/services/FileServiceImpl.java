@@ -54,8 +54,8 @@ public class FileServiceImpl implements FileService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<FileModel> getById(Long fileId) {
-        return fileDao.getById(fileId);
+    public Optional<FileModel> findById(Long fileId) {
+        return fileDao.findById(fileId);
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public class FileServiceImpl implements FileService {
         List<FileCategory> fileCategories = new ArrayList<>();
         categories.forEach(queriedId -> {
            fileDao.associateCategory(fileId, queriedId);
-           fileCategoryDao.getById(queriedId).ifPresent(fileCategories::add);
+           fileCategoryDao.findById(queriedId).ifPresent(fileCategories::add);
         });
         return fileCategories;
     }

@@ -87,8 +87,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<Course> getById(Long id) {
-        return courseDao.getById(id);
+    public Optional<Course> findById(Long id) {
+        return courseDao.findById(id);
     }
 
     @Transactional(readOnly = true)

@@ -5,7 +5,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
         function deleteById(fileId){
-            const deleteMessage = "<spring:message code="announcement.no.announcement" htmlEscape="true"/>"
+            const deleteMessage = "<spring:message code="alert.file.delete" htmlEscape="true"/>"
             const result = confirm(deleteMessage)
             if (result === true){
                 $.ajax({

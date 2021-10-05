@@ -58,7 +58,7 @@ public interface FileService {
      * @param fileId of the file to be retrieved
      * @return the file corresponding to the given id if it exists, null otherwise
      */
-    Optional<FileModel> getById(Long fileId);
+    Optional<FileModel> findById(Long fileId);
 
 
     /**

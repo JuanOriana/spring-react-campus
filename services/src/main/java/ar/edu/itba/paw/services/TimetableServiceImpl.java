@@ -42,8 +42,8 @@ public class TimetableServiceImpl implements TimetableService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Timetable> getById(Long courseId) {
-        return timetableDaoDao.getById(courseId);
+    public List<Timetable> findById(Long courseId) {
+        return timetableDaoDao.findById(courseId);
     }
 
 

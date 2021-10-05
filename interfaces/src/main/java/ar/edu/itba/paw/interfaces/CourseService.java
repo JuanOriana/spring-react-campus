@@ -59,7 +59,7 @@ public interface CourseService {
      * @param courseId of the course to be retrieved
      * @return the course corresponding to the given id if it exists, null otherwise
      */
-    Optional<Course> getById(Long courseId);
+    Optional<Course> findById(Long courseId);
 
     /**
      * Gets the map of teachers for the given course

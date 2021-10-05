@@ -101,7 +101,7 @@ public class AdminController extends AuthController {
         unenrolledUsers.sort(Comparator.comparingInt(User::getFileNumber));
         mav.addObject("userToCourseForm",userToCourseForm);
         mav.addObject("users", unenrolledUsers);
-        mav.addObject("course",courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+        mav.addObject("course",courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("roles",roleService.list());
         mav.addObject("courseStudents", courseService.getStudents(courseId));
         mav.addObject("courseTeachers", courseService.getTeachers(courseId).keySet());

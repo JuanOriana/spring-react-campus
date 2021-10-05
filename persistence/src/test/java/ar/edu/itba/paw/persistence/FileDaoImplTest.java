@@ -99,7 +99,7 @@ public class FileDaoImplTest extends BasicPopulator {
         FileModel fModel = createFileModelObject("src/test/resources/test.png", FILE_ID);
         insertFileModelToDB(fModel);
 
-        Optional<FileModel> fileFromDB = fileDao.getById(FILE_ID);
+        Optional<FileModel> fileFromDB = fileDao.findById(FILE_ID);
         assertTrue(fileFromDB.isPresent());
         assertEquals(FILE_ID, fileFromDB.get().getFileId());
         assertEquals(FILE_EXTENSION_ID_OTHER, fileFromDB.get().getExtension().getFileExtensionId());
@@ -115,7 +115,7 @@ public class FileDaoImplTest extends BasicPopulator {
     public void testGetByIdNoExist() {
         insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
 
-        Optional<FileModel> fileFromDB = fileDao.getById(FILE_ID + 1);
+        Optional<FileModel> fileFromDB = fileDao.findById(FILE_ID + 1);
         Assert.fail("Should have thrown assertion error for non-existent key 'file id' ");
         assertFalse(fileFromDB.isPresent());
     }
@@ -170,7 +170,7 @@ public class FileDaoImplTest extends BasicPopulator {
         insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
 
-        List<FileModel> list = fileDao.getByCategory(FILE_CATEGORY_ID);
+        List<FileModel> list = fileDao.findByCategory(FILE_CATEGORY_ID);
         assertEquals(1, list.size());
 
         FileModel file = list.get(0);
@@ -182,7 +182,7 @@ public class FileDaoImplTest extends BasicPopulator {
     public void testGetByCourseId() {
         insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
 
-        List<FileModel> list = fileDao.getByCourseId(COURSE_ID);
+        List<FileModel> list = fileDao.findByCourseId(COURSE_ID);
         assertEquals(1, list.size());
 
         FileModel file = list.get(0);

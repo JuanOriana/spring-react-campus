@@ -51,8 +51,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<Announcement> getById(Long id) {
-        return announcementDao.getById(id);
+    public Optional<Announcement> findById(Long id) {
+        return announcementDao.findById(id);
     }
 
     @Transactional(readOnly = true)

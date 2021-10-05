@@ -136,7 +136,7 @@ public class AnnouncementDaoImplTest extends BasicPopulator {
     public void getById() {
         insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
-        Optional<Announcement> announcementOptional = announcementDao.getById(ANNOUNCEMENT_ID);
+        Optional<Announcement> announcementOptional = announcementDao.findById(ANNOUNCEMENT_ID);
         assertTrue(announcementOptional.isPresent());
         assertEquals(ANNOUNCEMENT_ID, announcementOptional.get().getAnnouncementId());
         assertEquals(COURSE_ID, announcementOptional.get().getCourse().getCourseId());
@@ -150,7 +150,7 @@ public class AnnouncementDaoImplTest extends BasicPopulator {
         final Long NOT_EXISTING_ID = 100L;
         insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
-        Optional<Announcement> announcementOptional = announcementDao.getById(NOT_EXISTING_ID);
+        Optional<Announcement> announcementOptional = announcementDao.findById(NOT_EXISTING_ID);
         assertFalse(announcementOptional.isPresent());
     }
 

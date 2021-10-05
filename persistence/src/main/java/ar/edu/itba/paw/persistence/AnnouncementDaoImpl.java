@@ -89,7 +89,7 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
-    public Optional<Announcement> getById(Long id) {
+    public Optional<Announcement> findById(Long id) {
         return jdbcTemplate.query("SELECT * " +
                 "FROM announcements NATURAL JOIN courses NATURAL JOIN subjects NATURAL JOIN users " +
                 "WHERE announcementId = ?", new Object[]{id}, COURSE_ANNOUNCEMENT_ROW_MAPPER).stream().findFirst();
