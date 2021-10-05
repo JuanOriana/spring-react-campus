@@ -70,7 +70,7 @@ public class CourseController extends AuthController {
         } else {
             mav = new ModelAndView("course");
         }
-        CampusPage<Announcement> announcements = announcementService.listByCourse(courseId, new CampusPageRequest(page, pageSize));
+        CampusPage<Announcement> announcements = announcementService.listByCourse(courseId, page, pageSize);
         mav.addObject("announcementList", announcements.getContent());
         mav.addObject("dateTimeFormatter",dateTimeFormatter);
         return mav;
@@ -81,9 +81,8 @@ public class CourseController extends AuthController {
                                          @Valid AnnouncementForm announcementForm, final BindingResult errors) {
         String successMessage = null;
         if (!errors.hasErrors()) {
-            User currentUser = new User(authFacade.getCurrentUser());
-            announcementService.create(announcementForm.getTitle(), announcementForm.getContent(), currentUser,
-                    courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+            announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
+                    authFacade.getCurrentUser(), courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
             announcementForm.setContent("");
             announcementForm.setTitle("");
             successMessage = "announcement.success.message";
@@ -114,11 +113,10 @@ public class CourseController extends AuthController {
                                       Integer page,
                               @RequestParam(value = "pageSize", required = false, defaultValue = "10")
                                       Integer pageSize) {
-        User user = authFacade.getCurrentUser();
-        CampusPage<FileModel> filePage = fileService.listByCourse(query, extensionType, categoryType, user.getUserId(),
-                courseId, page, pageSize, orderDirection, orderProperty);
+        CampusPage<FileModel> filePage = fileService.listByCourse(query, extensionType, categoryType,
+                authFacade.getCurrentUserId(), courseId, page, pageSize, orderDirection, orderProperty);
         final ModelAndView mav;
-        if (courseService.isPrivileged(user.getUserId(), courseId)) {
+        if (courseService.isPrivileged(authFacade.getCurrentUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-files");
             mav.addObject("fileForm", fileForm);
             mav.addObject("successMessage", successMessage);

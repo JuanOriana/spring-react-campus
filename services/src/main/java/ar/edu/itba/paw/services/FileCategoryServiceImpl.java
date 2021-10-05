@@ -37,6 +37,7 @@ public class FileCategoryServiceImpl implements FileCategoryService {
         return fileCategoryDao.delete(fileCategoryId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<FileCategory> getCategories() {
         return fileCategoryDao.getCategories();

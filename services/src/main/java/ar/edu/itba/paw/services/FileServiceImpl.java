@@ -10,20 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class FileServiceImpl implements FileService {
 
-    private final FileDao fileDao;
-
-    private final FileCategoryDao fileCategoryDao;
+    @Autowired
+    private FileDao fileDao;
 
     @Autowired
-    public FileServiceImpl(FileDao fileDao, FileCategoryDao fileCategoryDao) {
-        this.fileDao = fileDao;
-        this.fileCategoryDao = fileCategoryDao;
-    }
+    private FileCategoryDao fileCategoryDao;
 
     @Transactional
     @Override
@@ -51,17 +46,17 @@ public class FileServiceImpl implements FileService {
         return fileDao.delete(fileId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<FileModel> list(Long userId) {
         return new ArrayList<>(fileDao.list(userId));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<FileModel> getById(Long fileId) {
         return fileDao.getById(fileId);
     }
-
-
 
     @Transactional
     public List<FileCategory> associateCategories(Long fileId, List<Long> categories) {
@@ -73,11 +68,13 @@ public class FileServiceImpl implements FileService {
         return fileCategories;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public boolean hasAccess(Long fileId, Long userId) {
         return fileDao.hasAccess(fileId, userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CampusPage<FileModel> listByUser(String keyword, List<Long> extensions, List<Long> categories,
                                             Long userId, Integer page, Integer pageSize, String direction,
@@ -90,6 +87,7 @@ public class FileServiceImpl implements FileService {
         return campusPage;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CampusPage<FileModel> listByCourse(String keyword, List<Long> extensions, List<Long> categories,
                                               Long userId, Long courseId, Integer page, Integer pageSize,

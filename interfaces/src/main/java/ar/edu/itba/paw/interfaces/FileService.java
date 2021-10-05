@@ -48,14 +48,13 @@ public interface FileService {
 
     /**
      * Gets all the current available files
-     *
+     * @param userId id of the user with a relation to the files
      * @return list containing all the current available files (if any)
      */
     List<FileModel> list(Long userId);
 
     /**
      * Attempts to get a file given an id
-     *
      * @param fileId of the file to be retrieved
      * @return the file corresponding to the given id if it exists, null otherwise
      */
@@ -79,6 +78,10 @@ public interface FileService {
      * @param extensions List of ids of the extensions that are expected in the return list. To get all send an empty list
      * @param categories List of ids of the categories that are expected in the return list. To get all send an empty list
      * @param userId     the ID of the user that is searching
+     * @param page number of the current page
+     * @param pageSize amount of announcements to bring in one page
+     * @param direction of the order property (asc/desc)
+     * @param property to order the files
      * @return a list containing all the files that match with all the criterias given (if any).
      */
     CampusPage<FileModel> listByUser(String keyword, List<Long> extensions, List<Long> categories,
@@ -93,6 +96,10 @@ public interface FileService {
      * @param categories List of ids of the categories that are expected in the return list. To get all send an empty list
      * @param userId     the ID of the user that is searching
      * @param courseId   of the course
+     * @param page number of the current page
+     * @param pageSize amount of announcements to bring in one page
+     * @param direction of the order property (asc/desc)
+     * @param property to order the files
      * @return a list containing all the files that match with all the criterias given (if any).
      */
     CampusPage<FileModel> listByCourse(String keyword, List<Long> extensions, List<Long> categories,
@@ -102,7 +109,6 @@ public interface FileService {
 
     /**
      * Attempts to increment downloads counter of file
-     *
      * @param fileId the file's id that has been downloaded
      */
     void incrementDownloads(Long fileId);

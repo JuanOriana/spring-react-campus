@@ -67,41 +67,49 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.delete(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Course> list() {
         return courseDao.list();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Course> list(Long userId) {
         return courseDao.list(userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Course> listCurrent(Long userId) {
         return courseDao.listCurrent(userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Course> getById(Long id) {
         return courseDao.getById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Map<User, Role> getTeachers(Long courseId) {
         return courseDao.getTeachers(courseId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> getStudents(Long courseId) {
         return courseDao.getStudents(courseId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public boolean belongs(Long userId, Long courseId) {
         return courseDao.belongs(userId, courseId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public boolean isPrivileged(Long userId, Long courseId) {
         Optional<Role> userRole = userDao.getRole(userId, courseId);
@@ -116,21 +124,25 @@ public class CourseServiceImpl implements CourseService {
         courseDao.enroll(userId, courseId, roleId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> listUnenrolledUsers(Long courseId) {
         return courseDao.listUnenrolledUsers(courseId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Course> listWhereStudent(Long userId) {
         return courseDao.listWhereStudent(userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Course> listByYearQuarter(Integer year, Integer quarter) {
         return courseDao.listByYearQuarter(year, quarter);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Integer> getAvailableYears() {
         return courseDao.getAvailableYears();

@@ -60,17 +60,17 @@ public interface UserService {
      */
     List<User> list();
 
-
     /**
      * Attempts to get user profile image (if any). By default none image is set
-     *
+     * @param userId unique identifier of the user
      * @return an optional of byte[] that represents the image. If none, optional.isPresent == false
      */
     Optional<byte[]> getProfileImage(Long userId);
 
     /**
      * Attempts to update user profile image
-     *
+     * @param userId unique identifier of the user
+     * @param image byte array of the image
      */
     void updateProfileImage(Long userId, byte[] image);
 

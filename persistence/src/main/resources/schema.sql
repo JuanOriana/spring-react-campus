@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS user_to_course
     courseId INTEGER NOT NULL,
     userId   INTEGER NOT NULL,
     roleId   INTEGER NOT NULL,
+    UNIQUE(courseId, userId),
     FOREIGN KEY (userId) REFERENCES users ON DELETE CASCADE,
     FOREIGN KEY (courseId) references courses ON DELETE CASCADE,
     FOREIGN KEY (roleId) references roles ON DELETE CASCADE
