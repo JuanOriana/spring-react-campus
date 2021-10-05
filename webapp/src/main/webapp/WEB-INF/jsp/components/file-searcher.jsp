@@ -47,22 +47,22 @@
         <div style="display: flex; flex-direction: column;">
             <label for="order-property" class="file-select-label"><spring:message code="file.search.by" /></label>
             <select name="order-property" id="order-property" class="file-select">
-                <option value="date" <c:if test="${param.orderClass == 'date'}">selected</c:if>>
+                <option value="date" <c:if test="${param.orderProperty == 'date'}">selected</c:if>>
                     <spring:message code="file.search.order.by.date" htmlEscape="true"/>
                 </option>
-                <option value="name" <c:if test="${param.orderClass == 'name'}">selected</c:if>>
+                <option value="name" <c:if test="${param.orderProperty == 'name'}">selected</c:if>>
                     <spring:message code="file.search.order.by.name" htmlEscape="true"/>
                 </option>
-                <option value="downloads" <c:if test="${param.orderClass == 'downloads'}">selected</c:if>>
+                <option value="downloads" <c:if test="${param.orderProperty == 'downloads'}">selected</c:if>>
                     <spring:message code="file.search.order.by.downloads" htmlEscape="true"/>
                 </option>
             </select>
             <label for="order-direction" class="file-select-label"><spring:message code="file.search.order" /></label>
             <select name="order-direction" id="order-direction" class="file-select">
-                <option value="asc" <c:if test="${param.orderBy == 'asc'}">selected</c:if>>
+                <option value="asc" <c:if test="${param.orderDirection == 'asc'}">selected</c:if>>
                     <spring:message code="file.search.order.asc" htmlEscape="true"/>
                 </option>
-                <option value="desc" <c:if test="${param.orderBy == 'desc'}">selected</c:if>>
+                <option value="desc" <c:if test="${param.orderDirection == 'desc'}">selected</c:if>>
                     <spring:message code="file.search.order.desc" htmlEscape="true"/>
                 </option>
             </select>
