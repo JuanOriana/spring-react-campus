@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.exception;
+package ar.edu.itba.paw.models.exception;
 
 public class FileNotFoundException extends RuntimeException {
     public FileNotFoundException() {
