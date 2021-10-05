@@ -34,15 +34,15 @@ import static org.junit.Assert.*;
 @Sql("classpath:schema.sql")
 @Rollback
 @Transactional
-public class AnnouncementDaoImplTest {
+public class AnnouncementDaoImplTest extends BasicPopulator{
 
     @Autowired
     private DataSource ds;
 
     @Autowired
     private AnnouncementDaoImpl announcementDao;
-
-    private JdbcTemplate jdbcTemplate;
+//
+//    private JdbcTemplate jdbcTemplate;
     private final Long ANNOUNCEMENT_ID = 1L;
     private final String ANNOUNCEMENT_CONTENT = "test_content";
     private final String ANNOUNCEMENT_TITLE = "test_title";
@@ -91,78 +91,11 @@ public class AnnouncementDaoImplTest {
                     .withCourse(null)
                     .build();
 
-    private void insertSubject(Long subjectId, String subjectName, String code) {
-        SimpleJdbcInsert subjectJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("subjects");
-        Map<String, Object> args = new HashMap<>();
-        args.put("subjectId", subjectId);
-        args.put("subjectName", subjectName);
-        args.put("code", code);
-        subjectJdbcInsert.execute(args);
-    }
-
-    private void insertCourse(Long courseId, Long subjectId, int quarter, String board, int year) {
-        SimpleJdbcInsert courseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses");
-        Map<String, Object> args = new HashMap<>();
-        args.put("courseId", courseId);
-        args.put("subjectId", subjectId);
-        args.put("quarter", quarter);
-        args.put("board", board);
-        args.put("year", year);
-        courseJdbcInsert.execute(args);
-    }
-
-    private void insertUser(Long userId, int fileNumber, String name, String surname, String username, String email,
-                            String password, boolean isAdmin) {
-        SimpleJdbcInsert userJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("users");
-        SimpleJdbcInsert profileImageJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("profile_images");
-        Map<String, Object> args = new HashMap<>();
-        args.put("userId",userId);
-        args.put("fileNumber",fileNumber);
-        args.put("name",name);
-        args.put("surname",surname);
-        args.put("username",username);
-        args.put("email",email);
-        args.put("password",password);
-        args.put("isAdmin",isAdmin);
-        userJdbcInsert.execute(args);
-        Map<String,Object> argsProfileImage = new HashMap<>();
-        argsProfileImage.put("image", null);
-        argsProfileImage.put("userid", userId);
-        profileImageJdbcInsert.execute(argsProfileImage);
-    }
-
-    private void insertAnnouncement(Long announcementId, Long userId, Long courseId, String title, String content, LocalDateTime date) {
-        SimpleJdbcInsert announcementJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("announcements");
-        Map<String, Object> args = new HashMap<>();
-        args.put("announcementId",announcementId);
-        args.put("userId",userId);
-        args.put("courseId",courseId);
-        args.put("title",title);
-        args.put("content",content);
-        args.put("date", Timestamp.valueOf(date));
-        announcementJdbcInsert.execute(args);
-    }
-
-    private void insertRole(int roleId, String roleName) {
-        SimpleJdbcInsert roleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("roles");
-        Map<String, Object> args = new HashMap<>();
-        args.put("roleId", roleId);
-        args.put("roleName", roleName);
-        roleJdbcInsert.execute(args);
-    }
-
-    private void insertUserToCourse(Long userId, Long courseId, int roleId) {
-        SimpleJdbcInsert userToCourseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("user_to_course");
-        Map<String, Object> args = new HashMap<>();
-        args.put("userId",userId);
-        args.put("courseId",courseId);
-        args.put("roleId",roleId);
-        userToCourseJdbcInsert.execute(args);
-    }
 
     @Before
     public void setUp() {
-        jdbcTemplate = new JdbcTemplate(ds);
+//        jdbcTemplate = new JdbcTemplate(ds);
+        super.setUp();
         insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
         insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
         insertUser(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, USER_IS_ADMIN);
