@@ -37,6 +37,7 @@ public class RoleServiceImpl implements RoleService {
         return roleDao.delete(roleId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Role> list() {
         return roleDao.list();

@@ -37,6 +37,7 @@ public class FileExtensionServiceImpl implements FileExtensionService {
         return fileExtensionDao.delete(fileExtensionId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<FileExtension> getExtensions() {
         return fileExtensionDao.getExtensions();
