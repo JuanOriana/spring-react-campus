@@ -10,20 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class FileServiceImpl implements FileService {
 
-    private final FileDao fileDao;
-
-    private final FileCategoryDao fileCategoryDao;
+    @Autowired
+    private FileDao fileDao;
 
     @Autowired
-    public FileServiceImpl(FileDao fileDao, FileCategoryDao fileCategoryDao) {
-        this.fileDao = fileDao;
-        this.fileCategoryDao = fileCategoryDao;
-    }
+    private FileCategoryDao fileCategoryDao;
 
     @Transactional
     @Override
