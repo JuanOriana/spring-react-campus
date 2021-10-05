@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1"/>
+    <title>Nuevo mensaje de alumno</title>
+</head>
+
+<div style="background: #CBF3F0;
+    width: 100%;
+    flex:1;
+    padding-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;">
+    <h2 style="color: #176961;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;">Un alumno te ha enviado un mensaje - <span th:text="${subjectName}"></span></h2>
+    <p style="text-align: center;">De: <span th:text="${student.getName()}"></span> <span th:text="${student.getSurname()}"></span></p>
+
+        <div>
+            <div style="align-items: center;
+    background: white;
+    width: 90%;
+    border-radius: 6px;
+    min-height: 100px;
+    padding: 10px;
+    border-top: 1px solid #2EC4B6;
+    border-left: 1px solid #2EC4B6;
+    border-right: 1px solid #2EC4B6;
+    border-bottom: 4px solid #2EC4B6;
+    margin-bottom: 5px;">
+                <div style="display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;">
+                    <h3 style="font-size: 24px;" th:text="${subject}"></h3>
+                </div>
+                <p th:text="${content}"></p>
+            </div>
+        </div>
+
+    <div style="width: 100%; display: flex; align-items: center; justify-content: center; background: #2EC4B6; color: white;font-size: 16px;padding: 6px;">
+        <p>Campus <span th:text="${year}"></span> - Todos los derechos reservados</p>
+    </div>
+
+</div>
+</html>
