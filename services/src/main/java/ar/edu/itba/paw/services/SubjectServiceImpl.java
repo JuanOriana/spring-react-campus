@@ -37,6 +37,7 @@ public class SubjectServiceImpl implements SubjectService {
         return subjectDao.delete(subjectId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Subject> list() {
         return subjectDao.list();

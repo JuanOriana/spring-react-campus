@@ -26,10 +26,10 @@
             <div class="big-wrapper">
                 <c:forEach var="teacher" items="${teacherSet}">
                         <div class="professor-unit">
-                            <c:if test="${teacher.key.profileImage == null}">
+                            <c:if test="${teacher.key.image == null}">
                                 <img alt="professor icon" class="professor-icon" src="<c:url value="/resources/images/default-user-image.png"/>"/>
                             </c:if>
-                            <c:if test="${teacher.key.profileImage != null}">
+                            <c:if test="${teacher.key.image != null}">
                                 <img alt="professor icon" class="professor-icon" src="<c:url value="/user/profile-image/${teacher.key.userId}"/>"/>
                             </c:if>
                             <div style="display: flex; width:200px; flex-direction: column">

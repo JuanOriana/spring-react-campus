@@ -49,19 +49,22 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Announcement> getById(Long id) {
         return announcementDao.getById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public CampusPage<Announcement> listByUser(Long userId, CampusPageRequest pageRequest) {
-        return announcementDao.listByUser(userId, pageRequest);
+    public CampusPage<Announcement> listByUser(Long userId, Integer page, Integer pageSize) {
+        return announcementDao.listByUser(userId, new CampusPageRequest(page, pageSize));
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public CampusPage<Announcement> listByCourse(Long courseId, CampusPageRequest pageRequest) {
-        return announcementDao.listByCourse(courseId, pageRequest);
+    public CampusPage<Announcement> listByCourse(Long courseId, Integer page, Integer pageSize) {
+        return announcementDao.listByCourse(courseId, new CampusPageRequest(page, pageSize));
     }
 
 }

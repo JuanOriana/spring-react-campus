@@ -40,6 +40,7 @@ public class TimetableServiceImpl implements TimetableService {
         return timetableDaoDao.delete(courseId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Timetable> getById(Long courseId) {
         return timetableDaoDao.getById(courseId);

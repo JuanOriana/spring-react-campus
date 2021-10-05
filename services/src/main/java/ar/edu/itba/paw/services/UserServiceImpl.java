@@ -16,15 +16,11 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
-
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
-        this.userDao = userDao;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
@@ -61,21 +57,25 @@ public class UserServiceImpl implements UserService {
         return userDao.delete(userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<User> findById(Long userId) {
         return userDao.findById(userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<User> findByUsername(String username) {
         return userDao.findByUsername(username);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> list() {
         return userDao.list();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<byte[]> getProfileImage(Long userId) {
         return userDao.getProfileImage(userId);

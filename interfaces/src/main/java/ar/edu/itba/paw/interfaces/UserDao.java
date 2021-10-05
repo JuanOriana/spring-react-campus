@@ -1,11 +1,7 @@
 package ar.edu.itba.paw.interfaces;
-
-import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
-
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface UserDao {

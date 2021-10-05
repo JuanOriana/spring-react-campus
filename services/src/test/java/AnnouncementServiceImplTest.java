@@ -3,6 +3,7 @@ import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.MailingService;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import ar.edu.itba.paw.services.AnnouncementServiceImpl;
 import ar.edu.itba.paw.services.CourseServiceImpl;
 import org.junit.Assert;
@@ -25,7 +26,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class AnnouncementServiceImplTest {
     private static final Long ANNOUNCEMENT_ID = 1L;
-    private static final Long INVALID_ANNOUNCEMENT_ID = 999L;
     private final Long USER_ID = 1L;
     private final int USER_FILE_NUMBER = 41205221;
     private final String USER_NAME = "Paw";
@@ -34,7 +34,10 @@ public class AnnouncementServiceImplTest {
     private final String USER_EMAIL = "paw2021@itba.edu.ar";
     private final String USER_PASSWORD = "asd123";
     private final Integer PAGE_SIZE = 10;
+    private final Integer PAGE_TOTAL = 1;
     private final Integer PAGE = 1;
+    private final Integer NEGATIVE_PAGE = -1;
+    private final Integer NEGATIVE_PAGE_SIZE = -1;
 
     private final Long COURSE_ID = 1L;
     private final int COURSE_YEAR = 2021;
@@ -84,82 +87,49 @@ public class AnnouncementServiceImplTest {
     @InjectMocks
     private final AnnouncementServiceImpl announcementService = new AnnouncementServiceImpl();
 
-    @Mock
-    private CourseService courseService;
-
-    @Mock
-    private MailingService mailingService;
-
-
-    @Test
-    public void testCreateAnnouncement() {
-        Announcement announcement = getMockAnnouncement();
-        when(announcementDao.create(any(LocalDateTime.class), anyString(), anyString(),
-                any(User.class), any(Course.class))).thenReturn(announcement);
-        final Announcement newAnnouncement = announcementService.create(ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT,
-                announcement.getAuthor(), announcement.getCourse());
-        Assert.assertEquals(ANNOUNCEMENT_ID, newAnnouncement.getAnnouncementId());
-    }
-
-    @Test
-    public void testFindByCourseId() {
-        Announcement announcement = getMockAnnouncement();
-        when(announcementDao.getById(eq(ANNOUNCEMENT_ID))).thenReturn(Optional.of(announcement));
-        final Optional<Announcement> queriedAnnouncement = announcementService.getById(ANNOUNCEMENT_ID);
-
-        Assert.assertTrue(queriedAnnouncement.isPresent());
-        Assert.assertEquals(ANNOUNCEMENT_ID, queriedAnnouncement.get().getAnnouncementId());
-    }
-
-    @Test(expected =  RuntimeException.class)
-    public void testCreateAnnouncementDuplicate() {
-        Announcement announcement = getMockAnnouncement();
-        when(announcementDao.create(any(LocalDateTime.class), anyString(), anyString(),
-                any(User.class), any(Course.class))).thenThrow(RuntimeException.class);
-        announcementService.create(ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT,
-                announcement.getAuthor(), announcement.getCourse());
-        Assert.fail("Should have thrown runtime exception for duplicate announcement creation");
-    }
-
-    @Test
-    public void testUpdate() {
-        Announcement announcement = getMockAnnouncement();
-        when(announcementDao.update(eq(ANNOUNCEMENT_ID), eq(announcement))).thenReturn(true);
-        boolean announcementUpdateResult = announcementService.update(ANNOUNCEMENT_ID, announcement);
-        Assert.assertTrue(announcementUpdateResult);
-    }
-
-    @Test
-    public void testUpdateDoesNotExist() {
-        Announcement announcement = getMockAnnouncement();
-        when(announcementDao.update(eq(INVALID_ANNOUNCEMENT_ID), eq(announcement))).thenReturn(false);
-        boolean announcementUpdateResult = announcementService.update(INVALID_ANNOUNCEMENT_ID, announcement);
-        Assert.assertFalse(announcementUpdateResult);
-    }
-
-    @Test
-    public void testDelete() {
-        when(announcementDao.delete(eq(ANNOUNCEMENT_ID))).thenReturn(true);
-        boolean announcementUpdateResult = announcementService.delete(ANNOUNCEMENT_ID);
-        Assert.assertTrue(announcementUpdateResult);
-    }
-
-    @Test
-    public void testDeleteDoesNotExit() {
-        when(announcementDao.delete(eq(INVALID_ANNOUNCEMENT_ID))).thenReturn(false);
-        boolean announcementUpdateResult = announcementService.delete(INVALID_ANNOUNCEMENT_ID);
-        Assert.assertFalse(announcementUpdateResult);
-    }
-
-    @Test
-  public void testList() {
+    @Test(expected = PaginationArgumentException.class)
+    public void testListByUserPaginationExceptionNegativePage() {
               Announcement announcement = getMockAnnouncement();
-              CampusPageRequest pageRequest = new CampusPageRequest(PAGE, PAGE_SIZE);
+              CampusPageRequest pageRequest = new CampusPageRequest(NEGATIVE_PAGE, PAGE_SIZE);
               when(announcementDao.listByUser(USER_ID, pageRequest))
                               .thenReturn(new CampusPage<>(new ArrayList<Announcement>(){{ add(announcement); }},
-                                      pageRequest.getPageSize(), pageRequest.getPage(), PAGE));
-              List<Announcement> announcements = announcementService.listByUser(USER_ID, pageRequest).getContent();
-              Assert.assertTrue(announcements.size() > 0);
-              Assert.assertEquals(announcement.getCourse().getCourseId(), announcements.get(0).getCourse().getCourseId());
-          }
+                                      PAGE_SIZE, NEGATIVE_PAGE, PAGE_TOTAL));
+              announcementService.listByUser(USER_ID, NEGATIVE_PAGE, PAGE_SIZE);
+              Assert.fail("Should have thrown PaginationArgumentException");
+    }
+
+    @Test(expected = PaginationArgumentException.class)
+    public void testListByUserPaginationExceptionNegativePageSize() {
+        Announcement announcement = getMockAnnouncement();
+        CampusPageRequest pageRequest = new CampusPageRequest(PAGE, NEGATIVE_PAGE_SIZE);
+        when(announcementDao.listByUser(USER_ID, pageRequest))
+                .thenReturn(new CampusPage<>(new ArrayList<Announcement>(){{ add(announcement); }},
+                        NEGATIVE_PAGE_SIZE, PAGE, PAGE_TOTAL));
+        announcementService.listByUser(USER_ID, NEGATIVE_PAGE_SIZE, PAGE_SIZE);
+        Assert.fail("Should have thrown PaginationArgumentException");
+    }
+
+    @Test(expected = PaginationArgumentException.class)
+    public void testListByCoursePaginationExceptionNegativePage() {
+        Announcement announcement = getMockAnnouncement();
+        CampusPageRequest pageRequest = new CampusPageRequest(NEGATIVE_PAGE, PAGE_SIZE);
+        when(announcementDao.listByCourse(USER_ID, pageRequest))
+                .thenReturn(new CampusPage<>(new ArrayList<Announcement>(){{ add(announcement); }},
+                        PAGE_SIZE, NEGATIVE_PAGE, PAGE_TOTAL));
+        announcementService.listByCourse(USER_ID, NEGATIVE_PAGE, PAGE_SIZE);
+        Assert.fail("Should have thrown PaginationArgumentException");
+    }
+
+    @Test(expected = PaginationArgumentException.class)
+    public void testListByCoursePaginationExceptionNegativePageSize() {
+        Announcement announcement = getMockAnnouncement();
+        CampusPageRequest pageRequest = new CampusPageRequest(PAGE, NEGATIVE_PAGE_SIZE);
+        when(announcementDao.listByCourse(USER_ID, pageRequest))
+                .thenReturn(new CampusPage<>(new ArrayList<Announcement>(){{ add(announcement); }},
+                        NEGATIVE_PAGE_SIZE, PAGE, PAGE_TOTAL));
+        announcementService.listByCourse(USER_ID, PAGE, NEGATIVE_PAGE_SIZE);
+        Assert.fail("Should have thrown PaginationArgumentException");
+    }
+
+
 }

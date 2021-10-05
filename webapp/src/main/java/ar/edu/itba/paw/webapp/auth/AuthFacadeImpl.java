@@ -10,4 +10,8 @@ public class AuthFacadeImpl implements AuthFacade {
     public User getCurrentUser() {
         return ((CampusUser)(SecurityContextHolder.getContext().getAuthentication().getPrincipal())).toUser();
     }
+
+    public Long getCurrentUserId() {
+        return getCurrentUser().getUserId();
+    }
 }

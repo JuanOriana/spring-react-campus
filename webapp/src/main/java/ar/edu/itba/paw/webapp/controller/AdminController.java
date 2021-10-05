@@ -114,7 +114,7 @@ public class AdminController extends AuthController {
                                         @RequestParam(name = "courseId") Long courseId){
         String successMessage = "";
         if (!errors.hasErrors()) {
-            courseService.enroll(userToCourseForm.getUserId(),courseId,userToCourseForm.getRoleId());
+            courseService.enroll(userToCourseForm.getUserId(), courseId, userToCourseForm.getRoleId());
             successMessage ="user.success.message";
         }
         return addUserToCourse(userToCourseForm,courseId,successMessage);
