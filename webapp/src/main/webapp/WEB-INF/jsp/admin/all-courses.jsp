@@ -55,8 +55,15 @@
                     <tr>
                         <td><spring:message code="all.courses.course.code" htmlEscape="true"
                                             arguments="${course.subject.code}"/> </td>
-                        <td><spring:message code="all.courses.course.name" htmlEscape="true"
-                                            arguments="${course.subject.name}"/></td>
+
+                        <td>
+                            <a class="styleless-anchor"
+                               href="<c:url value="/admin/course/enroll?courseId=${course.courseId}"/>">
+                                <spring:message code="all.courses.course.name" htmlEscape="true"
+                                            arguments="${course.subject.name}"/>
+                            </a>
+                        </td>
+
                         <td><spring:message code="all.courses.course.board" htmlEscape="true"
                                             arguments="${course.board}"/></td>
                     </tr>

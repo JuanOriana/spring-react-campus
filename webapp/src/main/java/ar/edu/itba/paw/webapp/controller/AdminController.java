@@ -75,13 +75,11 @@ public class AdminController extends AuthController {
     }
 
     @PostMapping(value = "/course/new")
-    public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult validation,
-                                  RedirectAttributes redirectAttributes) {
+    public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult validation) {
         if(!validation.hasErrors()) {
-            courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
+            Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
                     , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
-            redirectAttributes.addFlashAttribute("successMessage", "course.success.message");
-            return new ModelAndView("redirect:/admin/portal");
+            return new ModelAndView("redirect:/admin/course/enroll?courseId="+course.getCourseId());
         }
         return newCourse(courseForm);
     }

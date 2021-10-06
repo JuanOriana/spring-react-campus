@@ -57,7 +57,7 @@ public class CourseController extends AuthController {
     }
 
     @GetMapping(value = "")
-    public String coursePortal(@PathVariable Integer courseId) {
+    public String coursePortal(@PathVariable Long courseId) {
        return "redirect:/course/{courseId}/announcements";
 
     }
