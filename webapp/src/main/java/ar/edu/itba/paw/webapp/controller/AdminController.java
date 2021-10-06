@@ -25,7 +25,7 @@ public class AdminController extends AuthController {
     private final SubjectService subjectService;
     private final CourseService courseService;
     private final RoleService roleService;
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
 
     private static final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
@@ -59,7 +59,7 @@ public class AdminController extends AuthController {
            User user =userService.create(userRegisterForm.getFileNumber(), userRegisterForm.getName(), userRegisterForm.getSurname(),
                     userRegisterForm.getUsername(), userRegisterForm.getEmail(),
                     userRegisterForm.getPassword(), false);
-           LOGGER.debug("User of name "+user.getUsername() + " created");
+           LOGGER.debug("User of name " + user.getUsername() + " created");
            redirectAttributes.addFlashAttribute("successMessage", "admin.success.message");
            return new ModelAndView("redirect:/admin/portal");
         }
@@ -122,7 +122,7 @@ public class AdminController extends AuthController {
         if (!errors.hasErrors()) {
             courseService.enroll(userToCourseForm.getUserId(), courseId, userToCourseForm.getRoleId());
             successMessage ="user.success.message";
-            LOGGER.debug("User "+ userToCourseForm.getUserId() +"enrolled in" +courseId);
+            LOGGER.debug("User "+ userToCourseForm.getUserId() +" succesfully enrolled in" +courseId);
         }
         return addUserToCourse(userToCourseForm,courseId,successMessage);
     }

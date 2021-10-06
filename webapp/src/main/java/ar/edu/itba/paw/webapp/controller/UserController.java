@@ -3,6 +3,8 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.form.UserProfileForm;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class UserController extends AuthController {
 
     private final UserService userService;
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public UserController(AuthFacade authFacade, UserService userService) {
@@ -40,6 +43,7 @@ public class UserController extends AuthController {
             userService.updateProfileImage(authFacade.getCurrentUser().getUserId(),
                     userProfileForm.getImage().getBytes());
         }
+        LOGGER.debug("Could not update image");
         return user(userProfileForm);
     }
 
@@ -48,6 +52,7 @@ public class UserController extends AuthController {
                              HttpServletResponse response) throws IOException {
         Optional<byte[]> image = userService.getProfileImage(userId);
         if (!image.isPresent()) {
+            LOGGER.debug("User " + userId + "does not have an image");
             return;
         }
         response.setContentType("image/*");

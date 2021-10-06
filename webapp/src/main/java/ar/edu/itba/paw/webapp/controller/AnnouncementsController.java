@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 public class AnnouncementsController extends AuthController {
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private final AnnouncementService announcementService;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ErrorControllerAdvice.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
 
     @Autowired
     public AnnouncementsController(AuthFacade authFacade, AnnouncementService announcementService) {

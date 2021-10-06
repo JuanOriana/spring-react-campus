@@ -149,8 +149,7 @@ public class CourseController extends AuthController {
             FileModel createdFile = fileService.create(file.getSize(), file.getOriginalFilename(), file.getBytes(),
                     courseService.findById(courseId).orElseThrow(CourseNotFoundException::new),
                     Collections.singletonList(fileForm.getCategoryId()));
-            LOGGER.debug("File in course " + courseId +
-                    " created with id: " + createdFile.getFileId());
+            LOGGER.debug("File in course " + courseId + " created with id: " + createdFile.getFileId());
             fileForm.setFile(null);
             fileForm.setCategoryId(null);
             successMessage = "file.success.message";
@@ -162,7 +161,10 @@ public class CourseController extends AuthController {
     @GetMapping(value = "/mail/{userId}")
     public ModelAndView sendMail(@PathVariable final Long courseId, @PathVariable final Long userId,
                                  final MailForm mailForm) {
-        if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) throw new UserNotFoundException();
+        if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) {
+            LOGGER.warn("User of id " + userId + " does not exist or is not a teacher in " + courseId);
+            throw new UserNotFoundException();
+        }
         ModelAndView mav = new ModelAndView("sendmail");
         mav.addObject("user", userService.findById(userId).orElseThrow(UserNotFoundException::new));
         mav.addObject("mailForm",mailForm);
@@ -174,7 +176,7 @@ public class CourseController extends AuthController {
                                  @Valid MailForm mailForm, final BindingResult errors,
                                  RedirectAttributes redirectAttributes) {
         if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) {
-            LOGGER.error("User of id " +userId+ " does not exist or is not a teacher in " + courseId);
+            LOGGER.warn("User of id " + userId + " does not exist or is not a teacher in " + courseId);
             throw new UserNotFoundException();
         }
         if (!errors.hasErrors()) {
