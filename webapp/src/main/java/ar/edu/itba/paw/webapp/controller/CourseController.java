@@ -167,11 +167,11 @@ public class CourseController extends AuthController {
     public ModelAndView sendMail(@PathVariable Long courseId, @PathVariable Long userId,
                                  @Valid MailForm mailForm, final BindingResult errors,
                                  RedirectAttributes redirectAttributes) {
-        if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) throw new UserNotFoundException();
+        if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId))
+            throw new UserNotFoundException();
         if (!errors.hasErrors()) {
-            User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
-            Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
-            mailingService.sendTeacherEmail(authFacade.getCurrentUser(),user.getEmail(), mailForm.getSubject(), mailForm.getContent(), course);
+            mailingService.sendEmail(authFacade.getCurrentUser(), userId, mailForm.getSubject(),
+                    mailForm.getContent(), courseId);
             redirectAttributes.addFlashAttribute("successMessage","email.success.message");
             return new ModelAndView("redirect:/course/{courseId}/teachers");
         }

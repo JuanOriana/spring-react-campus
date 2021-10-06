@@ -260,8 +260,10 @@ public class  FileDaoImpl implements FileDao {
                                           Long userId, Long courseId, CampusPageRequest pageRequest,
                                           CampusPageSort sort) {
         String unOrderedQuery = buildFilteredQuery(extensions, categories, courseId);
-        extensions.addAll(categories);
-        Object[] sqlParams = getQueryParams(extensions, keyword, courseId, userId);
+        List<Long> filterMerge = new ArrayList<>();
+        filterMerge.addAll(extensions);
+        filterMerge.addAll(categories);
+        Object[] sqlParams = getQueryParams(filterMerge, keyword, courseId, userId);
         int pageCount = getPageCount(unOrderedQuery, sqlParams, pageRequest.getPageSize());
         if(pageCount == 0) return new CampusPage<>();
         if(pageRequest.getPage() > pageCount) throw new PaginationArgumentException();

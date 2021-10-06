@@ -23,7 +23,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -34,7 +33,6 @@ import javax.mail.*;
 
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 import java.util.Properties;
 
 @EnableAsync

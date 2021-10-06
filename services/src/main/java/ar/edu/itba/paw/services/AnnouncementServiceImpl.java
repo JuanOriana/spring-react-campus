@@ -32,7 +32,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         List<User> userList = courseService.getStudents(announcement.getCourse().getCourseId());
         List<String> emailList = new ArrayList<>();
         userList.forEach(u->emailList.add(u.getEmail()));
-        mailingService.sendNewAnnouncementNotification(emailList, title, content, course, author);
+        mailingService.broadcastAnnouncementNotification(emailList, title, content, course, author);
         return announcement;
     }
 

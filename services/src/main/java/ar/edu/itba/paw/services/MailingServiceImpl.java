@@ -1,8 +1,12 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.MailingService;
+import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.exception.CourseNotFoundException;
+import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -19,31 +23,39 @@ public class MailingServiceImpl implements MailingService {
 
     private final Session session;
     private final SpringTemplateEngine templateEngine;
-
+    private final CourseService courseService;
+    private final UserService userService;
     private final String SERVER_MAIL = "mpvcampus@gmail.com";
 
     @Autowired
-    public MailingServiceImpl(Session session, SpringTemplateEngine templateEngine) {
+    public MailingServiceImpl(Session session, SpringTemplateEngine templateEngine,
+                              UserService userService, CourseService courseService) {
         this.session = session;
         this.templateEngine = templateEngine;
+        this.courseService = courseService;
+        this.userService = userService;
     }
 
 
 
-    public void sendTeacherEmail(User student, String to, String subject, String content, Course course) {
+    @Override
+    public void sendEmail(User sender, Long receiverId, String subject, String content, Long courseId) {
+        User user = userService.findById(receiverId).orElseThrow(UserNotFoundException::new);
+        Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
         Map<String,Object> model = new HashMap<>();
         model.put("subjectName", course.getSubject().getName());
-        model.put("student",student);
+        model.put("student", sender);
         model.put("subject", subject);
         model.put("content", content);
         model.put("year", "2021");
-        sendThymeleafTemplateEmail(getMimeMessage(student.getEmail()), Collections.singletonList(to), subject, model, "student-email-to-teacher.html");
+        sendThymeleafTemplateEmail(getMimeMessage(sender.getEmail()), Collections.singletonList(user.getEmail()),
+                subject, model, "student-email-to-teacher.html");
     }
 
 
     @Override
     @Async
-    public void sendNewAnnouncementNotification(List<String> to, String title, String content, Course course, User author) {
+    public void broadcastAnnouncementNotification(List<String> to, String title, String content, Course course, User author) {
         Map<String, Object> model = new HashMap<>();
         model.put("title", title);
         model.put("content", content);
@@ -54,7 +66,7 @@ public class MailingServiceImpl implements MailingService {
         sendThymeleafTemplateEmail(to, "Nuevo anuncio en curso: " + course.getSubject().getName(), model, "new-announcement-notification.html");
     }
 
-    private void sendEmail(Message message, List<String> to, String subject, String content, String contentType) {
+    private void transportMessage(Message message, List<String> to, String subject, String content, String contentType) {
         try {
             for (String destination : to) {
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(destination));
@@ -87,13 +99,13 @@ public class MailingServiceImpl implements MailingService {
     }
 
     private void sendHtmlBroadcastEmail(List<String> to, String subject, String content) {
-        sendEmail(new MimeMessage(session), to, subject, content, "text/html");
+        transportMessage(new MimeMessage(session), to, subject, content, "text/html");
     }
 
     private void sendThymeleafTemplateEmail(Message message,List<String> to,String subject, Map<String, Object> args, String templateName) {
         Context context = new Context();
         context.setVariables(args);
         String htmlBody = templateEngine.process(templateName, context);
-        sendEmail(message,to,subject,htmlBody, "text/html");
+        transportMessage(message,to,subject,htmlBody, "text/html");
     }
 }
