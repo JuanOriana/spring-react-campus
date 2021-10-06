@@ -8,7 +8,6 @@ import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.form.AnnouncementForm;
 import ar.edu.itba.paw.webapp.form.FileForm;
 import ar.edu.itba.paw.webapp.form.MailForm;
-import com.sun.media.jfxmedia.logging.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -174,9 +173,12 @@ public class CourseController extends AuthController {
     public ModelAndView sendMail(@PathVariable Long courseId, @PathVariable Long userId,
                                  @Valid MailForm mailForm, final BindingResult errors,
                                  RedirectAttributes redirectAttributes) {
-        if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId))
+        if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) {
+            LOGGER.error("User of id " +userId+ " does not exist or is not a teacher in " + courseId);
             throw new UserNotFoundException();
+        }
         if (!errors.hasErrors()) {
+            LOGGER.debug("Attempting to send mail to " + userId);
             mailingService.sendEmail(authFacade.getCurrentUser(), userId, mailForm.getSubject(),
                     mailForm.getContent(), courseId);
             redirectAttributes.addFlashAttribute("successMessage","email.success.message");

@@ -7,7 +7,6 @@ import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import ar.edu.itba.paw.webapp.form.UserToCourseForm;
-import com.sun.media.jfxmedia.logging.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -60,7 +59,7 @@ public class AdminController extends AuthController {
            User user =userService.create(userRegisterForm.getFileNumber(), userRegisterForm.getName(), userRegisterForm.getSurname(),
                     userRegisterForm.getUsername(), userRegisterForm.getEmail(),
                     userRegisterForm.getPassword(), false);
-            LOGGER.debug("User created with id: " + user.getUserId());
+           LOGGER.debug("User of name "+user.getUsername() + " created");
            redirectAttributes.addFlashAttribute("successMessage", "admin.success.message");
            return new ModelAndView("redirect:/admin/portal");
         }

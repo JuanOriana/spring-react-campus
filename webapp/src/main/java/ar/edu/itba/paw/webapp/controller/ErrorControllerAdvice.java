@@ -26,13 +26,13 @@ public class ErrorControllerAdvice {
     @ExceptionHandler(CourseNotFoundException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public ModelAndView noSuchCourse() {
-        LOGGER.error("Course not found");
+        LOGGER.error("Course could not be found");
         return new ModelAndView("404");
     }
 
     @ExceptionHandler(DuplicateUserException.class)
     public ModelAndView userKeyViolation(DuplicateUserException ex) {
-        LOGGER.error("Loading a user with repeated credential has been attempted ");
+        LOGGER.error("Loading a user with repeated credential has been attempted");
         ModelAndView mav = new ModelAndView("admin/new-user");
         UserRegisterForm userRegisterForm = new UserRegisterForm.Builder()
                 .withName(ex.getName())
