@@ -19,9 +19,9 @@ public class CourseVoter {
     private FileService fileService;
 
     public boolean hasCourseAccess(Authentication authentication, Long courseId) {
-        boolean isAnonymous = authentication instanceof AnonymousAuthenticationToken;
+        if(authentication instanceof AnonymousAuthenticationToken) return false;
         User user = authFacade.getCurrentUser();
-        return !user.isAdmin() && !isAnonymous && courseService.belongs(user.getUserId(), courseId);
+        return !user.isAdmin() && courseService.belongs(user.getUserId(), courseId);
     }
 
     public boolean hasCoursePrivileges(Authentication authentication, Long courseId) {
