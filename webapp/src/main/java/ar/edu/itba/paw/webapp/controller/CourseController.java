@@ -15,6 +15,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import javax.validation.Valid;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -96,10 +98,9 @@ public class CourseController extends AuthController {
     }
 
     @GetMapping("/teachers")
-    public ModelAndView professors(@PathVariable Long courseId, String successMessage) {
+    public ModelAndView teachers(@PathVariable Long courseId) {
         final ModelAndView mav = new ModelAndView("teachers");
         mav.addObject("teacherSet", courseService.getTeachers(courseId).entrySet());
-        mav.addObject("successMessage", successMessage);
         return mav;
     }
 
@@ -164,18 +165,17 @@ public class CourseController extends AuthController {
 
     @PostMapping(value = "/mail/{userId}")
     public ModelAndView sendMail(@PathVariable Long courseId, @PathVariable Long userId,
-                                 @Valid MailForm mailForm, final BindingResult errors) {
-        String successMessage = null;
+                                 @Valid MailForm mailForm, final BindingResult errors,
+                                 RedirectAttributes redirectAttributes) {
         if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) throw new UserNotFoundException();
         if (!errors.hasErrors()) {
             User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
             Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
             mailingService.sendTeacherEmail(authFacade.getCurrentUser(),user.getEmail(), mailForm.getSubject(), mailForm.getContent(), course);
-            mailForm.setSubject("");
-            mailForm.setContent("");
-            successMessage = "email.success.message";
+            redirectAttributes.addFlashAttribute("successMessage","email.success.message");
+            return new ModelAndView("redirect:/course/{courseId}/teachers");
         }
-        return professors(courseId, successMessage);
+        return sendMail(courseId,userId,mailForm);
     }
 
 }
