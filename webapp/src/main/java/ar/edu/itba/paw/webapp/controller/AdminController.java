@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -38,10 +39,8 @@ public class AdminController extends AuthController {
     }
 
     @RequestMapping(value = "/portal")
-    public ModelAndView adminPortal(final String successMessage){
-        ModelAndView mav = new  ModelAndView("admin/admin-portal");
-        mav.addObject("successMessage",successMessage);
-        return mav;
+    public ModelAndView adminPortal(){
+        return new  ModelAndView("admin/admin-portal");
     }
 
     @GetMapping(value = "/user/new")
@@ -52,12 +51,14 @@ public class AdminController extends AuthController {
     }
 
     @PostMapping(value = "/user/new")
-    public ModelAndView newUser(@Valid UserRegisterForm userRegisterForm, final BindingResult validation) {
+    public ModelAndView newUser(@Valid UserRegisterForm userRegisterForm, final BindingResult validation,
+                                RedirectAttributes redirectAttributes) {
         if (!validation.hasErrors()) {
            userService.create(userRegisterForm.getFileNumber(), userRegisterForm.getName(), userRegisterForm.getSurname(),
                     userRegisterForm.getUsername(), userRegisterForm.getEmail(),
                     userRegisterForm.getPassword(), false);
-            return adminPortal("admin.success.message");
+           redirectAttributes.addFlashAttribute("successMessage", "admin.success.message");
+           return new ModelAndView("redirect:/admin/portal");
         }
         return newUser(userRegisterForm);
     }
@@ -74,11 +75,13 @@ public class AdminController extends AuthController {
     }
 
     @PostMapping(value = "/course/new")
-    public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult validation) {
+    public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult validation,
+                                  RedirectAttributes redirectAttributes) {
         if(!validation.hasErrors()) {
             courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
                     , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
-            return adminPortal("course.success.message");
+            redirectAttributes.addFlashAttribute("successMessage", "course.success.message");
+            return new ModelAndView("redirect:/admin/portal");
         }
         return newCourse(courseForm);
     }
