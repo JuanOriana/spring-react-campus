@@ -8,6 +8,7 @@ import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.form.AnnouncementForm;
 import ar.edu.itba.paw.webapp.form.FileForm;
 import ar.edu.itba.paw.webapp.form.MailForm;
+import com.sun.media.jfxmedia.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,7 +58,7 @@ public class CourseController extends AuthController {
     }
 
     @GetMapping(value = "")
-    public String coursePortal(@PathVariable Integer courseId) {
+    public String coursePortal(@PathVariable Long courseId) {
        return "redirect:/course/{courseId}/announcements";
 
     }
@@ -88,8 +89,10 @@ public class CourseController extends AuthController {
                                          @Valid AnnouncementForm announcementForm, final BindingResult errors) {
         String successMessage = null;
         if (!errors.hasErrors()) {
-            announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
+            Announcement announcement =announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
                     authFacade.getCurrentUser(), courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
+            Logger.logMsg(Logger.DEBUG,"Announcement in course " + courseId +
+                    " created with id: " + announcement.getAnnouncementId());
             announcementForm.setContent("");
             announcementForm.setTitle("");
             successMessage = "announcement.success.message";
@@ -142,9 +145,11 @@ public class CourseController extends AuthController {
         if (!errors.hasErrors()) {
             CommonsMultipartFile file = fileForm.getFile();
             // Function is expanded already for multiple categories in the future, passing only one for now
-            fileService.create(file.getSize(), file.getOriginalFilename(), file.getBytes(),
+            FileModel createdFile = fileService.create(file.getSize(), file.getOriginalFilename(), file.getBytes(),
                     courseService.findById(courseId).orElseThrow(CourseNotFoundException::new),
                     Collections.singletonList(fileForm.getCategoryId()));
+            Logger.logMsg(Logger.DEBUG,"File in course " + courseId +
+                    " created with id: " + createdFile.getFileId());
             fileForm.setFile(null);
             fileForm.setCategoryId(null);
             successMessage = "file.success.message";

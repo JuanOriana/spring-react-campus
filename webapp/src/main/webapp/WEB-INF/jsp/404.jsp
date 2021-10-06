@@ -9,9 +9,9 @@
 </head>
 <body>
 <div class="page-organizer">
-    <%@ include file="components/navbar.jsp" %>
+    <jsp:include page="components/navbar.jsp"/>
     <div class="page-container">
-        <h1><spring:message code="404.page.message"/></h1>
+        <h1 class="error-title"><spring:message code="404.page.message"/></h1>
     </div>
     <jsp:include page="components/footer.jsp"/>
 </div>

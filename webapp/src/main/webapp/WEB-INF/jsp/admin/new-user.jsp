@@ -18,7 +18,7 @@
                acceptCharset="utf-8" cssStyle="margin: 30px 0">
         <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="new.user.header" htmlEscape="true"/></h1>
         <form:label path="fileNumber" for="fileNumber" class="form-label"><spring:message code="new.user.file.number" /></form:label>
-        <form:input type="number" path="fileNumber" class="form-input" style="font-size: 26px"/>
+        <form:input type="number" path="fileNumber" min="0" class="form-input" style="font-size: 26px"/>
         <form:errors path="fileNumber" element="p" cssClass="error-message"/>
         <c:if test="${isFileNumberDuplicated}">
             <p class="error-message"><spring:message code="new.user.duplicated.fileNumber"/></p>

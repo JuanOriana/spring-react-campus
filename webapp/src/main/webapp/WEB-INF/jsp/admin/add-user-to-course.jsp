@@ -23,7 +23,8 @@
                 <p style="font-size: 22px; font-weight: 700"><spring:message code="back.button"/></p>
             </a>
             <h1 class="announcement-title" style="color:#176961; align-self:center">
-                <spring:message code="add.user.to.course" htmlEscape="true" arguments="${course.subject.name}"/>
+                <spring:message code="add.user.to.course" htmlEscape="true"
+                                arguments="${course.subject.name},${course.board}"/>
             </h1>
             <form:label path="userId" for="userId" class="form-label">
                 <spring:message code="add.user.label.user"/>

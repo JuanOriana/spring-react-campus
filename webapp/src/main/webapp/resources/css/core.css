@@ -456,6 +456,8 @@ textarea:focus, input:focus{
     border-radius: 50%;
     border: 2px solid var(--cyan-dark);
     margin-right: 10px;
+    overflow: hidden;
+    object-fit: cover;
 }
 
 .mail-icon{
@@ -480,3 +482,9 @@ textarea:focus, input:focus{
     cursor: pointer;
 }
 
+
+.error-title{
+    color: var(--cyan-darkest);
+    align-self: center;
+    margin-top:30px;
+}

@@ -7,6 +7,7 @@ import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import ar.edu.itba.paw.webapp.form.UserToCourseForm;
+import com.sun.media.jfxmedia.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -54,9 +55,10 @@ public class AdminController extends AuthController {
     public ModelAndView newUser(@Valid UserRegisterForm userRegisterForm, final BindingResult validation,
                                 RedirectAttributes redirectAttributes) {
         if (!validation.hasErrors()) {
-           userService.create(userRegisterForm.getFileNumber(), userRegisterForm.getName(), userRegisterForm.getSurname(),
+           User user =userService.create(userRegisterForm.getFileNumber(), userRegisterForm.getName(), userRegisterForm.getSurname(),
                     userRegisterForm.getUsername(), userRegisterForm.getEmail(),
                     userRegisterForm.getPassword(), false);
+           Logger.logMsg(Logger.DEBUG,"User created with id: " + user.getUserId());
            redirectAttributes.addFlashAttribute("successMessage", "admin.success.message");
            return new ModelAndView("redirect:/admin/portal");
         }
@@ -75,13 +77,13 @@ public class AdminController extends AuthController {
     }
 
     @PostMapping(value = "/course/new")
-    public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult validation,
-                                  RedirectAttributes redirectAttributes) {
+    public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult validation) {
         if(!validation.hasErrors()) {
-            courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
+            Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
                     , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
-            redirectAttributes.addFlashAttribute("successMessage", "course.success.message");
-            return new ModelAndView("redirect:/admin/portal");
+            Logger.logMsg(Logger.DEBUG,"Course in year "+ courseForm.getYear() + " in quarter" + courseForm.getBoard()
+                    +"of subjectId " + courseForm.getSubjectId() +" with id: " +course.getCourseId());
+            return new ModelAndView("redirect:/admin/course/enroll?courseId="+course.getCourseId());
         }
         return newCourse(courseForm);
     }
@@ -119,16 +121,25 @@ public class AdminController extends AuthController {
         if (!errors.hasErrors()) {
             courseService.enroll(userToCourseForm.getUserId(), courseId, userToCourseForm.getRoleId());
             successMessage ="user.success.message";
+            Logger.logMsg(Logger.DEBUG,"User "+ userToCourseForm.getUserId() +"enrolled in" +courseId);
         }
         return addUserToCourse(userToCourseForm,courseId,successMessage);
     }
 
     @GetMapping(value = "/course/all")
     public ModelAndView allCourses(@RequestParam(value = "year", defaultValue = "") Integer year,
-                                   @RequestParam(value = "quarter", defaultValue = "1") Integer quarter) {
+                                   @RequestParam(value = "quarter", defaultValue = "") Integer quarter) {
         ModelAndView mav = new ModelAndView("admin/all-courses");
         if (year == null){
             year = Calendar.getInstance().get(Calendar.YEAR);
+        }
+        if (quarter == null){
+            if (Calendar.getInstance().get(Calendar.MONTH) <= 6){
+                quarter = 1;
+            }
+            else{
+                quarter = 2;
+            }
         }
         mav.addObject("courses", courseService.listByYearQuarter(year,quarter));
         mav.addObject("year",year);
