@@ -34,6 +34,7 @@ import javax.mail.*;
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 @EnableAsync
 @EnableWebMvc
@@ -83,7 +84,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public DataSource dataSource() {
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
-
+        // Change this to a config file in the future
         if (isOnDevBuild()) {
             ds.setUrl("jdbc:postgresql://127.0.0.1:5432/");
             ds.setUsername("postgres");
@@ -101,28 +102,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public MessageSource messageSource() {
         final ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:i18n/messages");
-        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+        messageSource.setFallbackToSystemLocale(false);
+        messageSource.setCacheSeconds((int) TimeUnit.SECONDS.toSeconds(5));
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
         return messageSource;
-    }
-
-    @Bean
-    public LocaleResolver localeResolver() {
-        CookieLocaleResolver resolver= new CookieLocaleResolver();
-        resolver.setCookieDomain("myAppLocaleCookie");
-        resolver.setCookieMaxAge(600);
-        return resolver;
-    }
-
-    @Bean
-    public LocaleChangeInterceptor localeChangeInterceptor() {
-        LocaleChangeInterceptor localeInterceptor = new LocaleChangeInterceptor();
-        localeInterceptor.setParamName("lang");
-        return localeInterceptor;
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(localeChangeInterceptor());
     }
 
     @Override
