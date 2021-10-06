@@ -480,3 +480,9 @@ textarea:focus, input:focus{
     cursor: pointer;
 }
 
+
+.error-title{
+    color: var(--cyan-darkest);
+    align-self: center;
+    margin-top:30px;
+}
