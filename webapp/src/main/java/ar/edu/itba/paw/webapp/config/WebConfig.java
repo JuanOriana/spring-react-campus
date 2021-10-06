@@ -1,10 +1,13 @@
 package ar.edu.itba.paw.webapp.config;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -37,9 +40,10 @@ import java.util.concurrent.TimeUnit;
 @EnableTransactionManagement
 @ComponentScan({"ar.edu.itba.paw.webapp.controller", "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
+@PropertySource(value= {"classpath:application.properties"})
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    private static final boolean DEV_BUILD = false; // Change this to a config file in the future
+    private static final boolean DEV_BUILD = false; // Change this to a config/profile in the future
     private static boolean isOnDevBuild() {
         return DEV_BUILD;
     }
@@ -76,19 +80,23 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         return dbp;
     }
 
+    // Move to a bean in the future since dependencies should be requested as late as possible
+    @Autowired
+    Environment environment;
+
     @Bean
     public DataSource dataSource() {
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
         // Change this to a config file in the future
         if (isOnDevBuild()) {
-            ds.setUrl("jdbc:postgresql://127.0.0.1:5432/");
-            ds.setUsername("postgres");
-            ds.setPassword("hola");
+            ds.setUrl(environment.getRequiredProperty("db.dev.url"));
+            ds.setUsername(environment.getRequiredProperty("db.dev.username"));
+            ds.setPassword(environment.getRequiredProperty("db.dev.password"));
         } else {
-            ds.setUrl("jdbc:postgresql://10.16.1.110:5432/");
-            ds.setUsername("paw-2021b-4");
-            ds.setPassword("yy8tEQt0e");
+            ds.setUrl(environment.getRequiredProperty("db.prod.url"));
+            ds.setUsername(environment.getRequiredProperty("db.prod.username"));
+            ds.setPassword(environment.getRequiredProperty("db.prod.password"));
         }
 
         return ds;
@@ -135,7 +143,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         return Session.getInstance(props, new javax.mail.Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("mpvcampus@gmail.com", "cxtwdizekebrrdhx");
+                return new PasswordAuthentication(environment.getRequiredProperty("mail.username"),
+                        environment.getRequiredProperty("mail.password"));
             }
         });
     }
