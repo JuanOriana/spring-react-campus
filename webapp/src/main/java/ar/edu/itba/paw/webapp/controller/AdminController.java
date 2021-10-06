@@ -8,6 +8,7 @@ import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import ar.edu.itba.paw.webapp.form.UserToCourseForm;
 import com.sun.media.jfxmedia.logging.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,7 @@ public class AdminController extends AuthController {
     private final SubjectService subjectService;
     private final CourseService courseService;
     private final RoleService roleService;
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
 
     private static final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
@@ -58,7 +60,7 @@ public class AdminController extends AuthController {
            User user =userService.create(userRegisterForm.getFileNumber(), userRegisterForm.getName(), userRegisterForm.getSurname(),
                     userRegisterForm.getUsername(), userRegisterForm.getEmail(),
                     userRegisterForm.getPassword(), false);
-           Logger.logMsg(Logger.DEBUG,"User created with id: " + user.getUserId());
+            LOGGER.debug("User created with id: " + user.getUserId());
            redirectAttributes.addFlashAttribute("successMessage", "admin.success.message");
            return new ModelAndView("redirect:/admin/portal");
         }
@@ -81,7 +83,7 @@ public class AdminController extends AuthController {
         if(!validation.hasErrors()) {
             Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
                     , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
-            Logger.logMsg(Logger.DEBUG,"Course in year "+ courseForm.getYear() + " in quarter" + courseForm.getBoard()
+            LOGGER.debug("Course in year "+ courseForm.getYear() + " in quarter" + courseForm.getBoard()
                     +"of subjectId " + courseForm.getSubjectId() +" with id: " +course.getCourseId());
             return new ModelAndView("redirect:/admin/course/enroll?courseId="+course.getCourseId());
         }
@@ -121,7 +123,7 @@ public class AdminController extends AuthController {
         if (!errors.hasErrors()) {
             courseService.enroll(userToCourseForm.getUserId(), courseId, userToCourseForm.getRoleId());
             successMessage ="user.success.message";
-            Logger.logMsg(Logger.DEBUG,"User "+ userToCourseForm.getUserId() +"enrolled in" +courseId);
+            LOGGER.debug("User "+ userToCourseForm.getUserId() +"enrolled in" +courseId);
         }
         return addUserToCourse(userToCourseForm,courseId,successMessage);
     }

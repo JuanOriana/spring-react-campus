@@ -9,6 +9,7 @@ import ar.edu.itba.paw.webapp.form.AnnouncementForm;
 import ar.edu.itba.paw.webapp.form.FileForm;
 import ar.edu.itba.paw.webapp.form.MailForm;
 import com.sun.media.jfxmedia.logging.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +36,7 @@ public class CourseController extends AuthController {
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private static final int DEFAULT_PAGE = 1;
     private static final int DEFAULT_PAGE_SIZE = 10;
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
     @Autowired
     public CourseController(AuthFacade authFacade, AnnouncementService announcementService,
@@ -91,7 +93,7 @@ public class CourseController extends AuthController {
         if (!errors.hasErrors()) {
             Announcement announcement =announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
                     authFacade.getCurrentUser(), courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
-            Logger.logMsg(Logger.DEBUG,"Announcement in course " + courseId +
+            LOGGER.debug("Announcement in course " + courseId +
                     " created with id: " + announcement.getAnnouncementId());
             announcementForm.setContent("");
             announcementForm.setTitle("");
@@ -148,7 +150,7 @@ public class CourseController extends AuthController {
             FileModel createdFile = fileService.create(file.getSize(), file.getOriginalFilename(), file.getBytes(),
                     courseService.findById(courseId).orElseThrow(CourseNotFoundException::new),
                     Collections.singletonList(fileForm.getCategoryId()));
-            Logger.logMsg(Logger.DEBUG,"File in course " + courseId +
+            LOGGER.debug("File in course " + courseId +
                     " created with id: " + createdFile.getFileId());
             fileForm.setFile(null);
             fileForm.setCategoryId(null);

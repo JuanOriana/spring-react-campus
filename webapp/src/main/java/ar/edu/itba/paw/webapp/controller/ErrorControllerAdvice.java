@@ -26,11 +26,13 @@ public class ErrorControllerAdvice {
     @ExceptionHandler(CourseNotFoundException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public ModelAndView noSuchCourse() {
+        LOGGER.error("Course not found");
         return new ModelAndView("404");
     }
 
     @ExceptionHandler(DuplicateUserException.class)
     public ModelAndView userKeyViolation(DuplicateUserException ex) {
+        LOGGER.error("Loading a user with repeated credential has been attempted ");
         ModelAndView mav = new ModelAndView("admin/new-user");
         UserRegisterForm userRegisterForm = new UserRegisterForm.Builder()
                 .withName(ex.getName())
@@ -48,6 +50,7 @@ public class ErrorControllerAdvice {
 
     @ExceptionHandler(DuplicateCourseException.class)
     public ModelAndView courseKeyViolation(DuplicateCourseException dce) {
+        LOGGER.error("Loading a course with duplicated values has been attempted");
         ModelAndView mav = new ModelAndView("admin/new-course");
         final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         CourseForm courseForm = new CourseForm.Builder()
@@ -75,18 +78,21 @@ public class ErrorControllerAdvice {
     @ExceptionHandler(FileNotFoundException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public ModelAndView noSuchFile() {
+        LOGGER.error("File not found");
         return new ModelAndView("404");
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public ModelAndView noSuchUser() {
+        LOGGER.error("User not found");
         return new ModelAndView("404");
     }
 
     @ExceptionHandler(PaginationArgumentException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public ModelAndView invalidRequestParameter() {
+        LOGGER.error("Invalid request for pagination parameters");
         return new ModelAndView("404");
     }
 }
