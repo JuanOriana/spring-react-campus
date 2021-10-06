@@ -99,13 +99,13 @@ public class MailingServiceImpl implements MailingService {
     }
 
     private void sendHtmlBroadcastEmail(List<String> to, String subject, String content) {
-        transportMessage(new MimeMessage(session), to, subject, content, "text/html");
+        transportMessage(new MimeMessage(session), to, subject, content, "text/html;charset=\"UTF-8\"");
     }
 
     private void sendThymeleafTemplateEmail(Message message,List<String> to,String subject, Map<String, Object> args, String templateName) {
         Context context = new Context();
         context.setVariables(args);
         String htmlBody = templateEngine.process(templateName, context);
-        transportMessage(message,to,subject,htmlBody, "text/html");
+        transportMessage(message,to,subject,htmlBody, "text/html;charset=\"UTF-8\"");
     }
 }
