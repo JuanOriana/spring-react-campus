@@ -101,7 +101,7 @@ public class FilesController extends AuthController {
     @DeleteMapping(value = "/files/{fileId}")
     @ResponseBody
     public void deleteFile(@PathVariable Long fileId) {
-        LOGGER.debug("Deleting file " + fileId);
+        LOGGER.debug("Deleting file {}", fileId);
         fileService.delete(fileId);
     }
 }

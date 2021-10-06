@@ -8,6 +8,7 @@ import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.form.AnnouncementForm;
 import ar.edu.itba.paw.webapp.form.FileForm;
 import ar.edu.itba.paw.webapp.form.MailForm;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,7 +36,7 @@ public class CourseController extends AuthController {
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private static final int DEFAULT_PAGE = 1;
     private static final int DEFAULT_PAGE_SIZE = 10;
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
     @Autowired
     public CourseController(AuthFacade authFacade, AnnouncementService announcementService,
@@ -92,8 +93,7 @@ public class CourseController extends AuthController {
         if (!errors.hasErrors()) {
             Announcement announcement =announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
                     authFacade.getCurrentUser(), courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
-            LOGGER.debug("Announcement in course " + courseId +
-                    " created with id: " + announcement.getAnnouncementId());
+            LOGGER.debug("Announcement in course {} created with id: {}", courseId, announcement.getAnnouncementId());
             announcementForm.setContent("");
             announcementForm.setTitle("");
             successMessage = "announcement.success.message";
@@ -149,7 +149,7 @@ public class CourseController extends AuthController {
             FileModel createdFile = fileService.create(file.getSize(), file.getOriginalFilename(), file.getBytes(),
                     courseService.findById(courseId).orElseThrow(CourseNotFoundException::new),
                     Collections.singletonList(fileForm.getCategoryId()));
-            LOGGER.debug("File in course " + courseId + " created with id: " + createdFile.getFileId());
+            LOGGER.debug("File in course {} created with id: {}", courseId, createdFile.getFileId());
             fileForm.setFile(null);
             fileForm.setCategoryId(null);
             successMessage = "file.success.message";
@@ -162,7 +162,7 @@ public class CourseController extends AuthController {
     public ModelAndView sendMail(@PathVariable final Long courseId, @PathVariable final Long userId,
                                  final MailForm mailForm) {
         if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) {
-            LOGGER.warn("User of id " + userId + " does not exist or is not a teacher in " + courseId);
+            LOGGER.warn("User of id {} does not exist or is not a teacher in {}", userId ,courseId);
             throw new UserNotFoundException();
         }
         ModelAndView mav = new ModelAndView("sendmail");
@@ -176,11 +176,11 @@ public class CourseController extends AuthController {
                                  @Valid MailForm mailForm, final BindingResult errors,
                                  RedirectAttributes redirectAttributes) {
         if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) {
-            LOGGER.warn("User of id " + userId + " does not exist or is not a teacher in " + courseId);
+            LOGGER.warn("User of id {} does not exist or is not a teacher in {}", userId, courseId);
             throw new UserNotFoundException();
         }
         if (!errors.hasErrors()) {
-            LOGGER.debug("Attempting to send mail to " + userId);
+            LOGGER.debug("Attempting to send mail to {}", userId);
             mailingService.sendEmail(authFacade.getCurrentUser(), userId, mailForm.getSubject(),
                     mailForm.getContent(), courseId);
             redirectAttributes.addFlashAttribute("successMessage","email.success.message");

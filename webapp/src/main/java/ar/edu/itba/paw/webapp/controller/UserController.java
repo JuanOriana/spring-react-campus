@@ -22,7 +22,7 @@ import java.util.Optional;
 public class UserController extends AuthController {
 
     private final UserService userService;
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public UserController(AuthFacade authFacade, UserService userService) {
@@ -52,7 +52,7 @@ public class UserController extends AuthController {
                              HttpServletResponse response) throws IOException {
         Optional<byte[]> image = userService.getProfileImage(userId);
         if (!image.isPresent()) {
-            LOGGER.debug("User " + userId + "does not have an image");
+            LOGGER.debug("User {} does not have an image", userId);
             return;
         }
         response.setContentType("image/*");

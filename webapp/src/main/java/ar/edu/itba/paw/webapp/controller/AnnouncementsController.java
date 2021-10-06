@@ -43,7 +43,7 @@ public class AnnouncementsController extends AuthController {
     @DeleteMapping(value = "/announcements/{announcementId}")
     @ResponseBody
     public void deleteAnnouncement(@PathVariable Long announcementId) {
-        LOGGER.debug("Deleting announcement " + announcementId);
+        LOGGER.debug("Deleting announcement {}", announcementId);
         announcementService.delete(announcementId);
     }
 
