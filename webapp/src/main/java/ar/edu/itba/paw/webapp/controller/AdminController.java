@@ -59,7 +59,7 @@ public class AdminController extends AuthController {
            User user =userService.create(userRegisterForm.getFileNumber(), userRegisterForm.getName(), userRegisterForm.getSurname(),
                     userRegisterForm.getUsername(), userRegisterForm.getEmail(),
                     userRegisterForm.getPassword(), false);
-           LOGGER.debug("User of name " + user.getUsername() + " created");
+           LOGGER.debug("User of name {} created", user.getUsername());
            redirectAttributes.addFlashAttribute("successMessage", "admin.success.message");
            return new ModelAndView("redirect:/admin/portal");
         }
@@ -82,8 +82,8 @@ public class AdminController extends AuthController {
         if(!validation.hasErrors()) {
             Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
                     , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
-            LOGGER.debug("Course in year "+ courseForm.getYear() + " in quarter" + courseForm.getBoard()
-                    +"of subjectId " + courseForm.getSubjectId() +" with id: " +course.getCourseId());
+            LOGGER.debug("Created course in year {} in quarter {} of subjectId {} with id {}", courseForm.getYear(),
+                    courseForm.getBoard(), courseForm.getSubjectId(), course.getCourseId());
             return new ModelAndView("redirect:/admin/course/enroll?courseId="+course.getCourseId());
         }
         return newCourse(courseForm);
@@ -122,7 +122,7 @@ public class AdminController extends AuthController {
         if (!errors.hasErrors()) {
             courseService.enroll(userToCourseForm.getUserId(), courseId, userToCourseForm.getRoleId());
             successMessage ="user.success.message";
-            LOGGER.debug("User "+ userToCourseForm.getUserId() +" succesfully enrolled in" +courseId);
+            LOGGER.debug("User {} succesfully enrolled in {}", userToCourseForm.getUserId(), courseId);
         }
         return addUserToCourse(userToCourseForm,courseId,successMessage);
     }
