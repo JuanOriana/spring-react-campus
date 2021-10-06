@@ -78,23 +78,25 @@
                        <c:if test="${requestScope.extensionType.equals(requestScope.extensions)}">checked</c:if>>
                 <label class="file-checkbox-label" for="extension-all"><spring:message code="file.search.type.all" /></label>
             </span>
-            <c:forEach var="extension" items="${requestScope.extensions}">
+            <c:forEach var="extension" items="${requestScope.extensions}" begin="1">
                 <span>
                     <input class="file-checkbox" type="checkbox" id="extension-${extension.fileExtensionId}" name="extension-type"
                            value="${extension.fileExtensionId}" onclick="unToggle('extension-all')"
                            <c:if test="${requestScope.extensionType.contains(extension.fileExtensionId)}">checked</c:if>>
                     <label class="file-checkbox-label" for="extension-${extension.fileExtensionId}">
-                        <c:choose>
-                            <c:when test="${extension.fileExtensionName.equals('other')}">
-                                <spring:message code="file.search.type.other" />
-                            </c:when>
-                            <c:otherwise>
-                                <spring:message code="file.search.type.name" htmlEscape="true" arguments="${extension.fileExtensionName}"/>
-                            </c:otherwise>
-                        </c:choose>
+                        <spring:message code="file.search.type.name" htmlEscape="true" arguments="${extension.fileExtensionName}"/>
                     </label>
                 </span>
             </c:forEach>
+            <span>
+                <input class="file-checkbox" type="checkbox" id="extension-${requestScope.extensions[0].fileExtensionId}" name="extension-type"
+                       value="${requestScope.extensions[0].fileExtensionId}" onclick="unToggle('extension-all')"
+                       <c:if test="${requestScope.extensionType.contains(requestScope.extensions[0].fileExtensionId)}">
+                       checked</c:if>>
+                <label class="file-checkbox-label" for="extension-${requestScope.extensions[0].fileExtensionId}">
+                    <spring:message code="file.search.type.other" />
+                </label>
+            </span>
         </div>
 
         <div style="display: flex; flex-direction: column; ">
