@@ -2,11 +2,12 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.exception.CourseNotFoundException;
+import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
-import ar.edu.itba.paw.webapp.auth.CampusUser;
-import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.form.AnnouncementForm;
 import ar.edu.itba.paw.webapp.form.FileForm;
+import ar.edu.itba.paw.webapp.form.MailForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,8 @@ public class CourseController extends AuthController {
     private final FileCategoryService fileCategoryService;
     private final FileExtensionService fileExtensionService;
     private final FileService fileService;
+    private final UserService userService;
+    private final MailingService mailingService;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private static final int DEFAULT_PAGE = 1;
     private static final int DEFAULT_PAGE_SIZE = 10;
@@ -33,21 +36,23 @@ public class CourseController extends AuthController {
     @Autowired
     public CourseController(AuthFacade authFacade, AnnouncementService announcementService,
                             CourseService courseService, FileCategoryService fileCategoryService,
-                            FileExtensionService fileExtensionService, FileService fileService) {
+                            FileExtensionService fileExtensionService, FileService fileService,
+                            UserService userService, MailingService mailingService) {
         super(authFacade);
         this.announcementService = announcementService;
         this.courseService = courseService;
         this.fileCategoryService = fileCategoryService;
         this.fileExtensionService = fileExtensionService;
         this.fileService = fileService;
+        this.userService = userService;
+        this.mailingService = mailingService;
     }
 
     @ModelAttribute
     public void getCourse(Model model, @PathVariable Long courseId) {
         model.addAttribute("course",
-                courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+                courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
     }
-
 
     @GetMapping(value = "")
     public String coursePortal(@PathVariable Integer courseId) {
@@ -82,7 +87,7 @@ public class CourseController extends AuthController {
         String successMessage = null;
         if (!errors.hasErrors()) {
             announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
-                    authFacade.getCurrentUser(), courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+                    authFacade.getCurrentUser(), courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
             announcementForm.setContent("");
             announcementForm.setTitle("");
             successMessage = "announcement.success.message";
@@ -91,9 +96,10 @@ public class CourseController extends AuthController {
     }
 
     @GetMapping("/teachers")
-    public ModelAndView professors(@PathVariable Long courseId) {
+    public ModelAndView professors(@PathVariable Long courseId, String successMessage) {
         final ModelAndView mav = new ModelAndView("teachers");
         mav.addObject("teacherSet", courseService.getTeachers(courseId).entrySet());
+        mav.addObject("successMessage", successMessage);
         return mav;
     }
 
@@ -136,7 +142,7 @@ public class CourseController extends AuthController {
             CommonsMultipartFile file = fileForm.getFile();
             // Function is expanded already for multiple categories in the future, passing only one for now
             fileService.create(file.getSize(), file.getOriginalFilename(), file.getBytes(),
-                    courseService.getById(courseId).orElseThrow(CourseNotFoundException::new),
+                    courseService.findById(courseId).orElseThrow(CourseNotFoundException::new),
                     Collections.singletonList(fileForm.getCategoryId()));
             fileForm.setFile(null);
             fileForm.setCategoryId(null);
@@ -144,6 +150,32 @@ public class CourseController extends AuthController {
         }
         return files(courseId, fileForm, successMessage, new ArrayList<>(),
                 new ArrayList<>(), "", "date", "desc", DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+    }
+
+    @GetMapping(value = "/mail/{userId}")
+    public ModelAndView sendMail(@PathVariable final Long courseId, @PathVariable final Long userId,
+                                 final MailForm mailForm) {
+        if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) throw new UserNotFoundException();
+        ModelAndView mav = new ModelAndView("sendmail");
+        mav.addObject("user", userService.findById(userId).orElseThrow(UserNotFoundException::new));
+        mav.addObject("mailForm",mailForm);
+        return mav;
+    }
+
+    @PostMapping(value = "/mail/{userId}")
+    public ModelAndView sendMail(@PathVariable Long courseId, @PathVariable Long userId,
+                                 @Valid MailForm mailForm, final BindingResult errors) {
+        String successMessage = null;
+        if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) throw new UserNotFoundException();
+        if (!errors.hasErrors()) {
+            User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
+            Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
+            mailingService.sendTeacherEmail(authFacade.getCurrentUser(),user.getEmail(), mailForm.getSubject(), mailForm.getContent(), course);
+            mailForm.setSubject("");
+            mailForm.setContent("");
+            successMessage = "email.success.message";
+        }
+        return professors(courseId, successMessage);
     }
 
 }

@@ -2,8 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
-import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import ar.edu.itba.paw.webapp.form.UserToCourseForm;
@@ -104,7 +104,7 @@ public class AdminController extends AuthController {
         unenrolledUsers.sort(Comparator.comparingInt(User::getFileNumber));
         mav.addObject("userToCourseForm",userToCourseForm);
         mav.addObject("users", unenrolledUsers);
-        mav.addObject("course",courseService.getById(courseId).orElseThrow(CourseNotFoundException::new));
+        mav.addObject("course",courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
         mav.addObject("roles",roleService.list());
         mav.addObject("courseStudents", courseService.getStudents(courseId));
         mav.addObject("courseTeachers", courseService.getTeachers(courseId).keySet());

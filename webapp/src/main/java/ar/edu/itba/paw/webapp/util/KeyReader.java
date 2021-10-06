@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.util;
 
+import ar.edu.itba.paw.models.exception.KeyReaderException;
 import ar.edu.itba.paw.webapp.config.WebAuthConfig;
-import ar.edu.itba.paw.webapp.exception.KeyReaderException;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;

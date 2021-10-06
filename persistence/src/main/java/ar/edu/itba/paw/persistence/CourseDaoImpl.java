@@ -111,7 +111,7 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public Optional<Course> getById(Long id) {
+    public Optional<Course> findById(Long id) {
         return jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects WHERE courseId = ?",
                 new Object[]{id}, COURSE_ROW_MAPPER).stream().findFirst();
     }
@@ -211,7 +211,7 @@ public class CourseDaoImpl implements CourseDao {
 
     @Override
     public List<Integer> getAvailableYears() {
-        return new ArrayList<>(jdbcTemplate.query(  "SELECT DISTINCT year FROM courses ORDER BY year ASC",
+        return new ArrayList<>(jdbcTemplate.query(  "SELECT DISTINCT year FROM courses ORDER BY year DESC",
                 (rs, rowNum) -> rs.getInt("year")));
     }
 

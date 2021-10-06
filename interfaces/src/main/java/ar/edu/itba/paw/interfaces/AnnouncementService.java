@@ -39,7 +39,7 @@ public interface AnnouncementService {
      * @param id of the announcement to be retrieved
      * @return the announcement corresponding to the given id if it exists, null otherwise
      */
-    Optional<Announcement> getById(Long id);
+    Optional<Announcement> findById(Long id);
 
     /**
      * Gets all the current available announcements for an user

@@ -4,9 +4,8 @@ import ar.edu.itba.paw.interfaces.FileCategoryService;
 import ar.edu.itba.paw.interfaces.FileExtensionService;
 import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.exception.FileNotFoundException;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
-import ar.edu.itba.paw.webapp.auth.CampusUser;
-import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +79,7 @@ public class FilesController extends AuthController {
 
     @GetMapping(value = "/files/{fileId}")
     public void downloadFile(@PathVariable Long fileId, HttpServletResponse response) {
-        FileModel file = fileService.getById(fileId).orElseThrow(FileNotFoundException::new);
+        FileModel file = fileService.findById(fileId).orElseThrow(FileNotFoundException::new);
         if (!file.getExtension().getFileExtensionName().equals("pdf")) {
             response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
         }

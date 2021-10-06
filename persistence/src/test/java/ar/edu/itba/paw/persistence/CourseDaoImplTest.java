@@ -106,7 +106,7 @@ public class CourseDaoImplTest extends BasicPopulator {
 
     @Test
     public void testGetById() {
-        final Optional<Course> course = courseDao.getById(COURSE_ID);
+        final Optional<Course> course = courseDao.findById(COURSE_ID);
         assertNotNull(course);
         assertTrue(course.isPresent());
         assertEquals(COURSE_ID, course.get().getCourseId());
@@ -114,7 +114,7 @@ public class CourseDaoImplTest extends BasicPopulator {
 
     @Test
     public void testGetByIdNoExist() {
-        final Optional<Course> course = courseDao.getById(INVALID_COURSE_ID);
+        final Optional<Course> course = courseDao.findById(INVALID_COURSE_ID);
         assertNotNull(course);
         assertFalse(course.isPresent());
     }

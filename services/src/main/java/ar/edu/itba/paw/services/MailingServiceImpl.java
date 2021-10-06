@@ -29,9 +29,15 @@ public class MailingServiceImpl implements MailingService {
     }
 
 
-    @Override
-    public void sendTextPlainEmail(String replyTo, String to, String subject, String content) {
-        sendEmail(getMimeMessage(replyTo), Collections.singletonList(to), subject, content, "text/plain");
+
+    public void sendTeacherEmail(User student, String to, String subject, String content, Course course) {
+        Map<String,Object> model = new HashMap<>();
+        model.put("subjectName", course.getSubject().getName());
+        model.put("student",student);
+        model.put("subject", subject);
+        model.put("content", content);
+        model.put("year", "2021");
+        sendThymeleafTemplateEmail(getMimeMessage(student.getEmail()), Collections.singletonList(to), subject, model, "student-email-to-teacher.html");
     }
 
 
@@ -82,5 +88,12 @@ public class MailingServiceImpl implements MailingService {
 
     private void sendHtmlBroadcastEmail(List<String> to, String subject, String content) {
         sendEmail(new MimeMessage(session), to, subject, content, "text/html");
+    }
+
+    private void sendThymeleafTemplateEmail(Message message,List<String> to,String subject, Map<String, Object> args, String templateName) {
+        Context context = new Context();
+        context.setVariables(args);
+        String htmlBody = templateEngine.process(templateName, context);
+        sendEmail(message,to,subject,htmlBody, "text/html");
     }
 }

@@ -2,13 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SubjectService;
 import ar.edu.itba.paw.models.Subject;
-import ar.edu.itba.paw.models.exception.DuplicateCourseException;
-import ar.edu.itba.paw.models.exception.DuplicateUserException;
-import ar.edu.itba.paw.models.exception.PaginationArgumentException;
-import ar.edu.itba.paw.models.exception.SystemUnavailableException;
-import ar.edu.itba.paw.webapp.exception.CourseNotFoundException;
-import ar.edu.itba.paw.webapp.exception.FileNotFoundException;
-import ar.edu.itba.paw.webapp.exception.UserNotFoundException;
+import ar.edu.itba.paw.models.exception.*;
 import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.form.UserRegisterForm;
 import org.slf4j.Logger;

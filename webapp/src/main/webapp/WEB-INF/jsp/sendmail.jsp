@@ -12,9 +12,7 @@
 </head>
 <body>
 <div class="page-organizer">
-    <jsp:include page="components/navbar.jsp">
-        <jsp:param name="successMessage" value="${successMessage}"/>
-    </jsp:include>
+    <jsp:include page="components/navbar.jsp"/>
     <div class="page-container">
         <form:form modelAttribute="mailForm" class="form-wrapper reduced" method="post" acceptCharset="utf-8">
             <h1 class="announcement-title" style="color:#176961; align-self:center">
