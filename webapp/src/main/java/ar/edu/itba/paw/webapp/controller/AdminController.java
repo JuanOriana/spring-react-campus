@@ -125,10 +125,18 @@ public class AdminController extends AuthController {
 
     @GetMapping(value = "/course/all")
     public ModelAndView allCourses(@RequestParam(value = "year", defaultValue = "") Integer year,
-                                   @RequestParam(value = "quarter", defaultValue = "1") Integer quarter) {
+                                   @RequestParam(value = "quarter", defaultValue = "") Integer quarter) {
         ModelAndView mav = new ModelAndView("admin/all-courses");
         if (year == null){
             year = Calendar.getInstance().get(Calendar.YEAR);
+        }
+        if (quarter == null){
+            if (Calendar.getInstance().get(Calendar.MONTH) <= 6){
+                quarter = 1;
+            }
+            else{
+                quarter = 2;
+            }
         }
         mav.addObject("courses", courseService.listByYearQuarter(year,quarter));
         mav.addObject("year",year);
