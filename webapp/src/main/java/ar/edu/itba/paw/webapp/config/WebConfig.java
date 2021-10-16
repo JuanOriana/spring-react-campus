@@ -9,11 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.jdbc.datasource.init.DatabasePopulator;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -48,10 +44,14 @@ import java.util.concurrent.TimeUnit;
 @PropertySource(value= {"classpath:application.properties"})
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    private static final boolean DEV_BUILD = false; // Change this to a config/profile in the future
+    private static final boolean DEV_BUILD = true; // Change this to a config/profile in the future
     private static boolean isOnDevBuild() {
         return DEV_BUILD;
     }
+
+    // Move to a bean in the future since dependencies should be requested as late as possible
+    @Autowired
+    Environment environment;
 
     @Bean
     public ViewResolver viewResolver() {
@@ -85,10 +85,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         factoryBean.setJpaProperties(properties);
         return factoryBean;
     }
-
-    // Move to a bean in the future since dependencies should be requested as late as possible
-    @Autowired
-    Environment environment;
 
     @Bean
     public DataSource dataSource() {

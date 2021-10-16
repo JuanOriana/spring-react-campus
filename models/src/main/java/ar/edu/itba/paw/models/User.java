@@ -1,18 +1,45 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "users")
+@SecondaryTable(name = "profile_images",
+                pkJoinColumns = @PrimaryKeyJoinColumn(name = "userId"))
 public class User {
-
-    private String name;
-    private String surname;
-    private String username;
-    private String email;
-    private String password;
-    private Integer fileNumber;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_userid_seq")
+    @SequenceGenerator(name = "users_userid_seq", sequenceName = "users_userid_seq", allocationSize = 1)
     private Long userId;
+
+    @Column
+    private String name;
+
+    @Column
+    private String surname;
+
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column
+    private String password;
+
+    @Column(nullable = false, unique = true)
+    private Integer fileNumber;
+
+    @Column
     private boolean isAdmin;
+
+    @Column(table = "profile_images")
     private byte[] image;
+
+    /* Default */ User() {
+        // Just for Hibernate
+    }
 
     public User(User user) {
         this.name = user.getName();
