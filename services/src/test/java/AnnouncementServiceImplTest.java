@@ -1,25 +1,16 @@
 import ar.edu.itba.paw.interfaces.AnnouncementDao;
-import ar.edu.itba.paw.interfaces.CourseDao;
-import ar.edu.itba.paw.interfaces.CourseService;
-import ar.edu.itba.paw.interfaces.MailingService;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import ar.edu.itba.paw.services.AnnouncementServiceImpl;
-import ar.edu.itba.paw.services.CourseServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
