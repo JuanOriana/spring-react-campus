@@ -45,6 +45,7 @@ public class UseDaoJpa implements UserDao {
 
     @Override
     public Optional<User> findByUsername(String username) {
+        
         return Optional.empty();
     }
 

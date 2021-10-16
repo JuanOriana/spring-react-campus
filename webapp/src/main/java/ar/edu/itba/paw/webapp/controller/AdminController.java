@@ -45,14 +45,14 @@ public class AdminController extends AuthController {
         return new  ModelAndView("admin/admin-portal");
     }
 
-    @GetMapping(value = "/user/new")
+    @RequestMapping(method = RequestMethod.GET, value = "/user/new")
     public ModelAndView newUser(final UserRegisterForm userRegisterForm){
         ModelAndView mav = new ModelAndView("admin/new-user");
         mav.addObject("userRegisterForm", userRegisterForm);
         return mav;
     }
 
-    @PostMapping(value = "/user/new")
+    @RequestMapping(method = RequestMethod.POST, value = "/user/new")
     public ModelAndView newUser(@Valid UserRegisterForm userRegisterForm, final BindingResult validation,
                                 RedirectAttributes redirectAttributes) {
         if (!validation.hasErrors()) {
@@ -66,7 +66,7 @@ public class AdminController extends AuthController {
         return newUser(userRegisterForm);
     }
 
-    @GetMapping(value = "/course/new")
+    @RequestMapping(method = RequestMethod.GET, value = "/course/new")
     public ModelAndView newCourse(final CourseForm courseForm){
         ModelAndView mav = new ModelAndView("admin/new-course");
         List<Subject> subjects = subjectService.list();
@@ -77,7 +77,7 @@ public class AdminController extends AuthController {
         return mav;
     }
 
-    @PostMapping(value = "/course/new")
+    @RequestMapping(method = RequestMethod.POST, value = "/course/new")
     public ModelAndView newCourse(@Valid CourseForm courseForm, final BindingResult validation) {
         if(!validation.hasErrors()) {
             Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
@@ -89,7 +89,7 @@ public class AdminController extends AuthController {
         return newCourse(courseForm);
     }
 
-    @GetMapping(value = "/course/select")
+    @RequestMapping(method = RequestMethod.GET, value = "/course/select")
     public ModelAndView selectCourse(){
         ModelAndView mav = new ModelAndView("admin/select-course");
         List<Course> courses = courseService.list();
@@ -98,7 +98,7 @@ public class AdminController extends AuthController {
         return mav;
     }
 
-    @GetMapping(value = "/course/enroll")
+    @RequestMapping(method = RequestMethod.GET, value = "/course/enroll")
     public ModelAndView addUserToCourse(final UserToCourseForm userToCourseForm,
                                         @RequestParam(name = "courseId") Long courseId,
                                         final String successMessage){
@@ -115,7 +115,7 @@ public class AdminController extends AuthController {
         return mav;
     }
 
-    @PostMapping(value = "/course/enroll")
+    @RequestMapping(method = RequestMethod.POST, value = "/course/enroll")
     public ModelAndView addUserToCourse(@Valid UserToCourseForm userToCourseForm, final BindingResult errors,
                                         @RequestParam(name = "courseId") Long courseId){
         String successMessage = "";
@@ -127,7 +127,7 @@ public class AdminController extends AuthController {
         return addUserToCourse(userToCourseForm,courseId,successMessage);
     }
 
-    @GetMapping(value = "/course/all")
+    @RequestMapping(method = RequestMethod.GET, value = "/course/all")
     public ModelAndView allCourses(@RequestParam(value = "year", defaultValue = "") Integer year,
                                    @RequestParam(value = "quarter", defaultValue = "") Integer quarter) {
         ModelAndView mav = new ModelAndView("admin/all-courses");
