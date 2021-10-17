@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,8 +46,10 @@ public class UseDaoJpa implements UserDao {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        
-        return Optional.empty();
+        final TypedQuery<User> query = em.createQuery("SELECT e from User e where e.username = :username",
+                User.class);
+        query.setParameter("username", username);
+        return query.getResultList().stream().findFirst();
     }
 
     @Override
