@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,26 +20,34 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
 
     @Override
     public FileExtension create(String fileExtension) {
-        return null;
+        final FileExtension fExtension = new FileExtension(fileExtension);
+        em.persist(fExtension);
+        return fExtension;
     }
 
     @Override
     public boolean update(long fileExtensionId, String fileExtension) {
-        return false;
+        FileExtension oldFileExtension = em.find(FileExtension.class, fileExtensionId);
+        oldFileExtension.setFileExtensionName(fileExtension);
+        return em.find(FileExtension.class, fileExtensionId).getFileExtensionName().equals(fileExtension); //TODO: REV, capaz hay una mejor forma
     }
 
     @Override
     public boolean delete(long fileExtensionId) {
-        return false;
+        em.remove(em.find(FileExtension.class, fileExtensionId));
+        return !em.contains(em.find(FileExtension.class, fileExtensionId)); //TODO: REV, capaz hay una mejor forma
     }
 
     @Override
     public List<FileExtension> getExtensions() {
-        return null;
+        final TypedQuery<FileExtension> query = em.createQuery("SELECT fileExtensionId, fileExtension FROM file_extensions", FileExtension.class);
+        return query.getResultList();
     }
 
     @Override
     public Optional<String> getExtension(Long extensionId) {
-        return Optional.empty();
+        final TypedQuery<FileExtension> query = em.createQuery("SELECT fileExtension FROM file_extensions WHERE fileExtensionId = :fileExtensionId", FileExtension.class);
+        query.setParameter("fileExtensionId", extensionId);
+        return Optional.ofNullable(query.getSingleResult().getFileExtensionName());
     }
 }
