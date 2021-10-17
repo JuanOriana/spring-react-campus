@@ -33,17 +33,22 @@ public class UserController extends AuthController {
     @RequestMapping(method = RequestMethod.GET, value = "/user")
     public ModelAndView user(final UserProfileForm userProfileForm) {
         ModelAndView mav = new ModelAndView("user");
-        mav.addObject("userProfileForm",userProfileForm);
+        mav.addObject("userProfileForm", userProfileForm);
         return mav;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/user")
-    public ModelAndView user(@Valid UserProfileForm userProfileForm, final BindingResult errors) {
-        if (!errors.hasErrors()){
-            userService.updateProfileImage(authFacade.getCurrentUser().getUserId(),
-                    userProfileForm.getImage().getBytes());
+    public ModelAndView user(@Valid UserProfileForm userProfileForm,
+                             final BindingResult errors) {
+        if (!errors.hasErrors()) {
+            if(userService.updateProfileImage(authFacade.getCurrentUser().getUserId(),
+                    userProfileForm.getImage().getBytes())) {
+                // Fix use-case where user has no image and uploading one only reflects after logging in.
+                authFacade.getCurrentUser().setImage(userProfileForm.getImage().getBytes());
+            } else {
+                LOGGER.debug("Could not update image");
+            }
         }
-        LOGGER.debug("Could not update image");
         return user(userProfileForm);
     }
 

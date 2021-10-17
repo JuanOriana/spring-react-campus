@@ -31,11 +31,12 @@ public class User {
     @Column(nullable = false, unique = true)
     private Integer fileNumber;
 
-    @Column
-    private boolean isAdmin;
+    @Column(name = "isAdmin")
+    private Boolean admin;
 
     @Column(table = "profile_images")
     private byte[] image;
+
 
     /* Default */ User() {
         // Just for Hibernate
@@ -49,7 +50,7 @@ public class User {
         this.password = user.getPassword();
         this.fileNumber = user.getFileNumber();
         this.userId = user.getUserId();
-        this.isAdmin = user.isAdmin();
+        this.admin = user.isAdmin();
         this.image = user.getImage();
     }
 
@@ -62,14 +63,14 @@ public class User {
         private String password;
         private Integer fileNumber;
         private Long userId;
-        private boolean isAdmin;
+        private Boolean admin;
         private byte[] image;
 
         public Builder() {
         }
 
         Builder(String name, String surname, String username, String email, String password, Integer fileNumber,
-                Long userId, boolean isAdmin, byte[] image) {
+                Long userId, Boolean admin, byte[] image) {
             this.name = name;
             this.surname = surname;
             this.username = username;
@@ -77,7 +78,7 @@ public class User {
             this.password = password;
             this.fileNumber = fileNumber;
             this.userId = userId;
-            this.isAdmin = isAdmin;
+            this.admin = admin;
             this.image = image;
         }
 
@@ -121,8 +122,8 @@ public class User {
             return Builder.this;
         }
 
-        public Builder isAdmin(boolean isAdmin){
-            this.isAdmin = isAdmin;
+        public Builder isAdmin(Boolean admin){
+            this.admin = admin;
             return Builder.this;
         }
 
@@ -170,7 +171,7 @@ public class User {
         this.password = builder.password;
         this.fileNumber = builder.fileNumber;
         this.userId = builder.userId;
-        this.isAdmin = builder.isAdmin;
+        this.admin = builder.admin;
         this.image = builder.image;
     }
 
@@ -230,12 +231,12 @@ public class User {
         this.userId = userId;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public Boolean isAdmin() {
+        return admin;
     }
 
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+    public void setIsAdmin(Boolean admin) {
+        this.admin = admin;
     }
 
     public byte[] getImage() {
@@ -244,6 +245,15 @@ public class User {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public void merge(User user) {
+        this.name = this.name.equals(user.getName())  ? this.name : user.getName();
+        this.surname = this.surname.equals(user.getSurname())  ? this.surname : user.getSurname();
+        this.admin = this.admin.equals(user.isAdmin()) ? this.admin : user.isAdmin();
+        this.username = this.username.equals(user.getUsername())  ? this.username : user.getUsername();
+        this.password = this.password.equals(user.getPassword())  ? this.password : user.getPassword();
+        this.fileNumber = this.fileNumber.equals(user.getFileNumber()) ? this.fileNumber : user.getFileNumber();
     }
 
     @Override

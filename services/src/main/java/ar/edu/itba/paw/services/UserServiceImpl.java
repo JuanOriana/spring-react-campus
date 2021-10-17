@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updateProfileImage(Long userId, byte[] image) {
-        userDao.updateProfileImage(userId, image);
+    public boolean updateProfileImage(Long userId, byte[] image) {
+        return userDao.updateProfileImage(userId, image);
     }
 }

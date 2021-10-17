@@ -135,22 +135,4 @@ public class UserDaoImpl implements UserDao {
     }
 
 
-    private static final ResultSetExtractor<Map<Role, List<Course>>> ROLE_AND_COURSES_EXTRACTOR = (rs -> {
-        Map<Role, List<Course>> roleMap = new HashMap<>();
-        while (rs.next()) {
-            Role role = new Role.Builder().withRoleId(rs.getInt("roleid")).withRoleName(rs.getString("rolename")).build();
-            roleMap.putIfAbsent(role, new ArrayList<>());
-
-            roleMap.get(role).add(new Course.Builder()
-                    .withCourseId(rs.getLong("courseId"))
-                    .withYear(rs.getInt("year"))
-                    .withQuarter(rs.getInt("quarter"))
-                    .withBoard(rs.getString("board"))
-                    .withSubject(new Subject(rs.getLong("subjectId"), rs.getString("code"),
-                            rs.getString("subjectName")))
-                    .build());
-        }
-        return roleMap;
-    });
-
 }

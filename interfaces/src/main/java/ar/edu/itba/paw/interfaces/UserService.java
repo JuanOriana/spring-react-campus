@@ -72,6 +72,6 @@ public interface UserService {
      * @param userId unique identifier of the user
      * @param image byte array of the image
      */
-    void updateProfileImage(Long userId, byte[] image);
+    boolean updateProfileImage(Long userId, byte[] image);
 
 }
