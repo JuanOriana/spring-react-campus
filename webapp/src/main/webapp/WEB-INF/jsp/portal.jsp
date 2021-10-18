@@ -32,6 +32,21 @@
                     </p>
                 </div>
             </c:forEach>
+            <div class="pagination-wrapper" style="font-size: 18px">
+                <c:if test="${currentPage > 1}">
+                    <a href="<c:url value="/portal?page=${currentPage-1}&pageSize=${pageSize}"/>">
+                        <img src="<c:url value="/resources/images/page-arrow.png"/>"
+                             alt="Next page" class="pagination-arrow x-rotated small-icon">
+                    </a>
+                </c:if>
+                <spring:message code="page.actual" htmlEscape="true" arguments="${currentPage},${maxPage}" />
+                <c:if test="${currentPage < maxPage}">
+                    <a href="<c:url value="/portal?page=${currentPage+1}&pageSize=${pageSize}"/>">
+                        <img src="<c:url value="/resources/images/page-arrow.png"/>"
+                             alt="Next page" class="pagination-arrow small-icon">
+                    </a>
+                </c:if>
+            </div>
 
         </div>
     </div>
