@@ -1,11 +1,21 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "file_categories")
 public class FileCategory {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "filecategory_categoryid_seq")
+    @SequenceGenerator(name = "filecategory_categoryid_seq", sequenceName = "filecategory_categoryid_seq", allocationSize = 1)
     private long categoryId;
+
+    @Column(nullable = false, unique = true)
     private String categoryName;
 
-    public FileCategory() {
+    /* Default */ FileCategory() {
+        // Just for Hibernate
     }
 
     public FileCategory(long categoryId, String categoryName) {

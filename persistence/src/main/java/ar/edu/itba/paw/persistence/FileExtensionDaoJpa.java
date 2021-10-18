@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.FileExtensionDao;
+import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileExtension;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,7 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
     @PersistenceContext
     private EntityManager em;
 
+    @Transactional
     @Override
     public FileExtension create(String fileExtension) {
         final FileExtension fExtension = new FileExtension(fileExtension);
@@ -32,7 +34,6 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
         Optional<FileExtension> dbFileExtension = Optional.ofNullable(em.find(FileExtension.class, fileExtensionId));
         if(!dbFileExtension.isPresent()) return false;
         dbFileExtension.get().setFileExtensionName(fileExtension);
-        dbFileExtension.get().merge(dbFileExtension.get());
         em.flush();
         return true;
     }
@@ -48,14 +49,12 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
 
     @Override
     public List<FileExtension> getExtensions() {
-        final TypedQuery<FileExtension> query = em.createQuery("SELECT fileExtensionId, fileExtension FROM file_extensions", FileExtension.class);
-        return query.getResultList();
+        final TypedQuery<FileExtension> listExtensions = em.createQuery("SELECT fe FROM FileExtension fe", FileExtension.class);
+        return listExtensions.getResultList();
     }
 
     @Override
     public Optional<String> getExtension(Long extensionId) {
-        final TypedQuery<FileExtension> query = em.createQuery("SELECT fileExtension FROM file_extensions WHERE fileExtensionId = :fileExtensionId", FileExtension.class);
-        query.setParameter("fileExtensionId", extensionId);
-        return Optional.ofNullable(query.getSingleResult().getFileExtensionName());
+        return Optional.ofNullable(em.find(FileCategory.class, extensionId).getCategoryName());
     }
 }

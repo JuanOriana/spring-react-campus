@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
-import java.io.File;
 
 @Entity
 @Table(name = "file_extensions")
@@ -45,7 +44,4 @@ public class FileExtension {
         this.fileExtensionName = fileExtensionName;
     }
 
-    public void merge(FileExtension fileExtension) {
-        this.fileExtensionName = this.fileExtensionName.equals(fileExtension.getFileExtensionName())  ? this.fileExtensionName : fileExtension.getFileExtensionName();
-    }
 }
