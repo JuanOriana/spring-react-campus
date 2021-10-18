@@ -17,7 +17,7 @@ public class Subject {
     @Column
     private String name;
 
-    /* Defaul */ Subject(){
+    /* Default */ Subject() {
         // Just for Hibernate
     }
     public Subject(Long subjectId, String code, String name) {
@@ -26,7 +26,6 @@ public class Subject {
         this.name = name;
     }
     public Subject(String code, String name) {
-        this.subjectId = subjectId;
         this.code = code;
         this.name = name;
     }
