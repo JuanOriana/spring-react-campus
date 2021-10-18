@@ -1,19 +1,45 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
+@Entity
+@Table(name = "files")
+@SecondaryTables({
+        @SecondaryTable(name = "file_extensions", pkJoinColumns = @PrimaryKeyJoinColumn(name = "fileExtensionId")),
+        @SecondaryTable(name = "courses", pkJoinColumns = @PrimaryKeyJoinColumn(name = "courseId")),
+        @SecondaryTable(name = "file_categories", pkJoinColumns = @PrimaryKeyJoinColumn(name = "categoryId")),
+})
 public class FileModel {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "files_fileid_seq")
+    @SequenceGenerator(name = "files_fileid_seq", sequenceName = "files_fileid_seq", allocationSize = 1)
     private Long fileId;
+
+    @Column
     private Long size;
+
+    @Column(table = "file_extensions")
     private FileExtension extension;
+
+    @Column
     private String name;
+
+    @Column
     private LocalDateTime date;
+
+    @Column
     private byte[] file;
+
+    @Column(table = "courses")
     private Course course;
+
+    @Column
     private Long downloads;
-    private List<FileCategory> categories;
+
+    @Column(table = "file_categories")
+    private FileCategory fileCategory;
 
     public static class Builder {
         private Long fileId;
@@ -24,12 +50,12 @@ public class FileModel {
         private byte[] file;
         private Course course;
         private Long downloads;
-        private List<FileCategory> categories;
+        private FileCategory fileCategory;
         public Builder() {
         }
 
         Builder(Long fileId, Long size, FileExtension extension, String name, LocalDateTime date, byte[] file,
-                Course course, Long downloads, List<FileCategory> categories) {
+                Course course, Long downloads, FileCategory fileCategory) {
             this.fileId = fileId;
             this.size = size;
             this.extension = extension;
@@ -38,7 +64,7 @@ public class FileModel {
             this.file = file;
             this.course = course;
             this.downloads = downloads;
-            this.categories = categories;
+            this.fileCategory = fileCategory;
         }
 
         public Builder withFileId(Long fileId){
@@ -81,8 +107,8 @@ public class FileModel {
             return Builder.this;
         }
 
-        public Builder withCategories(List<FileCategory> categories) {
-            this.categories = categories;
+        public Builder withCategory(FileCategory fileCategory) {
+            this.fileCategory = fileCategory;
             return Builder.this;
         }
 
@@ -136,7 +162,7 @@ public class FileModel {
         this.file = builder.file;
         this.course = builder.course;
         this.downloads = builder.downloads;
-        this.categories = builder.categories;
+        this.fileCategory = builder.fileCategory;
     }
 
     public Long getFileId() {
@@ -203,11 +229,11 @@ public class FileModel {
         this.downloads = downloads;
     }
 
-    public List<FileCategory> getCategories() {
-        return categories;
+    public FileCategory getCategory() {
+        return fileCategory;
     }
 
-    public void setCategories(List<FileCategory> categories) {
-        this.categories = categories;
+    public void setCategory(FileCategory fileCategory) {
+        this.fileCategory = fileCategory;
     }
 }
