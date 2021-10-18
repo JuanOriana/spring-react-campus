@@ -42,6 +42,7 @@ public class UserController extends AuthController {
         if (!errors.hasErrors()){
             userService.updateProfileImage(authFacade.getCurrentUser().getUserId(),
                     userProfileForm.getImage().getBytes());
+            return new ModelAndView("redirect:/user");
         }
         LOGGER.debug("Could not update image");
         return user(userProfileForm);

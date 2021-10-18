@@ -67,7 +67,6 @@ public class CourseController extends AuthController {
 
     @GetMapping(value = "/announcements")
     public ModelAndView announcements(@PathVariable Long courseId, final AnnouncementForm announcementForm,
-                                      String successMessage,
                                       @RequestParam(value = "page", required = false, defaultValue = "1")
                                                   Integer page,
                                       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
@@ -76,7 +75,6 @@ public class CourseController extends AuthController {
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-course");
             mav.addObject("announcementForm", announcementForm);
-            mav.addObject("successMessage", successMessage);
         } else {
             mav = new ModelAndView("course");
         }
@@ -88,17 +86,16 @@ public class CourseController extends AuthController {
 
     @PostMapping(value = "/announcements")
     public ModelAndView postAnnouncement(@PathVariable Long courseId,
-                                         @Valid AnnouncementForm announcementForm, final BindingResult errors) {
-        String successMessage = null;
+                                         @Valid AnnouncementForm announcementForm, final BindingResult errors,
+                                         RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
             Announcement announcement =announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
                     authFacade.getCurrentUser(), courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
             LOGGER.debug("Announcement in course {} created with id: {}", courseId, announcement.getAnnouncementId());
-            announcementForm.setContent("");
-            announcementForm.setTitle("");
-            successMessage = "announcement.success.message";
+            redirectAttributes.addFlashAttribute("successMessage", "announcement.success.message");
+            return new ModelAndView("redirect:/course/"+courseId+"/announcements");
         }
-        return announcements(courseId, announcementForm, successMessage, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        return announcements(courseId, announcementForm, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
 
     @GetMapping("/teachers")
@@ -109,7 +106,7 @@ public class CourseController extends AuthController {
     }
 
     @GetMapping(value = "/files")
-    public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm, String successMessage,
+    public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm,
                               @RequestParam(value = "category-type", required = false, defaultValue = "")
                                       List<Long> categoryType,
                               @RequestParam(value = "extension-type", required = false, defaultValue = "")
@@ -130,7 +127,6 @@ public class CourseController extends AuthController {
         if (courseService.isPrivileged(authFacade.getCurrentUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-files");
             mav.addObject("fileForm", fileForm);
-            mav.addObject("successMessage", successMessage);
         } else {
             mav = new ModelAndView("course-files");
         }
@@ -141,8 +137,8 @@ public class CourseController extends AuthController {
     }
 
     @PostMapping(value = "/files")
-    public ModelAndView uploadFile(@PathVariable Long courseId, @Valid FileForm fileForm, final BindingResult errors) {
-        String successMessage = null;
+    public ModelAndView uploadFile(@PathVariable Long courseId, @Valid FileForm fileForm,
+                                   final BindingResult errors,RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
             CommonsMultipartFile file = fileForm.getFile();
             // Function is expanded already for multiple categories in the future, passing only one for now
@@ -150,11 +146,10 @@ public class CourseController extends AuthController {
                     courseService.findById(courseId).orElseThrow(CourseNotFoundException::new),
                     Collections.singletonList(fileForm.getCategoryId()));
             LOGGER.debug("File in course {} created with id: {}", courseId, createdFile.getFileId());
-            fileForm.setFile(null);
-            fileForm.setCategoryId(null);
-            successMessage = "file.success.message";
+            redirectAttributes.addFlashAttribute("successMessage", "file.success.message");
+            return new ModelAndView("redirect:/course/"+courseId+"/files");
         }
-        return files(courseId, fileForm, successMessage, new ArrayList<>(),
+        return files(courseId, fileForm, new ArrayList<>(),
                 new ArrayList<>(), "", "date", "desc", DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
 
