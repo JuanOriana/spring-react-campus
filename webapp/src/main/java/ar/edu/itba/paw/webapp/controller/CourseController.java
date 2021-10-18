@@ -81,6 +81,9 @@ public class CourseController extends AuthController {
         CampusPage<Announcement> announcements = announcementService.listByCourse(courseId, page, pageSize);
         mav.addObject("announcementList", announcements.getContent());
         mav.addObject("dateTimeFormatter",dateTimeFormatter);
+        mav.addObject("currentPage", announcements.getPage());
+        mav.addObject("maxPage", announcements.getTotal());
+        mav.addObject("pageSize", announcements.getSize());
         return mav;
     }
 
@@ -133,6 +136,9 @@ public class CourseController extends AuthController {
         mav.addObject("categories", fileCategoryService.getCategories());
         mav.addObject("files", filePage.getContent());
         mav.addObject("extensions", fileExtensionService.getExtensions());
+        mav.addObject("currentPage", filePage.getPage());
+        mav.addObject("maxPage", filePage.getTotal());
+        mav.addObject("pageSize", filePage.getSize());
         return FilesController.loadFileParamsIntoModel(categoryType, extensionType, query, orderProperty, orderDirection, filePage, mav);
     }
 
