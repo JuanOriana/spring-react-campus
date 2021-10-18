@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
+import java.io.File;
 
 @Entity
 @Table(name = "file_extensions")
@@ -12,10 +13,11 @@ public class FileExtension {
     @Column(name = "fileExtensionId")
     private Long fileExtensionId;
 
-    @Column(length = 5, nullable = false)
+    @Column(length = 5, nullable = false, unique = true)
     private String fileExtensionName;
 
-    public FileExtension() {
+    /* Default */ FileExtension() {
+        // Just for Hibernate
     }
 
     public FileExtension(Long fileExtensionId, String fileExtension) {
@@ -41,5 +43,9 @@ public class FileExtension {
 
     public void setFileExtensionName(String fileExtensionName) {
         this.fileExtensionName = fileExtensionName;
+    }
+
+    public void merge(FileExtension fileExtension) {
+        this.fileExtensionName = this.fileExtensionName.equals(fileExtension.getFileExtensionName())  ? this.fileExtensionName : fileExtension.getFileExtensionName();
     }
 }

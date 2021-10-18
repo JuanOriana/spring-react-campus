@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.FileExtensionDao;
 import ar.edu.itba.paw.models.FileExtension;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,17 +26,24 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
         return fExtension;
     }
 
+    @Transactional
     @Override
     public boolean update(long fileExtensionId, String fileExtension) {
-        FileExtension oldFileExtension = em.find(FileExtension.class, fileExtensionId);
-        oldFileExtension.setFileExtensionName(fileExtension);
-        return em.find(FileExtension.class, fileExtensionId).getFileExtensionName().equals(fileExtension); //TODO: REV, capaz hay una mejor forma
+        Optional<FileExtension> dbFileExtension = Optional.ofNullable(em.find(FileExtension.class, fileExtensionId));
+        if(!dbFileExtension.isPresent()) return false;
+        dbFileExtension.get().setFileExtensionName(fileExtension);
+        dbFileExtension.get().merge(dbFileExtension.get());
+        em.flush();
+        return true;
     }
 
+    @Transactional
     @Override
     public boolean delete(long fileExtensionId) {
-        em.remove(em.find(FileExtension.class, fileExtensionId));
-        return !em.contains(em.find(FileExtension.class, fileExtensionId)); //TODO: REV, capaz hay una mejor forma
+        Optional<FileExtension> dbFileExtension = Optional.ofNullable(em.find(FileExtension.class, fileExtensionId));
+        if(!dbFileExtension.isPresent()) return false;
+        em.remove(dbFileExtension.get());
+        return true;
     }
 
     @Override
