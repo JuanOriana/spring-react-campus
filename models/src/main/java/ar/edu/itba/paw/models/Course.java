@@ -4,9 +4,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "courses")
-@SecondaryTable(name = "subjects",
-        pkJoinColumns = @PrimaryKeyJoinColumn(name = "subjectid"))
+@Table(name = "courses", uniqueConstraints={
+        @UniqueConstraint(columnNames = {"year", "quarter", "board", "subjectId"})})
 public class Course {
 
     @Id
@@ -23,7 +22,8 @@ public class Course {
     @Column
     private String board;
 
-    @Column(table = "subjects")
+    @ManyToOne
+    @JoinColumn(name = "subjectId")
     private Subject subject;
 
     /* Default */ Course() {
