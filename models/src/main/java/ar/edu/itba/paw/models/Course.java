@@ -1,14 +1,41 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "courses")
+@SecondaryTable(name = "subjects",
+        pkJoinColumns = @PrimaryKeyJoinColumn(name = "subjectid"))
 public class Course {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "courses_courseid_seq")
+    @SequenceGenerator(name = "courses_courseid_seq",sequenceName = "courses_courseid_seq", allocationSize = 1)
     private Long courseId;
+
+    @Column
     private Integer year;
+
+    @Column
     private Integer quarter;
+
+    @Column
     private String board;
+
+    @Column(table = "subjects")
     private Subject subject;
+
+    /* Default */ Course() {
+        // Just for Hibernate
+    }
+
+    public Course(Integer year, Integer quarter, String board,Subject subject) {
+        this.year = year;
+        this.quarter = quarter;
+        this.board = board;
+        this.subject = subject;
+    }
 
     public static class Builder {
 
