@@ -10,8 +10,13 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_roleid_seq")
     @SequenceGenerator(name = "roles_roleid_seq",sequenceName = "roles_roleid_seq", allocationSize = 1)
     private Integer roleId;
+
     @Column
     private String roleName;
+
+    /* Default */ Role() {
+        // Only for Hibernate :)
+    }
 
     public Role(Builder builder) {
         this.roleId = builder.roleId;

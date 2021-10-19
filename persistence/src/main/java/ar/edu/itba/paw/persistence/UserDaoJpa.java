@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Primary
 @Repository
-public class UseDaoJpa implements UserDao {
+public class UserDaoJpa implements UserDao {
 
     @PersistenceContext
     private EntityManager em;
@@ -56,16 +56,22 @@ public class UseDaoJpa implements UserDao {
         return true;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Role> getRole(Long userId, Long courseId) {
-        return Optional.empty();
+        TypedQuery<Role> dbRole = em.createQuery("SELECT e.role FROM Enrollment e WHERE e.course.courseId = :courseId AND e.user.userId = :userId", Role.class);
+        dbRole.setParameter("courseId", courseId);
+        dbRole.setParameter("userId", userId);
+        return Optional.ofNullable(dbRole.getSingleResult());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<User> findById(Long userId) {
         return Optional.ofNullable(em.find(User.class, userId));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<User> findByUsername(String username) {
         final TypedQuery<User> query = em.createQuery("SELECT u from User u where u.username = :username",
@@ -74,18 +80,21 @@ public class UseDaoJpa implements UserDao {
         return query.getResultList().stream().findFirst();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> list() {
         TypedQuery<User> listUsers = em.createQuery("SELECT u from User u", User.class);
         return listUsers.getResultList();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<byte[]> getProfileImage(Long userId) {
         Optional<User> user = findById(userId);
         return user.map(User::getImage);
     }
 
+    @Transactional
     @Override
     public boolean updateProfileImage(Long userId, byte[] image) {
         Optional<User> user = findById(userId);
