@@ -2,14 +2,11 @@ package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "files")
-@SecondaryTables({
-        @SecondaryTable(name = "file_extensions", pkJoinColumns = @PrimaryKeyJoinColumn(name = "fileExtensionId")),
-        @SecondaryTable(name = "courses", pkJoinColumns = @PrimaryKeyJoinColumn(name = "courseId")),
-        @SecondaryTable(name = "file_categories", pkJoinColumns = @PrimaryKeyJoinColumn(name = "categoryId")),
-})
+@SecondaryTable(name = "file_categories", pkJoinColumns = @PrimaryKeyJoinColumn(name = "categoryId"))
 public class FileModel {
 
     @Id
@@ -17,17 +14,17 @@ public class FileModel {
     @SequenceGenerator(name = "files_fileid_seq", sequenceName = "files_fileid_seq", allocationSize = 1)
     private Long fileId;
 
-    @Column(name="filesize")
+    @Column(name="fileSize")
     private Long size;
 
     @ManyToOne
-    @JoinColumn(name = "fileextensionId", insertable = false, updatable = false)
+    @JoinColumn(name = "fileExtensionId", insertable = false, updatable = false)
     private FileExtension extension;
 
-    @Column(name="filename")
+    @Column(name="fileName")
     private String name;
 
-    @Column(name="filedate")
+    @Column(name="fileDate")
     private LocalDateTime date;
 
     @Column
@@ -40,8 +37,7 @@ public class FileModel {
     @Column
     private Long downloads;
 
-    @ManyToOne
-    @JoinColumn(name = "file_categories", insertable = false, updatable = false)
+    @Column(table = "file_categories")
     private FileCategory fileCategory;
 
     public static class Builder {
@@ -238,5 +234,9 @@ public class FileModel {
 
     public void setCategory(FileCategory fileCategory) {
         this.fileCategory = fileCategory;
+    }
+
+    public void setCategories(List<FileCategory> categories) {
+        this.fileCategory = categories.get(0);
     }
 }
