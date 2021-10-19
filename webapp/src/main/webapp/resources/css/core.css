@@ -364,8 +364,8 @@ textarea:focus, input:focus{
 }
 .file-filter-container{
     display: none;
-    justify-content: space-between;
     padding: 0 30px;
+    flex-direction:column;
 }
 
 .file-select-label{

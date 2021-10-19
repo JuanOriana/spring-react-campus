@@ -28,12 +28,25 @@
                 toggler.style.transform="rotate(90deg)"
             }
         }
+
+        function clearFilters(){
+            const categoryCheckboxes = document.getElementsByName("category-type");
+            const extensionCheckboxes = document.getElementsByName("extension-type");
+            for(let i=0, n=categoryCheckboxes.length;i<n;i++) {
+                categoryCheckboxes[i].checked = false;
+            }
+            for(let i=0, n=extensionCheckboxes.length;i<n;i++) {
+                extensionCheckboxes[i].checked = false;
+            }
+            const query = document.getElementById("query");
+            query.value = ""
+        }
     </script>
 </head>
 <body>
 <form action="" class="file-query-container">
     <div style="display: flex; align-items: center; margin-bottom: 10px">
-        <input class="form-input" name="query" style="width: 70%; height: 30px; border-top-right-radius: 0;
+        <input class="form-input" name="query" id="query" style="width: 70%; height: 30px; border-top-right-radius: 0;
         border-bottom-right-radius: 0; border:none; margin: 0" value="${param.query}">
         <button class="form-button" style="height: 100%; margin:0; width: 120px;border-top-left-radius: 0;
         border-bottom-left-radius: 0">
@@ -43,7 +56,8 @@
              class="pagination-arrow"  style="transform: rotate(90deg); margin-left: 10px"
              onclick="toggleFilters()" alt="toggle filters" id="filter-toggle">
     </div>
-    <div class="file-filter-container" id="filter-container" style="display: none">
+    <div class="file-filter-container" id="filter-container" style="display: none;">
+        <div style="display: flex;justify-content: space-between;">
         <div style="display: flex; flex-direction: column;">
             <label for="order-property" class="file-select-label"><spring:message code="file.search.by" /></label>
             <select name="order-property" id="order-property" class="file-select">
@@ -118,6 +132,8 @@
                 </span>
             </c:forEach>
         </div>
+        </div>
+        <button type="button" class="form-button" style="align-self: end" onclick="clearFilters()">Clear filters</button>
     </div>
 </form>
 </body>
