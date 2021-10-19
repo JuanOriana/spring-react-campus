@@ -13,9 +13,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Primary
 @Repository
@@ -37,7 +35,7 @@ public class FileDaoJpa implements FileDao {
     @Override
     public FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course) {
         String fileExtension = getExtension(name);
-        TypedQuery<FileExtension> fileExtensionQuery = em.createQuery("SELECT fe FROM FileExtension fe WHERE fe.fileExtensionName = :fileExtensionName", FileExtension.class);
+        TypedQuery<FileExtension> fileExtensionQuery = em.createQuery("SELECT fe FROM FileExtension fe WHERE fe.fileExtension = :fileExtensionName", FileExtension.class);
         fileExtensionQuery.setParameter("fileExtensionName", fileExtension);
         List<FileExtension> resultsFileExtensionQuery = fileExtensionQuery.getResultList();
         if (resultsFileExtensionQuery.size() == 0){
@@ -45,7 +43,7 @@ public class FileDaoJpa implements FileDao {
         }else{
             fileExtension = resultsFileExtensionQuery.get(0).getFileExtensionName();
         }
-        fileExtensionQuery = em.createQuery("SELECT fe.fileExtensionId FROM FileExtension fe WHERE fe.fileExtensionName = :fileExtensionName", FileExtension.class);
+        fileExtensionQuery = em.createQuery("SELECT fe.fileExtensionId FROM FileExtension fe WHERE fe.fileExtension = :fileExtensionName", FileExtension.class);
         fileExtensionQuery.setParameter("fileExtensionName", fileExtension);
         final FileModel fileModel = new FileModel.Builder()
                 .withSize(size)
@@ -139,10 +137,19 @@ public class FileDaoJpa implements FileDao {
         return queryHasAccess.getResultList().size() > 0;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CampusPage<FileModel> listByCourse(String keyword, List<Long> extensions, List<Long> categories, Long userId, Long courseId, CampusPageRequest pageRequest, CampusPageSort sort) throws PaginationArgumentException {
         return findFileByPage(keyword, extensions, categories, userId, courseId, pageRequest, sort);
         //return null;
+
+//        StringBuilder selectQuery = new StringBuilder("SELECT fileId FROM files NATURAL JOIN user_to_course WHERE courseId = :courseId ");
+//        if (keyword.length() > 0){
+//            selectQuery.append("AND fileName LIKE "); ORDER BY
+//        } date DESC";
+//        String mappingQuery = "SELECT f FROM FileModel f WHERE f.fileId IN (:ids) ORDER BY f.date DESC";
+//        Map<String, Object> properties = new HashMap<>();
+//        properties.put("courseId", courseId);
     }
 
     @Override
