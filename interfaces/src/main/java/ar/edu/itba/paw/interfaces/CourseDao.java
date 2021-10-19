@@ -20,6 +20,6 @@ public interface CourseDao {
     boolean enroll(Long userId, Long courseId, Integer roleId);
     List<User> listUnenrolledUsers(Long courseId);
     List<Course> listWhereStudent(Long userId);
-    List<Course> listByYearQuarter(Integer year, Integer quarter);
+    CampusPage<Course> listByYearQuarter(Integer year, Integer quarter, CampusPageRequest campusPageRequest);
     List<Integer> getAvailableYears();
 }

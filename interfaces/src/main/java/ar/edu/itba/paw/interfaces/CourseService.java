@@ -119,7 +119,7 @@ public interface CourseService {
      * @param quarter to get the courses from
      * @return list of courses for the specific year and quarter
      */
-    List<Course> listByYearQuarter(Integer year, Integer quarter);
+    CampusPage<Course> listByYearQuarter(Integer year, Integer quarter, Integer page, Integer pageSize);
 
     /**
      * Attempts to get a list of years where there are courses present

@@ -435,12 +435,20 @@ textarea:focus, input:focus{
 /*                  ICONS AND IMAGES                  */
 
 .medium-icon{
+    height: 48px;
     width: 48px;
     cursor: pointer;
 }
 
 .small-icon{
+    height: 32px;
     width: 32px;
+    cursor: pointer;
+}
+
+.mini-icon{
+    height: 18px;
+    width: 18px;
     cursor: pointer;
 }
 
