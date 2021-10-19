@@ -9,7 +9,11 @@
 <body>
 <div class="page-organizer">
     <jsp:include page="../components/navbar.jsp"/>
-    <div class="page-container">
+    <div class="page-container" style="flex-direction: row;align-items: start">
+        <jsp:include page="../components/admin-sections-col.jsp">
+            <jsp:param name="small" value="${true}"/>
+        </jsp:include>
+        <div style="display: flex;flex-direction: column;align-items: center;flex:1">
         <h2 class="section-heading"><spring:message code="all.courses.from" htmlEscape="true"
                                                     arguments="${year},${quarter}"/></h2>
         <form method="get" class="course-table-form">
@@ -85,6 +89,7 @@
                 </c:if>
             </div>
         </c:if>
+        </div>
     </div>
     <jsp:include page="../components/footer.jsp"/>
 </div>

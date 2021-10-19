@@ -32,9 +32,10 @@
     <jsp:include page="../components/navbar.jsp" >
         <jsp:param name="successMessage" value="${successMessage}"/>
     </jsp:include>
-    <div class="page-container">
+    <div class="page-container" style="flex-direction: row;align-items: start">
+        <jsp:include page="../components/admin-sections-col.jsp"/>
         <form:form modelAttribute="courseForm" class="form-wrapper reduced" method="post"
-                   acceptCharset="utf-8" cssStyle="margin: 30px 0">
+                   acceptCharset="utf-8" cssStyle="margin: 0px 40px 40px 40px">
             <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="new.course.header" htmlEscape="true"/></h1>
             <form:label path="subjectId" for="subjectId" class="form-label"><spring:message code="new.course.subject"/></form:label>
             <form:select path="subjectId" class="form-input" style="font-size: 26px">
