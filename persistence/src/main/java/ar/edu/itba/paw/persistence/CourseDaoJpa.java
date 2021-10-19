@@ -126,7 +126,10 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
     @Transactional
     @Override
     public boolean enroll(Long userId, Long courseId, Integer roleId) {
-        Enrollment enrollment = new Enrollment(em.find(User.class, userId), em.find(Course.class, courseId), em.find(Role.class, roleId));
+        User user = em.find(User.class, userId);
+        Course course = em.find(Course.class, courseId);
+        Role role = em.find(Role.class, roleId);
+        Enrollment enrollment = new Enrollment(user, course, role);
         em.persist(enrollment);
         return true;
     }

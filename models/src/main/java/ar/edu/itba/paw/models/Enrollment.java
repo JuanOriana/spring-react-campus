@@ -31,6 +31,7 @@ public class Enrollment {
         this.user = user;
         this.course = course;
         this.role = role;
+        this.userToCourseId = new Pk(course.getCourseId(), user.getUserId());
     }
 
     public User getUser() {
@@ -67,6 +68,11 @@ public class Enrollment {
 
         /* Default */ Pk() {
             // Just for Hibernate
+        }
+
+        public Pk(Long courseId, Long userId) {
+            this.courseId = courseId;
+            this.userId = userId;
         }
 
         public Long getCourseId() {
