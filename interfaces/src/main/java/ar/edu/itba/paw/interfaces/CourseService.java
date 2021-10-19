@@ -43,9 +43,9 @@ public interface CourseService {
     /**
      * Gets all the available courses of a user
      * @param userId of the user to retrieve the courses from
-     * @return list containing all the current available courses (if any)
+     * @return paginated list containing all the current available courses (if any)
      */
-    List<Course> list(Long userId);
+    CampusPage<Course> list(Long userId, Integer page, Integer pageSize);
 
     /**
      * Gets all the current available courses of a user

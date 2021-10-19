@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +11,7 @@ public interface CourseDao {
     boolean update(Long id, Course course);
     boolean delete(Long id);
     List<Course> list();
-    List<Course> list(Long userId);
+    CampusPage<Course> list(Long userId, CampusPageRequest pageRequest);
     List<Course> listCurrent(Long userId);
     Optional<Course> findById(Long id);
     List<User> getStudents(Long courseId);
