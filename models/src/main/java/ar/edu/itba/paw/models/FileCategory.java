@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "file_categories")
@@ -43,4 +44,16 @@ public class FileCategory {
         this.categoryName = categoryName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileCategory that = (FileCategory) o;
+        return categoryId == that.categoryId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(categoryId);
+    }
 }
