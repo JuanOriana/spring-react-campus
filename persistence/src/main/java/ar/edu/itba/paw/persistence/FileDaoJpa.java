@@ -218,7 +218,7 @@ public class FileDaoJpa implements FileDao {
 //                "SELECT count(1) AS row_count FROM (" + rowCountSql + ") as foo",
 //                args, (rs, rowNum) -> rs.getInt(1)
 //        );
-        return 1;
+        return 2;
     }
 
 }
