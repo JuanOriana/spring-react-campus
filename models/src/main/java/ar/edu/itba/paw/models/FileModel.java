@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
         @SecondaryTable(name = "courses", pkJoinColumns = @PrimaryKeyJoinColumn(name = "courseId")),
         @SecondaryTable(name = "file_categories", pkJoinColumns = @PrimaryKeyJoinColumn(name = "categoryId")),
 })
-public class FileModel {
+public class FileModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "files_fileid_seq")

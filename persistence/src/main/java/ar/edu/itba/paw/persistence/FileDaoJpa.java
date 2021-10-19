@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,21 +25,25 @@ public class FileDaoJpa implements FileDao {
         return null;
     }
 
+    @Transactional
     @Override
     public boolean update(Long fileId, FileModel file) {
         return false;
     }
 
+    @Transactional
     @Override
     public boolean delete(Long fileId) {
         return false;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<FileModel> list(Long userId) {
         return null;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<FileModel> findById(Long fileId) {
         return Optional.empty();
@@ -46,19 +51,30 @@ public class FileDaoJpa implements FileDao {
 
     @Override
     public boolean associateCategory(Long fileId, Long fileCategoryId) {
+        TypedQuery<FileModel> queryFileCategory = em.createQuery("SELECT f FROM FileModel f JOIN CategoryFileRelationship cfr WHERE f.fileId = :fileId AND cfr.fileCategory.fileCategoryId = :fileCategoryId", FileModel.class);
+        queryFileCategory.setParameter("fileId", fileId);
+        queryFileCategory.setParameter("fileCategoryId", fileCategoryId);
+        if (queryFileCategory.getResultList().size() == 0){
+            final CategoryFileRelationship categoryFileRelationship = new CategoryFileRelationship(em.find(FileCategory.class,fileCategoryId), em.find(FileModel.class,fileId));
+            em.persist(categoryFileRelationship);
+            return true;
+        }
         return false;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<FileCategory> getFileCategories(Long fileId) {
         return null;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<FileModel> findByCategory(Long fileCategoryId) {
         return null;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<FileModel> findByCourseId(Long courseId) {
         return null;
