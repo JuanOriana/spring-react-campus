@@ -58,7 +58,7 @@ public class CourseDaoJpa implements CourseDao {
 
     @Override
     public List<Course> list(Long userId) {
-        TypedQuery<Course> listCoursesTypedQuery = em.createQuery("SELECT course FROM UserToCourse userToCourse WHERE userToCourse.user.userId = :userId", Course.class);
+        TypedQuery<Course> listCoursesTypedQuery = em.createQuery("SELECT enrollment.course FROM Enrollment enrollment WHERE enrollment.user.userId = :userId", Course.class);
         listCoursesTypedQuery.setParameter("userId", userId);
         return listCoursesTypedQuery.getResultList();
     }
@@ -68,12 +68,11 @@ public class CourseDaoJpa implements CourseDao {
         LocalDateTime time = LocalDateTime.now();
         int quarter = time.getMonthValue() >= Month.JULY.getValue() ? 2 : 1;
         int year = time.getYear();
-        TypedQuery<Course> listCoursesTypedQuery = em.createQuery("SELECT userToCourse.course FROM UserToCourse userToCourse WHERE userToCourse.user.userId = :userId AND userToCourse.course.quarter = :quarter AND userToCourse.course.year =:year", Course.class);
+        TypedQuery<Course> listCoursesTypedQuery = em.createQuery("SELECT enrollment.course FROM Enrollment enrollment WHERE enrollment.user.userId = :userId AND enrollment.course.quarter = :quarter AND enrollment.course.year =:year", Course.class);
         listCoursesTypedQuery.setParameter("userId", userId);
         listCoursesTypedQuery.setParameter("quarter", quarter);
         listCoursesTypedQuery.setParameter("year", year);
-        List<Course> list = listCoursesTypedQuery.getResultList();
-        return list;
+        return listCoursesTypedQuery.getResultList();
     }
 
     @Override
@@ -83,7 +82,7 @@ public class CourseDaoJpa implements CourseDao {
 
     @Override
     public List<User> getStudents(Long courseId) {
-        TypedQuery<User> listUserTypedQuery = em.createQuery("SELECT userToCourse.user FROM UserToCourse userToCourse  WHERE userToCourse.course.courseId =:courseId AND userToCourse.role.roleId=:roleId", User.class);
+        TypedQuery<User> listUserTypedQuery = em.createQuery("SELECT enrollment.user FROM Enrollment enrollment  WHERE enrollment.course.courseId =:courseId AND enrollment.role.roleId=:roleId", User.class);
         listUserTypedQuery.setParameter("courseId", courseId);
         listUserTypedQuery.setParameter("roleId", Roles.STUDENT.getValue());
         return listUserTypedQuery.getResultList();
@@ -96,7 +95,7 @@ public class CourseDaoJpa implements CourseDao {
 
     @Override
     public boolean belongs(Long userId, Long courseId) {
-        TypedQuery<Course> courseTypedQuery = em.createQuery("SELECT course FROM UserToCourse userToCourse WHERE userToCourse.course.courseId=:courseId AND userToCourse.user.userId = :userId", Course.class);
+        TypedQuery<Course> courseTypedQuery = em.createQuery("SELECT enrollment.course FROM Enrollment enrollment WHERE enrollment.course.courseId=:courseId AND enrollment.user.userId = :userId", Course.class);
         courseTypedQuery.setParameter("userId", userId);
         courseTypedQuery.setParameter("courseId", courseId);
         return courseTypedQuery.getResultList().isEmpty();
@@ -105,21 +104,21 @@ public class CourseDaoJpa implements CourseDao {
     @Transactional
     @Override
     public boolean enroll(Long userId, Long courseId, Integer roleId) {
-        UserToCourse userToCourse = new UserToCourse(em.find(User.class, userId), em.find(Course.class, courseId), em.find(Role.class, roleId));
-        em.persist(userToCourse);
+        Enrollment enrollment = new Enrollment(em.find(User.class, userId), em.find(Course.class, courseId), em.find(Role.class, roleId));
+        em.persist(enrollment);
         return true;
     }
 
     @Override
     public List<User> listUnenrolledUsers(Long courseId) {
-        TypedQuery<User> listUserTypedQuery = em.createQuery("SELECT user FROM User user WHERE user.admin = false AND user.userId NOT IN (SELECT userToCourse.user.userId FROM  UserToCourse userToCourse WHERE userToCourse.course.courseId = :courseId)", User.class);
+        TypedQuery<User> listUserTypedQuery = em.createQuery("SELECT user FROM User user WHERE user.admin = false AND user.userId NOT IN (SELECT enrollment.user.userId FROM  Enrollment enrollment WHERE enrollment.course.courseId = :courseId)", User.class);
         listUserTypedQuery.setParameter("courseId", courseId);
         return listUserTypedQuery.getResultList();
     }
 
     @Override
     public List<Course> listWhereStudent(Long userId) {
-        TypedQuery<Course> listCourseTypedQuery = em.createQuery("SELECT userToCourse.course FROM UserToCourse userToCourse WHERE userToCourse.user.userId = :userId AND userToCourse.role.roleId = :roleId", Course.class);
+        TypedQuery<Course> listCourseTypedQuery = em.createQuery("SELECT enrollment.course FROM Enrollment enrollment WHERE enrollment.user.userId = :userId AND enrollment.role.roleId = :roleId", Course.class);
         listCourseTypedQuery.setParameter("userId", userId);
         listCourseTypedQuery.setParameter("roleId", Roles.STUDENT.getValue());
         return listCourseTypedQuery.getResultList();

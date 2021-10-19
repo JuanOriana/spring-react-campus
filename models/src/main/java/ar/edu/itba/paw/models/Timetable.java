@@ -7,6 +7,10 @@ import java.sql.Time;
 @Table(name = "timetables")
 public class Timetable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
     @ManyToOne
     @JoinColumn(name = "courseId")
     private Course course;

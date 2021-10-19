@@ -1,13 +1,12 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "courses", uniqueConstraints={
         @UniqueConstraint(columnNames = {"year", "quarter", "board", "subjectId"})})
-public class Course implements Serializable {
+public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "courses_courseid_seq")
@@ -23,7 +22,7 @@ public class Course implements Serializable {
     @Column
     private String board;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "subjectId")
     private Subject subject;
 
