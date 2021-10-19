@@ -41,8 +41,8 @@ public class FileExtension {
         return fileExtension;
     }
 
-    public void setFileExtensionName(String fileExtension) {
-        this.fileExtension = fileExtension;
+    public void setFileExtensionName(String fileExtensionName) {
+        this.fileExtension = fileExtensionName;
     }
 
     @Override

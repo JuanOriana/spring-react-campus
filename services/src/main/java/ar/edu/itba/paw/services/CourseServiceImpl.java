@@ -75,8 +75,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Course> list(Long userId) {
-        return courseDao.list(userId);
+    public CampusPage<Course> list(Long userId, Integer page, Integer pageSize) {
+        return courseDao.list(userId, new CampusPageRequest(page, pageSize));
     }
 
     @Transactional(readOnly = true)

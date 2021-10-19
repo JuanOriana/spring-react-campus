@@ -2,12 +2,14 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -18,7 +20,7 @@ import java.util.Optional;
 
 @Primary
 @Repository
-public class CourseDaoJpa implements CourseDao {
+public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements CourseDao {
 
     @PersistenceContext
     private EntityManager em;
@@ -57,11 +59,14 @@ public class CourseDaoJpa implements CourseDao {
     }
 
     @Override
-    public List<Course> list(Long userId) {
-        TypedQuery<Course> listCoursesTypedQuery = em.createQuery("SELECT enrollment.course FROM Enrollment enrollment WHERE enrollment.user.userId = :userId", Course.class);
-        listCoursesTypedQuery.setParameter("userId", userId);
-        return listCoursesTypedQuery.getResultList();
+    public CampusPage<Course> list(Long userId, CampusPageRequest pageRequest) {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("userId", userId);
+        String query = "SELECT courseId FROM courses NATURAL JOIN user_to_course WHERE userId = :userId ORDER BY year DESC";
+        String mappingQuery = "SELECT DISTINCT enrollment.course FROM Enrollment enrollment WHERE enrollment.course.courseId IN (:ids) ORDER BY enrollment.course.year DESC";
+        return listBy(properties, query, mappingQuery, pageRequest, Course.class);
     }
+
 
     @Override
     public List<Course> listCurrent(Long userId) {
@@ -90,8 +95,25 @@ public class CourseDaoJpa implements CourseDao {
 
     @Override
     public Map<User, Role> getTeachers(Long courseId) {
-        return new HashMap<>(); //TODO
+        Map<User,Role> userRoleMap = new HashMap<>();
+
+        TypedQuery<Role> listRolesTypedQuery = em.createQuery("SELECT role FROM Role role WHERE role.roleId NOT IN (:roleId)", Role.class);
+        listRolesTypedQuery.setParameter("roleId", Roles.STUDENT.getValue());
+        List<Role> listRoles = listRolesTypedQuery.getResultList();
+
+        for(Role role : listRoles){
+            TypedQuery<User> listUserRolesTypedQuery = em.createQuery("SELECT enrollment.user FROM Enrollment enrollment WHERE enrollment.course.courseId = :courseId AND enrollment.role.roleId =:roleId",User.class);
+            listUserRolesTypedQuery.setParameter("courseId", courseId);
+            listUserRolesTypedQuery.setParameter("roleId", role.getRoleId());
+            List<User> userList = listUserRolesTypedQuery.getResultList();
+            for(User user: userList){
+                userRoleMap.put(user,role);
+            }
+        }
+
+        return userRoleMap;
     }
+
 
     @Override
     public boolean belongs(Long userId, Long courseId) {

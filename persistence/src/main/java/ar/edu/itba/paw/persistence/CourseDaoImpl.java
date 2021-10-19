@@ -88,9 +88,10 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public List<Course> list(Long userId) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects " +
-                "NATURAL JOIN user_to_course WHERE userId = ?", new Object[]{userId}, COURSE_ROW_MAPPER));
+    public CampusPage<Course> list(Long userId, CampusPageRequest pageRequest) {
+        //return new ArrayList<>(jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects " +
+        //      "NATURAL JOIN user_to_course WHERE userId = ?", new Object[]{userId}, COURSE_ROW_MAPPER));
+        return new CampusPage<>();
     }
 
     @Override

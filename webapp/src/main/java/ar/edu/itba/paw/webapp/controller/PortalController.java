@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.RoleService;
 import ar.edu.itba.paw.interfaces.SubjectService;
+import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class PortalController extends AuthController{
 
     @RequestMapping("/")
     public String rootRedirect() {
-        if(authFacade.getCurrentUser().isAdmin()) {
+        if(Boolean.TRUE.equals(authFacade.getCurrentUser().isAdmin())) {
             return "redirect:/admin/portal";
         }
         return "redirect:/portal";
@@ -40,11 +41,10 @@ public class PortalController extends AuthController{
     public ModelAndView portal() {
         ModelAndView mav = new ModelAndView("portal");
         Long userId = authFacade.getCurrentUser().getUserId();
-        List<Course> courses = courseService.list(userId);
-        courses.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
+        List<Course> courses = courseService.list(userId, 1, 50).getContent();
         mav.addObject("courseList", courses);
         mav.addObject("coursesAsStudent", courseService.listWhereStudent(userId));
-        mav.addObject("currentCourses",courseService.listCurrent(userId));
+        mav.addObject("currentCourses", courseService.listCurrent(userId));
         return mav;
     }
 

@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "file_categories")
-public class FileCategory implements Serializable{
+public class FileCategory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "filecategory_categoryid_seq")
