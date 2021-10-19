@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.form;
 
+import ar.edu.itba.paw.webapp.constraint.annotation.MaxFileSize;
 import ar.edu.itba.paw.webapp.constraint.annotation.NotEmptyFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -8,6 +9,8 @@ import javax.validation.constraints.*;
 public class FileForm {
 
     @NotEmptyFile
+    // 50mb
+    @MaxFileSize(50)
     private CommonsMultipartFile file;
 
     @Min(0)
