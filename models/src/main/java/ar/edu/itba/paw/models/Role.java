@@ -1,9 +1,16 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "roles")
 public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_roleid_seq")
+    @SequenceGenerator(name = "roles_roleid_seq",sequenceName = "roles_roleid_seq", allocationSize = 1)
     private Integer roleId;
+    @Column
     private String roleName;
 
     public Role(Builder builder) {
