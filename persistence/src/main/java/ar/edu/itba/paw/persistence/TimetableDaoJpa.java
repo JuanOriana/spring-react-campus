@@ -42,13 +42,13 @@ public class TimetableDaoJpa implements TimetableDao {
 
     @Override
     public boolean delete(Long courseId) {
-        int deletedCount = em.createQuery("DELETE FROM Timetable t WHERE t.course = :courseId").setParameter("courseId", courseId).executeUpdate();
+        int deletedCount = em.createQuery("DELETE FROM Timetable t WHERE t.course.courseId = :courseId").setParameter("courseId", courseId).executeUpdate();
         return deletedCount > 0;
     }
 
     @Override
     public List<Timetable> findById(Long courseId) {
-        final TypedQuery<Timetable> query = em.createQuery("SELECT t FROM Timetable t WHERE t.course = :courseId", Timetable.class);
+        final TypedQuery<Timetable> query = em.createQuery("SELECT t FROM Timetable t WHERE t.course.courseId = :courseId", Timetable.class);
         query.setParameter("courseId", courseId);
         return query.getResultList();
     }
