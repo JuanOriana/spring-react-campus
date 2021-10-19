@@ -17,28 +17,31 @@ public class FileModel {
     @SequenceGenerator(name = "files_fileid_seq", sequenceName = "files_fileid_seq", allocationSize = 1)
     private Long fileId;
 
-    @Column
+    @Column(name="filesize")
     private Long size;
 
-    @Column(table = "file_extensions")
+    @ManyToOne
+    @JoinColumn(name = "fileextensionId", insertable = false, updatable = false)
     private FileExtension extension;
 
-    @Column
+    @Column(name="filename")
     private String name;
 
-    @Column
+    @Column(name="filedate")
     private LocalDateTime date;
 
     @Column
     private byte[] file;
 
-    @Column(table = "courses")
+    @ManyToOne
+    @JoinColumn(name = "courseId", insertable = false, updatable = false)
     private Course course;
 
     @Column
     private Long downloads;
 
-    @Column(table = "file_categories")
+    @ManyToOne
+    @JoinColumn(name = "file_categories", insertable = false, updatable = false)
     private FileCategory fileCategory;
 
     public static class Builder {
