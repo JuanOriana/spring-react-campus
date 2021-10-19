@@ -1,12 +1,13 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "courses", uniqueConstraints={
         @UniqueConstraint(columnNames = {"year", "quarter", "board", "subjectId"})})
-public class Course {
+public class Course implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "courses_courseid_seq")
@@ -22,7 +23,7 @@ public class Course {
     @Column
     private String board;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subjectId")
     private Subject subject;
 
@@ -158,6 +159,13 @@ public class Course {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
+    }
+
+    public void merge(Course course){
+        this.year = course.getYear();
+        this.subject = course.getSubject();
+        this.board = course.getBoard();
+        this.quarter=course.getQuarter();
     }
 
     @Override
