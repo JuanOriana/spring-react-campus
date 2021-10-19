@@ -2,6 +2,7 @@ package ar.edu.itba.paw.models;
 
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "subjects")
@@ -16,6 +17,17 @@ public class Subject {
 
     @Column
     private String name;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subject", orphanRemoval = false)
+    private List<Course> coursesList;
+
+    public List<Course> getCoursesList() {
+        return coursesList;
+    }
+
+    public void setCoursesList(List<Course> coursesList) {
+        this.coursesList = coursesList;
+    }
 
     /* Default */ Subject() {
         // Just for Hibernate
@@ -52,5 +64,10 @@ public class Subject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void merge(Subject subject){
+        this.code = subject.getCode();
+        this.name = subject.getName();
     }
 }
