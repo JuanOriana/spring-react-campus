@@ -95,8 +95,25 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
 
     @Override
     public Map<User, Role> getTeachers(Long courseId) {
-        return new HashMap<>(); //TODO
+        Map<User,Role> userRoleMap = new HashMap<>();
+
+        TypedQuery<Role> listRolesTypedQuery = em.createQuery("SELECT role FROM Role role WHERE role.roleId NOT IN (:roleId)", Role.class);
+        listRolesTypedQuery.setParameter("roleId", Roles.STUDENT.getValue());
+        List<Role> listRoles = listRolesTypedQuery.getResultList();
+
+        for(Role role : listRoles){
+            TypedQuery<User> listUserRolesTypedQuery = em.createQuery("SELECT enrollment.user FROM Enrollment enrollment WHERE enrollment.course.courseId = :courseId AND enrollment.role.roleId =:roleId",User.class);
+            listUserRolesTypedQuery.setParameter("courseId", courseId);
+            listUserRolesTypedQuery.setParameter("roleId", role.getRoleId());
+            List<User> userList = listUserRolesTypedQuery.getResultList();
+            for(User user: userList){
+                userRoleMap.put(user,role);
+            }
+        }
+
+        return userRoleMap;
     }
+
 
     @Override
     public boolean belongs(Long userId, Long courseId) {
