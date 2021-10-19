@@ -1,16 +1,15 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Table(name = "files")
-@SecondaryTables({
-        @SecondaryTable(name = "file_extensions", pkJoinColumns = @PrimaryKeyJoinColumn(name = "fileExtensionId")),
-        @SecondaryTable(name = "courses", pkJoinColumns = @PrimaryKeyJoinColumn(name = "courseId")),
-        @SecondaryTable(name = "file_categories", pkJoinColumns = @PrimaryKeyJoinColumn(name = "categoryId")),
-})
-public class FileModel {
+@SecondaryTable(name = "file_categories", pkJoinColumns = @PrimaryKeyJoinColumn(name = "categoryId"))
+public class FileModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "files_fileid_seq")
@@ -40,9 +39,13 @@ public class FileModel {
     @Column
     private Long downloads;
 
-    @ManyToOne
-    @JoinColumn(name = "file_categories", insertable = false, updatable = false)
-    private FileCategory fileCategory;
+    @OneToMany(targetEntity = FileCategory.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "categoryId", referencedColumnName = "fileId")
+    private List<FileCategory> fileCategories;
+
+    /* default */ FileModel(){
+        //For Hibernate
+    }
 
     public static class Builder {
         private Long fileId;
@@ -53,12 +56,12 @@ public class FileModel {
         private byte[] file;
         private Course course;
         private Long downloads;
-        private FileCategory fileCategory;
+        private List<FileCategory> fileCategories;
         public Builder() {
         }
 
         Builder(Long fileId, Long size, FileExtension extension, String name, LocalDateTime date, byte[] file,
-                Course course, Long downloads, FileCategory fileCategory) {
+                Course course, Long downloads, List<FileCategory> fileCategories) {
             this.fileId = fileId;
             this.size = size;
             this.extension = extension;
@@ -67,7 +70,7 @@ public class FileModel {
             this.file = file;
             this.course = course;
             this.downloads = downloads;
-            this.fileCategory = fileCategory;
+            this.fileCategories = fileCategories;
         }
 
         public Builder withFileId(Long fileId){
@@ -110,8 +113,8 @@ public class FileModel {
             return Builder.this;
         }
 
-        public Builder withCategory(FileCategory fileCategory) {
-            this.fileCategory = fileCategory;
+        public Builder withCategories(List<FileCategory> fileCategories) {
+            this.fileCategories = fileCategories;
             return Builder.this;
         }
 
@@ -165,7 +168,7 @@ public class FileModel {
         this.file = builder.file;
         this.course = builder.course;
         this.downloads = builder.downloads;
-        this.fileCategory = builder.fileCategory;
+        this.fileCategories = builder.fileCategories;
     }
 
     public Long getFileId() {
@@ -232,11 +235,22 @@ public class FileModel {
         this.downloads = downloads;
     }
 
-    public FileCategory getCategory() {
-        return fileCategory;
+    public List<FileCategory> getCategories() {
+        return fileCategories;
     }
 
-    public void setCategory(FileCategory fileCategory) {
-        this.fileCategory = fileCategory;
+    public void setCategories(List<FileCategory> fileCategories) {
+        this.fileCategories = fileCategories;
+    }
+
+    public void merge(FileModel fileModel) {
+        this.name = this.name.equals(fileModel.getName())  ? this.name : fileModel.getName();
+        this.extension = this.extension.equals(fileModel.getExtension()) ? this.extension : fileModel.extension;
+        this.size = this.size.equals(fileModel.getSize()) ? this.size : fileModel.size;
+        this.date = this.date.equals(fileModel.getDate()) ? this.date : fileModel.date;
+        this.file = Arrays.equals(this.file, fileModel.getFile()) ? this.file : fileModel.file;
+        this.course = this.course.equals(fileModel.getCourse()) ? this.course : fileModel.course;
+        this.downloads = this.downloads.equals(fileModel.getDownloads()) ? this.downloads : fileModel.downloads;
+        this.fileCategories = this.fileCategories.equals(fileModel.getCategories()) ? this.fileCategories : fileModel.fileCategories;
     }
 }
