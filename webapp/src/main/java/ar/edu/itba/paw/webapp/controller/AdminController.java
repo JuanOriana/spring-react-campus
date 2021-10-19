@@ -146,14 +146,14 @@ public class AdminController extends AuthController {
                 quarter = 2;
             }
         }
-        mav.addObject("courses", courseService.listByYearQuarter(year,quarter));
+        CampusPage<Course> courses = courseService.listByYearQuarter(year,quarter, page, pageSize);
+        mav.addObject("courses", courses.getContent());
         mav.addObject("year",year);
         mav.addObject("allYears",courseService.getAvailableYears());
         mav.addObject("quarter",quarter);
-        //TODO: WHEN PAGING WORKS
-//        mav.addObject("currentPage", courses.getPage());
-//        mav.addObject("maxPage", 3);
-//        mav.addObject("pageSize", courses.getSize());
+        mav.addObject("currentPage", courses.getPage());
+        mav.addObject("maxPage", courses.getTotal());
+        mav.addObject("pageSize", courses.getSize());
         return mav;
     }
 }

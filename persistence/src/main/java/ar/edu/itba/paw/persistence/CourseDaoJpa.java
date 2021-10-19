@@ -2,14 +2,9 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -21,9 +16,6 @@ import java.util.Optional;
 @Primary
 @Repository
 public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements CourseDao {
-
-    @PersistenceContext
-    private EntityManager em;
 
     @Transactional
     @Override
@@ -147,11 +139,13 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
     }
 
     @Override
-    public List<Course> listByYearQuarter(Integer year, Integer quarter) {
-        TypedQuery<Course> listCourseTypedQuery = em.createQuery("SELECT course FROM Course course WHERE course.year =:year AND course.quarter = :quarter", Course.class);
-        listCourseTypedQuery.setParameter("year", year);
-        listCourseTypedQuery.setParameter("quarter", quarter);
-        return listCourseTypedQuery.getResultList();
+    public CampusPage<Course> listByYearQuarter(Integer year, Integer quarter, CampusPageRequest pageRequest) {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("year", year);
+        properties.put("quarter", quarter);
+        String query = "SELECT courseId FROM courses WHERE year = :year AND quarter = :quarter ORDER BY year DESC";
+        String mappingQuery = "SELECT DISTINCT c FROM Course c WHERE c.courseId IN (:ids) ORDER BY c.year DESC";
+        return listBy(properties, query, mappingQuery, pageRequest, Course.class);
     }
 
     @Override

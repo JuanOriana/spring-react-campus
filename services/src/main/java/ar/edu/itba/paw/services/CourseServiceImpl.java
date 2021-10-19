@@ -138,8 +138,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Course> listByYearQuarter(Integer year, Integer quarter) {
-        return courseDao.listByYearQuarter(year, quarter);
+    public CampusPage<Course> listByYearQuarter(Integer year, Integer quarter, Integer page, Integer pageSize) {
+        return courseDao.listByYearQuarter(year, quarter, new CampusPageRequest(page, pageSize));
     }
 
     @Transactional(readOnly = true)

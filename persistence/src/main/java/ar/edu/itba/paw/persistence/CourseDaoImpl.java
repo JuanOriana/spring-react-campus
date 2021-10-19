@@ -204,10 +204,11 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public List<Course> listByYearQuarter(Integer year, Integer quarter) {
-        return new ArrayList<>(jdbcTemplate.query(  "SELECT * " +
+    public CampusPage<Course> listByYearQuarter(Integer year, Integer quarter, CampusPageRequest campusPageRequest) {
+        /*return new ArrayList<>(jdbcTemplate.query(  "SELECT * " +
                         "FROM courses NATURAL JOIN subjects " +
-                        "WHERE year = ? AND quarter = ?", new Object[]{year, quarter}, COURSE_ROW_MAPPER));
+                        "WHERE year = ? AND quarter = ?", new Object[]{year, quarter}, COURSE_ROW_MAPPER));*/
+        return new CampusPage<>();
     }
 
     @Override
