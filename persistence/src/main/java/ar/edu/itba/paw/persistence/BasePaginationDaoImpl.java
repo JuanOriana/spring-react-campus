@@ -31,7 +31,7 @@ public class BasePaginationDaoImpl<T> implements BasePaginationDao<T> {
                                 Class<T> target) {
 
         int pageCount = getTotalPageCount(query, properties, pageRequest.getPageSize());
-        if(pageCount > pageRequest.getPageSize()) throw new PaginationArgumentException();
+        if(pageRequest.getPage() > pageCount) throw new PaginationArgumentException();
         if(pageCount == 0) return new CampusPage<>();
         String idsQueryString = query + " LIMIT " + pageRequest.getPageSize() + " OFFSET "
                 + (pageRequest.getPage() - 1) * pageRequest.getPageSize();
