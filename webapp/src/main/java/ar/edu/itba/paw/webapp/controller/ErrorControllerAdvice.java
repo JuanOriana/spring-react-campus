@@ -32,7 +32,7 @@ public class ErrorControllerAdvice {
 
     @ExceptionHandler(DuplicateUserException.class)
     public ModelAndView userKeyViolation(DuplicateUserException ex) {
-        LOGGER.error(ex.getError());
+        LOGGER.error("Duplicate key exception for user creation");
         ModelAndView mav = new ModelAndView("admin/new-user");
         UserRegisterForm userRegisterForm = new UserRegisterForm.Builder()
                 .withName(ex.getName())

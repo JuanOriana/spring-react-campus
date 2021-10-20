@@ -88,9 +88,10 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public List<Course> list(Long userId) {
-        return new ArrayList<>(jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects " +
-                "NATURAL JOIN user_to_course WHERE userId = ?", new Object[]{userId}, COURSE_ROW_MAPPER));
+    public CampusPage<Course> list(Long userId, CampusPageRequest pageRequest) {
+        //return new ArrayList<>(jdbcTemplate.query("SELECT * FROM courses NATURAL JOIN subjects " +
+        //      "NATURAL JOIN user_to_course WHERE userId = ?", new Object[]{userId}, COURSE_ROW_MAPPER));
+        return new CampusPage<>();
     }
 
     @Override
@@ -203,16 +204,22 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public List<Course> listByYearQuarter(Integer year, Integer quarter) {
-        return new ArrayList<>(jdbcTemplate.query(  "SELECT * " +
+    public CampusPage<Course> listByYearQuarter(Integer year, Integer quarter, CampusPageRequest campusPageRequest) {
+        /*return new ArrayList<>(jdbcTemplate.query(  "SELECT * " +
                         "FROM courses NATURAL JOIN subjects " +
-                        "WHERE year = ? AND quarter = ?", new Object[]{year, quarter}, COURSE_ROW_MAPPER));
+                        "WHERE year = ? AND quarter = ?", new Object[]{year, quarter}, COURSE_ROW_MAPPER));*/
+        return new CampusPage<>();
     }
 
     @Override
     public List<Integer> getAvailableYears() {
         return new ArrayList<>(jdbcTemplate.query(  "SELECT DISTINCT year FROM courses ORDER BY year DESC",
                 (rs, rowNum) -> rs.getInt("year")));
+    }
+
+    @Override
+    public boolean exists(Integer year, Integer quarter, String board, Long subjectId) {
+        return false;
     }
 
 

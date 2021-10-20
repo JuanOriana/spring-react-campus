@@ -24,7 +24,7 @@ public class AnnouncementsController extends AuthController {
         this.announcementService = announcementService;
     }
 
-    @GetMapping("/announcements")
+    @RequestMapping(method = RequestMethod.GET,value = "/announcements")
     public ModelAndView announcements(@RequestParam(value = "page", required = false, defaultValue = "1")
                                               Integer page,
                                       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
@@ -40,7 +40,7 @@ public class AnnouncementsController extends AuthController {
         return mav;
     }
 
-    @DeleteMapping(value = "/announcements/{announcementId}")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/announcements/{announcementId}")
     @ResponseBody
     public void deleteAnnouncement(@PathVariable Long announcementId) {
         LOGGER.debug("Deleting announcement {}", announcementId);

@@ -30,14 +30,14 @@ public class UserController extends AuthController {
         this.userService = userService;
     }
 
-    @GetMapping("/user")
+    @RequestMapping(method = RequestMethod.GET, value = "/user")
     public ModelAndView user(final UserProfileForm userProfileForm) {
         ModelAndView mav = new ModelAndView("user");
-        mav.addObject("userProfileForm",userProfileForm);
+        mav.addObject("userProfileForm", userProfileForm);
         return mav;
     }
 
-    @PostMapping("/user")
+    @RequestMapping(method = RequestMethod.POST, value = "/user")
     public ModelAndView user(@Valid UserProfileForm userProfileForm, final BindingResult errors) {
         if (!errors.hasErrors()){
             userService.updateProfileImage(authFacade.getCurrentUser().getUserId(),
@@ -48,7 +48,7 @@ public class UserController extends AuthController {
         return user(userProfileForm);
     }
 
-    @GetMapping("/user/profile-image/{userId}")
+    @RequestMapping(method = RequestMethod.GET, value = "/user/profile-image/{userId}")
     public void profileImage(@PathVariable(value = "userId") Long userId,
                              HttpServletResponse response) throws IOException {
         Optional<byte[]> image = userService.getProfileImage(userId);

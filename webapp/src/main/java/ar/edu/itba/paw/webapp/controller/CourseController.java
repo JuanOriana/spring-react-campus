@@ -59,13 +59,13 @@ public class CourseController extends AuthController {
                 courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
     }
 
-    @GetMapping(value = "")
+    @RequestMapping(method = RequestMethod.GET, value = "")
     public String coursePortal(@PathVariable Long courseId) {
        return "redirect:/course/{courseId}/announcements";
 
     }
 
-    @GetMapping(value = "/announcements")
+    @RequestMapping(method = RequestMethod.GET, value = "/announcements")
     public ModelAndView announcements(@PathVariable Long courseId, final AnnouncementForm announcementForm,
                                       @RequestParam(value = "page", required = false, defaultValue = "1")
                                                   Integer page,
@@ -87,7 +87,7 @@ public class CourseController extends AuthController {
         return mav;
     }
 
-    @PostMapping(value = "/announcements")
+    @RequestMapping(method = RequestMethod.POST, value = "/announcements")
     public ModelAndView postAnnouncement(@PathVariable Long courseId,
                                          @Valid AnnouncementForm announcementForm, final BindingResult errors,
                                          RedirectAttributes redirectAttributes) {
@@ -101,14 +101,14 @@ public class CourseController extends AuthController {
         return announcements(courseId, announcementForm, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
 
-    @GetMapping("/teachers")
+    @RequestMapping(method = RequestMethod.GET, value = "/teachers")
     public ModelAndView teachers(@PathVariable Long courseId) {
         final ModelAndView mav = new ModelAndView("teachers");
         mav.addObject("teacherSet", courseService.getTeachers(courseId).entrySet());
         return mav;
     }
 
-    @GetMapping(value = "/files")
+    @RequestMapping(method = RequestMethod.GET, value = "/files")
     public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm,
                               @RequestParam(value = "category-type", required = false, defaultValue = "")
                                       List<Long> categoryType,
@@ -142,9 +142,9 @@ public class CourseController extends AuthController {
         return FilesController.loadFileParamsIntoModel(categoryType, extensionType, query, orderProperty, orderDirection, filePage, mav);
     }
 
-    @PostMapping(value = "/files")
-    public ModelAndView uploadFile(@PathVariable Long courseId, @Valid FileForm fileForm,
-                                   final BindingResult errors,RedirectAttributes redirectAttributes) {
+    @RequestMapping(method = RequestMethod.POST, value = "/files")
+    public ModelAndView uploadFile(@PathVariable Long courseId, @Valid FileForm fileForm, final BindingResult errors,
+                                   RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
             CommonsMultipartFile file = fileForm.getFile();
             // Function is expanded already for multiple categories in the future, passing only one for now
@@ -159,7 +159,7 @@ public class CourseController extends AuthController {
                 new ArrayList<>(), "", "date", "desc", DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
 
-    @GetMapping(value = "/mail/{userId}")
+    @RequestMapping(method = RequestMethod.GET, value = "/mail/{userId}")
     public ModelAndView sendMail(@PathVariable final Long courseId, @PathVariable final Long userId,
                                  final MailForm mailForm) {
         if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) {
@@ -172,7 +172,7 @@ public class CourseController extends AuthController {
         return mav;
     }
 
-    @PostMapping(value = "/mail/{userId}")
+    @RequestMapping(method = RequestMethod.POST, value = "/mail/{userId}")
     public ModelAndView sendMail(@PathVariable Long courseId, @PathVariable Long userId,
                                  @Valid MailForm mailForm, final BindingResult errors,
                                  RedirectAttributes redirectAttributes) {

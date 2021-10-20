@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.RoleService;
 import ar.edu.itba.paw.interfaces.SubjectService;
+import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Comparator;
-import java.util.List;
 
 @Controller
 public class PortalController extends AuthController{
@@ -21,8 +19,8 @@ public class PortalController extends AuthController{
     protected final SubjectService subjectService;
 
     @Autowired
-    public PortalController(AuthFacade authFacade,
-                            CourseService courseService, RoleService roleService, SubjectService subjectService) {
+    public PortalController(AuthFacade authFacade, CourseService courseService,
+                            RoleService roleService, SubjectService subjectService) {
         super(authFacade);
         this.courseService = courseService;
         this.roleService = roleService;
@@ -31,7 +29,7 @@ public class PortalController extends AuthController{
 
     @RequestMapping("/")
     public String rootRedirect() {
-        if(authFacade.getCurrentUser().isAdmin()) {
+        if(Boolean.TRUE.equals(authFacade.getCurrentUser().isAdmin())) {
             return "redirect:/admin/portal";
         }
         return "redirect:/portal";
@@ -44,15 +42,13 @@ public class PortalController extends AuthController{
                                            Integer pageSize) {
         ModelAndView mav = new ModelAndView("portal");
         Long userId = authFacade.getCurrentUser().getUserId();
-        List<Course> courses = courseService.list(userId);
-        courses.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
-        mav.addObject("courseList", courses);
+        CampusPage<Course> courses = courseService.list(userId, page, pageSize);
+        mav.addObject("courseList", courses.getContent());
         mav.addObject("coursesAsStudent", courseService.listWhereStudent(userId));
         mav.addObject("currentCourses",courseService.listCurrent(userId));
-        //TODO: WHEN PAGING WORKS
-//        mav.addObject("currentPage", courses.getPage());
-//        mav.addObject("maxPage", 3);
-//        mav.addObject("pageSize", courses.getSize());
+        mav.addObject("currentPage", courses.getPage());
+        mav.addObject("maxPage", courses.getTotal());
+        mav.addObject("pageSize", courses.getSize());
         return mav;
     }
 

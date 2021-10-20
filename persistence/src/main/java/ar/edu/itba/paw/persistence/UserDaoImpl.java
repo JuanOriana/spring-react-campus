@@ -1,13 +1,10 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
-import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -129,28 +126,20 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public Optional<User> findByFileNumber(Integer fileNumber) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<byte[]> getProfileImage(Long userId) {
         return jdbcTemplate.query("SELECT image FROM profile_images WHERE userId = ?",
                 new Object[]{userId}, (rs, rowNumber) -> Optional.ofNullable(rs.getBytes("image"))).stream().findFirst().get();
     }
 
-
-    private static final ResultSetExtractor<Map<Role, List<Course>>> ROLE_AND_COURSES_EXTRACTOR = (rs -> {
-        Map<Role, List<Course>> roleMap = new HashMap<>();
-        while (rs.next()) {
-            Role role = new Role.Builder().withRoleId(rs.getInt("roleid")).withRoleName(rs.getString("rolename")).build();
-            roleMap.putIfAbsent(role, new ArrayList<>());
-
-            roleMap.get(role).add(new Course.Builder()
-                    .withCourseId(rs.getLong("courseId"))
-                    .withYear(rs.getInt("year"))
-                    .withQuarter(rs.getInt("quarter"))
-                    .withBoard(rs.getString("board"))
-                    .withSubject(new Subject(rs.getLong("subjectId"), rs.getString("code"),
-                            rs.getString("subjectName")))
-                    .build());
-        }
-        return roleMap;
-    });
 
 }

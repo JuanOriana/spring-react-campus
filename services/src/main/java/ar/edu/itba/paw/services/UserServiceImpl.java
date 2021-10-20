@@ -3,11 +3,8 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.models.exception.SystemUnavailableException;
 import ar.edu.itba.paw.models.exception.DuplicateUserException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,23 +23,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(Integer fileNumber, String name, String surname, String username,
                        String email, String password, boolean isAdmin) {
-        User user = null;
-        try {
-            user = userDao.create(fileNumber, name, surname, username,
-                    email, passwordEncoder.encode(password), isAdmin);
-        } catch (DuplicateKeyException dke) {
+        boolean matchUsername = userDao.findByUsername(username).isPresent();
+        boolean matchEmail = userDao.findByEmail(email).isPresent();
+        boolean matchFileNumber = userDao.findByFileNumber(fileNumber).isPresent();
+        if(matchUsername || matchEmail || matchFileNumber) {
             throw new DuplicateUserException.Builder()
-                    .withError(dke.getMessage())
-                    .withUsername(username)
-                    .withSurname(surname)
-                    .withEmail(email)
                     .withName(name)
-                    .withFileNumber(fileNumber)
+                    .withSurname(surname)
+                    .withUsername(matchUsername ? "" : username)
+                    .withEmail(matchEmail ? "" : email)
+                    .withFileNumber(matchFileNumber ? 0 : fileNumber)
                     .build();
-        } catch (DataAccessException dae) {
-            throw new SystemUnavailableException(dae.getMessage());
         }
-        return user;
+        return userDao.create(fileNumber, name, surname, username,
+                email, passwordEncoder.encode(password), isAdmin);
     }
 
     @Transactional
@@ -83,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updateProfileImage(Long userId, byte[] image) {
-        userDao.updateProfileImage(userId, image);
+    public boolean updateProfileImage(Long userId, byte[] image) {
+        return userDao.updateProfileImage(userId, image);
     }
 }

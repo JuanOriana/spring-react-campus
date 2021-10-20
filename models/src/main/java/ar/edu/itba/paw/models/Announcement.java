@@ -1,16 +1,37 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
+@Table(name = "announcements")
 public class Announcement {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "announcements_announcementid_seq")
+    @SequenceGenerator(name = "announcements_announcementid_seq", sequenceName = "announcements_announcementid_seq", allocationSize = 1)
     private Long announcementId;
+
+    @Column
     private LocalDateTime date;
+
+    @Column
     private String title;
+
+    @Column
     private String content;
+
+    @ManyToOne
+    @JoinColumn(name = "userId")
     private User author;
+
+    @ManyToOne
+    @JoinColumn(name = "courseId")
     private Course course;
+
+    /* Default */ Announcement() {
+        // Just for Hibernate
+    }
 
     public static class Builder {
 
@@ -149,6 +170,12 @@ public class Announcement {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public void merge(Announcement announcement) {
+        this.title = this.title.equals(announcement.getTitle()) ? this.title : announcement.getTitle();
+        this.content = this.content.equals(announcement.getContent()) ? this.content : announcement.getContent();
+        this.date = LocalDateTime.now();
     }
 
     @Override
