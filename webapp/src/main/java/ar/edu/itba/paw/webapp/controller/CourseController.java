@@ -34,6 +34,7 @@ public class CourseController extends AuthController {
     private final UserService userService;
     private final MailingService mailingService;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private static final String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
     private static final int DEFAULT_PAGE = 1;
     private static final int DEFAULT_PAGE_SIZE = 10;
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
@@ -161,7 +162,12 @@ public class CourseController extends AuthController {
 
     @GetMapping(value = "/schedule")
     public ModelAndView schedule(@PathVariable Long courseId) {
-        return new ModelAndView("course-schedule");
+        String[] timesArr = {"10:00-19:00",null,null,null,"10:00-19:00",null,null};
+        List<String> times = Arrays.asList(timesArr);
+        ModelAndView mav = new ModelAndView("course-schedule");
+        mav.addObject("times",times);
+        mav.addObject("days",days);
+        return mav;
     }
 
     @GetMapping(value = "/mail/{userId}")

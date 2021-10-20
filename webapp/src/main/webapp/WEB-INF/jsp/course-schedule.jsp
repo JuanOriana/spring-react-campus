@@ -23,9 +23,15 @@
                 <jsp:param name="itemId" value="${4}"/>
             </jsp:include>
             <div class="course-data-container">
-                <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="schedule.section-heading.title"/> </h3>
+                <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course-schedule.section-heading.title"/> </h3>
                 <div class="big-wrapper">
-                    <h1>boeenas</h1>
+                    <h3 style="margin: 10px 0;"><spring:message code="course-schedule.comment"/></h3>
+                    <c:forEach items="${days}" var="day" varStatus="daysStatus">
+                        <c:if test="${times[daysStatus.index] != null}">
+                            <h3 style="margin-top: 3px; margin-left: 10px"><spring:message code="day.${day}"/></h3>
+                            <p style="margin-left: 15px">&rsaquo; <c:out value="${times[daysStatus.index]}"/></p>
+                        </c:if>
+                    </c:forEach>
                 </div>
             </div>
         </div>
