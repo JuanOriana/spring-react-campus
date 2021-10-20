@@ -117,4 +117,11 @@ public class UserDaoJpa implements UserDao {
         query.setParameter("email", email);
         return query.getResultList().stream().findFirst();
     }
+    
+
+    @Override
+    public Integer getMaxFileNumber(){
+        final TypedQuery<Integer> query = em.createQuery("SELECT u.fileNumber FROM User u WHERE u.fileNumber >= ALL (SELECT u2.fileNumber FROM User u2)",Integer.class);
+        return query.getSingleResult();
+    }
 }

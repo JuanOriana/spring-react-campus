@@ -74,4 +74,10 @@ public interface UserService {
      */
     boolean updateProfileImage(Long userId, byte[] image);
 
+    /**
+     * Get max file number in user table
+     * @return file number
+     */
+    public Integer getMaxFileNumber();
+
 }

@@ -136,6 +136,11 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public Integer getMaxFileNumber() {
+        return null;   // Nothing to do here, already implemented in JPA DAO
+    }
+
+    @Override
     public Optional<byte[]> getProfileImage(Long userId) {
         return jdbcTemplate.query("SELECT image FROM profile_images WHERE userId = ?",
                 new Object[]{userId}, (rs, rowNumber) -> Optional.ofNullable(rs.getBytes("image"))).stream().findFirst().get();
