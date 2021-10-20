@@ -48,9 +48,7 @@ public class AdminController extends AuthController {
     @RequestMapping(method = RequestMethod.GET, value = "/user/new")
     public ModelAndView newUser(final UserRegisterForm userRegisterForm){
         ModelAndView mav = new ModelAndView("admin/new-user");
-        //int maxFileNumber = service.getMaxFileNumber();
-        int maxFileNumber = 420;
-        mav.addObject("maxFileNumber",maxFileNumber);
+        mav.addObject("nextFileNumber",userService.getMaxFileNumber()+1);
         mav.addObject("userRegisterForm", userRegisterForm);
         return mav;
     }
