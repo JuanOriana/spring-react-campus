@@ -1,12 +1,12 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "file_categories")
-public class FileCategory implements Serializable {
+public class FileCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "filecategory_categoryid_seq")
@@ -15,6 +15,9 @@ public class FileCategory implements Serializable {
 
     @Column(nullable = false, unique = true)
     private String categoryName;
+
+    @ManyToMany(mappedBy = "fileCategories")
+    List<FileModel> fileModels;
 
     /* Default */ FileCategory() {
         // Just for Hibernate

@@ -1,26 +1,25 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.FileCategoryDao;
 import ar.edu.itba.paw.interfaces.FileDao;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.PaginationArgumentException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Primary
 @Repository
-public class FileDaoJpa implements FileDao {
+public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements FileDao {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final Long NO_COURSE = -1L;
+
+    @Autowired
+    private FileCategoryDao fileCategoryDao;
 
     private String getExtension(String filename) {
         String extension = "";
@@ -38,9 +37,9 @@ public class FileDaoJpa implements FileDao {
         TypedQuery<FileExtension> fileExtensionQuery = em.createQuery("SELECT fe FROM FileExtension fe WHERE fe.fileExtension = :fileExtensionName", FileExtension.class);
         fileExtensionQuery.setParameter("fileExtensionName", fileExtension);
         List<FileExtension> resultsFileExtensionQuery = fileExtensionQuery.getResultList();
-        if (resultsFileExtensionQuery.size() == 0){
+        if (resultsFileExtensionQuery.isEmpty()){
             fileExtension = "other";
-        }else{
+        } else {
             fileExtension = resultsFileExtensionQuery.get(0).getFileExtensionName();
         }
         fileExtensionQuery = em.createQuery("SELECT fe.fileExtensionId FROM FileExtension fe WHERE fe.fileExtension = :fileExtensionName", FileExtension.class);
@@ -91,25 +90,26 @@ public class FileDaoJpa implements FileDao {
         return Optional.ofNullable(em.find(FileModel.class, fileId));
     }
 
+
+    @Transactional
     @Override
     public boolean associateCategory(Long fileId, Long fileCategoryId) {
-        TypedQuery<FileModel> queryFileCategory = em.createQuery("SELECT f FROM FileModel f JOIN CategoryFileRelationship cfr WHERE f.fileId = :fileId AND cfr.fileCategory.fileCategoryId = :fileCategoryId", FileModel.class);
-        queryFileCategory.setParameter("fileId", fileId);
-        queryFileCategory.setParameter("fileCategoryId", fileCategoryId);
-        if (queryFileCategory.getResultList().size() == 0){
-            final CategoryFileRelationship categoryFileRelationship = new CategoryFileRelationship(em.find(FileCategory.class,fileCategoryId), em.find(FileModel.class,fileId));
-            em.persist(categoryFileRelationship);
-            return true;
-        }
-        return false;
+        Optional<FileModel> optionalDBFile = findById(fileId);
+        Optional<FileCategory> optionalFileCategory = fileCategoryDao.findById(fileCategoryId);
+        if(!optionalDBFile.isPresent() || !optionalFileCategory.isPresent()) return false;
+        List<FileCategory> dbFile = optionalDBFile.get().getCategories();
+        for (FileCategory fileCategory : dbFile) if (fileCategory.getCategoryId() == fileCategoryId) return false;
+        dbFile.add(optionalFileCategory.get());
+        em.flush();
+        return true;
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<FileCategory> getFileCategories(Long fileId) {
-        TypedQuery<FileCategory> listFileCategories = em.createQuery("SELECT cfr.fileCategory FROM CategoryFileRelationship cfr WHERE cfr.fileModel.fileId = :fileId", FileCategory.class);
-        listFileCategories.setParameter("fileId", fileId);
-        return listFileCategories.getResultList();
+        Optional<FileModel> optionalFileModel = findById(fileId);
+        if(!optionalFileModel.isPresent()) return Collections.emptyList();
+        return optionalFileModel.get().getCategories();
     }
 
     @Transactional(readOnly = true)
@@ -134,35 +134,27 @@ public class FileDaoJpa implements FileDao {
         //queryHasAccess.setParameter("fileId", fileId);
         //TODO: ver por que el courseVoter devuelve null el fileId
         queryHasAccess.setParameter("userId", userId);
-        return queryHasAccess.getResultList().size() > 0;
+        return !queryHasAccess.getResultList().isEmpty();
     }
 
     @Transactional(readOnly = true)
     @Override
     public CampusPage<FileModel> listByCourse(String keyword, List<Long> extensions, List<Long> categories, Long userId, Long courseId, CampusPageRequest pageRequest, CampusPageSort sort) throws PaginationArgumentException {
         return findFileByPage(keyword, extensions, categories, userId, courseId, pageRequest, sort);
-        //return null;
-
-//        StringBuilder selectQuery = new StringBuilder("SELECT fileId FROM files NATURAL JOIN user_to_course WHERE courseId = :courseId ");
-//        if (keyword.length() > 0){
-//            selectQuery.append("AND fileName LIKE "); ORDER BY
-//        } date DESC";
-//        String mappingQuery = "SELECT f FROM FileModel f WHERE f.fileId IN (:ids) ORDER BY f.date DESC";
-//        Map<String, Object> properties = new HashMap<>();
-//        properties.put("courseId", courseId);
     }
 
     @Override
     public CampusPage<FileModel> listByUser(String keyword, List<Long> extensions, List<Long> categories, Long userId, CampusPageRequest pageRequest, CampusPageSort sort) throws PaginationArgumentException {
-        return findFileByPage(keyword, extensions, categories, userId, -1L, pageRequest, sort);
-        //return null;
+        return findFileByPage(keyword, extensions, categories, userId, NO_COURSE, pageRequest, sort);
     }
 
+    @Transactional
     @Override
     public void incrementDownloads(Long fileId) {
-        Optional<FileModel> dbFile = findById(fileId);
-        if (!dbFile.isPresent()) return;
-        dbFile.get().setDownloads(dbFile.get().getDownloads() + 1);
+        Optional<FileModel> optionalFileModel = findById(fileId);
+        if (!optionalFileModel.isPresent()) return;
+        FileModel file = optionalFileModel.get();
+        file.setDownloads(file.getDownloads() + 1);
         em.flush();
     }
 
@@ -170,62 +162,26 @@ public class FileDaoJpa implements FileDao {
                                                  Long userId, Long courseId, CampusPageRequest pageRequest,
                                                  CampusPageSort sort) {
         String unOrderedQuery = buildFilteredQuery(extensions, categories, courseId);
-        List<Long> filterMerge = new ArrayList<>();
-        filterMerge.addAll(extensions);
-        filterMerge.addAll(categories);
-        Object[] sqlParams = getQueryParams(filterMerge, keyword, courseId, userId);
-        int pageCount = getPageCount(unOrderedQuery, sqlParams, pageRequest.getPageSize());
-        if(pageCount == 0) return new CampusPage<>();
-        if(pageRequest.getPage() > pageCount) throw new PaginationArgumentException();
-//        List<FileModel> files = jdbcTemplate.query(unOrderedQuery + " " +
-//                        "ORDER BY " + sort.getProperty() + " " + sort.getDirection() + " " +
-//                        "LIMIT " + pageRequest.getPageSize() + " OFFSET " + (pageRequest.getPage() - 1) * pageRequest.getPageSize(),
-//                sqlParams, FILE_PREVIEW_ROW_MAPPER);
-        List<FileModel> files = em.createQuery("SELECT f FROM FileModel f WHERE f.course.courseId = :courseId", FileModel.class).setParameter("courseId", courseId).getResultList();
-        return new CampusPage<>(files, pageRequest.getPageSize(), pageRequest.getPage(), pageCount);
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("userId", userId);
+        if(!extensions.isEmpty()) properties.put("extensionIds", extensions);
+        if(!categories.isEmpty()) properties.put("categoryIds", categories);
+        properties.put("query", "%" + keyword + "%");
+        if(!courseId.equals(NO_COURSE)) properties.put("courseId", courseId);
+        String orderedQuery = unOrderedQuery + " ORDER BY " + sort.getProperty() + " " + sort.getDirection();
+        String mappingQuery = "SELECT f FROM FileModel f WHERE f.fileId IN (:ids) ORDER BY f." + sort.getProperty() + " " + sort.getDirection();
+        return listBy(properties, orderedQuery, mappingQuery, pageRequest, FileModel.class);
     }
+
 
     private String buildFilteredQuery(List<Long> extensions, List<Long> categories, Long courseId) {
-        StringBuilder extensionQuery = new StringBuilder();
-        if(!extensions.isEmpty()) {
-            extensionQuery.append("AND (");
-            extensions.forEach(e -> extensionQuery.append("f.fileExtensionId = ? OR "));
-            extensionQuery.delete(extensionQuery.length() - 4, extensionQuery.length());
-            extensionQuery.append(")");
-        }
-        StringBuilder categoryQuery = new StringBuilder();
-        if(!categories.isEmpty()) {
-            categoryQuery.append("AND (");
-            categories.forEach(c -> categoryQuery.append("f.categoryId = ? OR "));
-            categoryQuery.delete(categoryQuery.length() - 4, categoryQuery.length());
-            categoryQuery.append(")");
-        }
-        String courseSelection = courseId < 0 ? "(SELECT utc.course.courseId FROM UserToCourse utc WHERE utc.user.userId = :userId1)" : "(:courseId1)";
-        return "SELECT f FROM FileModel f " +
-                "WHERE LOWER(f.fileName) LIKE ? AND f.course.courseId IN " + courseSelection + " " +
-                extensionQuery.toString() + " " + categoryQuery.toString();
-    }
-
-    private Object[] getQueryParams(List<Long> params, String keyword, Long courseId, Long userId) {
-        Object[] sqlParams = new Object[params.size() + 2];
-        sqlParams[0] = "%" + keyword.toLowerCase() + "%";
-        sqlParams[1] = courseId < 0 ? userId : courseId;
-        for (int i = 0; i < params.size(); i++) {
-            sqlParams[i + 2] = params.get(i);
-        }
-        return sqlParams;
-    }
-
-    private Integer getPageCount(String unOrderedQuery, Object[] sqlParams, Integer pageSize) {
-        return (int) Math.ceil((double)getPageRowCount(unOrderedQuery, sqlParams) / pageSize);
-    }
-
-    private int getPageRowCount(String rowCountSql, Object[] args) {
-//        return jdbcTemplate.queryForObject(
-//                "SELECT count(1) AS row_count FROM (" + rowCountSql + ") as foo",
-//                args, (rs, rowNum) -> rs.getInt(1)
-//        );
-        return 2;
+        StringBuilder query = new StringBuilder();
+        if(!extensions.isEmpty()) query.append("AND ( fileExtensionId IN ( :extensionIds ) ) ");
+        if(!categories.isEmpty()) query.append("AND ( categoryId IN ( :categoryIds ) )");
+        String courseSelection = courseId < 0 ? "(SELECT courseId FROM user_to_course WHERE userId = :userId)" : "(:courseId)";
+        return  "SELECT fileId " +
+                "FROM files NATURAL JOIN category_file_relationship " +
+                "WHERE fileName ILIKE :query AND courseId IN " + courseSelection + " " + query;
     }
 
 }

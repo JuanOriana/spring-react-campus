@@ -9,7 +9,7 @@ import java.util.Objects;
 public class Enrollment {
 
     @EmbeddedId
-    private Pk userToCourseId;
+    private Pk enrollmentId;
 
     @ManyToOne
     @JoinColumn(name = "userId", insertable = false, updatable = false)
