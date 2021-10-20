@@ -9,7 +9,12 @@
 <body>
 <div class="page-organizer">
     <jsp:include page="../components/navbar.jsp"/>
-    <div class="page-container">
+    <div class="page-container" style="flex-direction: row;align-items: start">
+        <jsp:include page="../components/admin-sections-col.jsp">
+            <jsp:param name="small" value="${true}"/>
+            <jsp:param name="itemId" value="${4}"/>
+        </jsp:include>
+        <div style="display: flex;flex-direction: column;align-items: center;flex:1">
         <h2 class="section-heading"><spring:message code="all.courses.from" htmlEscape="true"
                                                     arguments="${year},${quarter}"/></h2>
         <form method="get" class="course-table-form">
@@ -71,20 +76,21 @@
             </table>
             <div class="pagination-wrapper" >
                 <c:if test="${currentPage > 1}">
-                    <a href="<c:url value="/admin/course/all?page=${currentPage-1}&pageSize=${pageSize}"/>">
+                    <a href="<c:url value="/admin/course/all?year=${year}&quarter=${quarter}&page=${currentPage-1}&pageSize=${pageSize}"/>">
                         <img src="<c:url value="/resources/images/page-arrow.png"/>"
                              alt="Next page" class="pagination-arrow x-rotated">
                     </a>
                 </c:if>
                 <spring:message code="page.actual" htmlEscape="true" arguments="${currentPage},${maxPage}" />
                 <c:if test="${currentPage < maxPage}">
-                    <a href="<c:url value="/admin/course/all?page=${currentPage+1}&pageSize=${pageSize}"/>">
+                    <a href="<c:url value="/admin/course/all?year=${year}&quarter=${quarter}&page=${currentPage+1}&pageSize=${pageSize}"/>">
                         <img src="<c:url value="/resources/images/page-arrow.png"/>"
                              alt="Next page" class="pagination-arrow">
                     </a>
                 </c:if>
             </div>
         </c:if>
+        </div>
     </div>
     <jsp:include page="../components/footer.jsp"/>
 </div>

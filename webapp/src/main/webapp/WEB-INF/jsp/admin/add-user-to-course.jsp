@@ -14,9 +14,12 @@
     <jsp:include page="../components/navbar.jsp" >
         <jsp:param name="successMessage" value="${successMessage}"/>
     </jsp:include>
-    <div class="page-container">
+    <div class="page-container" style="flex-direction: row;align-items: start">
+        <jsp:include page="../components/admin-sections-col.jsp">
+            <jsp:param name="itemId" value="${3}"/>
+        </jsp:include>
         <form:form modelAttribute="userToCourseForm" class="form-wrapper reduced" method="post"
-                   acceptCharset="utf-8" cssStyle="margin: 30px 0">
+                   acceptCharset="utf-8" cssStyle="margin: 0px 40px 40px 40px">
             <a href="<c:url value="/admin/course/select" />" class="styleless-anchor"
                style="display: flex; align-items: center">
                 <img src="<c:url value="/resources/images/page-arrow.png"/>" alt="back" class="back-img">

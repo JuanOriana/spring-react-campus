@@ -25,6 +25,7 @@
         <jsp:param name="quarter" value="${course.quarter}"/>
         <jsp:param name="code" value="${course.subject.code}"/>
         <jsp:param name="board" value="${course.board}"/>
+        <jsp:param name="itemId" value="${1}"/>
       </jsp:include>
 
       <div class="course-data-container">

@@ -13,9 +13,12 @@
     <jsp:include page="../components/navbar.jsp" >
         <jsp:param name="successMessage" value="${successMessage}"/>
     </jsp:include>
-    <div class="page-container">
+    <div class="page-container" style="flex-direction: row;align-items: start">
+        <jsp:include page="../components/admin-sections-col.jsp">
+            <jsp:param name="itemId" value="${1}"/>
+        </jsp:include>
     <form:form modelAttribute="userRegisterForm" class="form-wrapper reduced" method="post"
-               acceptCharset="utf-8" cssStyle="margin: 30px 0">
+               acceptCharset="utf-8" cssStyle="margin: 0px 40px 40px 40px">
         <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="new.user.header" htmlEscape="true"/></h1>
         <form:label path="fileNumber" for="fileNumber" class="form-label"><spring:message code="new.user.file.number" /></form:label>
         <form:input type="number" path="fileNumber" min="0" class="form-input" style="font-size: 26px"/>

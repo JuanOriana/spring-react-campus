@@ -14,8 +14,12 @@
     <jsp:include page="../components/navbar.jsp" >
         <jsp:param name="successMessage" value="${successMessage}"/>
     </jsp:include>
-    <div class="page-container">
-        <form action="<c:url value="/admin/course/enroll"/>" class="form-wrapper reduced" method="get" style="margin: 30px 0">
+    <div class="page-container" style="flex-direction: row;align-items: start">
+        <jsp:include page="../components/admin-sections-col.jsp">
+            <jsp:param name="itemId" value="${3}"/>
+        </jsp:include>
+        <form action="<c:url value="/admin/course/enroll"/>" class="form-wrapper reduced" method="get"
+              style="margin: 0px 40px 40px 40px; align-self: start">
             <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="select.course.header"/></h1>
             <label for="courseId" class="form-label"><spring:message code="select.course"/></label>
             <select name="courseId" id="courseId" class="form-input" style="font-size: 26px">

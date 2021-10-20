@@ -166,7 +166,12 @@ body{
     font-weight: 700;
     font-size: 18px;;
     list-style-type: none;
-    margin-bottom: 5px;
+    margin-bottom: 9px;
+}
+
+.course-sections-item:hover{
+    color: white;
+    transition: all 0.2s ease-in-out;
 }
 
 .course-data-container{
@@ -364,8 +369,8 @@ textarea:focus, input:focus{
 }
 .file-filter-container{
     display: none;
-    justify-content: space-between;
     padding: 0 30px;
+    flex-direction:column;
 }
 
 .file-select-label{
