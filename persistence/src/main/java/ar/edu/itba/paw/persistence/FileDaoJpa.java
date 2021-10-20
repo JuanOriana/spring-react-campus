@@ -163,11 +163,14 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
                                                  CampusPageSort sort) {
         String unOrderedQuery = buildFilteredQuery(extensions, categories, courseId);
         Map<String, Object> properties = new HashMap<>();
-        properties.put("userId", userId);
         if(!extensions.isEmpty()) properties.put("extensionIds", extensions);
         if(!categories.isEmpty()) properties.put("categoryIds", categories);
         properties.put("query", "%" + keyword + "%");
-        if(!courseId.equals(NO_COURSE)) properties.put("courseId", courseId);
+        if(!courseId.equals(NO_COURSE)) {
+            properties.put("courseId", courseId);
+        } else {
+            properties.put("userId", userId);
+        }
         String orderedQuery = unOrderedQuery + " ORDER BY " + sort.getProperty() + " " + sort.getDirection();
         String mappingQuery = "SELECT f FROM FileModel f WHERE f.fileId IN (:ids) ORDER BY f." + sort.getProperty() + " " + sort.getDirection();
         return listBy(properties, orderedQuery, mappingQuery, pageRequest, FileModel.class);
