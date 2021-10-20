@@ -54,10 +54,10 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                     .antMatchers("/login").anonymous()
                     .antMatchers("/admin/**").hasAuthority("ADMIN")
-                    .antMatchers(HttpMethod.GET, "/files/{fileId}").access("@courseVoter.hasFileAccess(authentication,#fileId)")
+                    /*.antMatchers(HttpMethod.GET, "/files/{fileId}").access("@courseVoter.hasFileAccess(authentication,#fileId)")
                     .antMatchers(HttpMethod.POST, "/course/{courseId}/announcements").access("@courseVoter.hasCoursePrivileges(authentication,#courseId)")
                     .antMatchers(HttpMethod.POST, "/course/{courseId}/files").access("@courseVoter.hasCoursePrivileges(authentication,#courseId)")
-                    .antMatchers(HttpMethod.GET, "/course/{courseId}/**").access("@courseVoter.hasCourseAccess(authentication,#courseId)")
+                    .antMatchers(HttpMethod.GET, "/course/{courseId}/**").access("@courseVoter.hasCourseAccess(authentication,#courseId)")*/
                     .antMatchers("/portal").hasAuthority("USER")
                     .antMatchers("/announcements").hasAuthority("USER")
                     .antMatchers("/timetable").hasAuthority("USER")

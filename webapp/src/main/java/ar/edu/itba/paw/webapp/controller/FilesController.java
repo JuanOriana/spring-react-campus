@@ -38,7 +38,7 @@ public class FilesController extends AuthController {
         this.fileExtensionService = fileExtensionService;
     }
 
-    @GetMapping("/files")
+    @RequestMapping(method = RequestMethod.GET, value = "/files")
     public ModelAndView files(@RequestParam(value = "category-type", required = false, defaultValue = "")
                                       List<Long> categoryType,
                               @RequestParam(value = "extension-type", required = false, defaultValue = "")
@@ -77,7 +77,7 @@ public class FilesController extends AuthController {
         return mav;
     }
 
-    @GetMapping(value = "/files/{fileId}")
+    @RequestMapping(method = RequestMethod.GET, value = "/files/{fileId}")
     public void downloadFile(@PathVariable Long fileId, HttpServletResponse response) {
         FileModel file = fileService.findById(fileId).orElseThrow(FileNotFoundException::new);
         if (!file.getExtension().getFileExtensionName().equals("pdf")) {
@@ -98,7 +98,7 @@ public class FilesController extends AuthController {
         }
     }
 
-    @DeleteMapping(value = "/files/{fileId}")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/files/{fileId}")
     @ResponseBody
     public void deleteFile(@PathVariable Long fileId) {
         LOGGER.debug("Deleting file {}", fileId);

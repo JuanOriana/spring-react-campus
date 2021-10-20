@@ -486,7 +486,7 @@ textarea:focus, input:focus{
 }
 
 .redirection-button{
-    font-size: 32px;
+    font-size: 30px;
     padding: 30px;
     background: var(--cyan-darkest);
     border-radius: 10px;

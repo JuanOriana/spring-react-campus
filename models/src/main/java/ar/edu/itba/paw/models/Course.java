@@ -1,14 +1,41 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "courses", uniqueConstraints={
+        @UniqueConstraint(columnNames = {"year", "quarter", "board", "subjectId"})})
 public class Course {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "courses_courseid_seq")
+    @SequenceGenerator(name = "courses_courseid_seq",sequenceName = "courses_courseid_seq", allocationSize = 1)
     private Long courseId;
+
+    @Column
     private Integer year;
+
+    @Column
     private Integer quarter;
+
+    @Column
     private String board;
+
+    @ManyToOne
+    @JoinColumn(name = "subjectId")
     private Subject subject;
+
+    /* Default */ Course() {
+        // Just for Hibernate
+    }
+
+    public Course(Integer year, Integer quarter, String board,Subject subject) {
+        this.year = year;
+        this.quarter = quarter;
+        this.board = board;
+        this.subject = subject;
+    }
 
     public static class Builder {
 
@@ -131,6 +158,13 @@ public class Course {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
+    }
+
+    public void merge(Course course){
+        this.year = course.getYear();
+        this.subject = course.getSubject();
+        this.board = course.getBoard();
+        this.quarter=course.getQuarter();
     }
 
     @Override

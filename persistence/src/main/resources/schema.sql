@@ -105,7 +105,6 @@ CREATE TABLE IF NOT EXISTS category_file_relationship
 CREATE TABLE IF NOT EXISTS profile_images
 (
     image  BYTEA,
-    userId INTEGER PRIMARY KEY ,
+    userId INTEGER PRIMARY KEY,
     FOREIGN KEY (userId) REFERENCES users ON DELETE CASCADE
-
 );

@@ -72,6 +72,12 @@ public interface UserService {
      * @param userId unique identifier of the user
      * @param image byte array of the image
      */
-    void updateProfileImage(Long userId, byte[] image);
+    boolean updateProfileImage(Long userId, byte[] image);
+
+    /**
+     * Get max file number in user table
+     * @return file number
+     */
+    public Integer getMaxFileNumber();
 
 }

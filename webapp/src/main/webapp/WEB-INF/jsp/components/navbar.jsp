@@ -6,7 +6,7 @@
 <nav class="navbar-container">
     <h1 class="nav-title"><a class="styleless-anchor" href="<c:url value ="/"/>"><spring:message code="navbar.title"/></a></h1>
     <c:if test="${currentUser != null}">
-        <c:if test="${!currentUser.admin}">
+        <c:if test="${!currentUser.isAdmin()}">
             <ul class="nav-sections-container">
                 <li class="${param.navItem == 1? "nav-sections-item nav-sections-item-active" : "nav-sections-item" }">
                     <a href="<c:url value ="/portal"/>" class="styleless-anchor"><spring:message code="navbar.my.courses"/></a>
