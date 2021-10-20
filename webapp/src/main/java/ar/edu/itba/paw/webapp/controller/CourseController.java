@@ -159,6 +159,11 @@ public class CourseController extends AuthController {
                 new ArrayList<>(), "", "date", "desc", DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
 
+    @GetMapping(value = "/schedule")
+    public ModelAndView schedule(@PathVariable Long courseId) {
+        return new ModelAndView("course-schedule");
+    }
+
     @GetMapping(value = "/mail/{userId}")
     public ModelAndView sendMail(@PathVariable final Long courseId, @PathVariable final Long userId,
                                  final MailForm mailForm) {
