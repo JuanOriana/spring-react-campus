@@ -131,34 +131,28 @@ public class User {
             if(this.name == null){
                 throw new NullPointerException("The property \"name\" is null. "
                         + "Please set the value by \"name()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\" and \"fileNumber\" are required.");
             }
             if(this.surname == null){
                 throw new NullPointerException("The property \"surname\" is null. "
                         + "Please set the value by \"surname()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\" and \"fileNumber\" are required.");
             }
             if(this.username == null){
                 throw new NullPointerException("The property \"username\" is null. "
                         + "Please set the value by \"username()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", and \"fileNumber\" are required.");
             }
             if(this.email == null){
                 throw new NullPointerException("The property \"email\" is null. "
                         + "Please set the value by \"email()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\"and \"fileNumber\" are required.");
             }
             if(this.fileNumber == null){
                 throw new NullPointerException("The property \"fileNumber\" is null. "
                         + "Please set the value by \"fileNumber()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\" and \"fileNumber\" are required.");
             }
-            if(this.userId == null){
-                throw new NullPointerException("The property \"userId\" is null. "
-                        + "Please set the value by \"userId()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
-            }
-
             return new User(this);
         }
     }
