@@ -15,7 +15,9 @@
         <jsp:param name="successMessage" value="${successMessage}"/>
     </jsp:include>
     <div class="page-container" style="flex-direction: row;align-items: start">
-        <jsp:include page="../components/admin-sections-col.jsp"/>
+        <jsp:include page="../components/admin-sections-col.jsp">
+            <jsp:param name="itemId" value="${3}"/>
+        </jsp:include>
         <form:form modelAttribute="userToCourseForm" class="form-wrapper reduced" method="post"
                    acceptCharset="utf-8" cssStyle="margin: 0px 40px 40px 40px">
             <a href="<c:url value="/admin/course/select" />" class="styleless-anchor"
