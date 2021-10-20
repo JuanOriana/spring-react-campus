@@ -1,15 +1,13 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 @Entity
 @Table(name = "files")
-@SecondaryTable(name = "file_categories", pkJoinColumns = @PrimaryKeyJoinColumn(name = "categoryId"))
-public class FileModel implements Serializable {
+public class FileModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "files_fileid_seq")
@@ -20,14 +18,14 @@ public class FileModel implements Serializable {
     private Long size;
 
     @ManyToOne
-    @JoinColumn(name = "fileextensionId", insertable = false, updatable = false)
+    @JoinColumn(name = "fileExtensionId", insertable = false, updatable = false)
     private FileExtension extension;
 
     @Column(name="filename")
     private String name;
 
-    @Column(name="filedate")
-    private LocalDateTime date;
+    @Column
+    private LocalDateTime fileDate;
 
     @Column
     private byte[] file;
@@ -39,11 +37,15 @@ public class FileModel implements Serializable {
     @Column
     private Long downloads;
 
-    @OneToMany(targetEntity = FileCategory.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "categoryId", referencedColumnName = "fileId")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "category_file_relationship",
+            joinColumns = @JoinColumn(name = "fileId"),
+            inverseJoinColumns = @JoinColumn(name = "categoryId")
+    )
     private List<FileCategory> fileCategories;
 
-    /* default */ FileModel(){
+    /* default */ FileModel() {
         //For Hibernate
     }
 
@@ -52,21 +54,22 @@ public class FileModel implements Serializable {
         private Long size;
         private FileExtension extension;
         private String name;
-        private LocalDateTime date;
+        private LocalDateTime fileDate;
         private byte[] file;
         private Course course;
         private Long downloads;
         private List<FileCategory> fileCategories;
+
         public Builder() {
         }
 
-        Builder(Long fileId, Long size, FileExtension extension, String name, LocalDateTime date, byte[] file,
+        Builder(Long fileId, Long size, FileExtension extension, String name, LocalDateTime fileDate, byte[] file,
                 Course course, Long downloads, List<FileCategory> fileCategories) {
             this.fileId = fileId;
             this.size = size;
             this.extension = extension;
             this.name = name;
-            this.date = date;
+            this.fileDate = fileDate;
             this.file = file;
             this.course = course;
             this.downloads = downloads;
@@ -93,8 +96,8 @@ public class FileModel implements Serializable {
             return Builder.this;
         }
 
-        public Builder withDate(LocalDateTime date){
-            this.date = date;
+        public Builder withDate(LocalDateTime fileDate){
+            this.fileDate = fileDate;
             return Builder.this;
         }
 
@@ -127,32 +130,32 @@ public class FileModel implements Serializable {
             if(this.fileId == null){
                 throw new NullPointerException("The property \"fileId\" is null. "
                         + "Please set the value by \"fileId()\". "
-                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"date\" and \"course\" are required.");
+                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
             }
             if(this.size == null){
                 throw new NullPointerException("The property \"size\" is null. "
                         + "Please set the value by \"size()\". "
-                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"date\" and \"course\" are required.");
+                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
             }
             if(this.extension == null){
                 throw new NullPointerException("The property \"extension\" is null. "
                         + "Please set the value by \"extension()\". "
-                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"date\" and \"course\" are required.");
+                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
             }
             if(this.name == null){
                 throw new NullPointerException("The property \"name\" is null. "
                         + "Please set the value by \"name()\". "
-                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"date\" and \"course\" are required.");
+                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
             }
-            if(this.date == null){
-                throw new NullPointerException("The property \"date\" is null. "
-                        + "Please set the value by \"date()\". "
-                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"date\" and \"course\" are required.");
+            if(this.fileDate == null){
+                throw new NullPointerException("The property \"fileDate\" is null. "
+                        + "Please set the value by \"fileDate()\". "
+                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
             }
             if(this.course == null){
                 throw new NullPointerException("The property \"course\" is null. "
                         + "Please set the value by \"course()\". "
-                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"date\" and \"course\" are required.");
+                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
             }
 
             return new FileModel(this);
@@ -164,7 +167,7 @@ public class FileModel implements Serializable {
         this.size = builder.size;
         this.extension = builder.extension;
         this.name = builder.name;
-        this.date = builder.date;
+        this.fileDate = builder.fileDate;
         this.file = builder.file;
         this.course = builder.course;
         this.downloads = builder.downloads;
@@ -204,11 +207,11 @@ public class FileModel implements Serializable {
     }
 
     public LocalDateTime getDate() {
-        return date;
+        return fileDate;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setDate(LocalDateTime fileDate) {
+        this.fileDate = fileDate;
     }
 
     public byte[] getFile() {
@@ -247,7 +250,7 @@ public class FileModel implements Serializable {
         this.name = this.name.equals(fileModel.getName())  ? this.name : fileModel.getName();
         this.extension = this.extension.equals(fileModel.getExtension()) ? this.extension : fileModel.extension;
         this.size = this.size.equals(fileModel.getSize()) ? this.size : fileModel.size;
-        this.date = this.date.equals(fileModel.getDate()) ? this.date : fileModel.date;
+        this.fileDate = this.fileDate.equals(fileModel.getDate()) ? this.fileDate : fileModel.fileDate;
         this.file = Arrays.equals(this.file, fileModel.getFile()) ? this.file : fileModel.file;
         this.course = this.course.equals(fileModel.getCourse()) ? this.course : fileModel.course;
         this.downloads = this.downloads.equals(fileModel.getDownloads()) ? this.downloads : fileModel.downloads;
