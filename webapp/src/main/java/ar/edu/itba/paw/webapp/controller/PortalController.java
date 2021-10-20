@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.RoleService;
 import ar.edu.itba.paw.interfaces.SubjectService;
+import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 @Controller
 public class PortalController extends AuthController{
