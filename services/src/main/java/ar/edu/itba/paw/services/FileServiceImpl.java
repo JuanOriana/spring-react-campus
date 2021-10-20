@@ -61,10 +61,7 @@ public class FileServiceImpl implements FileService {
     @Transactional
     public List<FileCategory> associateCategories(Long fileId, List<Long> categories) {
         List<FileCategory> fileCategories = new ArrayList<>();
-        categories.forEach(queriedId -> {
-           fileDao.associateCategory(fileId, queriedId);
-           fileCategoryDao.findById(queriedId).ifPresent(fileCategories::add);
-        });
+        categories.forEach(queriedId -> fileCategoryDao.findById(queriedId).ifPresent(fileCategories::add));
         return fileCategories;
     }
 

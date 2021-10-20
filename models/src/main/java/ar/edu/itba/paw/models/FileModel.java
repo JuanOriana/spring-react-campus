@@ -18,7 +18,7 @@ public class FileModel {
     private Long size;
 
     @ManyToOne
-    @JoinColumn(name = "fileExtensionId", insertable = false, updatable = false)
+    @JoinColumn(name = "fileExtensionId")
     private FileExtension extension;
 
     @Column(name="filename")
@@ -31,7 +31,7 @@ public class FileModel {
     private byte[] file;
 
     @ManyToOne
-    @JoinColumn(name = "courseId", insertable = false, updatable = false)
+    @JoinColumn(name = "courseId")
     private Course course;
 
     @Column
@@ -127,35 +127,30 @@ public class FileModel {
         }
 
         public FileModel build() {
-            if(this.fileId == null){
-                throw new NullPointerException("The property \"fileId\" is null. "
-                        + "Please set the value by \"fileId()\". "
-                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
-            }
             if(this.size == null){
                 throw new NullPointerException("The property \"size\" is null. "
                         + "Please set the value by \"size()\". "
-                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
+                        + "The properties \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
             }
             if(this.extension == null){
                 throw new NullPointerException("The property \"extension\" is null. "
                         + "Please set the value by \"extension()\". "
-                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
+                        + "The properties \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
             }
             if(this.name == null){
                 throw new NullPointerException("The property \"name\" is null. "
                         + "Please set the value by \"name()\". "
-                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
+                        + "The properties \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
             }
             if(this.fileDate == null){
                 throw new NullPointerException("The property \"fileDate\" is null. "
                         + "Please set the value by \"fileDate()\". "
-                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
+                        + "The properties \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
             }
             if(this.course == null){
                 throw new NullPointerException("The property \"course\" is null. "
                         + "Please set the value by \"course()\". "
-                        + "The properties \"fileId\", \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
+                        + "The properties \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
             }
 
             return new FileModel(this);

@@ -42,7 +42,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         } else {
             fileExtension = resultsFileExtensionQuery.get(0).getFileExtensionName();
         }
-        fileExtensionQuery = em.createQuery("SELECT fe.fileExtensionId FROM FileExtension fe WHERE fe.fileExtension = :fileExtensionName", FileExtension.class);
+        fileExtensionQuery = em.createQuery("SELECT fe FROM FileExtension fe WHERE fe.fileExtension = :fileExtensionName", FileExtension.class);
         fileExtensionQuery.setParameter("fileExtensionName", fileExtension);
         final FileModel fileModel = new FileModel.Builder()
                 .withSize(size)
@@ -129,8 +129,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
     @Override
     public boolean hasAccess(Long fileId, Long userId) {
         TypedQuery<FileModel> queryHasAccess = em.createQuery("SELECT f FROM FileModel f, Enrollment e WHERE f.course.courseId = e.course.courseId AND e.user.userId = :userId", FileModel.class);
-        //queryHasAccess.setParameter("fileId", fileId);
-        //TODO: ver por que el courseVoter devuelve null el fileId
+        queryHasAccess.setParameter("fileId", fileId);
         queryHasAccess.setParameter("userId", userId);
         return !queryHasAccess.getResultList().isEmpty();
     }
