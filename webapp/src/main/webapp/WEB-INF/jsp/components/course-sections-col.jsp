@@ -20,7 +20,12 @@
   <p class="course-sections-item" style="${param.itemId == 3?"color:white":""}">
     <a class="styleless-anchor" href="<c:url value ="/course/${param.courseId}/files"/>">
     &rsaquo; <spring:message code="course.sections.col.files"/>
-  </a>
+    </a>
+  </p>
+  <p class="course-sections-item" style="${param.itemId == 4?"color:white":""}">
+    <a class="styleless-anchor" href="<c:url value ="/course/${param.courseId}/schedule"/>">
+      &rsaquo; <spring:message code="course.sections.col.schedule"/>
+    </a>
   </p>
 </div>
 </body>

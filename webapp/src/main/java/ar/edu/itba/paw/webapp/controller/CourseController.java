@@ -30,10 +30,12 @@ public class CourseController extends AuthController {
     private final CourseService courseService;
     private final FileCategoryService fileCategoryService;
     private final FileExtensionService fileExtensionService;
+    private final TimetableService timetableService;
     private final FileService fileService;
     private final UserService userService;
     private final MailingService mailingService;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private static final String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
     private static final int DEFAULT_PAGE = 1;
     private static final int DEFAULT_PAGE_SIZE = 10;
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
@@ -42,7 +44,7 @@ public class CourseController extends AuthController {
     public CourseController(AuthFacade authFacade, AnnouncementService announcementService,
                             CourseService courseService, FileCategoryService fileCategoryService,
                             FileExtensionService fileExtensionService, FileService fileService,
-                            UserService userService, MailingService mailingService) {
+                            UserService userService, MailingService mailingService, TimetableService timetableService) {
         super(authFacade);
         this.announcementService = announcementService;
         this.courseService = courseService;
@@ -51,6 +53,7 @@ public class CourseController extends AuthController {
         this.fileService = fileService;
         this.userService = userService;
         this.mailingService = mailingService;
+        this.timetableService = timetableService;
     }
 
     @ModelAttribute
@@ -108,6 +111,16 @@ public class CourseController extends AuthController {
         return mav;
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/schedule")
+    public ModelAndView schedule(@PathVariable Long courseId) {
+        timetableService.findByIdOrdered(courseId);
+        Timetable[] times = timetableService.findByIdOrdered(courseId);
+        ModelAndView mav = new ModelAndView("course-schedule");
+        mav.addObject("times",times);
+        mav.addObject("days",days);
+        return mav;
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/files")
     public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm,
                               @RequestParam(value = "category-type", required = false, defaultValue = "")
@@ -158,6 +171,7 @@ public class CourseController extends AuthController {
         return files(courseId, fileForm, new ArrayList<>(),
                 new ArrayList<>(), "", "date", "desc", DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
+
 
     @RequestMapping(method = RequestMethod.GET, value = "/mail/{userId}")
     public ModelAndView sendMail(@PathVariable final Long courseId, @PathVariable final Long userId,

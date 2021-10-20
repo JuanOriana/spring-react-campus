@@ -15,6 +15,12 @@ public class Timetable {
     @JoinColumn(name = "courseId", insertable = false, updatable = false)
     private Course course;
 
+    @Column
+    private Time startTime;
+
+    @Column
+    private Time endTime;
+
 
     /* Default */ Timetable() {
         // Just for Hibernate
@@ -25,14 +31,14 @@ public class Timetable {
         this.course = course;
         this.primaryKey.courseId = course.getCourseId();
         this.primaryKey.dayOfWeek = dayOfWeek;
-        this.primaryKey.startTime = startTime;
-        this.primaryKey.endTime = endTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public Timetable(int dayOfWeek, Time startTime, Time endTime) {
         this.primaryKey.dayOfWeek = dayOfWeek;
-        this.primaryKey.startTime = startTime;
-        this.primaryKey.endTime = endTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public Course getCourse() {
@@ -52,19 +58,19 @@ public class Timetable {
     }
 
     public Time getBegins() {
-        return primaryKey.startTime;
+        return startTime;
     }
 
     public void setBegins(Time startTime) {
-        this.primaryKey.startTime = startTime;
+        this.startTime = startTime;
     }
 
     public Time getEnd() {
-        return primaryKey.endTime;
+        return endTime;
     }
 
     public void setEnd(Time endTime) {
-        this.primaryKey.endTime = endTime;
+        this.endTime = endTime;
     }
 
 
@@ -76,14 +82,6 @@ public class Timetable {
         @Column
         private Integer dayOfWeek;
 
-        @Column
-        private Time startTime;
-
-        @Column
-        private Time endTime;
-
-
-
         public Integer getDayOfWeek() {
             return dayOfWeek;
         }
@@ -92,21 +90,6 @@ public class Timetable {
             this.dayOfWeek = dayOfWeek;
         }
 
-        public Time getStartTime() {
-            return startTime;
-        }
-
-        public void setStartTime(Time startTime) {
-            this.startTime = startTime;
-        }
-
-        public Time getEndTime() {
-            return endTime;
-        }
-
-        public void setEndTime(Time endTime) {
-            this.endTime = endTime;
-        }
     }
 
 
