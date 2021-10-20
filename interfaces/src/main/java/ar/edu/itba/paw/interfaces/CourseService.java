@@ -43,9 +43,9 @@ public interface CourseService {
     /**
      * Gets all the available courses of a user
      * @param userId of the user to retrieve the courses from
-     * @return list containing all the current available courses (if any)
+     * @return paginated list containing all the current available courses (if any)
      */
-    List<Course> list(Long userId);
+    CampusPage<Course> list(Long userId, Integer page, Integer pageSize);
 
     /**
      * Gets all the current available courses of a user
@@ -119,7 +119,7 @@ public interface CourseService {
      * @param quarter to get the courses from
      * @return list of courses for the specific year and quarter
      */
-    List<Course> listByYearQuarter(Integer year, Integer quarter);
+    CampusPage<Course> listByYearQuarter(Integer year, Integer quarter, Integer page, Integer pageSize);
 
     /**
      * Attempts to get a list of years where there are courses present

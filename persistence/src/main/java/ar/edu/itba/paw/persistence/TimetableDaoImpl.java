@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Time;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,10 @@ public class TimetableDaoImpl implements TimetableDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private static final RowMapper<Timetable> TIMETABLE_ROW_MAPPER = (rs, rowNum) ->
+    // Commented so it compiles
+    /*private static final RowMapper<Timetable> TIMETABLE_ROW_MAPPER = (rs, rowNum) ->
         new Timetable(rs.getLong("courseId"), rs.getInt("dayOfWeek"), rs.getTime("startTime"),
-                rs.getTime("endTime"));
+                rs.getTime("endTime"));*/
 
     @Autowired
     public TimetableDaoImpl(final DataSource ds){
@@ -58,7 +60,9 @@ public class TimetableDaoImpl implements TimetableDao {
 
     @Override
     public List<Timetable> findById(Long courseId) {
-        return jdbcTemplate.query("SELECT * FROM timetables WHERE courseId = ?",
-                new Object[]{courseId}, TIMETABLE_ROW_MAPPER);
+        return Collections.emptyList();
+        // Commented so it compiles
+        /*return jdbcTemplate.query("SELECT * FROM timetables WHERE courseId = ?",
+                new Object[]{courseId}, TIMETABLE_ROW_MAPPER); */
     }
 }

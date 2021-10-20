@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.Subject;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -121,7 +118,7 @@ public class CourseDaoImplTest extends BasicPopulator {
 
     @Test
     public void testList() {
-        final List<Course> list = courseDao.list(USER_ID);
+        final List<Course> list = courseDao.list(USER_ID, new CampusPageRequest(1, 1)).getContent();
         assertNotNull(list);
         assertEquals(1, list.size());
     }
@@ -129,7 +126,7 @@ public class CourseDaoImplTest extends BasicPopulator {
     @Test
     public void testEmptyList() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "courses");
-        final List<Course> list = courseDao.list(USER_ID);
+        final List<Course> list = courseDao.list(USER_ID, new CampusPageRequest(1, 1)).getContent();
         assertNotNull(list);
         assertEquals(0, list.size());
     }

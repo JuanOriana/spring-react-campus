@@ -1,18 +1,46 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "users")
+@SecondaryTable(name = "profile_images",
+                pkJoinColumns = @PrimaryKeyJoinColumn(name = "userId"))
 public class User {
-
-    private String name;
-    private String surname;
-    private String username;
-    private String email;
-    private String password;
-    private Integer fileNumber;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_userid_seq")
+    @SequenceGenerator(name = "users_userid_seq", sequenceName = "users_userid_seq", allocationSize = 1)
     private Long userId;
-    private boolean isAdmin;
+
+    @Column
+    private String name;
+
+    @Column
+    private String surname;
+
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column
+    private String password;
+
+    @Column(nullable = false, unique = true)
+    private Integer fileNumber;
+
+    @Column(name = "isAdmin")
+    private Boolean admin;
+
+    @Column(table = "profile_images")
     private byte[] image;
+
+
+    /* Default */ User() {
+        // Just for Hibernate
+    }
 
     public User(User user) {
         this.name = user.getName();
@@ -22,7 +50,7 @@ public class User {
         this.password = user.getPassword();
         this.fileNumber = user.getFileNumber();
         this.userId = user.getUserId();
-        this.isAdmin = user.isAdmin();
+        this.admin = user.isAdmin();
         this.image = user.getImage();
     }
 
@@ -35,14 +63,14 @@ public class User {
         private String password;
         private Integer fileNumber;
         private Long userId;
-        private boolean isAdmin;
+        private Boolean admin;
         private byte[] image;
 
         public Builder() {
         }
 
         Builder(String name, String surname, String username, String email, String password, Integer fileNumber,
-                Long userId, boolean isAdmin, byte[] image) {
+                Long userId, Boolean admin, byte[] image) {
             this.name = name;
             this.surname = surname;
             this.username = username;
@@ -50,7 +78,7 @@ public class User {
             this.password = password;
             this.fileNumber = fileNumber;
             this.userId = userId;
-            this.isAdmin = isAdmin;
+            this.admin = admin;
             this.image = image;
         }
 
@@ -94,8 +122,8 @@ public class User {
             return Builder.this;
         }
 
-        public Builder isAdmin(boolean isAdmin){
-            this.isAdmin = isAdmin;
+        public Builder isAdmin(Boolean admin){
+            this.admin = admin;
             return Builder.this;
         }
 
@@ -103,34 +131,28 @@ public class User {
             if(this.name == null){
                 throw new NullPointerException("The property \"name\" is null. "
                         + "Please set the value by \"name()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\" and \"fileNumber\" are required.");
             }
             if(this.surname == null){
                 throw new NullPointerException("The property \"surname\" is null. "
                         + "Please set the value by \"surname()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\" and \"fileNumber\" are required.");
             }
             if(this.username == null){
                 throw new NullPointerException("The property \"username\" is null. "
                         + "Please set the value by \"username()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", and \"fileNumber\" are required.");
             }
             if(this.email == null){
                 throw new NullPointerException("The property \"email\" is null. "
                         + "Please set the value by \"email()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\"and \"fileNumber\" are required.");
             }
             if(this.fileNumber == null){
                 throw new NullPointerException("The property \"fileNumber\" is null. "
                         + "Please set the value by \"fileNumber()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
+                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\" and \"fileNumber\" are required.");
             }
-            if(this.userId == null){
-                throw new NullPointerException("The property \"userId\" is null. "
-                        + "Please set the value by \"userId()\". "
-                        + "The properties \"name\", \"surname\", \"username\", \"email\", \"password\", \"fileNumber\" and \"userId\" are required.");
-            }
-
             return new User(this);
         }
     }
@@ -143,7 +165,7 @@ public class User {
         this.password = builder.password;
         this.fileNumber = builder.fileNumber;
         this.userId = builder.userId;
-        this.isAdmin = builder.isAdmin;
+        this.admin = builder.admin;
         this.image = builder.image;
     }
 
@@ -203,12 +225,12 @@ public class User {
         this.userId = userId;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public Boolean isAdmin() {
+        return admin;
     }
 
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+    public void setIsAdmin(Boolean admin) {
+        this.admin = admin;
     }
 
     public byte[] getImage() {
@@ -217,6 +239,15 @@ public class User {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public void merge(User user) {
+        this.name = this.name.equals(user.getName())  ? this.name : user.getName();
+        this.surname = this.surname.equals(user.getSurname())  ? this.surname : user.getSurname();
+        this.admin = this.admin.equals(user.isAdmin()) ? this.admin : user.isAdmin();
+        this.username = this.username.equals(user.getUsername())  ? this.username : user.getUsername();
+        this.password = this.password.equals(user.getPassword())  ? this.password : user.getPassword();
+        this.fileNumber = this.fileNumber.equals(user.getFileNumber()) ? this.fileNumber : user.getFileNumber();
     }
 
     @Override

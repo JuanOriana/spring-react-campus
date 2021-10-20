@@ -243,7 +243,7 @@ public class  FileDaoImpl implements FileDao {
                 "NATURAL JOIN file_extensions NATURAL JOIN subjects " +
                 "NATURAL JOIN category_file_relationship NATURAL JOIN file_categories " +
                 "WHERE LOWER(fileName) LIKE ? AND courseId IN " + courseSelection + " " +
-                extensionQuery.toString() + " " + categoryQuery.toString();
+                extensionQuery + " " + categoryQuery;
     }
 
     private Object[] getQueryParams(List<Long> params, String keyword, Long courseId, Long userId) {
