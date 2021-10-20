@@ -27,4 +27,6 @@ public interface UserDao {
     Optional<User> findByFileNumber(Integer fileNumber);
 
     Optional<User> findByEmail(String email);
+
+    Integer getMaxFileNumber();
 }

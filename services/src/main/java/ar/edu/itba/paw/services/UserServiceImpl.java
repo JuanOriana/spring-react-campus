@@ -80,4 +80,11 @@ public class UserServiceImpl implements UserService {
     public boolean updateProfileImage(Long userId, byte[] image) {
         return userDao.updateProfileImage(userId, image);
     }
+
+    @Override
+    public Integer getMaxFileNumber() {
+        return userDao.getMaxFileNumber();
+    }
+
+
 }
