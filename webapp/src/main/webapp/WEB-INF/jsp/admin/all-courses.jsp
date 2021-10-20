@@ -12,6 +12,7 @@
     <div class="page-container" style="flex-direction: row;align-items: start">
         <jsp:include page="../components/admin-sections-col.jsp">
             <jsp:param name="small" value="${true}"/>
+            <jsp:param name="itemId" value="${4}"/>
         </jsp:include>
         <div style="display: flex;flex-direction: column;align-items: center;flex:1">
         <h2 class="section-heading"><spring:message code="all.courses.from" htmlEscape="true"

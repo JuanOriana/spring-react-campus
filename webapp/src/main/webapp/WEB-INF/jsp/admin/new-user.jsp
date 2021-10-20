@@ -14,7 +14,9 @@
         <jsp:param name="successMessage" value="${successMessage}"/>
     </jsp:include>
     <div class="page-container" style="flex-direction: row;align-items: start">
-        <jsp:include page="../components/admin-sections-col.jsp"/>
+        <jsp:include page="../components/admin-sections-col.jsp">
+            <jsp:param name="itemId" value="${1}"/>
+        </jsp:include>
     <form:form modelAttribute="userRegisterForm" class="form-wrapper reduced" method="post"
                acceptCharset="utf-8" cssStyle="margin: 0px 40px 40px 40px">
         <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="new.user.header" htmlEscape="true"/></h1>
