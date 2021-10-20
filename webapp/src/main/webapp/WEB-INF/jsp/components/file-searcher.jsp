@@ -133,7 +133,7 @@
             </c:forEach>
         </div>
         </div>
-        <button type="button" class="form-button" style="align-self: end" onclick="clearFilters()">Clear filters</button>
+        <button type="button" class="form-button" style="align-self: end" onclick="clearFilters()"><spring:message code="file.search.button.clear.filters"/></button>
     </div>
 </form>
 </body>

@@ -5,16 +5,16 @@
 <body>
 <div class="course-sections-col" style="border-top-right-radius: 12px; width:${param.small?'210px':'300px'}">
     <h3 class="course-sections-col-title">
-        Centro de administración de Campus
+        <spring:message code="admin.page.header" />
     </h3>
     <p class="course-sections-item"><a class="styleless-anchor" href="<c:url value ="/admin/user/new"/>">
-        &rsaquo; Crear nuevo usuario</a> </p>
+        &rsaquo; <spring:message code="admin.button.create.user" /></a> </p>
     <p class="course-sections-item"><a class="styleless-anchor" href="<c:url value ="/admin/course/new"/>">
-        &rsaquo; Crear nuevo curso</a> </p>
+        &rsaquo; <spring:message code="admin.button.create.course" /></a> </p>
     <p class="course-sections-item"><a class="styleless-anchor" href="<c:url value ="/admin/course/select"/>">
-        &rsaquo; Agregar usuario a curso</a> </p>
+        &rsaquo; <spring:message code="admin.button.add.user.to.course" /></a> </p>
     <p class="course-sections-item"><a class="styleless-anchor" href="<c:url value ="/admin/course/all"/>">
-        &rsaquo; Ver todos los cursos</a> </p>
+        &rsaquo; <spring:message code="admin.button.all.courses" /></a> </p>
 </div>
 </body>
 </html>
