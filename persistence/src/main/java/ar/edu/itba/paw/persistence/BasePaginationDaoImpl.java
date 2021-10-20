@@ -30,8 +30,8 @@ public class BasePaginationDaoImpl<T> implements BasePaginationDao<T> {
     public CampusPage<T> listBy(Map<String, Object> properties, String query, String mappingQuery, CampusPageRequest pageRequest,
                                 Class<T> target) {
         int pageCount = getTotalPageCount(query, properties, pageRequest.getPageSize());
-        if(pageRequest.getPage() > pageCount) throw new PaginationArgumentException();
         if(pageCount == 0) return new CampusPage<>();
+        if(pageRequest.getPage() > pageCount) throw new PaginationArgumentException();
         String idsQueryString = query + " LIMIT " + pageRequest.getPageSize() + " OFFSET "
                 + (pageRequest.getPage() - 1) * pageRequest.getPageSize();
         Query idsQuery = em.createNativeQuery(idsQueryString);
