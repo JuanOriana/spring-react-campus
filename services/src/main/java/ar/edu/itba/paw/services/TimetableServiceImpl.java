@@ -47,4 +47,20 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
 
+    @Transactional(readOnly = true)
+    @Override
+    //TODO: rename this method
+    public Timetable[] findByIdOrdered(Long courseId){
+        Timetable[]  timeTables = new Timetable[7];
+        List<Timetable> timetableList = timetableDaoDao.findById(courseId);
+
+        for(Timetable timetable: timetableList){
+            timeTables[timetable.getDayOfWeek()] = timetable;
+        }
+
+        return timeTables;
+
+    }
+
+
 }
