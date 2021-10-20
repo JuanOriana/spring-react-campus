@@ -30,6 +30,7 @@ public class CourseController extends AuthController {
     private final CourseService courseService;
     private final FileCategoryService fileCategoryService;
     private final FileExtensionService fileExtensionService;
+    private final TimetableService timetableService;
     private final FileService fileService;
     private final UserService userService;
     private final MailingService mailingService;
@@ -43,7 +44,7 @@ public class CourseController extends AuthController {
     public CourseController(AuthFacade authFacade, AnnouncementService announcementService,
                             CourseService courseService, FileCategoryService fileCategoryService,
                             FileExtensionService fileExtensionService, FileService fileService,
-                            UserService userService, MailingService mailingService) {
+                            UserService userService, MailingService mailingService, TimetableService timetableService) {
         super(authFacade);
         this.announcementService = announcementService;
         this.courseService = courseService;
@@ -52,6 +53,7 @@ public class CourseController extends AuthController {
         this.fileService = fileService;
         this.userService = userService;
         this.mailingService = mailingService;
+        this.timetableService = timetableService;
     }
 
     @ModelAttribute
@@ -106,6 +108,16 @@ public class CourseController extends AuthController {
     public ModelAndView teachers(@PathVariable Long courseId) {
         final ModelAndView mav = new ModelAndView("teachers");
         mav.addObject("teacherSet", courseService.getTeachers(courseId).entrySet());
+        return mav;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/schedule")
+    public ModelAndView schedule(@PathVariable Long courseId) {
+        timetableService.findByIdOrdered(courseId);
+        Timetable[] times = timetableService.findByIdOrdered(courseId);
+        ModelAndView mav = new ModelAndView("course-schedule");
+        mav.addObject("times",times);
+        mav.addObject("days",days);
         return mav;
     }
 

@@ -28,8 +28,12 @@
                     <h3 style="margin: 10px 0;"><spring:message code="course-schedule.comment"/></h3>
                     <c:forEach items="${days}" var="day" varStatus="daysStatus">
                         <c:if test="${times[daysStatus.index] != null}">
+                            <c:set var="currentTime" value="${times[daysStatus.index]}"/>
                             <h3 style="margin-top: 3px; margin-left: 10px"><spring:message code="day.${day}"/></h3>
-                            <p style="margin-left: 15px">&rsaquo; <c:out value="${times[daysStatus.index]}"/></p>
+                            <p style="margin-left: 15px">&rsaquo;
+                                <c:out value="${currentTime.begins.hours}:${currentTime.begins.minutes < 10 ?'0':''}${currentTime.begins.minutes}
+                                - ${currentTime.end.hours}:${currentTime.end.minutes < 10 ?'0':''}${currentTime.end.minutes}"/>
+                            </p>
                         </c:if>
                     </c:forEach>
                 </div>
