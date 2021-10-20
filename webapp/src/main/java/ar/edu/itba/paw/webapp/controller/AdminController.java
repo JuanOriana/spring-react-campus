@@ -129,7 +129,11 @@ public class AdminController extends AuthController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/course/all")
     public ModelAndView allCourses(@RequestParam(value = "year", defaultValue = "") Integer year,
-                                   @RequestParam(value = "quarter", defaultValue = "") Integer quarter) {
+                                   @RequestParam(value = "quarter", defaultValue = "") Integer quarter,
+                                   @RequestParam(value = "page", required = false, defaultValue = "1")
+                                               Integer page,
+                                   @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+                                               Integer pageSize) {
         ModelAndView mav = new ModelAndView("admin/all-courses");
         if (year == null){
             year = Calendar.getInstance().get(Calendar.YEAR);
@@ -142,10 +146,14 @@ public class AdminController extends AuthController {
                 quarter = 2;
             }
         }
-        mav.addObject("courses", courseService.listByYearQuarter(year,quarter));
+        CampusPage<Course> courses = courseService.listByYearQuarter(year,quarter, page, pageSize);
+        mav.addObject("courses", courses.getContent());
         mav.addObject("year",year);
         mav.addObject("allYears",courseService.getAvailableYears());
         mav.addObject("quarter",quarter);
+        mav.addObject("currentPage", courses.getPage());
+        mav.addObject("maxPage", courses.getTotal());
+        mav.addObject("pageSize", courses.getSize());
         return mav;
     }
 }

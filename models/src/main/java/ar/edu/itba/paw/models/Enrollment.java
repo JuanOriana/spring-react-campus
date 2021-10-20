@@ -9,7 +9,7 @@ import java.util.Objects;
 public class Enrollment {
 
     @EmbeddedId
-    private Pk enrollmentId;
+    private Pk primaryKey;
 
     @ManyToOne
     @JoinColumn(name = "userId", insertable = false, updatable = false)
@@ -31,6 +31,7 @@ public class Enrollment {
         this.user = user;
         this.course = course;
         this.role = role;
+        this.primaryKey = new Pk(course.getCourseId(), user.getUserId());
     }
 
     public User getUser() {
@@ -67,6 +68,11 @@ public class Enrollment {
 
         /* Default */ Pk() {
             // Just for Hibernate
+        }
+
+        public Pk(Long courseId, Long userId) {
+            this.courseId = courseId;
+            this.userId = userId;
         }
 
         public Long getCourseId() {

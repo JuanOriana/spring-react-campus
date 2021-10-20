@@ -7,6 +7,7 @@ import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -36,13 +37,19 @@ public class PortalController extends AuthController{
     }
 
     @RequestMapping("/portal")
-    public ModelAndView portal() {
+    public ModelAndView portal(@RequestParam(value = "page", required = false, defaultValue = "1")
+                                           Integer page,
+                               @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+                                           Integer pageSize) {
         ModelAndView mav = new ModelAndView("portal");
         Long userId = authFacade.getCurrentUser().getUserId();
-        List<Course> courses = courseService.list(userId, 1, 50).getContent();
-        mav.addObject("courseList", courses);
+        CampusPage<Course> courses = courseService.list(userId, page, pageSize);
+        mav.addObject("courseList", courses.getContent());
         mav.addObject("coursesAsStudent", courseService.listWhereStudent(userId));
-        mav.addObject("currentCourses", courseService.listCurrent(userId));
+        mav.addObject("currentCourses",courseService.listCurrent(userId));
+        mav.addObject("currentPage", courses.getPage());
+        mav.addObject("maxPage", courses.getTotal());
+        mav.addObject("pageSize", courses.getSize());
         return mav;
     }
 
