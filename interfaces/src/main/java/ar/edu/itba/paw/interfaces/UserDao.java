@@ -23,4 +23,8 @@ public interface UserDao {
     Optional<byte[]> getProfileImage(Long userId);
 
     boolean updateProfileImage(Long userId, byte[] image);
+
+    Optional<User> findByFileNumber(Integer fileNumber);
+
+    Optional<User> findByEmail(String email);
 }

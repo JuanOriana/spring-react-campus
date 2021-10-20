@@ -33,7 +33,6 @@ public class FileCategoryDaoJpa implements FileCategoryDao {
         Optional<FileCategory> dbFileCategory = Optional.ofNullable(em.find(FileCategory.class, fileCategoryId));
         if(!dbFileCategory.isPresent()) return false;
         dbFileCategory.get().setCategoryName(newFileCategory);
-        em.flush();
         return true;
     }
 

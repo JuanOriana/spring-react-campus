@@ -43,7 +43,6 @@ public class UserDaoJpa implements UserDao {
         Optional<User> dbUser = findById(userId);
         if(!dbUser.isPresent()) return false;
         dbUser.get().merge(user);
-        em.flush();
         return true;
     }
 
@@ -100,7 +99,22 @@ public class UserDaoJpa implements UserDao {
         Optional<User> user = findById(userId);
         if(!user.isPresent()) return false;
         user.get().setImage(image);
-        em.flush();
         return true;
+    }
+
+    @Override
+    public Optional<User> findByFileNumber(Integer fileNumber) {
+        final TypedQuery<User> query = em.createQuery("SELECT u from User u where u.fileNumber = :fileNumber",
+                User.class);
+        query.setParameter("fileNumber", fileNumber);
+        return query.getResultList().stream().findFirst();
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        final TypedQuery<User> query = em.createQuery("SELECT u from User u where u.email = :email",
+                User.class);
+        query.setParameter("email", email);
+        return query.getResultList().stream().findFirst();
     }
 }

@@ -217,5 +217,10 @@ public class CourseDaoImpl implements CourseDao {
                 (rs, rowNum) -> rs.getInt("year")));
     }
 
+    @Override
+    public boolean exists(Integer year, Integer quarter, String board, Long subjectId) {
+        return false;
+    }
+
 
 }

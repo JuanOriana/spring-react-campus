@@ -41,7 +41,6 @@ public class AnnouncementDaoJpa extends BasePaginationDaoImpl<Announcement> impl
         Optional<Announcement> dbAnnouncement = findById(id);
         if(!dbAnnouncement.isPresent()) return false;
         dbAnnouncement.get().merge(announcement);
-        em.flush();
         return true;
     }
 

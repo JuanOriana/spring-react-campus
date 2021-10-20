@@ -29,7 +29,6 @@ public class RoleDaoJpa implements RoleDao {
         Optional<Role> dbRole = Optional.ofNullable(em.find(Role.class, roleId));
         if (!dbRole.isPresent()) return false;
         dbRole.get().setRoleName(roleName);
-        em.flush();
         return true;
     }
 

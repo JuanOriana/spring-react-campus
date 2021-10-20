@@ -31,7 +31,6 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         Optional<Course> dbCourse = findById(id);
         if (!dbCourse.isPresent()) return false;
         dbCourse.get().merge(course);
-        em.flush();
         return true;
     }
 
@@ -155,5 +154,15 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
     public List<Integer> getAvailableYears() {
         TypedQuery<Integer> listYearsTypedQuery = em.createQuery("SELECT DISTINCT course.year FROM Course course", Integer.class);
         return listYearsTypedQuery.getResultList();
+    }
+
+    @Override
+    public boolean exists(Integer year, Integer quarter, String board, Long subjectId) {
+        TypedQuery<Course> courseTypedQuery = em.createQuery("SELECT course FROM Course course WHERE course.board = :board AND course.quarter = :quarter AND course.year = :year AND course.subject.subjectId = :subjectId", Course.class);
+        courseTypedQuery.setParameter("board", board);
+        courseTypedQuery.setParameter("year", year);
+        courseTypedQuery.setParameter("quarter", quarter);
+        courseTypedQuery.setParameter("subjectId", subjectId);
+        return !courseTypedQuery.getResultList().isEmpty();
     }
 }

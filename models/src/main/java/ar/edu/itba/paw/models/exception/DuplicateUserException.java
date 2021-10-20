@@ -2,7 +2,6 @@ package ar.edu.itba.paw.models.exception;
 
 
 public class DuplicateUserException extends RuntimeException {
-    private final String error;
     private final Integer fileNumber;
     private final String name;
     private final String surname;
@@ -10,8 +9,6 @@ public class DuplicateUserException extends RuntimeException {
     private final String email;
 
     public static class Builder {
-
-        private String error;
         private Integer fileNumber;
         private String name;
         private String surname;
@@ -21,18 +18,12 @@ public class DuplicateUserException extends RuntimeException {
         public Builder() {
         }
 
-        Builder(String error, Integer fileNumber, String name, String surname, String username, String email) {
-            this.error = error;
+        Builder(Integer fileNumber, String name, String surname, String username, String email) {
             this.fileNumber = fileNumber;
             this.name = name;
             this.surname = surname;
             this.username = username;
             this.email = email;
-        }
-
-        public Builder withError(String error){
-            this.error = error;
-            return Builder.this;
         }
 
         public Builder withFileNumber(Integer fileNumber){
@@ -63,10 +54,10 @@ public class DuplicateUserException extends RuntimeException {
         public DuplicateUserException build() {
             return new DuplicateUserException(this);
         }
+
     }
 
     private DuplicateUserException(Builder builder) {
-        this.error = builder.error;
         this.fileNumber = builder.fileNumber;
         this.name = builder.name;
         this.surname = builder.surname;
@@ -75,18 +66,14 @@ public class DuplicateUserException extends RuntimeException {
     }
 
     public boolean isUsernameDuplicated() {
-        return ExceptionMessageUtil.getField(this.error).contains("username");
+        return this.username.isEmpty();
     }
 
     public boolean isFileNumberDuplicated() {
-        return ExceptionMessageUtil.getField(this.error).contains("filenumber");
+        return this.fileNumber == 0;
     }
     public boolean isEmailDuplicated() {
-        return ExceptionMessageUtil.getField(this.error).contains("email");
-    }
-
-    public String getError() {
-        return error;
+        return this.email.isEmpty();
     }
 
     public Integer getFileNumber() {
@@ -103,6 +90,10 @@ public class DuplicateUserException extends RuntimeException {
 
     public String getUsername() {
         return username;
+    }
+
+    public boolean shouldTrigger() {
+        return this.isUsernameDuplicated() || this.isFileNumberDuplicated() || this.isEmailDuplicated();
     }
 
     public String getEmail() {

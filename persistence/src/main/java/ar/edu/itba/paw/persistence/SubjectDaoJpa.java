@@ -31,7 +31,6 @@ public class SubjectDaoJpa implements SubjectDao {
         Optional<Subject> dbSubject = Optional.ofNullable(em.find(Subject.class, subjectId));
         if(!dbSubject.isPresent()) return false;
         dbSubject.get().merge(new Subject(code,name));
-        em.flush();
         return true;
     }
 

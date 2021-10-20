@@ -5,13 +5,11 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Timetable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.sql.Time;
 import java.util.List;
-import java.util.Optional;
 
 @Primary
 @Repository
@@ -30,20 +28,23 @@ public class TimetableDaoJpa implements TimetableDao {
     @Override
     public boolean update(Long courseId, int dayOfWeek, Time start, Time end) {
         List<Timetable> dbTimetable = findById(courseId);
-        if (dbTimetable.size() == 0) return false;
+        if (dbTimetable.isEmpty()) return false;
         for (Timetable t : dbTimetable){
             t.setDayOfWeek(dayOfWeek);
             t.setBegins(start);
             t.setEnd(end);
         }
-        em.flush();
         return true;
     }
 
     @Override
     public boolean delete(Long courseId) {
-        int deletedCount = em.createQuery("DELETE FROM Timetable t WHERE t.course.courseId = :courseId").setParameter("courseId", courseId).executeUpdate();
-        return deletedCount > 0;
+        List<Timetable> timetables = findById(courseId);
+        if(timetables.isEmpty()) return false;
+        for(Timetable t : timetables) {
+            em.remove(t);
+        }
+        return true;
     }
 
     @Override

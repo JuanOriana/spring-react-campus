@@ -34,7 +34,6 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
         Optional<FileExtension> dbFileExtension = Optional.ofNullable(em.find(FileExtension.class, fileExtensionId));
         if(!dbFileExtension.isPresent()) return false;
         dbFileExtension.get().setFileExtensionName(fileExtension);
-        em.flush();
         return true;
     }
 

@@ -31,19 +31,15 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course create(Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
                                                      List<Integer> endTimes) {
-        Course course = null;
-        try {
-            course = courseDao.create(year, quarter, board, subjectId);
-        } catch (DuplicateKeyException dke) {
+        if(courseDao.exists(year, quarter, board, subjectId))
             throw new DuplicateCourseException.Builder()
-                    .withSubjectId(subjectId)
-                    .withBoard(board)
-                    .withQuarter(quarter)
-                    .withYear(year)
-                    .build();
-        } catch (DataAccessException dae) {
-            throw new SystemUnavailableException(dae.getMessage());
-        }
+                .withYear(year)
+                .withQuarter(quarter)
+                .withBoard(board)
+                .withSubjectId(subjectId)
+                .build();
+
+        Course course = courseDao.create(year, quarter, board, subjectId);
         for (int i = 0; i < days.length; i++) {
             Integer startHour = startTimes.get(i);
             Integer endHour = endTimes.get(i);

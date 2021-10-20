@@ -22,4 +22,5 @@ public interface CourseDao {
     List<Course> listWhereStudent(Long userId);
     CampusPage<Course> listByYearQuarter(Integer year, Integer quarter, CampusPageRequest campusPageRequest);
     List<Integer> getAvailableYears();
+    boolean exists(Integer year, Integer quarter, String board, Long subjectId);
 }

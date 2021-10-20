@@ -63,7 +63,6 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         Optional<FileModel> dbFile = findById(fileId);
         if (!dbFile.isPresent()) return false;
         dbFile.get().merge(file);
-        em.flush();
         return true;
     }
 
@@ -100,7 +99,6 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         List<FileCategory> dbFile = optionalDBFile.get().getCategories();
         for (FileCategory fileCategory : dbFile) if (fileCategory.getCategoryId() == fileCategoryId) return false;
         dbFile.add(optionalFileCategory.get());
-        em.flush();
         return true;
     }
 
@@ -155,7 +153,6 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         if (!optionalFileModel.isPresent()) return;
         FileModel file = optionalFileModel.get();
         file.setDownloads(file.getDownloads() + 1);
-        em.flush();
     }
 
     private CampusPage<FileModel> findFileByPage(String keyword, List<Long> extensions, List<Long> categories,
