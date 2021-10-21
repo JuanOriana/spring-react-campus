@@ -1,13 +1,17 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.webapp.auth.CampusUserDetailsService;
 import ar.edu.itba.paw.webapp.auth.CourseVoter;
+import ar.edu.itba.paw.webapp.auth.CampusUserDetailsService;
 import ar.edu.itba.paw.webapp.util.KeyReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AuthenticatedVoter;
+import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -15,10 +19,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.csrf.CsrfFilter;
 
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -41,6 +48,17 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public AccessDecisionManager accessDecisionManager() {
+        List<AccessDecisionVoter<?>> decisionVoters
+                = Arrays.asList(
+                new WebExpressionVoter(),
+                new RoleVoter(),
+                new AuthenticatedVoter(),
+                courseVoter());
+        return new UnanimousBased(decisionVoters);
+    }
+
+    @Bean
     public CourseVoter courseVoter() { return new CourseVoter(); }
 
     @Override
@@ -54,15 +72,12 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                     .antMatchers("/login").anonymous()
                     .antMatchers("/admin/**").hasAuthority("ADMIN")
-                    /*.antMatchers(HttpMethod.GET, "/files/{fileId}").access("@courseVoter.hasFileAccess(authentication,#fileId)")
-                    .antMatchers(HttpMethod.POST, "/course/{courseId}/announcements").access("@courseVoter.hasCoursePrivileges(authentication,#courseId)")
-                    .antMatchers(HttpMethod.POST, "/course/{courseId}/files").access("@courseVoter.hasCoursePrivileges(authentication,#courseId)")
-                    .antMatchers(HttpMethod.GET, "/course/{courseId}/**").access("@courseVoter.hasCourseAccess(authentication,#courseId)")*/
                     .antMatchers("/portal").hasAuthority("USER")
                     .antMatchers("/announcements").hasAuthority("USER")
                     .antMatchers("/timetable").hasAuthority("USER")
                     .antMatchers("/files").hasAuthority("USER")
                     .antMatchers("/**").authenticated()
+                .accessDecisionManager(accessDecisionManager())
                 .and().formLogin()
                     .usernameParameter("username")
                     .passwordParameter("password")
