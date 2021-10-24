@@ -113,12 +113,16 @@ public class CourseController extends AuthController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/schedule")
     public ModelAndView schedule(@PathVariable Long courseId) {
-        timetableService.findByIdOrdered(courseId);
         Timetable[] times = timetableService.findByIdOrdered(courseId);
         ModelAndView mav = new ModelAndView("course-schedule");
         mav.addObject("times",times);
         mav.addObject("days",days);
         return mav;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/exams")
+    public ModelAndView exams(@PathVariable Long courseId) {
+        return new ModelAndView("course-exams");
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/files")
