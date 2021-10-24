@@ -26,7 +26,8 @@
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course-exams.section-heading.title"/> </h3>
                 <div class="big-wrapper">
                     <h3 style="margin: 10px 0;"><spring:message code="course-exams.comment"/></h3>
-
+<%--                    <c:set var="file" value="${file}" scope="request"/>--%>
+                    <jsp:include page="components/test-unit.jsp"/>
                 </div>
             </div>
         </div>
