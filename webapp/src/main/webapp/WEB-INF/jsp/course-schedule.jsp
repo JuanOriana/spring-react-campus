@@ -20,7 +20,7 @@
                 <jsp:param name="quarter" value="${course.quarter}"/>
                 <jsp:param name="code" value="${course.subject.code}"/>
                 <jsp:param name="board" value="${course.board}"/>
-                <jsp:param name="itemId" value="${4}"/>
+                <jsp:param name="itemId" value="${5}"/>
             </jsp:include>
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course-schedule.section-heading.title"/> </h3>
