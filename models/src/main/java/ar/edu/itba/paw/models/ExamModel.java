@@ -168,4 +168,12 @@ public class ExamModel {
     public void setExamFinishDate(LocalDateTime examFinishDate) {
         this.examFinishDate = examFinishDate;
     }
+
+    public void merge(ExamModel exam) {
+        this.title = this.title.equals(exam.getTitle()) ? this.title : exam.getTitle();
+        this.instructions = this.instructions.equals(exam.getInstructions()) ? this.instructions : exam.getInstructions();
+        this.file = this.file.equals(exam.getFile()) ? this.file : exam.getFile();
+        this.examStartDate = this.examStartDate.equals(exam.getExamStartDate()) ? this.examStartDate : exam.getExamStartDate();
+        this.examFinishDate = this.examFinishDate.equals(exam.getExamFinishDate()) ? this.examFinishDate : exam.getExamFinishDate();
+    }
 }
