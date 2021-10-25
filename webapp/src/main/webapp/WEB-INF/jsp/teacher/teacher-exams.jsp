@@ -26,18 +26,18 @@
       <div class="course-data-container">
         <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course-exams.section-heading.title"/> </h3>
         <form:form modelAttribute="createExamForm" class="form-wrapper reduced" method="post" acceptCharset="utf-8">
-          <h1 class="announcement-title" style="color:#176961; align-self:center">Nuevo Examen</h1>
+          <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="teacher.exams.upload.card.title"/></h1>
           <form:label path="title" for="title" class="form-label">
-            Titulo
+            <spring:message code="teacher.exams.upload.exam.title.field"/>
           </form:label>
           <form:input type="text" path="title" class="form-input" style="font-size: 26px"/>
           <form:errors path="title" element="p" cssClass="error-message"/>
           <form:label path="content" for="content" class="form-label">
-            Consigna
+            <spring:message code="teacher.exams.upload.exam.instructions.field"/>
           </form:label>
           <form:textarea path="content" class="form-input" style="width: 95%;resize: none" cols="50" rows="10"></form:textarea>
           <form:errors path="content" element="p" cssClass="error-message"/>
-          <form:label path="file" for="file" class="form-label">Archivo adjunto</form:label>
+          <form:label path="file" for="file" class="form-label"><spring:message code="teacher.exams.upload.exam.attach"/></form:label>
           <form:input path="file" type="file" class="form-input" style="font-size: 26px"/>
           <form:errors path="file" element="p" cssClass="error-message"/>
           <button class="form-button"><spring:message code="teacher.course.button.create.announcement" htmlEscape="true"/></button>
@@ -45,7 +45,7 @@
         <div class="separator reduced">.</div>
 
         <div class="big-wrapper">
-          <h3 style="margin: 10px 0;">Ultimos examenes:</h3>
+          <h3 style="margin: 10px 0;"><spring:message code="teacher.exams.recent.exams.title"/></h3>
           <%--                    <c:set var="file" value="${file}" scope="request"/>--%>
           <jsp:include page="../components/exam-unit.jsp">
             <jsp:param name="isTeacher" value="${true}"/>

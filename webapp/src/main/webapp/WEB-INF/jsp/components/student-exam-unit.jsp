@@ -10,11 +10,11 @@
             <img src="<c:url value="/resources/images/test.png"/>"
                  class="file-img" alt="${requestScope.exam.name}"/>
             <p class="file-name" style="padding-right: 15px; margin-right: 5; border-right: 3px solid white">
-                Nombre del alumno
+                <spring:message code="student.exam.unit.student.name.title"/>
             </p>
         </a>
         <p class="file-name">
-            Entregado a las:
+            <spring:message code="student.exam.unit.published.at.title"/>
         </p>
     </div>
     <div style="display: flex; align-items: center">
