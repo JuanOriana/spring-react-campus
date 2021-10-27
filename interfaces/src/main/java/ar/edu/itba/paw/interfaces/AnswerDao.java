@@ -25,13 +25,14 @@ public interface AnswerDao {
 
     void uncorrectExam(Long answerId);
 
-    List<Exam> getCorrectedExams(Long courseId);
+    List<Answer> getCorrectedAnswers(Long courseId);
 
-    List<Exam> getNotCorrectedExams(Long courseId);
+    List<Answer> getNotCorrectedAnswers(Long courseId);
 
     List<Exam> getResolvedExams(Long studentId);
 
     List<Exam> getUnresolvedExams(Long studentId);
+
 
 
 }

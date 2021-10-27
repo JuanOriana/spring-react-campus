@@ -76,15 +76,15 @@ public class AnswerDaoImpl extends BasePaginationDaoImpl<AnswerDao> implements A
     }
 
     @Override
-    public List<Exam> getCorrectedExams(Long courseId) {
-        TypedQuery<Exam> correctedExamsTypedQuery = em.createQuery("SELECT answer.exam FROM Answer answer WHERE answer.exam.course.courseId = :courseId AND answer.score IS NOT NULL", Exam.class);
+    public List<Answer> getCorrectedAnswers(Long courseId) {
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.course.courseId = :courseId AND answer.score IS NOT NULL", Answer.class);
         correctedExamsTypedQuery.setParameter("courseId", courseId);
         return correctedExamsTypedQuery.getResultList();
     }
 
     @Override
-    public List<Exam> getNotCorrectedExams(Long courseId) {
-        TypedQuery<Exam> correctedExamsTypedQuery = em.createQuery("SELECT answer.exam FROM Answer answer WHERE answer.exam.course.courseId = :courseId AND answer.score IS NULL", Exam.class);
+    public List<Answer> getNotCorrectedAnswers(Long courseId) {
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.course.courseId = :courseId AND answer.score IS NULL", Answer.class);
         correctedExamsTypedQuery.setParameter("courseId", courseId);
         return correctedExamsTypedQuery.getResultList();
     }
@@ -104,4 +104,5 @@ public class AnswerDaoImpl extends BasePaginationDaoImpl<AnswerDao> implements A
         return unresolvedExamsTypedQuery.getResultList();
 
     }
+
 }

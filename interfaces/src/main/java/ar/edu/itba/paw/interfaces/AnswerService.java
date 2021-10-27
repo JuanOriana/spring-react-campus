@@ -72,7 +72,7 @@ public interface AnswerService {
      * @param courseId of the queried course
      * @return a list of all the exams that are already corrected
      */
-    List<Exam> getCorrectedExams(Long courseId);
+    List<Answer> getCorrectedAnswers(Long courseId);
 
     /**
      * Attemps to retrieved all the not corrected exams for a course
@@ -80,7 +80,7 @@ public interface AnswerService {
      * @param courseId of the queried course
      * @return a list of all the exams that are not already corrected
      */
-    List<Exam> getNotCorrectedExams(Long courseId);
+    List<Answer> getNotCorrectedAnswers(Long courseId);
 
     /**
      * Attemps to delete a correction to an answer

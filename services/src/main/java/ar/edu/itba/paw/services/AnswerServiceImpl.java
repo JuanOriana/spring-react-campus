@@ -50,13 +50,13 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public List<Exam> getCorrectedExams(Long courseId) {
-        return answersDao.getCorrectedExams(courseId);
+    public List<Answer> getCorrectedAnswers(Long courseId) {
+        return answersDao.getCorrectedAnswers(courseId);
     }
 
     @Override
-    public List<Exam> getNotCorrectedExams(Long courseId) {
-        return answersDao.getNotCorrectedExams(courseId);
+    public List<Answer> getNotCorrectedAnswers(Long courseId) {
+        return answersDao.getNotCorrectedAnswers(courseId);
     }
 
     @Override
