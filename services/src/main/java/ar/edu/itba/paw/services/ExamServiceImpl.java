@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileModel;
+import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,9 +45,9 @@ public class ExamServiceImpl implements ExamService {
             fileDao.associateCategory(fileModel.getFileId(), examCategoryId);
         return examDao.create(courseId,title, description, fileModel,null, startTime, endTime);
         } else {
-            //TODO: throw exception and log error
+            throw new CourseNotFoundException();
+            //TODO:log error
         }
-        return null;
     }
 
     @Override
@@ -56,9 +57,9 @@ public class ExamServiceImpl implements ExamService {
         if(course.isPresent()){
             return examDao.create(courseId,title, description, examFile,null, startTime, endTime);
         }else{
-            //TODO: throw exception and log error
+            throw new CourseNotFoundException();
+            //TODO:log error
         }
-        return null;
     }
 
     @Transactional

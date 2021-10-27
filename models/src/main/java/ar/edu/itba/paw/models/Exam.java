@@ -2,7 +2,8 @@ package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
 import java.sql.Time;
-import java.time.LocalDateTime;
+import java.util.Objects;
+
 
 @Entity
 @Table(name = "exams")
@@ -166,5 +167,18 @@ public class Exam {
         this.description = exam.description;
         this.examFile = exam.examFile;
 //        this.answersFile = exam.answersFile;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Exam exam = (Exam) o;
+        return examId.equals(exam.examId) && course.equals(exam.course);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(examId, course);
     }
 }
