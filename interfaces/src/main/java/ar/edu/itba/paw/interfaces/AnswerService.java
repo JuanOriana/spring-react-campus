@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.User;
 
 import java.sql.Time;
+import java.util.List;
 import java.util.Optional;
 
 public interface AnswerService {
@@ -46,4 +47,45 @@ public interface AnswerService {
      */
 
     Optional<Answer> findById(Long answerId);
+
+    /**
+     * Attempts to return the number of answers for a exam
+     *
+     * @param examId of the queried exam
+     * @return a number that represents the total of answers
+     */
+    Integer getTotalResolvedByExam(Long examId);
+
+    /**
+     * Attemps to persiste in the database a correction for an exam
+     *
+     * @param answerId of the answer that is being corrected
+     * @param teacher  that corrects that answer
+     * @param score    the score given
+     */
+
+    void correctExam(Long answerId, User teacher, Float score);
+
+    /**
+     * Attemps to retrieved all the corrected exams for a course
+     *
+     * @param courseId of the queried course
+     * @return a list of all the exams that are already corrected
+     */
+    List<Exam> getCorrectedExams(Long courseId);
+
+    /**
+     * Attemps to retrieved all the not corrected exams for a course
+     *
+     * @param courseId of the queried course
+     * @return a list of all the exams that are not already corrected
+     */
+    List<Exam> getNotCorrectedExams(Long courseId);
+
+    /**
+     * Attemps to delete a correction to an answer
+     *
+     * @param answerId of the answer to be deleted the correction
+     */
+    void uncorrectExam(Long answerId);
 }

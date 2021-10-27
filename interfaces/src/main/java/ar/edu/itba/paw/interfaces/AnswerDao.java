@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.User;
 
 import java.sql.Time;
+import java.util.List;
 import java.util.Optional;
 
 public interface AnswerDao {
@@ -17,5 +18,17 @@ public interface AnswerDao {
     boolean delete(Long answerId);
 
     Optional<Answer> findById(Long answerId);
+
+    Integer getTotalResolvedByExam(Long examId);
+
+    void correctExam(Long answerId,User teacher,Float score);
+
+    void uncorrectExam(Long answerId);
+
+    List<Exam> getCorrectedExams(Long courseId);
+
+    List<Exam> getNotCorrectedExams(Long courseId);
+
+
 
 }
