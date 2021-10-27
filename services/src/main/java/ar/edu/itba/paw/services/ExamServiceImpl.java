@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.interfaces.ExamDao;
-import ar.edu.itba.paw.interfaces.ExamService;
-import ar.edu.itba.paw.interfaces.FileCategoryDao;
-import ar.edu.itba.paw.interfaces.FileDao;
+import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileCategory;
@@ -24,6 +21,8 @@ public class ExamServiceImpl implements ExamService {
     private ExamDao examDao;
 
     @Autowired
+    private CourseDao courseDao;
+    @Autowired
     private FileDao fileDao;
 
     @Autowired
@@ -31,21 +30,34 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public Exam create(Long courseId, String title, String description, byte[] examFile, Long examFileSize, Time startTime, Time endTime) {
-//        FileModel fileModel = fileDao.create(size, LocalDateTime.now(), name, file, course);
-//        long examCategoryId = 0;
-//        for (FileCategory fc : fileCategoryDao.getCategories()){
-//            if (fc.getCategoryName().equals("Exam") || fc.getCategoryName().equals("exam")){
-//                examCategoryId = fc.getCategoryId();
-//                break;
-//            }
-//        }
-//        fileDao.associateCategory(fileModel.getFileId(), examCategoryId);
-//        return examDao.create(title, instructions, fileModel, startDate, finishDate);
-    return null;
+        final Optional<Course> course = courseDao.findById(courseId);
+
+        if (course.isPresent()) {
+            FileModel fileModel = fileDao.create(examFileSize, LocalDateTime.now(), "EXAM " + title, examFile, course.get());
+            long examCategoryId = 0;
+            for (FileCategory fc : fileCategoryDao.getCategories()) {
+                if (fc.getCategoryName().equals("Exam") || fc.getCategoryName().equals("exam")) {
+                    examCategoryId = fc.getCategoryId();
+                    break;
+                }
+            }
+            fileDao.associateCategory(fileModel.getFileId(), examCategoryId);
+        return examDao.create(courseId,title, description, fileModel,null, startTime, endTime);
+        } else {
+            //TODO: throw exception and log error
+        }
+        return null;
     }
 
     @Override
-    public Exam create(Long courseId, String title, String description, FileModel examFile, Time startTime, Time endTime) {
+    public Exam create(Long courseId, String title, String description, FileModel examFile, Time startTime, Time
+            endTime) {
+        final Optional<Course> course = courseDao.findById(courseId);
+        if(course.isPresent()){
+            return examDao.create(courseId,title, description, examFile,null, startTime, endTime);
+        }else{
+            //TODO: throw exception and log error
+        }
         return null;
     }
 
