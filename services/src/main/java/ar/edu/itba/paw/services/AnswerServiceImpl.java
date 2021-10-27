@@ -63,4 +63,14 @@ public class AnswerServiceImpl implements AnswerService {
     public void uncorrectExam(Long answerId) {
         answersDao.uncorrectExam(answerId);
     }
+
+    @Override
+    public List<Exam> getResolvedExams(Long studentId) {
+        return answersDao.getResolvedExams(studentId);
+    }
+
+    @Override
+    public List<Exam> getUnresolvedExams(Long studentId) {
+        return answersDao.getUnresolvedExams(studentId);
+    }
 }

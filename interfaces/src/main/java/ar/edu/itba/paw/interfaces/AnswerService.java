@@ -88,4 +88,20 @@ public interface AnswerService {
      * @param answerId of the answer to be deleted the correction
      */
     void uncorrectExam(Long answerId);
+
+    /**
+     * Attempts to return a list of the resolved exams by the user
+     *
+     * @param studentId of the queried user
+     * @return a list of all the exams resolved by the user
+     */
+    List<Exam> getResolvedExams(Long studentId);
+
+    /**
+     * Attempts to return a list of the unresolved exams by the user
+     *
+     * @param studentId of the queried user
+     * @return a list of all the exams unresolved by the user
+     */
+    List<Exam> getUnresolvedExams(Long studentId);
 }

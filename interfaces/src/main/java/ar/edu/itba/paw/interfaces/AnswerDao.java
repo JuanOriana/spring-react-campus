@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface AnswerDao {
 
-    Answer create(Exam exam, User student, User teacher, FileModel answerFile,Float score,String corrections, Time deliverdTime);
+    Answer create(Exam exam, User student, User teacher, FileModel answerFile, Float score, String corrections, Time deliverdTime);
 
     boolean update(Long answerId, Answer answer);
 
@@ -21,7 +21,7 @@ public interface AnswerDao {
 
     Integer getTotalResolvedByExam(Long examId);
 
-    void correctExam(Long answerId,User teacher,Float score);
+    void correctExam(Long answerId, User teacher, Float score);
 
     void uncorrectExam(Long answerId);
 
@@ -29,6 +29,9 @@ public interface AnswerDao {
 
     List<Exam> getNotCorrectedExams(Long courseId);
 
+    List<Exam> getResolvedExams(Long studentId);
+
+    List<Exam> getUnresolvedExams(Long studentId);
 
 
 }
