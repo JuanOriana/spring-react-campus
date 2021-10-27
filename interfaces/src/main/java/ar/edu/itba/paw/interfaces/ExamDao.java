@@ -1,22 +1,23 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.models.ExamModel;
+import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
 
-import java.time.LocalDateTime;
+import java.sql.Time;
 import java.util.List;
 import java.util.Optional;
 
+
 public interface ExamDao {
 
-    ExamModel create(String title, String instructions, FileModel file, LocalDateTime startDate, LocalDateTime finishDate);
+    Exam create(Long courseId, String title, String description, FileModel examFile, FileModel answersFile, Time startTime, Time endTime);
 
-    boolean update(Long examId, ExamModel exam);
+    boolean update(Long examId, Exam exam);
 
     boolean delete(Long examId);
 
-    List<ExamModel> list(Long courseId);
+    List<Exam> list(Long courseId);
 
-    Optional<ExamModel> findById(Long examId);
+    Optional<Exam> findById(Long examId);
 
 }

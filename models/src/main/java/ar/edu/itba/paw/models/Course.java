@@ -37,6 +37,14 @@ public class Course {
         this.subject = subject;
     }
 
+    public Course(Long courseId,Integer year, Integer quarter, String board,Subject subject) {
+        this.courseId = courseId;
+        this.year = year;
+        this.quarter = quarter;
+        this.board = board;
+        this.subject = subject;
+    }
+
     public static class Builder {
 
         private Long courseId;
