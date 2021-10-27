@@ -5,9 +5,7 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
-import ar.edu.itba.paw.webapp.form.AnnouncementForm;
-import ar.edu.itba.paw.webapp.form.FileForm;
-import ar.edu.itba.paw.webapp.form.MailForm;
+import ar.edu.itba.paw.webapp.form.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,13 +111,24 @@ public class CourseController extends AuthController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/schedule")
     public ModelAndView schedule(@PathVariable Long courseId) {
-        timetableService.findByIdOrdered(courseId);
         Timetable[] times = timetableService.findByIdOrdered(courseId);
         ModelAndView mav = new ModelAndView("course-schedule");
         mav.addObject("times",times);
         mav.addObject("days",days);
         return mav;
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/exams")
+    public ModelAndView exams(@PathVariable Long courseId, final CreateExamForm createExamForm) {
+        return new ModelAndView("teacher/teacher-exams").addObject("createExamForm",createExamForm);
+    }
+    @RequestMapping(method = RequestMethod.GET, value = "/exam")
+    public ModelAndView exam(@PathVariable Long courseId, final SolveExamForm solveExamForm) {
+        ModelAndView mav = new ModelAndView("teacher/correct-exam");
+        mav.addObject("solveExamForm",solveExamForm);
+        return mav;
+    }
+
 
     @RequestMapping(method = RequestMethod.GET, value = "/files")
     public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm,

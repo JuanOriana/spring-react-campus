@@ -20,22 +20,14 @@
                 <jsp:param name="quarter" value="${course.quarter}"/>
                 <jsp:param name="code" value="${course.subject.code}"/>
                 <jsp:param name="board" value="${course.board}"/>
-                <jsp:param name="itemId" value="${5}"/>
+                <jsp:param name="itemId" value="${4}"/>
             </jsp:include>
             <div class="course-data-container">
-                <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course-schedule.section-heading.title"/> </h3>
+                <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course-exams.section-heading.title"/> </h3>
                 <div class="big-wrapper">
-                    <h3 style="margin: 10px 0;"><spring:message code="course-schedule.comment"/></h3>
-                    <c:forEach items="${days}" var="day" varStatus="daysStatus">
-                        <c:if test="${times[daysStatus.index] != null}">
-                            <c:set var="currentTime" value="${times[daysStatus.index]}"/>
-                            <h3 style="margin-top: 3px; margin-left: 10px"><spring:message code="day.${day}"/></h3>
-                            <p style="margin-left: 15px">&rsaquo;
-                                <c:out value="${currentTime.begins.hours}:${currentTime.begins.minutes < 10 ?'0':''}${currentTime.begins.minutes}
-                                - ${currentTime.end.hours}:${currentTime.end.minutes < 10 ?'0':''}${currentTime.end.minutes}"/>
-                            </p>
-                        </c:if>
-                    </c:forEach>
+                    <h3 style="margin: 10px 0;"><spring:message code="course-exams.comment"/></h3>
+<%--                    <c:set var="file" value="${file}" scope="request"/>--%>
+                    <jsp:include page="components/exam-unit.jsp"/>
                 </div>
             </div>
         </div>
@@ -44,3 +36,4 @@
 </div>
 </body>
 </html>
+
