@@ -28,6 +28,8 @@
                     <h3 style="margin: 10px 0;"><spring:message code="course-exams.comment"/></h3>
 <%--                    <c:set var="file" value="${file}" scope="request"/>--%>
                     <jsp:include page="components/exam-unit.jsp"/>
+                    <h3 style="margin: 10px 0;">Examenes enviados: </h3>
+
                 </div>
             </div>
         </div>

@@ -32,6 +32,8 @@ public class CourseController extends AuthController {
     private final FileService fileService;
     private final UserService userService;
     private final MailingService mailingService;
+    private final ExamService examService;
+    private final AnswerService answerService;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private static final String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
     private static final int DEFAULT_PAGE = 1;
@@ -42,7 +44,8 @@ public class CourseController extends AuthController {
     public CourseController(AuthFacade authFacade, AnnouncementService announcementService,
                             CourseService courseService, FileCategoryService fileCategoryService,
                             FileExtensionService fileExtensionService, FileService fileService,
-                            UserService userService, MailingService mailingService, TimetableService timetableService) {
+                            UserService userService, MailingService mailingService,
+                            TimetableService timetableService,ExamService examService, AnswerService answerService) {
         super(authFacade);
         this.announcementService = announcementService;
         this.courseService = courseService;
@@ -52,6 +55,8 @@ public class CourseController extends AuthController {
         this.userService = userService;
         this.mailingService = mailingService;
         this.timetableService = timetableService;
+        this.examService = examService;
+        this.answerService = answerService;
     }
 
     @ModelAttribute
@@ -120,12 +125,33 @@ public class CourseController extends AuthController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/exams")
     public ModelAndView exams(@PathVariable Long courseId, final CreateExamForm createExamForm) {
-        return new ModelAndView("teacher/teacher-exams").addObject("createExamForm",createExamForm);
+        ModelAndView mav;
+        if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
+            mav = new ModelAndView("teacher/teacher-exams");
+            mav.addObject("createExamForm", createExamForm);
+            mav.addObject("exams",examService.listByCourse(courseId));
+            mav.addObject("userCount",courseService.getTotalStudents(courseId));
+        } else {
+            mav = new ModelAndView("course-exams");
+            mav.addObject("resolvedExams",answerService.getResolvedExams(authFacade.getCurrentUser().getUserId()));
+            mav.addObject("unresolvedExams",answerService.getUnresolvedExams(authFacade.getCurrentUser().getUserId()));
+        }
+        return mav;
     }
-    @RequestMapping(method = RequestMethod.GET, value = "/exam")
-    public ModelAndView exam(@PathVariable Long courseId, final SolveExamForm solveExamForm) {
-        ModelAndView mav = new ModelAndView("teacher/correct-exam");
-        mav.addObject("solveExamForm",solveExamForm);
+    @RequestMapping(method = RequestMethod.GET, value = "/exam/{examId}")
+    public ModelAndView exam(@PathVariable Long courseId, @PathVariable Long examId, final SolveExamForm solveExamForm) {
+        ModelAndView mav;
+        if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
+            mav = new ModelAndView("teacher/correct-exam");
+            mav.addObject("solveExamForm", solveExamForm);
+//            mav.addObject("correctedAnswers",answerService.getCorrectedExams());
+//            mav.addObject("uncorrectedAnswers",answerService.getCorrectedExams());
+
+        } else {
+            mav = new ModelAndView("solve-exam");
+            mav.addObject("exam",examService.findById(examId).orElseThrow(RuntimeException::new));
+
+        }
         return mav;
     }
 
