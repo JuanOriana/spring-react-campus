@@ -61,7 +61,8 @@ public class UserDaoJpa implements UserDao {
         TypedQuery<Role> dbRole = em.createQuery("SELECT e.role FROM Enrollment e WHERE e.course.courseId = :courseId AND e.user.userId = :userId", Role.class);
         dbRole.setParameter("courseId", courseId);
         dbRole.setParameter("userId", userId);
-        return Optional.ofNullable(dbRole.getSingleResult());
+        List<Role> roles = dbRole.getResultList();
+        return Optional.ofNullable(roles.isEmpty() ? null : roles.get(0));
     }
 
     @Transactional(readOnly = true)

@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "files")
@@ -250,5 +251,18 @@ public class FileModel {
         this.course = this.course.equals(fileModel.getCourse()) ? this.course : fileModel.course;
         this.downloads = this.downloads.equals(fileModel.getDownloads()) ? this.downloads : fileModel.downloads;
         this.fileCategories = this.fileCategories.equals(fileModel.getCategories()) ? this.fileCategories : fileModel.fileCategories;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileModel fileModel = (FileModel) o;
+        return fileId.equals(fileModel.fileId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fileId);
     }
 }

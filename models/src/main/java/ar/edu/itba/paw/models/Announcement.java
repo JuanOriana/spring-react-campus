@@ -85,30 +85,25 @@ public class Announcement {
         }
 
         public Announcement build() {
-            if(this.announcementId == null){
-                throw new NullPointerException("The property \"announcementId\" is null. "
-                        + "Please set the value by \"announcementId()\". "
-                        + "The properties \"announcementId\", \"date\", \"title\", \"content\" and \"author\" are required.");
-            }
             if(this.date == null){
                 throw new NullPointerException("The property \"date\" is null. "
                         + "Please set the value by \"date()\". "
-                        + "The properties \"announcementId\", \"date\", \"title\", \"content\" and \"author\" are required.");
+                        + "The properties \"date\", \"title\", \"content\" and \"author\" are required.");
             }
             if(this.title == null){
                 throw new NullPointerException("The property \"title\" is null. "
                         + "Please set the value by \"title()\". "
-                        + "The properties \"announcementId\", \"date\", \"title\", \"content\" and \"author\" are required.");
+                        + "The properties \"date\", \"title\", \"content\" and \"author\" are required.");
             }
             if(this.content == null){
                 throw new NullPointerException("The property \"content\" is null. "
                         + "Please set the value by \"content()\". "
-                        + "The properties \"announcementId\", \"date\", \"title\", \"content\" and \"author\" are required.");
+                        + "The properties \"date\", \"title\", \"content\" and \"author\" are required.");
             }
             if(this.author == null){
                 throw new NullPointerException("The property \"author\" is null. "
                         + "Please set the value by \"author()\". "
-                        + "The properties \"announcementId\", \"date\", \"title\", \"content\" and \"author\" are required.");
+                        + "The properties \"date\", \"title\", \"content\" and \"author\" are required.");
             }
 
             return new Announcement(this);

@@ -111,7 +111,7 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         TypedQuery<Course> courseTypedQuery = em.createQuery("SELECT enrollment.course FROM Enrollment enrollment WHERE enrollment.course.courseId=:courseId AND enrollment.user.userId = :userId", Course.class);
         courseTypedQuery.setParameter("userId", userId);
         courseTypedQuery.setParameter("courseId", courseId);
-        return courseTypedQuery.getResultList().isEmpty();
+        return !courseTypedQuery.getResultList().isEmpty();
     }
 
     @Transactional
