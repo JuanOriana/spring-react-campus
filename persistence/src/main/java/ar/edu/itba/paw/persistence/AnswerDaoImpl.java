@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.interfaces.AnswersDao;
+import ar.edu.itba.paw.interfaces.AnswerDao;
 import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Primary
 @Repository
-public class AnswerDao extends BasePaginationDaoImpl<AnswerDao> implements AnswersDao {
+public class AnswerDaoImpl extends BasePaginationDaoImpl<AnswerDao> implements AnswerDao {
 
     @Transactional
     @Override

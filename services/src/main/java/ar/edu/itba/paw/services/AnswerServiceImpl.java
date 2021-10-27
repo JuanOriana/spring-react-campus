@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.interfaces.AnswerDao;
 import ar.edu.itba.paw.interfaces.AnswerService;
-import ar.edu.itba.paw.interfaces.AnswersDao;
 import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
@@ -16,7 +16,7 @@ import java.util.Optional;
 public class AnswerServiceImpl implements AnswerService {
 
     @Autowired
-    private AnswersDao answersDao;
+    private AnswerDao answersDao;
 
     @Override
     public Answer create(Exam exam, User student, FileModel answerFile, Time deliverdTime) {

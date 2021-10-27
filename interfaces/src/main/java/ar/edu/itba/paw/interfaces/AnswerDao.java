@@ -8,7 +8,7 @@ import ar.edu.itba.paw.models.User;
 import java.sql.Time;
 import java.util.Optional;
 
-public interface AnswersDao {
+public interface AnswerDao {
 
     Answer create(Exam exam, User student, User teacher, FileModel answerFile,Float score,String corrections, Time deliverdTime);
 
