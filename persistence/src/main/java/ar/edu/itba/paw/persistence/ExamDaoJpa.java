@@ -20,8 +20,8 @@ public class ExamDaoJpa extends BasePaginationDaoImpl<Exam> implements ExamDao {
     @Transactional
     @Override
     public Exam create(Long courseId, String title, String description, FileModel examFile, FileModel answersFile, Time startTime, Time endTime) {
-        final Exam exam= new Exam.Builder()
-                .withCourse(new Course(courseId,null,null,null,null))
+        final Exam exam = new Exam.Builder()
+                .withCourse(new Course(courseId, null, null, null, null))
                 .withTitle(title)
                 .withDescription(description)
                 .withExamFile(examFile)
@@ -51,7 +51,7 @@ public class ExamDaoJpa extends BasePaginationDaoImpl<Exam> implements ExamDao {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Exam> list(Long courseId) {
+    public List<Exam> listByCourse(Long courseId) {
         TypedQuery<Exam> listExamsOfCourse = em.createQuery("SELECT e FROM Exam e WHERE e.course.courseId = :courseId", Exam.class);
         listExamsOfCourse.setParameter("courseId", courseId);
         return listExamsOfCourse.getResultList();

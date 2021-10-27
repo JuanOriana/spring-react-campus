@@ -61,7 +61,7 @@ public interface ExamService {
      * @param courseId id of the course
      * @return list containing all the current available exams (if any)
      */
-    List<Exam> list(Long courseId);
+    List<Exam> listByCourse(Long courseId);
 
     /**
      * Attempts to get an exam given an id

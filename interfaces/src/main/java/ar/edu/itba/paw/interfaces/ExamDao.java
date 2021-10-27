@@ -16,7 +16,7 @@ public interface ExamDao {
 
     boolean delete(Long examId);
 
-    List<Exam> list(Long courseId);
+    List<Exam> listByCourse(Long courseId);
 
     Optional<Exam> findById(Long examId);
 

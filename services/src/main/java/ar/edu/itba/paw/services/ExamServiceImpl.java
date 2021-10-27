@@ -76,8 +76,8 @@ public class ExamServiceImpl implements ExamService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Exam> list(Long courseId) {
-        return examDao.list(courseId);
+    public List<Exam> listByCourse(Long courseId) {
+        return examDao.listByCourse(courseId);
     }
 
     @Transactional(readOnly = true)
