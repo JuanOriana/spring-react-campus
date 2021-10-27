@@ -71,7 +71,7 @@ public class AnswerDaoImpl extends BasePaginationDaoImpl<AnswerDao> implements A
     }
 
     @Override
-    public void uncorrectExam(Long answerId) {
+    public void undoExamCorrection(Long answerId) {
         correctExam(answerId, null, null);
     }
 
@@ -92,14 +92,14 @@ public class AnswerDaoImpl extends BasePaginationDaoImpl<AnswerDao> implements A
 
     @Override
     public List<Exam> getResolvedExams(Long studentId){
-        TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT answer.exam FROM Answer answer WHERE answer.student.userid = :studentId",Exam.class);
+        TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId",Exam.class);
         resolverExamsTypedQuery.setParameter("studentId", studentId);
         return resolverExamsTypedQuery.getResultList();
     }
 
     @Override
     public List<Exam> getUnresolvedExams(Long studentId){
-        TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userid = :studentId)",Exam.class);
+        TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId)",Exam.class);
         unresolvedExamsTypedQuery.setParameter("studentId",  studentId);
         return unresolvedExamsTypedQuery.getResultList();
 

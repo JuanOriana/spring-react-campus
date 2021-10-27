@@ -87,7 +87,7 @@ public interface AnswerService {
      *
      * @param answerId of the answer to be deleted the correction
      */
-    void uncorrectExam(Long answerId);
+    void undoExamCorrection(Long answerId);
 
     /**
      * Attempts to return a list of the resolved exams by the user

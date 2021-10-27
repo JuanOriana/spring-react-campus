@@ -23,7 +23,7 @@ public interface AnswerDao {
 
     void correctExam(Long answerId, User teacher, Float score);
 
-    void uncorrectExam(Long answerId);
+    void undoExamCorrection(Long answerId);
 
     List<Answer> getCorrectedAnswers(Long courseId);
 
