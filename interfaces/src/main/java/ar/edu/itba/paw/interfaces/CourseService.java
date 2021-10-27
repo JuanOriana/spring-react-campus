@@ -127,4 +127,11 @@ public interface CourseService {
      */
     List<Integer> getAvailableYears();
 
+    /**
+     *  Attempts to return the quantity of students of a course
+     * @param courseId of the queried course
+     * @return an integer that are the total of students on that course
+     */
+    Integer getTotalStudents(Long courseId);
+
 }

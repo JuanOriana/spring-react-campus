@@ -222,5 +222,10 @@ public class CourseDaoImpl implements CourseDao {
         return false;
     }
 
+    @Override
+    public Integer getTotalStudents(Long courseId) {
+        return null;
+    }
+
 
 }

@@ -144,4 +144,9 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.getAvailableYears();
     }
 
+    @Override
+    public Integer getTotalStudents(Long courseId) {
+        return courseDao.getTotalStudents(courseId);
+    }
+
 }

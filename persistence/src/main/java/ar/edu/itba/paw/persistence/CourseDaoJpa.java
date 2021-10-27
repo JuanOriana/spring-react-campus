@@ -165,4 +165,12 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         courseTypedQuery.setParameter("subjectId", subjectId);
         return !courseTypedQuery.getResultList().isEmpty();
     }
+
+    @Override
+    public Integer getTotalStudents(Long courseId){
+        TypedQuery<Integer> totalStudentsTypedQuery = em.createQuery("SELECT COUNT(DISTINCT enrollment.user.userId ) FROM Enrollment enrollment WHERE enrollment.course.courseId = :courseId AND enrollment.role.roleId = :roleId",Integer.class);
+        totalStudentsTypedQuery.setParameter("courseId", courseId);
+        totalStudentsTypedQuery.setParameter("roleId", Roles.STUDENT.getValue());
+        return totalStudentsTypedQuery.getSingleResult();
+    }
 }
