@@ -124,6 +124,7 @@ public class Answer {
         this.teacher = answer.teacher;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

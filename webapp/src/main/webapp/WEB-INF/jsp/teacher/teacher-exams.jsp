@@ -47,9 +47,13 @@
         <div class="big-wrapper">
           <h3 style="margin: 10px 0;"><spring:message code="teacher.exams.recent.exams.title"/></h3>
           <%--                    <c:set var="file" value="${file}" scope="request"/>--%>
-          <jsp:include page="../components/exam-unit.jsp">
+          <c:forEach var="exam" items="${exams}">
+            <c:set var="exam" value="${exam}" scope="request"/>
+            <jsp:include page="../components/exam-unit.jsp">
             <jsp:param name="isTeacher" value="${true}"/>
+            <jsp:param name="userCount" value="${userCount}"/>
           </jsp:include>
+          </c:forEach>
         </div>
       </div>
     </div>
