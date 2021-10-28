@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Primary
 @Repository
-public class AnswerDaoImpl extends BasePaginationDaoImpl<AnswerDao> implements AnswerDao {
+public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements AnswerDao {
 
     @Transactional
     @Override
@@ -52,8 +52,8 @@ public class AnswerDaoImpl extends BasePaginationDaoImpl<AnswerDao> implements A
 
     @Override
     public Integer getTotalResolvedByExam(Long examId) {
-        TypedQuery<Integer> totalResolvedTypedQuery = em.createQuery("SELECT COUNT(DISTINCT a.student.userid) FROM Answer a WHERE a.exam.examid = :examid", Integer.class);
-        totalResolvedTypedQuery.setParameter("examid", examId);
+        TypedQuery<Integer> totalResolvedTypedQuery = em.createQuery("SELECT COUNT(DISTINCT a.student.userId) FROM Answer a WHERE a.exam.examId = :examId", Integer.class);
+        totalResolvedTypedQuery.setParameter("examId", examId);
         return totalResolvedTypedQuery.getSingleResult();
     }
 
@@ -102,7 +102,8 @@ public class AnswerDaoImpl extends BasePaginationDaoImpl<AnswerDao> implements A
         TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId)",Exam.class);
         unresolvedExamsTypedQuery.setParameter("studentId",  studentId);
         return unresolvedExamsTypedQuery.getResultList();
-
     }
+
+    
 
 }

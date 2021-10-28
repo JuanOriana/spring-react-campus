@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -130,8 +131,8 @@ public class CourseController extends AuthController {
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-exams");
             mav.addObject("createExamForm", createExamForm);
-            mav.addObject("exams",examService.listByCourse(courseId));
-            mav.addObject("userCount",courseService.getTotalStudents(courseId));
+            mav.addObject("exams", examService.listByCourse(courseId));
+            mav.addObject("userCount", courseService.getTotalStudents(courseId));
         } else {
             mav = new ModelAndView("course-exams");
             mav.addObject("resolvedExams",answerService.getResolvedExams(authFacade.getCurrentUser().getUserId()));
@@ -146,7 +147,7 @@ public class CourseController extends AuthController {
                               RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
             Exam exam = examService.create(courseId,createExamForm.getTitle(),createExamForm.getContent(),createExamForm.getFile().getBytes(),
-                    createExamForm.getFile().getSize(),new Time(0), new Time(0));
+                    createExamForm.getFile().getSize(), LocalDateTime.now(), LocalDateTime.now()); // Change these for the dates that the teacher selected
             LOGGER.debug("Exam in course {} created with id: {}", courseId, exam.getExamId());
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
             return new ModelAndView("redirect:/course/"+courseId+"/exams");
@@ -160,8 +161,8 @@ public class CourseController extends AuthController {
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/correct-exam");
             mav.addObject("solveExamForm", solveExamForm);
-            mav.addObject("correctedAnswers",answerService.getCorrectedAnswers(courseId));
-            mav.addObject("uncorrectedAnswers",answerService.getNotCorrectedAnswers(courseId));
+            mav.addObject("correctedAnswers", answerService.getCorrectedAnswers(courseId));
+            mav.addObject("uncorrectedAnswers", answerService.getNotCorrectedAnswers(courseId));
 
         } else {
             mav = new ModelAndView("solve-exam");

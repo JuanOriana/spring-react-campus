@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TypedQuery;
-import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +19,7 @@ public class ExamDaoJpa extends BasePaginationDaoImpl<Exam> implements ExamDao {
 
     @Transactional
     @Override
-    public Exam create(Long courseId, String title, String description, FileModel examFile, FileModel answersFile, Time startTime, Time endTime) {
+    public Exam create(Long courseId, String title, String description, FileModel examFile, FileModel answersFile, LocalDateTime startTime, LocalDateTime endTime) {
         final Exam exam = new Exam.Builder()
                 .withCourse(new Course(courseId, null, null, null, null))
                 .withTitle(title)

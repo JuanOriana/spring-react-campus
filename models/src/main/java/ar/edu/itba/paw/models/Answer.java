@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "answers", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"deliveredDate","studentid","examid"})})
+       @UniqueConstraint(columnNames = {"deliveredDate", "studentId", "examId"})})
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "answers_answerid_seq")
@@ -15,18 +15,18 @@ public class Answer {
     private Long answerId;
 
     @ManyToOne
-    @JoinColumn(name = "examid")
+    @JoinColumn(name = "examId")
     private Exam exam;
 
     @Column(name = "deliveredDate")
     private Time deliveredDate;
 
     @ManyToOne
-    @JoinColumn(name = "studentid")
+    @JoinColumn(name = "studentId")
     private User student;
 
     @ManyToOne
-    @JoinColumn(name = "teacherid")
+    @JoinColumn(name = "teacherId")
     private User teacher;
 
     @OneToOne

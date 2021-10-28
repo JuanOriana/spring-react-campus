@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
-import ar.edu.itba.paw.webapp.config.WebAuthConfig;
-import ar.edu.itba.paw.webapp.config.WebConfig;
 import ar.edu.itba.paw.webapp.form.UserProfileForm;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -17,8 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
 

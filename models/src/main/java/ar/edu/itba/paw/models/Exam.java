@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
-import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -15,14 +15,14 @@ public class Exam {
     private Long examId;
 
     @ManyToOne
-    @JoinColumn(name = "courseId", insertable = false, updatable = false)
+    @JoinColumn(name = "courseId")
     private Course course;
 
     @Column
-    private Time startTime;
+    private LocalDateTime startTime;
 
     @Column
-    private Time endTime;
+    private LocalDateTime endTime;
 
     @Column
     private String title;
@@ -30,34 +30,33 @@ public class Exam {
     @Column
     private String description;
 
-    @OneToOne //TODO: check if this is correct
-    @JoinColumn(name = "fileId", insertable = false, updatable = false)
+    @OneToOne
     private FileModel examFile;
 
-//    @OneToOne //TODO: check if this is correct
-//    @JoinColumn(name = "fileId",nullable = true,insertable = false,updatable = false)
-//    private FileModel answersFile = null; // Answers given by the teacher
+    @OneToOne
+    private FileModel answerFile;
 
 
     /* default */ Exam() {
-        //For Hibernate
+        // For Hibernate
     }
 
     public static class Builder {
         private Long examId;
         private Course course;
-        private Time startTime;
-        private Time endTime;
+        private LocalDateTime startTime;
+        private LocalDateTime endTime;
         private String title;
         private String description;
         private FileModel examFile;
-//        private FileModel answersFile;
+        private FileModel answerFile;
 
 
         public Builder() {
         }
 
-        public Builder(Long examId,Course course, Time startTime, Time endTime, String title, String description, FileModel examFile, FileModel answersFile) {
+        public Builder(Long examId,Course course, LocalDateTime startTime, LocalDateTime endTime, String title, String description, FileModel examFile,
+                       FileModel answerFile) {
             this.examId = examId;
             this.course = course;
             this.startTime = startTime;
@@ -65,7 +64,7 @@ public class Exam {
             this.title = title;
             this.description = description;
             this.examFile = examFile;
-//            this.answersFile = answersFile;
+            this.answerFile = answerFile;
         }
 
         public Builder withExamId(Long fileId) {
@@ -88,17 +87,17 @@ public class Exam {
             return Builder.this;
         }
 
-//        public Builder withAnswerFile(FileModel file) {
-//            this.answersFile = file;
-//            return Builder.this;
-//        }
+        public Builder withAnswerFile(FileModel file) {
+            this.answerFile = file;
+            return Builder.this;
+        }
 
-        public Builder withStartTime(Time startTime) {
+        public Builder withStartTime(LocalDateTime startTime) {
             this.startTime = startTime;
             return Builder.this;
         }
 
-        public Builder withEndTime(Time endTime) {
+        public Builder withEndTime(LocalDateTime endTime) {
             this.endTime = endTime;
             return Builder.this;
         }
@@ -141,7 +140,7 @@ public class Exam {
     private Exam(Builder builder){
         this.examId = builder.examId;
         this.examFile = builder.examFile;
-//        this.answersFile = builder.answersFile;
+        this.answerFile = builder.answerFile;
         this.description = builder.description;
         this.course = builder.course;
         this.endTime = builder.endTime;
@@ -149,14 +148,14 @@ public class Exam {
         this.title = builder.title;
     }
 
-    public Exam(Course course, Time startTime, Time endTime, String title, String description, FileModel examFile, FileModel answersFile) {
+    public Exam(Course course, LocalDateTime startTime, LocalDateTime endTime, String title, String description, FileModel examFile, FileModel answerFile) {
         this.course = course;
         this.startTime = startTime;
         this.endTime = endTime;
         this.title = title;
         this.description = description;
         this.examFile = examFile;
-//        this.answersFile = answersFile;
+        this.answerFile = answerFile;
     }
 
     public void merge(Exam exam) {
@@ -166,7 +165,7 @@ public class Exam {
         this.title = exam.title;
         this.description = exam.description;
         this.examFile = exam.examFile;
-//        this.answersFile = exam.answersFile;
+        this.answerFile = exam.answerFile;
     }
 
     public Long getExamId() {
@@ -185,19 +184,19 @@ public class Exam {
         this.course = course;
     }
 
-    public Time getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 
