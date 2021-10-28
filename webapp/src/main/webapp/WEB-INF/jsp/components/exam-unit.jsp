@@ -9,10 +9,10 @@
             const result = confirm(deleteMessage)
             if (result === true){
                 $.ajax({
-                    url: '${pageContext.request.contextPath}/exams/' + fileId,
+                    url: '${pageContext.request.contextPath}/exam/' + fileId,
                     type: 'DELETE',
                     success: function (result) {
-                        $("#file-"+ fileId).remove();
+                        $("#exam-"+ fileId).remove();
                     }
                 });
             }
@@ -20,7 +20,7 @@
     </script>
 </head>
 <body>
-<div class="file-unit" id="file-${requestScope.exam.examId}">
+<div class="file-unit" id="exam-${requestScope.exam.examId}">
     <div style="display: flex; align-items: center">
         <a href="<c:url value="/exam/${requestScope.exam.examId}"/>" class="styleless-anchor"
            style="display: flex;margin-left: 10px; align-items: center">
@@ -33,7 +33,7 @@
     </div>
     <div style="display: flex; align-items: center">
         <c:if test="${param.isTeacher}">
-            <p class="file-name">18 corregidos de 30</p>
+            <p class="file-name">18 corregidos de <c:out value="${userCount}"/> </p>
             <img src="<c:url value="/resources/images/trash.png"/>"
                  alt="delete" class="medium-icon" onclick="deleteById(${requestScope.exam.examId})">
         </c:if>
