@@ -25,7 +25,7 @@
       </jsp:include>
       <div class="course-data-container">
         <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course-exams.section-heading.title"/> </h3>
-        <form:form modelAttribute="createExamForm" class="form-wrapper reduced" method="post" acceptCharset="utf-8">
+        <form:form modelAttribute="createExamForm" class="form-wrapper reduced" method="post" enctype="multipart/form-data" acceptCharset="utf-8">
           <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="teacher.exams.upload.card.title"/></h1>
           <form:label path="title" for="title" class="form-label">
             <spring:message code="teacher.exams.upload.exam.title.field"/>
