@@ -132,6 +132,6 @@ public interface CourseService {
      * @param courseId of the queried course
      * @return an integer that are the total of students on that course
      */
-    Integer getTotalStudents(Long courseId);
+    Long getTotalStudents(Long courseId);
 
 }

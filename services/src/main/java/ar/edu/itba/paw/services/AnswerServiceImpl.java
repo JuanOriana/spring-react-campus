@@ -60,8 +60,8 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public void uncorrectExam(Long answerId) {
-        answersDao.uncorrectExam(answerId);
+    public void undoExamCorrection(Long answerId) {
+        answersDao.undoExamCorrection(answerId);
     }
 
     @Override
