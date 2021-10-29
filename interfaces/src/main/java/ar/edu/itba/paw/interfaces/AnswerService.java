@@ -96,7 +96,7 @@ public interface AnswerService {
      * @param studentId of the queried user
      * @return a list of all the exams resolved by the user
      */
-    List<Exam> getResolvedExams(Long studentId);
+    List<Exam> getResolvedExams(Long studentId,Long courseId);
 
     /**
      * Attempts to return a list of the unresolved exams by the user
@@ -104,7 +104,7 @@ public interface AnswerService {
      * @param studentId of the queried user
      * @return a list of all the exams unresolved by the user
      */
-    List<Exam> getUnresolvedExams(Long studentId);
+    List<Exam> getUnresolvedExams(Long studentId,Long courseId);
 
     /**
      * Attempts to return the number of answers to an exam

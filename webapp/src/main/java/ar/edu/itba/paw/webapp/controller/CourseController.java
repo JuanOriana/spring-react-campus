@@ -135,8 +135,8 @@ public class CourseController extends AuthController {
             mav.addObject("userCount",courseService.getTotalStudents(courseId));
         } else {
             mav = new ModelAndView("course-exams");
-            mav.addObject("resolvedExams",answerService.getResolvedExams(authFacade.getCurrentUser().getUserId()));
-            mav.addObject("unresolvedExams",answerService.getUnresolvedExams(authFacade.getCurrentUser().getUserId()));
+            mav.addObject("resolvedExams",answerService.getResolvedExams(authFacade.getCurrentUser().getUserId(),courseId));
+            mav.addObject("unresolvedExams",answerService.getUnresolvedExams(authFacade.getCurrentUser().getUserId(),courseId));
         }
         return mav;
     }

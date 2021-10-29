@@ -110,16 +110,19 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
 
 
     @Override
-    public List<Exam> getResolvedExams(Long studentId) {
-        TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId", Exam.class);
+    public List<Exam> getResolvedExams(Long studentId,Long courseId) {
+        TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId AND answer.exam.course.courseId = :courseId", Exam.class);
         resolverExamsTypedQuery.setParameter("studentId", studentId);
+        resolverExamsTypedQuery.setParameter("courseId", courseId);
         return resolverExamsTypedQuery.getResultList();
     }
 
     @Override
-    public List<Exam> getUnresolvedExams(Long studentId) {
-        TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId)", Exam.class);
+    public List<Exam> getUnresolvedExams(Long studentId, Long courseId) {
+        TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId) AND exam.course.courseId = :courseId", Exam.class);
         unresolvedExamsTypedQuery.setParameter("studentId", studentId);
+        unresolvedExamsTypedQuery.setParameter( "courseId", courseId);
+
         return unresolvedExamsTypedQuery.getResultList();
     }
 

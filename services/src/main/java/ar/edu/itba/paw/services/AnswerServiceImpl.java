@@ -81,13 +81,13 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public List<Exam> getResolvedExams(Long studentId) {
-        return answersDao.getResolvedExams(studentId);
+    public List<Exam> getResolvedExams(Long studentId,Long courseId) {
+        return answersDao.getResolvedExams(studentId,courseId);
     }
 
     @Override
-    public List<Exam> getUnresolvedExams(Long studentId) {
-        return answersDao.getUnresolvedExams(studentId);
+    public List<Exam> getUnresolvedExams(Long studentId,Long courseId) {
+        return answersDao.getUnresolvedExams(studentId,courseId);
     }
 
     @Override

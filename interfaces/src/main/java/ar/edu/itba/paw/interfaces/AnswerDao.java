@@ -29,9 +29,9 @@ public interface AnswerDao {
 
     List<Answer> getNotCorrectedAnswers(Long courseId);
 
-    List<Exam> getResolvedExams(Long studentId);
+    List<Exam> getResolvedExams(Long studentId,Long courseId);
 
-    List<Exam> getUnresolvedExams(Long studentId);
+    List<Exam> getUnresolvedExams(Long studentId,Long courseId);
 
     Integer getTotalAnswers(Long examId);
 
