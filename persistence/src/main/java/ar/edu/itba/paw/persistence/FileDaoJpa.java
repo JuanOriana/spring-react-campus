@@ -128,7 +128,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
 
     @Override
     public boolean hasAccess(Long fileId, Long userId) {
-        TypedQuery<FileModel> queryHasAccess = em.createQuery("SELECT f FROM FileModel f, Enrollment e WHERE f.course.courseId = e.course.courseId AND e.user.userId = :userId", FileModel.class);
+        TypedQuery<FileModel> queryHasAccess = em.createQuery("SELECT f FROM FileModel f, Enrollment e WHERE f.fileId = :fileId AND e.user.userId = :userId", FileModel.class);
         queryHasAccess.setParameter("fileId", fileId);
         queryHasAccess.setParameter("userId", userId);
         return !queryHasAccess.getResultList().isEmpty();
