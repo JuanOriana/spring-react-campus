@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -146,7 +147,7 @@ public class CourseController extends AuthController {
                               RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
             Exam exam = examService.create(courseId,createExamForm.getTitle(),createExamForm.getContent(),createExamForm.getFile().getBytes(),
-                    createExamForm.getFile().getSize(),new Time(0), new Time(0));
+                    createExamForm.getFile().getSize(),LocalDateTime.now(), LocalDateTime.now());
             LOGGER.debug("Exam in course {} created with id: {}", courseId, exam.getExamId());
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
             return new ModelAndView("redirect:/course/"+courseId+"/exams");
