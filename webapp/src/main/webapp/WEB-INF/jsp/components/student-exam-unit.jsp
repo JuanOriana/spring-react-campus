@@ -9,7 +9,7 @@
            style="display: flex;margin-left: 10px; align-items: center">
             <img src="<c:url value="/resources/images/test.png"/>"
                  class="file-img" alt="${requestScope.exam.name}"/>
-            <p class="file-name" style="padding-right: 15px; margin-right: 5; border-right: 3px solid white">
+            <p class="file-name" style="padding-right: 15px; margin-right: 5px; border-right: 3px solid white">
                 <spring:message code="student.exam.unit.student.name.title"/>
             </p>
         </a>

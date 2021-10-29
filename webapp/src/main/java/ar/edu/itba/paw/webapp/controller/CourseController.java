@@ -159,12 +159,12 @@ public class CourseController extends AuthController {
         ModelAndView mav;
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/correct-exam");
-            mav.addObject("solveExamForm", solveExamForm);
             mav.addObject("correctedAnswers",answerService.getCorrectedAnswers(courseId));
             mav.addObject("uncorrectedAnswers",answerService.getNotCorrectedAnswers(courseId));
 
         } else {
             mav = new ModelAndView("solve-exam");
+            mav.addObject("solveExamForm", solveExamForm);
             mav.addObject("exam",examService.findById(examId).orElseThrow(RuntimeException::new));
 
         }
