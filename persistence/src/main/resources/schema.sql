@@ -113,8 +113,8 @@ CREATE TABLE IF NOT EXISTS exams
 (
     examId SERIAL PRIMARY KEY ,
     courseId INTEGER,
-    starttime TIME,
-    endtime TIME,
+    startTime TIMESTAMP,
+    endTime TIMESTAMP,
     title text,
     description text,
     file_id INTEGER,

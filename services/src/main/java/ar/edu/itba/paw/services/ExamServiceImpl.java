@@ -30,14 +30,14 @@ public class ExamServiceImpl implements ExamService {
     private FileCategoryDao fileCategoryDao;
 
     @Override
-    public Exam create(Long courseId, String title, String description, byte[] examFile, Long examFileSize, Time startTime, Time endTime) {
+    public Exam create(Long courseId, String title, String description, byte[] examFile, Long examFileSize, LocalDateTime startTime, LocalDateTime endTime) {
         final Optional<Course> course = courseDao.findById(courseId);
 
         if (course.isPresent()) {
             FileModel fileModel = fileDao.create(examFileSize, LocalDateTime.now(), "EXAM " + title, examFile, course.get());
             long examCategoryId = 0;
             for (FileCategory fc : fileCategoryDao.getCategories()) {
-                if (fc.getCategoryName().equals("Exam") || fc.getCategoryName().equals("exam")) {
+                if (fc.getCategoryName().equalsIgnoreCase("exam")) {
                     examCategoryId = fc.getCategoryId();
                     break;
                 }
@@ -51,8 +51,7 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public Exam create(Long courseId, String title, String description, FileModel examFile, Time startTime, Time
-            endTime) {
+    public Exam create(Long courseId, String title, String description, FileModel examFile, LocalDateTime startTime, LocalDateTime endTime) {
         final Optional<Course> course = courseDao.findById(courseId);
         if(course.isPresent()){
             return examDao.create(courseId,title, description, examFile,null, startTime, endTime);

@@ -13,22 +13,19 @@ public interface ExamService {
 
 
     /**
-     *  Attemps to create an exam
-     * @param courseId //TODO: FILL THIS PARAMETERS
+     *  Attempts to create an exam
+     * @param courseId
      * @param title
      * @param description
      * @param examFile
      * @param examFileSize
-     * @param answersFile
-     * @param answeFileSize
      * @param startTime
      * @param endTime
      * @return
      */
-    Exam create(Long courseId, String title, String description, byte[] examFile,Long examFileSize, Time startTime, Time endTime);
+    Exam create(Long courseId, String title, String description, byte[] examFile,Long examFileSize, LocalDateTime startTime, LocalDateTime endTime);
 
     /**
-     *  TODO : FILL THIS PARAMETERS
      * @param courseId
      * @param title
      * @param description
@@ -37,7 +34,7 @@ public interface ExamService {
      * @param endTime
      * @return
      */
-    Exam create(Long courseId, String title, String description, FileModel examFile, Time startTime, Time endTime);
+    Exam create(Long courseId, String title, String description, FileModel examFile, LocalDateTime startTime, LocalDateTime endTime);
 
     /**
      * Attempts to update an exam

@@ -18,8 +18,6 @@ import java.util.Optional;
 @Repository
 public class AnnouncementDaoJpa extends BasePaginationDaoImpl<Announcement> implements AnnouncementDao {
 
-    @PersistenceContext
-    private EntityManager em;
 
     @Transactional
     @Override

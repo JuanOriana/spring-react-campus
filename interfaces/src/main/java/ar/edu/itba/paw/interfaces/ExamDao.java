@@ -4,13 +4,14 @@ import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
 
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 
 public interface ExamDao {
 
-    Exam create(Long courseId, String title, String description, FileModel examFile, FileModel answersFile, Time startTime, Time endTime);
+    Exam create(Long courseId, String title, String description, FileModel examFile, FileModel answersFile, LocalDateTime startTime, LocalDateTime endTime);
 
     boolean update(Long examId, Exam exam);
 
