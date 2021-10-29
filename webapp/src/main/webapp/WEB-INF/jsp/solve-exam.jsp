@@ -24,11 +24,14 @@
                 <jsp:param name="itemId" value="${4}"/>
             </jsp:include>
             <div class="course-data-container">
-                <h3 class="section-heading" style="margin: 0 0 20px 20px"> Nombre del examen</h3>
+                <h3 class="section-heading" style="margin: 0 0 20px 20px"> <c:out value="${exam.title}"/></h3>
                 <div class="big-wrapper">
                     <h3 class="form-label">Esta es tu consigna:</h3>
-                    <p>TEXTO ARBITRARIO VA ACA!!!!</p>
-<%--                    ACA SE INCLUYE EL ARCHIVO--%>
+                    <p><c:out value="${exam.description}"/></p>
+                    <c:set var="file" value="${exam.examFile}" scope="request"/>
+                    <jsp:include page="components/file-unit.jsp">
+                        <jsp:param name="isMinimal" value="${true}"/>
+                    </jsp:include>
                     <form:form modelAttribute="solveExamForm" method="post" enctype="multipart/form-data"
                                acceptCharset="utf-8" cssStyle="margin: 30px 0; display: flex; padding:10px;
                                flex-direction: column; border: 2px solid #2EC4B6; border-radius:12px">

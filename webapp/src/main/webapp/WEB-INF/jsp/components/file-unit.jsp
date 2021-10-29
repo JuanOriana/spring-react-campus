@@ -30,16 +30,21 @@
                     <spring:message code="file.unit.file.name" htmlEscape="true" arguments="${requestScope.file.name}"/>
                 </p>
             </a>
-            <c:forEach var="category" items="${requestScope.file.categories}">
-                <p class="file-category-name">
-                    <spring:message code="category.${category.categoryName}" htmlEscape="true"/>
-                </p>
-            </c:forEach>
+            <c:if test="!${param.isMinimal}">
+                <c:forEach var="category" items="${requestScope.file.categories}">
+                    <p class="file-category-name">
+                        <spring:message code="category.${category.categoryName}" htmlEscape="true"/>
+                    </p>
+                </c:forEach>
+            </c:if>
         </div>
         <div style="display: flex; align-items: center">
-            <p class="file-name">
-                <spring:message code="file.unit.file.downloads" htmlEscape="true" arguments="${requestScope.file.downloads}"/>
-            </p>
+            <c:if test="!${param.isMinimal}">
+                <p class="file-name">
+                    <spring:message code="file.unit.file.downloads" htmlEscape="true"
+                                    arguments="${requestScope.file.downloads}"/>
+                </p>
+            </c:if>
             <c:if test="${param.isTeacher}">
                 <img src="<c:url value="/resources/images/trash.png"/>"
                      alt="delete" class="medium-icon" onclick="deleteById(${requestScope.file.fileId})">

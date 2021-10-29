@@ -27,11 +27,13 @@
                 <div class="big-wrapper">
                     <h3 style="margin: 10px 0;"><spring:message code="course-exams.comment"/></h3>
                     <c:forEach var="unresolvedExam" items="${unresolvedExams}">
-                        <jsp:include page="../components/exam-unit.jsp"/>
+                        <c:set var="exam" value="${unresolvedExam}" scope="request"/>
+                        <jsp:include page="./components/exam-unit.jsp"/>
                     </c:forEach>
                     <h3 style="margin: 10px 0;">Examenes enviados: </h3>
                     <c:forEach var="resolvedExam" items="${resolvedExams}">
-                        <jsp:include page="../components/exam-unit.jsp"/>
+                        <c:set var="exam" value="${resolvedExam}" scope="request"/>
+                        <jsp:include page="./components/exam-unit.jsp"/>
                     </c:forEach>
                 </div>
             </div>

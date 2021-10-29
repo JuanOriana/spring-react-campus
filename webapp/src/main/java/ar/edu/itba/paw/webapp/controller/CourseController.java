@@ -172,6 +172,20 @@ public class CourseController extends AuthController {
         return mav;
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/exam/{examId}")
+    public ModelAndView exam(@PathVariable Long courseId, @PathVariable Long examId,
+                             @Valid SolveExamForm solveExamForm, final BindingResult errors,
+                             RedirectAttributes redirectAttributes) {
+        if (!errors.hasErrors()) {
+            //TODO: FIX!!
+            Answer answer = answerService.create(null,null,null,null);
+            LOGGER.debug("Answer in course {} created with id: {}", courseId, answer.getAnswerId());
+            redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
+            return new ModelAndView("redirect:/course/"+courseId+"/exams");
+        }
+        return exam(courseId,examId,solveExamForm);
+    }
+
 
     @RequestMapping(method = RequestMethod.GET, value = "/files")
     public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm,
