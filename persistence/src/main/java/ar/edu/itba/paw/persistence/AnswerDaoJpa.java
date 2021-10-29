@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TypedQuery;
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,12 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
 
     @Transactional
     @Override
-    public Answer create(Exam exam, User student, User teacher, FileModel answerFile, Float score, String corrections, LocalDateTime deliveredTime) {
+    public Answer create(Exam exam, Long studentId, Long teacherId, FileModel answerFile, Float score, String corrections, LocalDateTime deliveredTime) {
+        User student = em.find(User.class, studentId);
+        User teacher = null;
+        if(teacherId != null) {
+            teacher = em.find(User.class, teacherId);
+        }
         final Answer answer = new Answer(exam, deliveredTime, student, teacher, answerFile, score, corrections);
         em.persist(answer);
         return answer;
@@ -77,9 +81,9 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
     }
 
     @Override
-    public List<Answer> getCorrectedAnswers(Long courseId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.course.courseId = :courseId AND answer.score IS NOT NULL", Answer.class);
-        correctedExamsTypedQuery.setParameter("courseId", courseId);
+    public List<Answer> getCorrectedAnswers(Long examId) {
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NOT NULL", Answer.class);
+        correctedExamsTypedQuery.setParameter("examId", examId);
         return correctedExamsTypedQuery.getResultList();
     }
 
@@ -90,21 +94,34 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
         return correctedExamsTypedQuery.getResultList();
     }
 
+    @Override
+    public Integer getTotalAnswers(Long examId) {
+        TypedQuery<Integer> totalAnswersTypedQuery = em.createQuery("SELECT COUNT(DISTINCT answer.student.userId) FROM Answer answer WHERE answer.exam.examId = :examId", Integer.class);
+        totalAnswersTypedQuery.setParameter("examId", examId);
+        return totalAnswersTypedQuery.getSingleResult();
+    }
 
     @Override
-    public List<Exam> getResolvedExams(Long studentId){
-        TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId",Exam.class);
+    public Integer getTotalCorrectedAnswers(Long examId) {
+        TypedQuery<Integer> totalAnswersTypedQuery = em.createQuery("SELECT COUNT(DISTINCT answer.student.userId) FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NOT NULL", Integer.class);
+        totalAnswersTypedQuery.setParameter("examId", examId);
+        return totalAnswersTypedQuery.getSingleResult();
+    }
+
+
+    @Override
+    public List<Exam> getResolvedExams(Long studentId) {
+        TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId", Exam.class);
         resolverExamsTypedQuery.setParameter("studentId", studentId);
         return resolverExamsTypedQuery.getResultList();
     }
 
     @Override
-    public List<Exam> getUnresolvedExams(Long studentId){
-        TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId)",Exam.class);
-        unresolvedExamsTypedQuery.setParameter("studentId",  studentId);
+    public List<Exam> getUnresolvedExams(Long studentId) {
+        TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId)", Exam.class);
+        unresolvedExamsTypedQuery.setParameter("studentId", studentId);
         return unresolvedExamsTypedQuery.getResultList();
     }
 
-    
 
 }

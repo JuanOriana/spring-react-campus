@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface AnswerDao {
 
-    Answer create(Exam exam, User student, User teacher, FileModel answerFile, Float score, String corrections, LocalDateTime deliveredTime);
+    Answer create(Exam exam, Long studentId, Long teacherId, FileModel answerFile, Float score, String corrections, LocalDateTime deliveredTime);
 
     boolean update(Long answerId, Answer answer);
 
@@ -33,6 +33,7 @@ public interface AnswerDao {
 
     List<Exam> getUnresolvedExams(Long studentId);
 
+    Integer getTotalAnswers(Long examId);
 
-
+    Integer getTotalCorrectedAnswers(Long examId);
 }

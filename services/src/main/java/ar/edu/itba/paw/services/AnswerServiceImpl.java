@@ -1,16 +1,10 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.interfaces.AnswerDao;
-import ar.edu.itba.paw.interfaces.AnswerService;
-import ar.edu.itba.paw.models.Answer;
-import ar.edu.itba.paw.models.Exam;
-import ar.edu.itba.paw.models.FileModel;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.interfaces.*;
+import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -21,9 +15,28 @@ public class AnswerServiceImpl implements AnswerService {
     @Autowired
     private AnswerDao answersDao;
 
+    @Autowired
+    private ExamDao examDao;
+
+    @Autowired
+    private FileDao fileDao;
+    @Autowired
+    private FileCategoryDao fileCategoryDao;
+
+
     @Override
-    public Answer create(Exam exam, User student, FileModel answerFile, LocalDateTime deliveredTime) {
-        return answersDao.create(exam, student, null, answerFile, null, null, deliveredTime);
+    public Answer create(Long examId, Long studentId, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime) {
+        Exam exam = examDao.findById(examId).orElseThrow(RuntimeException::new); // TODO: Lanzar una excepcion propia
+        FileModel answerFileModel = fileDao.create(answerFileSize, deliveredTime, exam.getTitle()+" answer from "+studentId, answerFile, exam.getCourse());
+        long examCategoryId = 0;
+        for (FileCategory fc : fileCategoryDao.getCategories()) {
+            if (fc.getCategoryName().equalsIgnoreCase("exam")) {
+                examCategoryId = fc.getCategoryId();
+                break;
+            }
+        }
+        fileDao.associateCategory(answerFileModel.getFileId(), examCategoryId);
+        return answersDao.create(exam, studentId, null, answerFileModel, null, null, deliveredTime);
     }
 
     @Override
@@ -55,7 +68,7 @@ public class AnswerServiceImpl implements AnswerService {
     public List<Answer> getCorrectedAnswers(Long courseId) {
         return answersDao.getCorrectedAnswers(courseId);
     }
-    
+
 
     @Override
     public List<Answer> getNotCorrectedAnswers(Long courseId) {
@@ -75,5 +88,15 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public List<Exam> getUnresolvedExams(Long studentId) {
         return answersDao.getUnresolvedExams(studentId);
+    }
+
+    @Override
+    public Integer getTotalAnswers(Long examId) {
+        return answersDao.getTotalAnswers(examId);
+    }
+
+    @Override
+    public Integer getTotalCorrectedAnswers(Long examId) {
+        return answersDao.getTotalCorrectedAnswers(examId);
     }
 }

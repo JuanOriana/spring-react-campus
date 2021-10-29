@@ -177,8 +177,7 @@ public class CourseController extends AuthController {
                              @Valid SolveExamForm solveExamForm, final BindingResult errors,
                              RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
-            //TODO: FIX!!
-            Answer answer = answerService.create(null,null,null,null);
+            Answer answer = answerService.create(examId,authFacade.getCurrentUserId(),solveExamForm.getExam().getBytes(), solveExamForm.getExam().getSize(), LocalDateTime.now());
             LOGGER.debug("Answer in course {} created with id: {}", courseId, answer.getAnswerId());
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
             return new ModelAndView("redirect:/course/"+courseId+"/exams");

@@ -5,8 +5,6 @@ import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.User;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -15,13 +13,14 @@ public interface AnswerService {
     /**
      * Attemps to persiste an answer entry in the data base
      *
-     * @param exam         that was resolved
-     * @param student      that resolves the exam
+     * @param examId       id of the exam that was resolved
+     * @param studentId    id of the student that resolves the exam
      * @param answerFile   the answer given in a file
-     * @param deliverdTime the last sending
+     * @param answerFileSize the size of the file
+     * @param deliveredTime the last sending
      * @return an Answer instance holding the passed values
      */
-    Answer create(Exam exam, User student, FileModel answerFile, LocalDateTime deliverdTime);
+    Answer create(Long examId, Long studentId, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime);
 
     /**
      * Attemps to update an answer
@@ -106,4 +105,20 @@ public interface AnswerService {
      * @return a list of all the exams unresolved by the user
      */
     List<Exam> getUnresolvedExams(Long studentId);
+
+    /**
+     * Attempts to return the number of answers to an exam
+     *
+     * @param examId of the queried exam
+     * @return the number of answers for that exam
+     */
+    Integer getTotalAnswers(Long examId);
+
+    /**
+     * Attempts to return the number of corrected answers to an exam
+     *
+     * @param examId of the queried exam
+     * @return the number of corrected answers to an exam
+     */
+    Integer getTotalCorrectedAnswers(Long examId);
 }
