@@ -3,6 +3,7 @@ package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -19,7 +20,7 @@ public class Answer {
     private Exam exam;
 
     @Column(name = "deliveredDate")
-    private Time deliveredDate;
+    private LocalDateTime deliveredDate;
 
     @ManyToOne
     @JoinColumn(name = "studentId")
@@ -39,7 +40,7 @@ public class Answer {
     @Column
     private String corrections;
 
-    public Answer(Exam exam, Time deliveredDate, User student, User teacher, FileModel answerFile, Float score, String corrections) {
+    public Answer(Exam exam, LocalDateTime deliveredDate, User student, User teacher, FileModel answerFile, Float score, String corrections) {
         this.exam = exam;
         this.deliveredDate = deliveredDate;
         this.student = student;
@@ -66,11 +67,11 @@ public class Answer {
         this.exam = exam;
     }
 
-    public Time getDeliveredDate() {
+    public LocalDateTime getDeliveredDate() {
         return deliveredDate;
     }
 
-    public void setDeliveredDate(Time deliveredDate) {
+    public void setDeliveredDate(LocalDateTime deliveredDate) {
         this.deliveredDate = deliveredDate;
     }
 

@@ -6,6 +6,8 @@ import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.User;
 
 import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +21,7 @@ public interface AnswerService {
      * @param deliverdTime the last sending
      * @return an Answer instance holding the passed values
      */
-    Answer create(Exam exam, User student, FileModel answerFile, Time deliverdTime);
+    Answer create(Exam exam, User student, FileModel answerFile, LocalDateTime deliverdTime);
 
     /**
      * Attemps to update an answer

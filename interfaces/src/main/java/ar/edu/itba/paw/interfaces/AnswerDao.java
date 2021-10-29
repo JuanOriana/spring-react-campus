@@ -5,13 +5,13 @@ import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.User;
 
-import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface AnswerDao {
 
-    Answer create(Exam exam, User student, User teacher, FileModel answerFile, Float score, String corrections, Time deliverdTime);
+    Answer create(Exam exam, User student, User teacher, FileModel answerFile, Float score, String corrections, LocalDateTime deliveredTime);
 
     boolean update(Long answerId, Answer answer);
 

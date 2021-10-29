@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +22,8 @@ public class AnswerServiceImpl implements AnswerService {
     private AnswerDao answersDao;
 
     @Override
-    public Answer create(Exam exam, User student, FileModel answerFile, Time deliverdTime) {
-        return answersDao.create(exam, student, null, answerFile, null, null, deliverdTime);
+    public Answer create(Exam exam, User student, FileModel answerFile, LocalDateTime deliveredTime) {
+        return answersDao.create(exam, student, null, answerFile, null, null, deliveredTime);
     }
 
     @Override
@@ -53,6 +55,7 @@ public class AnswerServiceImpl implements AnswerService {
     public List<Answer> getCorrectedAnswers(Long courseId) {
         return answersDao.getCorrectedAnswers(courseId);
     }
+    
 
     @Override
     public List<Answer> getNotCorrectedAnswers(Long courseId) {

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TypedQuery;
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +21,8 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
 
     @Transactional
     @Override
-    public Answer create(Exam exam, User student, User teacher, FileModel answerFile, Float score, String corrections, Time deliverdTime) {
-        final Answer answer = new Answer(exam, deliverdTime, student, teacher, answerFile, score, corrections);
+    public Answer create(Exam exam, User student, User teacher, FileModel answerFile, Float score, String corrections, LocalDateTime deliveredTime) {
+        final Answer answer = new Answer(exam, deliveredTime, student, teacher, answerFile, score, corrections);
         em.persist(answer);
         return answer;
     }

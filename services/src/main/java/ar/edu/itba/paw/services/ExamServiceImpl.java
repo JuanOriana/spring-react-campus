@@ -34,7 +34,7 @@ public class ExamServiceImpl implements ExamService {
         final Optional<Course> course = courseDao.findById(courseId);
 
         if (course.isPresent()) {
-            FileModel fileModel = fileDao.create(examFileSize, LocalDateTime.now(), "EXAM " + title, examFile, course.get());
+            FileModel fileModel = fileDao.create(examFileSize, LocalDateTime.now(), title, examFile, course.get());
             long examCategoryId = 0;
             for (FileCategory fc : fileCategoryDao.getCategories()) {
                 if (fc.getCategoryName().equalsIgnoreCase("exam")) {
