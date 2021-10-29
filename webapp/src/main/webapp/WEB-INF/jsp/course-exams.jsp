@@ -25,16 +25,21 @@
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course-exams.section-heading.title"/> </h3>
                 <div class="big-wrapper">
+                    <c:if test="${unresolvedExams.size() == 0}">
+                        No hay examenes por resolver
+                    </c:if>
                     <h3 style="margin: 10px 0;"><spring:message code="course-exams.comment"/></h3>
                     <c:forEach var="unresolvedExam" items="${unresolvedExams}">
                         <c:set var="exam" value="${unresolvedExam}" scope="request"/>
                         <jsp:include page="./components/exam-unit.jsp"/>
                     </c:forEach>
+                    <c:if test="${resolvedExams.size() != 0}">
                     <h3 style="margin: 10px 0;">Examenes enviados: </h3>
-                    <c:forEach var="resolvedExam" items="${resolvedExams}">
-                        <c:set var="exam" value="${resolvedExam}" scope="request"/>
-                        <jsp:include page="./components/exam-unit.jsp"/>
-                    </c:forEach>
+                        <c:forEach var="resolvedExam" items="${resolvedExams}">
+                            <c:set var="exam" value="${resolvedExam}" scope="request"/>
+                            <jsp:include page="./components/exam-unit.jsp"/>
+                        </c:forEach>
+                    </c:if>
                 </div>
             </div>
         </div>

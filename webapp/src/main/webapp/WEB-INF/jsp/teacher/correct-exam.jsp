@@ -26,13 +26,18 @@
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> Nombre del examen</h3>
                 <div class="big-wrapper">
                     <h3 style="margin: 10px 0;">Por corregir:</h3>
+                    <c:if test="${uncorrectedAnswers.size() == 0}">
+                        No hay examenes por corregir
+                    </c:if>
                     <c:forEach var="uncorrectedAnswer" items="${uncorrectedAnswers}">
                         <jsp:include page="../components/student-exam-unit.jsp"/>
                     </c:forEach>
+                    <c:if test="${correctedAnswers.size() !=0}}">
                     <h3 style="margin: 10px 0;">Corregidos:</h3>
-                    <c:forEach var="correctedAnswer" items="${correctedAnswers}">
-                        <jsp:include page="../components/student-exam-unit.jsp"/>
-                    </c:forEach>
+                        <c:forEach var="correctedAnswer" items="${correctedAnswers}">
+                            <jsp:include page="../components/student-exam-unit.jsp"/>
+                        </c:forEach>
+                    </c:if>
                 </div>
             </div>
         </div>

@@ -46,7 +46,9 @@
 
         <div class="big-wrapper">
           <h3 style="margin: 10px 0;"><spring:message code="teacher.exams.recent.exams.title"/></h3>
-          <%--                    <c:set var="file" value="${file}" scope="request"/>--%>
+          <c:if test="${exams.size() == 0}">
+            No hay examenes aun
+          </c:if>
           <c:forEach var="exam" items="${exams}">
             <c:set var="exam" value="${exam}" scope="request"/>
             <jsp:include page="../components/exam-unit.jsp">
