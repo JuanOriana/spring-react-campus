@@ -40,6 +40,10 @@ public class Answer {
     @Column
     private String corrections;
 
+    /* Default */ Answer() {
+        // Just for Hibernate
+    }
+
     public Answer(Exam exam, LocalDateTime deliveredDate, User student, User teacher, FileModel answerFile, Float score, String corrections) {
         this.exam = exam;
         this.deliveredDate = deliveredDate;
