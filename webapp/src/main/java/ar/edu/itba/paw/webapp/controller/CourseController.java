@@ -187,6 +187,13 @@ public class CourseController extends AuthController {
         return exam(courseId,examId,solveExamForm);
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value = "/exam/{examId}")
+    public void deleteExam(@PathVariable Long courseId, @PathVariable Long examId){
+        LOGGER.debug("Deleting exam {}", examId);
+        examService.delete(examId);
+    }
+
+
 
     @RequestMapping(method = RequestMethod.GET, value = "/files")
     public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm,

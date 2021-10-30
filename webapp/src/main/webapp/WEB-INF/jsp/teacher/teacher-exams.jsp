@@ -52,8 +52,9 @@
           <c:forEach var="exam" items="${exams}">
             <c:set var="exam" value="${exam}" scope="request"/>
             <jsp:include page="../components/exam-unit.jsp">
-            <jsp:param name="isTeacher" value="${true}"/>
-            <jsp:param name="userCount" value="${userCount}"/>
+              <jsp:param name="isTeacher" value="${true}"/>
+              <jsp:param name="courseId" value="${course.courseId}"/>
+              <jsp:param name="userCount" value="${userCount}"/>
           </jsp:include>
           </c:forEach>
         </div>

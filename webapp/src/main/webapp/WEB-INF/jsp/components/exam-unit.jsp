@@ -4,12 +4,12 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
-        function deleteById(fileId){
-            const deleteMessage = "<spring:message code="alert.file.delete" htmlEscape="true"/>"
+        function deleteById(courseId,fileId){
+            const deleteMessage = "<spring:message code="alert.exam.delete" htmlEscape="true"/>"
             const result = confirm(deleteMessage)
             if (result === true){
                 $.ajax({
-                    url: '${pageContext.request.contextPath}/exam/' + fileId,
+                    url: '${pageContext.request.contextPath}/course/'+ courseId+ '/exam/' + fileId,
                     type: 'DELETE',
                     success: function (result) {
                         $("#exam-"+ fileId).remove();
@@ -33,9 +33,9 @@
     </div>
     <div style="display: flex; align-items: center">
         <c:if test="${param.isTeacher}">
-            <p class="file-name">18 corregidos de <c:out value="${userCount}"/> </p>
+            <p class="file-name">18 corregidos de <c:out value="${param.userCount}"/> </p>
             <img src="<c:url value="/resources/images/trash.png"/>"
-                 alt="delete" class="medium-icon" onclick="deleteById(${requestScope.exam.examId})">
+                 alt="delete" class="medium-icon" onclick="deleteById(${param.courseId},${requestScope.exam.examId})">
         </c:if>
     </div>
 </div>
