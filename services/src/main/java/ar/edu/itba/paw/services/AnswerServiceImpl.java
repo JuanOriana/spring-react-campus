@@ -2,11 +2,13 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -98,5 +100,10 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public Long getTotalCorrectedAnswers(Long examId) {
         return answersDao.getTotalCorrectedAnswers(examId);
+    }
+
+    @Override
+    public Map<Exam, Pair<Long, Long>> getExamsAndTotals(Long courseId) {
+        return answersDao.getExamsAndTotals(courseId);
     }
 }

@@ -4,9 +4,11 @@ import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.User;
+import javafx.util.Pair;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface AnswerDao {
@@ -36,4 +38,6 @@ public interface AnswerDao {
     Long getTotalAnswers(Long examId);
 
     Long getTotalCorrectedAnswers(Long examId);
+
+    Map<Exam, Pair<Long,Long>> getExamsAndTotals(Long courseId);
 }

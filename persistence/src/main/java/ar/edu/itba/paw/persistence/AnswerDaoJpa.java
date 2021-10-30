@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.User;
+import javafx.util.Pair;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Primary
@@ -85,9 +88,9 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
     }
 
     @Override
-    public List<Answer> getCorrectedAnswers(Long examId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NOT NULL", Answer.class);
-        correctedExamsTypedQuery.setParameter("examId", examId);
+    public List<Answer> getCorrectedAnswers(Long courseId) {
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.courseId = :courseId AND answer.score IS NOT NULL ", Answer.class);
+        correctedExamsTypedQuery.setParameter("courseId", courseId);
         return correctedExamsTypedQuery.getResultList();
     }
 
@@ -128,6 +131,22 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
         unresolvedExamsTypedQuery.setParameter("courseId", courseId);
 
         return unresolvedExamsTypedQuery.getResultList();
+    }
+
+    @Override
+    public Map<Exam,Pair<Long,Long>> getExamsAndTotals(Long courseId){
+        TypedQuery<Exam> examTypedQuery = em.createQuery("SELECT ex FROM Exam ex WHERE ex.course.courseId = :courseId",Exam.class);
+        examTypedQuery.setParameter("courseId",courseId);
+        List<Exam> exams = examTypedQuery.getResultList();
+        Map<Exam, Pair<Long,Long>> examLongMap = new HashMap<>();
+
+        for(Exam exam:exams){
+            Long totalAnswers = getTotalAnswers(exam.getExamId());
+            Long totalCorrected = getTotalCorrectedAnswers(exam.getExamId());
+            examLongMap.put(exam,new Pair<>(totalAnswers, totalCorrected));
+        }
+
+        return examLongMap;
     }
 
 
