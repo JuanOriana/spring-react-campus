@@ -279,6 +279,11 @@ public class  FileDaoImpl implements FileDao {
         jdbcTemplate.update("UPDATE files SET downloads = downloads + 1 WHERE fileId = ?", fileId);
     }
 
+    @Override
+    public FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course, boolean isHidden) {
+        return null;
+    }
+
     private Integer getPageCount(String unOrderedQuery, Object[] sqlParams, Integer pageSize) {
         return (int) Math.ceil((double)getPageRowCount(unOrderedQuery, sqlParams) / pageSize);
     }

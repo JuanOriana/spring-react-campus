@@ -59,6 +59,14 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
 
     @Transactional
     @Override
+    public FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course, boolean isHidden) {
+        FileModel f = create(size, date, name, file, course);
+        f.setHidden(true);
+        return f;
+    }
+
+    @Transactional
+    @Override
     public boolean update(Long fileId, FileModel file) {
         Optional<FileModel> dbFile = findById(fileId);
         if (!dbFile.isPresent()) return false;
@@ -168,7 +176,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
             properties.put("userId", userId);
         }
         String orderedQuery = unOrderedQuery + " ORDER BY " + sort.getProperty() + " " + sort.getDirection();
-        String mappingQuery = "SELECT f FROM FileModel f WHERE f.fileId IN (:ids) ORDER BY f." + sort.getProperty() + " " + sort.getDirection();
+        String mappingQuery = "SELECT f FROM FileModel f WHERE f.fileId IN (:ids) AND f.hidden = FALSE ORDER BY f." + sort.getProperty() + " " + sort.getDirection();
         return listBy(properties, orderedQuery, mappingQuery, pageRequest, FileModel.class);
     }
 
@@ -180,7 +188,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         String courseSelection = courseId < 0 ? "(SELECT courseId FROM user_to_course WHERE userId = :userId)" : "(:courseId)";
         return  "SELECT fileId " +
                 "FROM files NATURAL JOIN category_file_relationship " +
-                "WHERE fileName ILIKE :query AND courseId IN " + courseSelection + " " + query;
+                "WHERE fileName ILIKE :query AND courseId IN " + courseSelection + " " + query + " AND hidden IS NOT TRUE";
     }
 
 }

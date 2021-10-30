@@ -2,13 +2,12 @@ package ar.edu.itba.paw.models;
 
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "answers", uniqueConstraints = {
-       @UniqueConstraint(columnNames = {"deliveredDate", "studentId", "examId"})})
+       @UniqueConstraint(columnNames =  {"deliveredDate", "studentId", "examId" })})
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "answers_answerid_seq")

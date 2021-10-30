@@ -9,8 +9,6 @@ import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +21,7 @@ public class ExamServiceImpl implements ExamService {
 
     @Autowired
     private CourseDao courseDao;
+
     @Autowired
     private FileDao fileDao;
 
@@ -34,7 +33,7 @@ public class ExamServiceImpl implements ExamService {
         final Optional<Course> course = courseDao.findById(courseId);
 
         if (course.isPresent()) {
-            FileModel fileModel = fileDao.create(examFileSize, LocalDateTime.now(), title, examFile, course.get());
+            FileModel fileModel = fileDao.create(examFileSize, LocalDateTime.now(), title, examFile, course.get(), true);
             long examCategoryId = 0;
             for (FileCategory fc : fileCategoryDao.getCategories()) {
                 if (fc.getCategoryName().equalsIgnoreCase("exam")) {
