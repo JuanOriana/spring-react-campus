@@ -22,7 +22,8 @@
 <body>
 <div class="file-unit" id="exam-${requestScope.exam.examId}">
     <div style="display: flex; align-items: center">
-        <a href="<c:url value="exam/${requestScope.exam.examId}"/>" class="styleless-anchor"
+        <a <c:if test="${param.isUnclickable}">style="pointer-events: none; display: flex; align-items: center"</c:if>
+           href="<c:url value="exam/${requestScope.exam.examId}"/>" class="styleless-anchor"
            style="display: flex;margin-left: 10px; align-items: center">
             <img src="<c:url value="/resources/images/test.png"/>"
                  class="file-img" alt="${requestScope.exam.title}"/>

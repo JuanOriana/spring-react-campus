@@ -37,7 +37,9 @@
                     <h3 style="margin: 10px 0;">Examenes enviados: </h3>
                         <c:forEach var="resolvedExam" items="${resolvedExams}">
                             <c:set var="exam" value="${resolvedExam}" scope="request"/>
-                            <jsp:include page="./components/exam-unit.jsp"/>
+                            <jsp:include page="./components/exam-unit.jsp">
+                                <jsp:param name="isUnclickable" value="${true}"/>
+                            </jsp:include>
                         </c:forEach>
                     </c:if>
                 </div>
