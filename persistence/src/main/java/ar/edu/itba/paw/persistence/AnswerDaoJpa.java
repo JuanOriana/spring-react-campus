@@ -75,21 +75,27 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
         }
     }
 
+    @Transactional
     @Override
     public void undoExamCorrection(Long answerId) {
-        correctExam(answerId, null, null);
+        Optional<Answer> dbAnswer = findById(answerId);
+        if(dbAnswer.isPresent()){
+            em.remove(dbAnswer.get());
+            dbAnswer.get().setScore(null);
+            em.persist(dbAnswer.get()); ///////////////
+        }
     }
 
     @Override
     public List<Answer> getCorrectedAnswers(Long examId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.teacher IS NOT NULL AND answer.score IS NOT NULL", Answer.class);
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NOT NULL", Answer.class);
         correctedExamsTypedQuery.setParameter("examId", examId);
         return correctedExamsTypedQuery.getResultList();
     }
 
     @Override
     public List<Answer> getNotCorrectedAnswers(Long courseId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.course.courseId = :courseId AND answer.teacher IS NULL AND answer.score IS NULL", Answer.class);
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.course.courseId = :courseId AND answer.score IS NULL", Answer.class);
         correctedExamsTypedQuery.setParameter("courseId", courseId);
         return correctedExamsTypedQuery.getResultList();
     }
