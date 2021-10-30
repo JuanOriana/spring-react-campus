@@ -26,7 +26,7 @@
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> <c:out value="${exam.title}"/></h3>
                 <div class="big-wrapper">
-                    <h3 class="form-label">Esta es tu consigna:</h3>
+                    <h3 class="form-label"><spring:message code="solve.exam.description" htmlEscape="true"/></h3>
                     <p><c:out value="${exam.description}"/></p>
                     <c:set var="file" value="${exam.examFile}" scope="request"/>
                     <jsp:include page="components/file-unit.jsp">
@@ -36,13 +36,13 @@
                                acceptCharset="utf-8" cssStyle="margin: 30px 0; display: flex; padding:10px;
                                flex-direction: column; border: 2px solid #2EC4B6; border-radius:12px">
                         <form:label path="exam" class="form-label" cssStyle="margin: 0 0 5px 0">
-                            Subir solucion
+                            <spring:message code="solve.exam.upload.solution" htmlEscape="true"/>
                         </form:label>
                         <form:input type="file" path="exam" accept="application/pdf, application/msword" cssStyle="font-size: 18px;" />
                         <form:errors path="exam" element="p" cssStyle="color:red;margin-left: 15px"/>
                         <div style="display: flex; margin-top:5px; justify-content: center">
-                            <button  class="form-button" style="margin-right:15px; background: #a80011";>Cancelar envio</button>
-                            <button  class="form-button">Enviar</button>
+                            <button  class="form-button" style="margin-right:15px; background: #a80011";><spring:message code="solve.exam.cancel.submission" htmlEscape="true"/></button>
+                            <button  class="form-button"><spring:message code="solve.exam.submit" htmlEscape="true"/></button>
                         </div>
                     </form:form>
                 </div>

@@ -27,14 +27,14 @@
                 <div class="big-wrapper">
                     <h3 style="margin: 10px 0;"><spring:message code="course-exams.comment"/></h3>
                     <c:if test="${unresolvedExams.size() == 0}">
-                        No hay examenes por resolver
+                        <spring:message code="course-exams.no.exams"/>
                     </c:if>
                     <c:forEach var="unresolvedExam" items="${unresolvedExams}">
                         <c:set var="exam" value="${unresolvedExam}" scope="request"/>
                         <jsp:include page="./components/exam-unit.jsp"/>
                     </c:forEach>
                     <c:if test="${resolvedExams.size() != 0}">
-                    <h3 style="margin: 10px 0;">Examenes enviados: </h3>
+                    <h3 style="margin: 10px 0;"><spring:message code="course-exams.sent.exams"/></h3>
                         <c:forEach var="resolvedExam" items="${resolvedExams}">
                             <c:set var="exam" value="${resolvedExam}" scope="request"/>
                             <jsp:include page="./components/exam-unit.jsp">
