@@ -159,6 +159,7 @@ public class CourseController extends AuthController {
     public ModelAndView exam(@PathVariable Long courseId, @PathVariable Long examId, final SolveExamForm solveExamForm) {
         ModelAndView mav;
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
+            //TODO: ACA ROMPE ALGO
             mav = new ModelAndView("teacher/correct-exam");
             mav.addObject("correctedAnswers",answerService.getCorrectedAnswers(courseId));
             mav.addObject("uncorrectedAnswers",answerService.getNotCorrectedAnswers(courseId));
@@ -177,7 +178,8 @@ public class CourseController extends AuthController {
                              @Valid SolveExamForm solveExamForm, final BindingResult errors,
                              RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
-            Answer answer = answerService.create(examId,authFacade.getCurrentUserId(),solveExamForm.getExam().getBytes(), solveExamForm.getExam().getSize(), LocalDateTime.now());
+            Answer answer = answerService.create(examId,authFacade.getCurrentUserId(),solveExamForm.getExam().getBytes(),
+                    solveExamForm.getExam().getSize(), LocalDateTime.now());
             LOGGER.debug("Answer in course {} created with id: {}", courseId, answer.getAnswerId());
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
             return new ModelAndView("redirect:/course/"+courseId+"/exams");

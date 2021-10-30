@@ -25,10 +25,10 @@
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course-exams.section-heading.title"/> </h3>
                 <div class="big-wrapper">
+                    <h3 style="margin: 10px 0;"><spring:message code="course-exams.comment"/></h3>
                     <c:if test="${unresolvedExams.size() == 0}">
                         No hay examenes por resolver
                     </c:if>
-                    <h3 style="margin: 10px 0;"><spring:message code="course-exams.comment"/></h3>
                     <c:forEach var="unresolvedExam" items="${unresolvedExams}">
                         <c:set var="exam" value="${unresolvedExam}" scope="request"/>
                         <jsp:include page="./components/exam-unit.jsp"/>
