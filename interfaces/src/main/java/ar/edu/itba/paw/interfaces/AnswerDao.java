@@ -19,7 +19,7 @@ public interface AnswerDao {
 
     Optional<Answer> findById(Long answerId);
 
-    Integer getTotalResolvedByExam(Long examId);
+    Long getTotalResolvedByExam(Long examId);
 
     void correctExam(Long answerId, User teacher, Float score);
 
@@ -33,7 +33,7 @@ public interface AnswerDao {
 
     List<Exam> getUnresolvedExams(Long studentId,Long courseId);
 
-    Integer getTotalAnswers(Long examId);
+    Long getTotalAnswers(Long examId);
 
-    Integer getTotalCorrectedAnswers(Long examId);
+    Long getTotalCorrectedAnswers(Long examId);
 }

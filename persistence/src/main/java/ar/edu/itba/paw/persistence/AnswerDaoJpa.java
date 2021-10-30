@@ -21,7 +21,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
     @Transactional
     @Override
     public Answer create(Exam exam, Long studentId, Long teacherId, FileModel answerFile, Float score, String corrections, LocalDateTime deliveredTime) {
-        User student = em.find(User.class, studentId);
+        User student = em.getReference(User.class, studentId);
         User teacher = null;
         if(teacherId != null) {
             teacher = em.find(User.class, teacherId);
@@ -56,8 +56,8 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
     }
 
     @Override
-    public Integer getTotalResolvedByExam(Long examId) {
-        TypedQuery<Integer> totalResolvedTypedQuery = em.createQuery("SELECT COUNT(DISTINCT a.student.userId) FROM Answer a WHERE a.exam.examId = :examId", Integer.class);
+    public Long getTotalResolvedByExam(Long examId) {
+        TypedQuery<Long> totalResolvedTypedQuery = em.createQuery("SELECT COUNT(DISTINCT a.student.userId) FROM Answer a WHERE a.exam.examId = :examId", Long.class);
         totalResolvedTypedQuery.setParameter("examId", examId);
         return totalResolvedTypedQuery.getSingleResult();
     }
@@ -82,28 +82,28 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
 
     @Override
     public List<Answer> getCorrectedAnswers(Long examId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NOT NULL", Answer.class);
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.teacher IS NOT NULL AND answer.score IS NOT NULL", Answer.class);
         correctedExamsTypedQuery.setParameter("examId", examId);
         return correctedExamsTypedQuery.getResultList();
     }
 
     @Override
     public List<Answer> getNotCorrectedAnswers(Long courseId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.course.courseId = :courseId AND answer.score IS NULL", Answer.class);
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.course.courseId = :courseId AND answer.teacher IS NULL AND answer.score IS NULL", Answer.class);
         correctedExamsTypedQuery.setParameter("courseId", courseId);
         return correctedExamsTypedQuery.getResultList();
     }
 
     @Override
-    public Integer getTotalAnswers(Long examId) {
-        TypedQuery<Integer> totalAnswersTypedQuery = em.createQuery("SELECT COUNT(DISTINCT answer.student.userId) FROM Answer answer WHERE answer.exam.examId = :examId", Integer.class);
+    public Long getTotalAnswers(Long examId) {
+        TypedQuery<Long> totalAnswersTypedQuery = em.createQuery("SELECT COUNT(DISTINCT answer.student.userId) FROM Answer answer WHERE answer.exam.examId = :examId", Long.class);
         totalAnswersTypedQuery.setParameter("examId", examId);
         return totalAnswersTypedQuery.getSingleResult();
     }
 
     @Override
-    public Integer getTotalCorrectedAnswers(Long examId) {
-        TypedQuery<Integer> totalAnswersTypedQuery = em.createQuery("SELECT COUNT(DISTINCT answer.student.userId) FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NOT NULL", Integer.class);
+    public Long getTotalCorrectedAnswers(Long examId) {
+        TypedQuery<Long> totalAnswersTypedQuery = em.createQuery("SELECT COUNT(DISTINCT answer.student.userId) FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NOT NULL", Long.class);
         totalAnswersTypedQuery.setParameter("examId", examId);
         return totalAnswersTypedQuery.getSingleResult();
     }

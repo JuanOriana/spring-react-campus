@@ -55,7 +55,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public Integer getTotalResolvedByExam(Long examId) {
+    public Long getTotalResolvedByExam(Long examId) {
         return answersDao.getTotalResolvedByExam(examId);
     }
 
@@ -91,12 +91,12 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public Integer getTotalAnswers(Long examId) {
+    public Long getTotalAnswers(Long examId) {
         return answersDao.getTotalAnswers(examId);
     }
 
     @Override
-    public Integer getTotalCorrectedAnswers(Long examId) {
+    public Long getTotalCorrectedAnswers(Long examId) {
         return answersDao.getTotalCorrectedAnswers(examId);
     }
 }

@@ -55,7 +55,7 @@ public interface AnswerService {
      * @param examId of the queried exam
      * @return a number that represents the total of answers
      */
-    Integer getTotalResolvedByExam(Long examId);
+    Long getTotalResolvedByExam(Long examId);
 
     /**
      * Attemps to persiste in the database a correction for an exam
@@ -112,7 +112,7 @@ public interface AnswerService {
      * @param examId of the queried exam
      * @return the number of answers for that exam
      */
-    Integer getTotalAnswers(Long examId);
+    Long getTotalAnswers(Long examId);
 
     /**
      * Attempts to return the number of corrected answers to an exam
@@ -120,5 +120,5 @@ public interface AnswerService {
      * @param examId of the queried exam
      * @return the number of corrected answers to an exam
      */
-    Integer getTotalCorrectedAnswers(Long examId);
+    Long getTotalCorrectedAnswers(Long examId);
 }
