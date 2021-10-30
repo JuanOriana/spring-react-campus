@@ -47,7 +47,7 @@
         <div class="big-wrapper">
           <h3 style="margin: 10px 0;"><spring:message code="teacher.exams.recent.exams.title"/></h3>
           <c:if test="${exams.size() == 0}">
-            No hay examenes aun
+            <spring:message code="teacher.exams.none.yet"/>
           </c:if>
           <c:forEach var="exam" items="${exams}">
             <c:set var="exam" value="${exam}" scope="request"/>

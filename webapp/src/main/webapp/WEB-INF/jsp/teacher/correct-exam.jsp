@@ -23,17 +23,17 @@
                 <jsp:param name="itemId" value="${4}"/>
             </jsp:include>
             <div class="course-data-container">
-                <h3 class="section-heading" style="margin: 0 0 20px 20px"> Nombre del examen</h3>
+                <h3 class="section-heading" style="margin: 0 0 20px 20px"><spring:message code="teacher.correct.exam.section-heading" htmlEscape="true"/></h3>
                 <div class="big-wrapper">
-                    <h3 style="margin: 10px 0;">Por corregir:</h3>
+                    <h3 style="margin: 10px 0;"><spring:message code="teacher.correct.exam.to.correct" htmlEscape="true"/></h3>
                     <c:if test="${uncorrectedAnswers.size() == 0}">
-                        No hay examenes por corregir
+                        <spring:message code="teacher.correct.exam.none.to.correct" htmlEscape="true"/>
                     </c:if>
                     <c:forEach var="uncorrectedAnswer" items="${uncorrectedAnswers}">
                         <jsp:include page="../components/student-exam-unit.jsp"/>
                     </c:forEach>
                     <c:if test="${correctedAnswers.size() !=0}}">
-                    <h3 style="margin: 10px 0;">Corregidos:</h3>
+                    <h3 style="margin: 10px 0;"><spring:message code="teacher.correct.exam.corrected" htmlEscape="true"/></h3>
                         <c:forEach var="correctedAnswer" items="${correctedAnswers}">
                             <jsp:include page="../components/student-exam-unit.jsp"/>
                         </c:forEach>
