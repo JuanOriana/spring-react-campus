@@ -15,10 +15,10 @@ public class Subject {
     @Column
     private String code;
 
-    @Column(name = "subjectname")
-    private String subjectname;
+    @Column(name = "subjectName")
+    private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subject", orphanRemoval = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subject")
     private List<Course> coursesList;
 
     public List<Course> getCoursesList() {
@@ -35,11 +35,11 @@ public class Subject {
     public Subject(Long subjectId, String code, String name) {
         this.subjectId = subjectId;
         this.code = code;
-        this.subjectname = name;
+        this.name = name;
     }
     public Subject(String code, String name) {
         this.code = code;
-        this.subjectname = name;
+        this.name = name;
     }
 
     public Long getSubjectId() {
@@ -59,15 +59,15 @@ public class Subject {
     }
 
     public String getName() {
-        return subjectname;
+        return name;
     }
 
     public void setName(String name) {
-        this.subjectname = name;
+        this.name = name;
     }
 
     public void merge(Subject subject){
         this.code = subject.getCode();
-        this.subjectname = subject.getName();
+        this.name = subject.getName();
     }
 }
