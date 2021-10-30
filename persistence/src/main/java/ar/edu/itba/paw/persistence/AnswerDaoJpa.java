@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +24,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
     public Answer create(Exam exam, Long studentId, Long teacherId, FileModel answerFile, Float score, String corrections, LocalDateTime deliveredTime) {
         User student = em.getReference(User.class, studentId);
         User teacher = null;
-        if(teacherId != null) {
+        if (teacherId != null) {
             teacher = em.find(User.class, teacherId);
         }
         final Answer answer = new Answer(exam, deliveredTime, student, teacher, answerFile, score, corrections);
@@ -78,12 +79,9 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
     @Transactional
     @Override
     public void undoExamCorrection(Long answerId) {
-        Optional<Answer> dbAnswer = findById(answerId);
-        if(dbAnswer.isPresent()){
-            em.remove(dbAnswer.get());
-            dbAnswer.get().setScore(null);
-            em.persist(dbAnswer.get()); ///////////////
-        }
+        Query nativeQuery = em.createNativeQuery("UPDATE answers set score = NULL WHERE answerId = :answerid");
+        nativeQuery.setParameter("answerid", answerId);
+        nativeQuery.executeUpdate();
     }
 
     @Override
@@ -116,7 +114,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
 
 
     @Override
-    public List<Exam> getResolvedExams(Long studentId,Long courseId) {
+    public List<Exam> getResolvedExams(Long studentId, Long courseId) {
         TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId AND answer.exam.course.courseId = :courseId", Exam.class);
         resolverExamsTypedQuery.setParameter("studentId", studentId);
         resolverExamsTypedQuery.setParameter("courseId", courseId);
@@ -127,7 +125,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
     public List<Exam> getUnresolvedExams(Long studentId, Long courseId) {
         TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId) AND exam.course.courseId = :courseId", Exam.class);
         unresolvedExamsTypedQuery.setParameter("studentId", studentId);
-        unresolvedExamsTypedQuery.setParameter( "courseId", courseId);
+        unresolvedExamsTypedQuery.setParameter("courseId", courseId);
 
         return unresolvedExamsTypedQuery.getResultList();
     }
