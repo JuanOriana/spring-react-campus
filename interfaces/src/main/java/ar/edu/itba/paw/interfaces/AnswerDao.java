@@ -27,9 +27,9 @@ public interface AnswerDao {
 
     void undoExamCorrection(Long answerId);
 
-    List<Answer> getCorrectedAnswers(Long courseId);
+    List<Answer> getCorrectedAnswers(Long examId);
 
-    List<Answer> getNotCorrectedAnswers(Long courseId);
+    List<Answer> getNotCorrectedAnswers(Long examId);
 
     List<Exam> getResolvedExams(Long studentId,Long courseId);
 

@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     @Override
     public Answer create(Long examId, Long studentId, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime) {
-        Exam exam = examDao.findById(examId).orElseThrow(RuntimeException::new); // TODO: Lanzar una excepcion propia
+        Exam exam = examDao.findById(examId).orElseThrow(ExamNotFoundException::new);
         FileModel answerFileModel = fileDao.create(answerFileSize, deliveredTime, exam.getTitle()+" answer from "+studentId, answerFile, exam.getCourse());
         long examCategoryId = 0;
         for (FileCategory fc : fileCategoryDao.getCategories()) {
@@ -74,15 +75,15 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Answer> getCorrectedAnswers(Long courseId) {
-        return answersDao.getCorrectedAnswers(courseId);
+    public List<Answer> getCorrectedAnswers(Long examId) {
+        return answersDao.getCorrectedAnswers(examId);
     }
 
 
     @Transactional(readOnly = true)
     @Override
-    public List<Answer> getNotCorrectedAnswers(Long courseId) {
-        return answersDao.getNotCorrectedAnswers(courseId);
+    public List<Answer> getNotCorrectedAnswers(Long examId) {
+        return answersDao.getNotCorrectedAnswers(examId);
     }
 
     @Transactional
