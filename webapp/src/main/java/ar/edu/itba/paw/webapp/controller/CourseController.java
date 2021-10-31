@@ -100,7 +100,7 @@ public class CourseController extends AuthController {
                                          @Valid AnnouncementForm announcementForm, final BindingResult errors,
                                          RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
-            Announcement announcement =announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
+            Announcement announcement = announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
                     authFacade.getCurrentUser(), courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
             LOGGER.debug("Announcement in course {} created with id: {}", courseId, announcement.getAnnouncementId());
             redirectAttributes.addFlashAttribute("successMessage", "announcement.success.message");
@@ -146,7 +146,8 @@ public class CourseController extends AuthController {
                               @Valid CreateExamForm createExamForm, final BindingResult errors,
                               RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
-            Exam exam = examService.create(courseId,createExamForm.getTitle(),createExamForm.getContent(),createExamForm.getFile().getBytes(),
+            Exam exam = examService.create(courseId, createExamForm.getTitle(), createExamForm.getContent(),
+                    createExamForm.getFile().getOriginalFilename(), createExamForm.getFile().getBytes(),
                     createExamForm.getFile().getSize(),LocalDateTime.now(), LocalDateTime.now());
             LOGGER.debug("Exam in course {} created with id: {}", courseId, exam.getExamId());
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
@@ -178,7 +179,8 @@ public class CourseController extends AuthController {
                              @Valid SolveExamForm solveExamForm, final BindingResult errors,
                              RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
-            Answer answer = answerService.create(examId,authFacade.getCurrentUserId(),solveExamForm.getExam().getBytes(),
+            Answer answer = answerService.create(examId, authFacade.getCurrentUserId(),
+                    solveExamForm.getExam().getOriginalFilename(), solveExamForm.getExam().getBytes(),
                     solveExamForm.getExam().getSize(), LocalDateTime.now());
             LOGGER.debug("Answer in course {} created with id: {}", courseId, answer.getAnswerId());
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");

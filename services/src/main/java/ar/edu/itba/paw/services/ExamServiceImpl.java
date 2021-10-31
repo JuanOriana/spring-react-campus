@@ -30,11 +30,11 @@ public class ExamServiceImpl implements ExamService {
 
     @Transactional
     @Override
-    public Exam create(Long courseId, String title, String description, byte[] examFile, Long examFileSize, LocalDateTime startTime, LocalDateTime endTime) {
+    public Exam create(Long courseId, String title, String description, String fileName, byte[] examFile, Long examFileSize, LocalDateTime startTime, LocalDateTime endTime) {
         final Optional<Course> course = courseDao.findById(courseId);
 
         if (course.isPresent()) {
-            FileModel fileModel = fileDao.create(examFileSize, LocalDateTime.now(), title, examFile, course.get(), true);
+            FileModel fileModel = fileDao.create(examFileSize, LocalDateTime.now(), fileName, examFile, course.get(), true);
             long examCategoryId = 0;
             for (FileCategory fc : fileCategoryDao.getCategories()) {
                 if (fc.getCategoryName().equalsIgnoreCase("exam")) {
@@ -46,7 +46,6 @@ public class ExamServiceImpl implements ExamService {
         return examDao.create(courseId,title, description, fileModel,null, startTime, endTime);
         } else {
             throw new CourseNotFoundException();
-            //TODO:log error
         }
     }
 

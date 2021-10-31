@@ -16,12 +16,13 @@ public interface AnswerService {
      *
      * @param examId       id of the exam that was resolved
      * @param studentId    id of the student that resolves the exam
+     * @param answerFileName name of the answer file
      * @param answerFile   the answer given in a file
      * @param answerFileSize the size of the file
      * @param deliveredTime the last sending
      * @return an Answer instance holding the passed values
      */
-    Answer create(Long examId, Long studentId, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime);
+    Answer create(Long examId, Long studentId, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime);
 
     /**
      * Attempts to update an answer

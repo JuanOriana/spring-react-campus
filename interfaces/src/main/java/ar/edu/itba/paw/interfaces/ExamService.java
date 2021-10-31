@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
-
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -17,13 +14,14 @@ public interface ExamService {
      * @param courseId
      * @param title
      * @param description
+     * @param fileName
      * @param examFile
      * @param examFileSize
      * @param startTime
      * @param endTime
      * @return
      */
-    Exam create(Long courseId, String title, String description, byte[] examFile,Long examFileSize, LocalDateTime startTime, LocalDateTime endTime);
+    Exam create(Long courseId, String title, String description, String fileName, byte[] examFile, Long examFileSize, LocalDateTime startTime, LocalDateTime endTime);
 
     /**
      * @param courseId

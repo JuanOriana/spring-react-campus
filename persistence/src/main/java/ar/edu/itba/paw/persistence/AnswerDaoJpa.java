@@ -84,7 +84,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
 
     @Override
     public List<Answer> getCorrectedAnswers(Long examId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NOT NULL ", Answer.class);
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NOT NULL", Answer.class);
         correctedExamsTypedQuery.setParameter("examId", examId);
         return correctedExamsTypedQuery.getResultList();
     }

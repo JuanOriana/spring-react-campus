@@ -2,8 +2,6 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
-
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

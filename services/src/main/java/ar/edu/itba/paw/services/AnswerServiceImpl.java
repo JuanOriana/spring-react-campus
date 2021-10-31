@@ -29,9 +29,9 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Transactional
     @Override
-    public Answer create(Long examId, Long studentId, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime) {
+    public Answer create(Long examId, Long studentId, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime) {
         Exam exam = examDao.findById(examId).orElseThrow(ExamNotFoundException::new);
-        FileModel answerFileModel = fileDao.create(answerFileSize, deliveredTime, exam.getTitle()+" answer from "+studentId, answerFile, exam.getCourse());
+        FileModel answerFileModel = fileDao.create(answerFileSize, deliveredTime, answerFileName, answerFile, exam.getCourse());
         long examCategoryId = 0;
         for (FileCategory fc : fileCategoryDao.getCategories()) {
             if (fc.getCategoryName().equalsIgnoreCase("exam")) {
