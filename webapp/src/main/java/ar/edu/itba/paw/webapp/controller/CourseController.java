@@ -10,6 +10,7 @@ import ar.edu.itba.paw.webapp.form.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -133,6 +134,7 @@ public class CourseController extends AuthController {
             mav.addObject("createExamForm", createExamForm);
             mav.addObject("exams",examService.listByCourse(courseId));
             mav.addObject("userCount",courseService.getTotalStudents(courseId));
+            mav.addObject("minDateTime", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm").format(LocalDateTime.now()));
         } else {
             mav = new ModelAndView("course-exams");
             mav.addObject("resolvedExams",answerService.getResolvedExams(authFacade.getCurrentUser().getUserId(),courseId));
@@ -148,7 +150,8 @@ public class CourseController extends AuthController {
         if (!errors.hasErrors()) {
             Exam exam = examService.create(courseId, createExamForm.getTitle(), createExamForm.getContent(),
                     createExamForm.getFile().getOriginalFilename(), createExamForm.getFile().getBytes(),
-                    createExamForm.getFile().getSize(),LocalDateTime.now(), LocalDateTime.now());
+                    createExamForm.getFile().getSize(),LocalDateTime.parse(createExamForm.getStartTime()),
+                    LocalDateTime.parse(createExamForm.getEndTime()));
             LOGGER.debug("Exam in course {} created with id: {}", courseId, exam.getExamId());
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
             return new ModelAndView("redirect:/course/"+courseId+"/exams");
