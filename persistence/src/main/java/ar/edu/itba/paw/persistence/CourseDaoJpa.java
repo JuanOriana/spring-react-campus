@@ -17,7 +17,7 @@ import java.util.Optional;
 @Repository
 public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements CourseDao {
 
-    @Transactional
+
     @Override
     public Course create(Integer year, Integer quarter, String board, Long subjectId) {
         final Course course = new Course(year, quarter, board, new Subject(subjectId, null, null));
@@ -25,7 +25,7 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         return course;
     }
 
-    @Transactional
+
     @Override
     public boolean update(Long id, Course course) {
         Optional<Course> dbCourse = findById(id);
@@ -34,7 +34,7 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         return true;
     }
 
-    @Transactional
+
     @Override
     public boolean delete(Long id) {
         Optional<Course> dbCourse = findById(id);
@@ -114,7 +114,7 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         return !courseTypedQuery.getResultList().isEmpty();
     }
 
-    @Transactional
+
     @Override
     public boolean enroll(Long userId, Long courseId, Integer roleId) {
         User user = em.find(User.class, userId);

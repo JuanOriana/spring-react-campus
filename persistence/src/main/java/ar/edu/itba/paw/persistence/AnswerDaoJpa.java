@@ -22,7 +22,6 @@ import java.util.Optional;
 @Repository
 public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements AnswerDao {
 
-    @Transactional
     @Override
     public Answer create(Exam exam, Long studentId, Long teacherId, FileModel answerFile, Float score, String corrections, LocalDateTime deliveredTime) {
         User student = em.getReference(User.class, studentId);
@@ -35,7 +34,6 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
         return answer;
     }
 
-    @Transactional
     @Override
     public boolean update(Long answerId, Answer answer) {
         Optional<Answer> dbAnswer = findById(answerId);
@@ -44,7 +42,6 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
         return true;
     }
 
-    @Transactional
     @Override
     public boolean delete(Long answerId) {
         Optional<Answer> dbAnswer = findById(answerId);
@@ -66,7 +63,6 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
         return totalResolvedTypedQuery.getSingleResult();
     }
 
-    @Transactional
     @Override
     public void correctExam(Long answerId, User teacher, Float score) {
         Optional<Answer> dbAnswer = findById(answerId);
@@ -79,7 +75,6 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
         }
     }
 
-    @Transactional
     @Override
     public void undoExamCorrection(Long answerId) {
         Query nativeQuery = em.createNativeQuery("UPDATE answers set score = NULL WHERE answerId = :answerid");

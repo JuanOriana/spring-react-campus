@@ -18,7 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -69,7 +68,7 @@ public class CourseController extends AuthController {
 
     @RequestMapping(method = RequestMethod.GET, value = "")
     public String coursePortal(@PathVariable Long courseId) {
-       return "redirect:/course/{courseId}/announcements";
+       return "redirect:/course/"+courseId+"/announcements";
 
     }
 
@@ -188,7 +187,8 @@ public class CourseController extends AuthController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/exam/{examId}")
-    public void deleteExam(@PathVariable Long courseId, @PathVariable Long examId){
+    @ResponseBody
+    public void deleteExam(@PathVariable Long courseId, @PathVariable Long examId) {
         LOGGER.debug("Deleting exam {}", examId);
         examService.delete(examId);
     }

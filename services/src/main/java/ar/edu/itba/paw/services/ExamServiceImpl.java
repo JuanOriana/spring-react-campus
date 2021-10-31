@@ -28,6 +28,7 @@ public class ExamServiceImpl implements ExamService {
     @Autowired
     private FileCategoryDao fileCategoryDao;
 
+    @Transactional
     @Override
     public Exam create(Long courseId, String title, String description, byte[] examFile, Long examFileSize, LocalDateTime startTime, LocalDateTime endTime) {
         final Optional<Course> course = courseDao.findById(courseId);
@@ -49,6 +50,7 @@ public class ExamServiceImpl implements ExamService {
         }
     }
 
+    @Transactional
     @Override
     public Exam create(Long courseId, String title, String description, FileModel examFile, LocalDateTime startTime, LocalDateTime endTime) {
         final Optional<Course> course = courseDao.findById(courseId);

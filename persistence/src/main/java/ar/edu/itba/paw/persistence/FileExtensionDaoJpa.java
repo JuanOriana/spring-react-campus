@@ -20,7 +20,7 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
     @PersistenceContext
     private EntityManager em;
 
-    @Transactional
+
     @Override
     public FileExtension create(String fileExtension) {
         final FileExtension fExtension = new FileExtension(fileExtension);
@@ -28,7 +28,7 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
         return fExtension;
     }
 
-    @Transactional
+
     @Override
     public boolean update(long fileExtensionId, String fileExtension) {
         Optional<FileExtension> dbFileExtension = Optional.ofNullable(em.find(FileExtension.class, fileExtensionId));
@@ -37,7 +37,7 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
         return true;
     }
 
-    @Transactional
+
     @Override
     public boolean delete(long fileExtensionId) {
         Optional<FileExtension> dbFileExtension = Optional.ofNullable(em.find(FileExtension.class, fileExtensionId));
