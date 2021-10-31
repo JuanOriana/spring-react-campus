@@ -35,6 +35,15 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
     }
 
     @Override
+    public void createEmptyAnswers(Exam exam,List<User> students){
+        Answer answer;
+        for(User student:students){
+            answer = new Answer(exam, null, student, null, null, null, null);
+            em.persist(answer);
+        }
+    }
+
+    @Override
     public boolean update(Long answerId, Answer answer) {
         Optional<Answer> dbAnswer = findById(answerId);
         if (!dbAnswer.isPresent()) return false;

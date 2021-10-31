@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.*;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Exam;
-import ar.edu.itba.paw.models.FileCategory;
-import ar.edu.itba.paw.models.FileModel;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +25,9 @@ public class ExamServiceImpl implements ExamService {
     @Autowired
     private FileCategoryDao fileCategoryDao;
 
+    @Autowired
+    private AnswerDao answerDao;
+
     @Transactional
     @Override
     public Exam create(Long courseId, String title, String description, String fileName, byte[] examFile, Long examFileSize, LocalDateTime startTime, LocalDateTime endTime) {
@@ -43,7 +43,10 @@ public class ExamServiceImpl implements ExamService {
                 }
             }
             fileDao.associateCategory(fileModel.getFileId(), examCategoryId);
-        return examDao.create(courseId,title, description, fileModel,null, startTime, endTime);
+        Exam exam = examDao.create(courseId,title, description, fileModel,null, startTime, endTime);
+        List<User> students = courseDao.getStudents(courseId);
+        answerDao.createEmptyAnswers(exam,students);
+        return exam;
         } else {
             throw new CourseNotFoundException();
         }
