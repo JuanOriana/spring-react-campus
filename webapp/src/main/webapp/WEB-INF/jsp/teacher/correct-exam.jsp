@@ -42,6 +42,7 @@
                             <c:set var="answer" value="${correctedAnswer}" scope="request"/>
                             <jsp:include page="../components/student-exam-unit.jsp">
                                 <jsp:param name="examId" value="${examId}"/>
+                                <jsp:param name="isCorrected" value="${true}"/>
                             </jsp:include>
                         </c:forEach>
                     </c:if>
