@@ -34,6 +34,16 @@ public interface AnswerService {
     boolean update(Long answerId, Answer answer);
 
     /**
+     * Attempts to update an answer
+     *
+     * @param examId of the exam's answer to be modified
+     * @param studentId of the student answer to update
+     * @param answer   modified answer
+     * @return true if the answer was successfully update, false otherwise
+     */
+    boolean updateEmptyAnswer(Long examId, Long studentId, Answer answer);
+
+    /**
      * Attempts to delete an answer
      *
      * @param answerId of the answer to be deleted

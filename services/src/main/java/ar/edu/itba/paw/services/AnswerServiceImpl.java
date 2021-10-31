@@ -50,6 +50,11 @@ public class AnswerServiceImpl implements AnswerService {
         return answersDao.update(answerId, answer);
     }
 
+    @Override
+    public boolean updateEmptyAnswer(Long examId, Long studentId, Answer answer) {
+        return answersDao.updateEmptyAnswer(examId,studentId,answer);
+    }
+
     @Transactional
     @Override
     public boolean delete(Long answerId) {

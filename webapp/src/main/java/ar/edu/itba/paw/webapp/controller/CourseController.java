@@ -183,9 +183,11 @@ public class CourseController extends AuthController {
                              RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
             LocalDateTime now = LocalDateTime.now();
+            //Answer answer = answerService.updateEmptyAnswer(examId, authFacade.getCurrentUserId(), );
             Answer answer = answerService.create(examId, authFacade.getCurrentUserId(),
                     solveExamForm.getExam().getOriginalFilename(), solveExamForm.getExam().getBytes(),
                     solveExamForm.getExam().getSize(), now);
+
             LOGGER.debug("Answer in course {} created with id: {} at {}", courseId, answer.getAnswerId(),now);
             System.out.println(now);
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
