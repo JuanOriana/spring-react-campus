@@ -13,9 +13,16 @@
                 <c:out value="${requestScope.answer.student.name} ${requestScope.answer.student.surname}"/>
             </p>
         </a>
-        <p class="file-name">
-            <spring:message code="student.exam.unit.published.at.title" arguments="${requestScope.answer.deliveredDate}"/>
-        </p>
+        <c:if test="${requestScope.answer.deliveredDate == null}">
+            <p class="file-name" style="color:red">
+                <spring:message code="student.exam.unit.not.published" arguments="${requestScope.answer.deliveredDate}"/>
+            </p>
+        </c:if>
+        <c:if test="${requestScope.answer.deliveredDate != null}">
+            <p class="file-name">
+                <spring:message code="student.exam.unit.published.at.title" arguments="${requestScope.answer.deliveredDate}"/>
+            </p>
+        </c:if>
     </div>
     <c:if test="${!param.isCorrected}">
     <form style="display: flex; align-items: center" method="post"

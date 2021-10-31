@@ -179,10 +179,12 @@ public class CourseController extends AuthController {
                              @Valid SolveExamForm solveExamForm, final BindingResult errors,
                              RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
+            LocalDateTime now = LocalDateTime.now();
             Answer answer = answerService.create(examId, authFacade.getCurrentUserId(),
                     solveExamForm.getExam().getOriginalFilename(), solveExamForm.getExam().getBytes(),
-                    solveExamForm.getExam().getSize(), LocalDateTime.now());
-            LOGGER.debug("Answer in course {} created with id: {}", courseId, answer.getAnswerId());
+                    solveExamForm.getExam().getSize(), now);
+            LOGGER.debug("Answer in course {} created with id: {} at {}", courseId, answer.getAnswerId(),now);
+            System.out.println(now);
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
             return new ModelAndView("redirect:/course/"+courseId+"/exams");
         }
