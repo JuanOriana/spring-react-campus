@@ -2,7 +2,6 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.Exam;
-import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.User;
 import javafx.util.Pair;
 
@@ -13,7 +12,7 @@ import java.util.Optional;
 
 public interface AnswerService {
     /**
-     * Attemps to persiste an answer entry in the data base
+     * Attempts to persist an answer entry in the data base
      *
      * @param examId       id of the exam that was resolved
      * @param studentId    id of the student that resolves the exam
@@ -25,25 +24,25 @@ public interface AnswerService {
     Answer create(Long examId, Long studentId, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime);
 
     /**
-     * Attemps to update an answer
+     * Attempts to update an answer
      *
      * @param answerId of the answer to be modified
      * @param answer   modified answer
-     * @return true if the answer was succefully update, false otherwise
+     * @return true if the answer was successfully update, false otherwise
      */
     boolean update(Long answerId, Answer answer);
 
     /**
-     * Attemps to delete an answer
+     * Attempts to delete an answer
      *
      * @param answerId of the answer to be deleted
-     * @return true if the answer was succefully removed, false otherwise
+     * @return true if the answer was successfully removed, false otherwise
      */
 
     boolean delete(Long answerId);
 
     /**
-     * Attemppts to get an answer given an id
+     * Attempts to get an answer given an id
      *
      * @param answerId of the answer to be retrieved
      * @return an option with the answer corresponding to the given id if exists, else an empty optional
@@ -60,7 +59,7 @@ public interface AnswerService {
     Long getTotalResolvedByExam(Long examId);
 
     /**
-     * Attemps to persiste in the database a correction for an exam
+     * Attempts to persist in the database a correction for an exam
      *
      * @param answerId of the answer that is being corrected
      * @param teacher  that corrects that answer
@@ -70,23 +69,23 @@ public interface AnswerService {
     void correctExam(Long answerId, User teacher, Float score);
 
     /**
-     * Attemps to retrieved all the corrected exams for a course
+     * Attempts to retrieved all the corrected exams for a course
      *
-     * @param courseId of the queried course
+     * @param examId of the queried exam
      * @return a list of all the exams that are already corrected
      */
-    List<Answer> getCorrectedAnswers(Long courseId);
+    List<Answer> getCorrectedAnswers(Long examId);
 
     /**
-     * Attemps to retrieved all the not corrected exams for a course
+     * Attempts to retrieved all the not corrected exams for a course
      *
-     * @param courseId of the queried course
+     * @param examId of the queried exam
      * @return a list of all the exams that are not already corrected
      */
-    List<Answer> getNotCorrectedAnswers(Long courseId);
+    List<Answer> getNotCorrectedAnswers(Long examId);
 
     /**
-     * Attemps to delete a correction to an answer
+     * Attempts to delete a correction to an answer
      *
      * @param answerId of the answer to be deleted the correction
      */

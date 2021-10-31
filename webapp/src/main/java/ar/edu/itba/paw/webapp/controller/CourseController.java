@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
+import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import ar.edu.itba.paw.webapp.form.*;
@@ -158,15 +159,14 @@ public class CourseController extends AuthController {
     public ModelAndView exam(@PathVariable Long courseId, @PathVariable Long examId, final SolveExamForm solveExamForm) {
         ModelAndView mav;
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
-            //TODO: ACA ROMPE ALGO
             mav = new ModelAndView("teacher/correct-exam");
-            mav.addObject("correctedAnswers",answerService.getCorrectedAnswers(courseId));
-            mav.addObject("uncorrectedAnswers",answerService.getNotCorrectedAnswers(courseId));
+            mav.addObject("correctedAnswers",answerService.getCorrectedAnswers(examId));
+            mav.addObject("uncorrectedAnswers",answerService.getNotCorrectedAnswers(examId));
 
         } else {
             mav = new ModelAndView("solve-exam");
             mav.addObject("solveExamForm", solveExamForm);
-            mav.addObject("exam",examService.findById(examId).orElseThrow(RuntimeException::new));
+            mav.addObject("exam",examService.findById(examId).orElseThrow(ExamNotFoundException::new));
 
         }
         return mav;

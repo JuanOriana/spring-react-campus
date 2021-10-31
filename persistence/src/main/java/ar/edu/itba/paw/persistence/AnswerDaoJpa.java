@@ -83,16 +83,16 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
     }
 
     @Override
-    public List<Answer> getCorrectedAnswers(Long courseId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.course.courseId = :courseId AND answer.score IS NOT NULL ", Answer.class);
-        correctedExamsTypedQuery.setParameter("courseId", courseId);
+    public List<Answer> getCorrectedAnswers(Long examId) {
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NOT NULL ", Answer.class);
+        correctedExamsTypedQuery.setParameter("examId", examId);
         return correctedExamsTypedQuery.getResultList();
     }
 
     @Override
-    public List<Answer> getNotCorrectedAnswers(Long courseId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.course.courseId = :courseId AND answer.score IS NULL", Answer.class);
-        correctedExamsTypedQuery.setParameter("courseId", courseId);
+    public List<Answer> getNotCorrectedAnswers(Long examId) {
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NULL", Answer.class);
+        correctedExamsTypedQuery.setParameter("examId", examId);
         return correctedExamsTypedQuery.getResultList();
     }
 
