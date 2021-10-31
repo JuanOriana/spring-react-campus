@@ -119,9 +119,10 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
 
     @Override
     public List<Exam> getResolvedExams(Long studentId, Long courseId) {
-        TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId AND answer.exam.course.courseId = :courseId AND answer.deliveredDate IS NOT NULL", Exam.class);
+        TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT DISTINCT(answer.exam) FROM Answer answer WHERE answer.student.userId = :studentId AND answer.exam.course.courseId = :courseId AND (answer.deliveredDate IS NOT NULL OR answer.exam.endTime < :nowTime)", Exam.class);
         resolverExamsTypedQuery.setParameter("studentId", studentId);
         resolverExamsTypedQuery.setParameter("courseId", courseId);
+        resolverExamsTypedQuery.setParameter("nowTime", LocalDateTime.now());
         return resolverExamsTypedQuery.getResultList();
     }
 
