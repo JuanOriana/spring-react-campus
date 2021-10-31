@@ -9,7 +9,7 @@
             const result = confirm(deleteMessage)
             if (result === true){
                 $.ajax({
-                    url: '${pageContext.request.contextPath}/files/' + fileId,
+                    url: '${pageContext.request.contextPath}/file/' + fileId,
                     type: 'DELETE',
                     success: function (result) {
                         $("#file-"+ fileId).remove();
@@ -22,7 +22,7 @@
 <body>
     <div class="file-unit" id="file-${requestScope.file.fileId}">
         <div style="display: flex; align-items: center">
-            <a href="<c:url value="/files/${requestScope.file.fileId}"/>" class="styleless-anchor" target="_blank"
+            <a href="<c:url value="/file/${requestScope.file.fileId}"/>" class="styleless-anchor" target="_blank"
                style="display: flex;margin-left: 10px; align-items: center">
                 <img src="<c:url value="/resources/images/extensions/${requestScope.file.extension.fileExtensionName}.png"/>"
                      class="file-img" alt="${requestScope.file.name}"/>
