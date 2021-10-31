@@ -25,7 +25,7 @@ public class CourseVoter implements AccessDecisionVoter<FilterInvocation> {
     @Autowired
     private FileService fileService;
 
-    static final Pattern GET_FILE_PATTERN = Pattern.compile("/files/(\\d+)");
+    static final Pattern GET_FILE_PATTERN = Pattern.compile("/file/(\\d+)");
     static final Pattern UPLOAD_FILE_PATTERN = Pattern.compile("/course/(\\d+)/files");
     static final Pattern UPLOAD_ANNOUNCEMENT_PATTERN = Pattern.compile("/course/(\\d+)/announcements");
     static final Pattern GET_COURSE_PATTERN = Pattern.compile("/course/(\\d+)");
