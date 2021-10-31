@@ -169,6 +169,7 @@ public class CourseController extends AuthController {
             mav.addObject("exam",examService.findById(examId).orElseThrow(RuntimeException::new));
 
         }
+        mav.addObject("examId",examId);
         return mav;
     }
 
@@ -193,6 +194,23 @@ public class CourseController extends AuthController {
         examService.delete(examId);
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/exam/{examId}/answer/{answerId}/correct")
+    public ModelAndView correctAnswer(@PathVariable Long courseId,@PathVariable Long examId,
+                                      @PathVariable Long answerId) {
+        LOGGER.debug("Correcting answer {}", answerId);
+        answerService.correctExam(answerId,authFacade.getCurrentUser(), 10.0F);
+        return new ModelAndView("redirect:/course/"+courseId+"/exam/" + examId);
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/exam/{examId}/answer/{answerId}/undocorrect")
+    public ModelAndView undoCorrectAnswer(@PathVariable Long courseId,@PathVariable Long examId,
+                                          @PathVariable Long answerId) {
+        LOGGER.debug("Undoing correction of answer {}", answerId);
+        answerService.undoExamCorrection(answerId);
+        return new ModelAndView("redirect:/course/"+courseId+"/exam/" + examId);
+
+    }
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/files")

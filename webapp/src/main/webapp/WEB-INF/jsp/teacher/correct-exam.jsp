@@ -30,19 +30,25 @@
                         <spring:message code="teacher.correct.exam.none.to.correct" htmlEscape="true"/>
                     </c:if>
                     <c:forEach var="uncorrectedAnswer" items="${uncorrectedAnswers}">
-                        <jsp:include page="../components/student-exam-unit.jsp"/>
+                        <c:set var="answer" value="${uncorrectedAnswer}" scope="request"/>
+                        <jsp:include page="../components/student-exam-unit.jsp">
+                            <jsp:param name="examId" value="${examId}"/>
+                        </jsp:include>
                     </c:forEach>
                     <c:if test="${correctedAnswers.size() !=0}}">
                     <h3 style="margin: 10px 0;"><spring:message code="teacher.correct.exam.corrected" htmlEscape="true"/></h3>
                         <c:forEach var="correctedAnswer" items="${correctedAnswers}">
-                            <jsp:include page="../components/student-exam-unit.jsp"/>
+                            <c:set var="answer" value="${correctedAnswer}" scope="request"/>
+                            <jsp:include page="../components/student-exam-unit.jsp">
+                                <jsp:param name="examId" value="${examId}"/>
+                            </jsp:include>
                         </c:forEach>
                     </c:if>
                 </div>
             </div>
         </div>
     </div>
-    <jsp:include page="../components/footer.jsp"/>
+    <jsp:include page="../components/footer.jsp"/>epo
 </div>
 </body>
 </html>
