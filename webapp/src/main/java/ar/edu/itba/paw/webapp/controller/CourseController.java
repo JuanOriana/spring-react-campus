@@ -205,8 +205,8 @@ public class CourseController extends AuthController {
 
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/exam/{examId}/answer/{answerId}/undocorrect")
-    public ModelAndView undoCorrectAnswer(@PathVariable Long courseId,@PathVariable Long examId,
+    @RequestMapping(method = RequestMethod.POST, value = "/exam/{examId}/answer/{answerId}/undo-correct")
+    public ModelAndView undoCorrectAnswer(@PathVariable Long courseId, @PathVariable Long examId,
                                           @PathVariable Long answerId) {
         LOGGER.debug("Undoing correction of answer {}", answerId);
         answerService.undoExamCorrection(answerId);

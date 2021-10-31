@@ -35,7 +35,8 @@
                             <jsp:param name="examId" value="${examId}"/>
                         </jsp:include>
                     </c:forEach>
-                    <c:if test="${correctedAnswers.size() !=0}}">
+
+                    <c:if test="${correctedAnswers.size() != 0}">
                     <h3 style="margin: 10px 0;"><spring:message code="teacher.correct.exam.corrected" htmlEscape="true"/></h3>
                         <c:forEach var="correctedAnswer" items="${correctedAnswers}">
                             <c:set var="answer" value="${correctedAnswer}" scope="request"/>
