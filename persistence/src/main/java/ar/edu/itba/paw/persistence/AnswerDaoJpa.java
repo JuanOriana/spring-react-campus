@@ -100,7 +100,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
 
     @Override
     public List<Answer> getNotCorrectedAnswers(Long examId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NULL", Answer.class);
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NULL ORDER BY answer.deliveredDate ASC", Answer.class);
         correctedExamsTypedQuery.setParameter("examId", examId);
         return correctedExamsTypedQuery.getResultList();
     }
@@ -122,7 +122,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
 
     @Override
     public List<Exam> getResolvedExams(Long studentId, Long courseId) {
-        TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId AND answer.exam.course.courseId = :courseId", Exam.class);
+        TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId AND answer.exam.course.courseId = :courseId AND answer.deliveredDate IS NOT NULL", Exam.class);
         resolverExamsTypedQuery.setParameter("studentId", studentId);
         resolverExamsTypedQuery.setParameter("courseId", courseId);
         return resolverExamsTypedQuery.getResultList();
@@ -130,7 +130,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
 
     @Override
     public List<Exam> getUnresolvedExams(Long studentId, Long courseId) {
-        TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId) AND exam.course.courseId = :courseId", Exam.class);
+        TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId AND answer.deliveredDate IS NOT NULL) AND exam.course.courseId = :courseId", Exam.class);
         unresolvedExamsTypedQuery.setParameter("studentId", studentId);
         unresolvedExamsTypedQuery.setParameter("courseId", courseId);
 
