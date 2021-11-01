@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.exception.AnswerNotFoundException;
 import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import javafx.util.Pair;
 import org.springframework.context.annotation.Primary;
@@ -97,9 +98,10 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
 
     @Override
     public void undoExamCorrection(Long answerId) {
-        Query nativeQuery = em.createNativeQuery("UPDATE answers set score = NULL WHERE answerId = :answerid");
-        nativeQuery.setParameter("answerid", answerId);
-        nativeQuery.executeUpdate();
+        Optional<Answer> answer = findById(answerId);
+        if(!answer.isPresent()) throw new AnswerNotFoundException();
+        answer.get().setCorrections(null);
+        answer.get().setScore(null);
     }
 
     @Override
