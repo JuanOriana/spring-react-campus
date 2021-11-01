@@ -41,7 +41,7 @@ public interface AnswerService {
      * @param answer   modified answer
      * @return true if the answer was successfully update, false otherwise
      */
-    boolean updateEmptyAnswer(Long examId, Long studentId, Answer answer);
+    Answer updateEmptyAnswer(Long examId, User student, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime);
 
     /**
      * Attempts to delete an answer

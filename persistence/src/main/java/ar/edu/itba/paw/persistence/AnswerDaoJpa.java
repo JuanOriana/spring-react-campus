@@ -39,25 +39,27 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
             em.persist(answer);
         }
     }
-
+    
     @Override
     public boolean update(Long answerId, Answer answer) {
         Optional<Answer> dbAnswer = findById(answerId);
         if (!dbAnswer.isPresent()) return false;
         dbAnswer.get().merge(answer);
+        em.flush();
         return true;
     }
 
     @Override
-    public boolean updateEmptyAnswer(Long examId, Long studentId, Answer answer) {
-        TypedQuery<Answer> getEmptyAnswer = em.createQuery("SELECT a FROM Answer a WHERE a.student.studentId = :studentId AND a.exam.examId = :examId", Answer.class);
+    public Answer updateEmptyAnswer(Long examId, User student,Long teacherId, Answer answer){
+        TypedQuery<Answer> getEmptyAnswer = em.createQuery("SELECT a FROM Answer a WHERE a.student.userId = :studentId AND a.exam.examId = :examId", Answer.class);
         getEmptyAnswer.setParameter("examId", examId);
-        getEmptyAnswer.setParameter("studentId", studentId);
+        getEmptyAnswer.setParameter("studentId", student.getUserId());
         Answer oldAnswer = getEmptyAnswer.getSingleResult();
         if (oldAnswer != null){
-            return this.update(oldAnswer.getAnswerId(), answer);
+             this.update(oldAnswer.getAnswerId(), answer);
         }
-        return false;
+
+        return oldAnswer;
     }
 
     @Override

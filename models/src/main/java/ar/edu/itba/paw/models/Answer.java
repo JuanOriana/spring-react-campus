@@ -124,7 +124,6 @@ public class Answer {
         this.deliveredDate = answer.deliveredDate;
         this.score =answer.score;
         this.exam = answer.exam;
-        this.student = answer.student;
         this.teacher = answer.teacher;
     }
 

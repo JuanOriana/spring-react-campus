@@ -51,8 +51,20 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public boolean updateEmptyAnswer(Long examId, Long studentId, Answer answer) {
-        return answersDao.updateEmptyAnswer(examId,studentId,answer);
+    public Answer updateEmptyAnswer(Long examId, User student, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime){
+        Exam exam = examDao.findById(examId).orElseThrow(ExamNotFoundException::new);
+        FileModel answerFileModel = fileDao.create(answerFileSize, deliveredTime, answerFileName, answerFile, exam.getCourse());
+        answerFileModel.setHidden(true); //Para que no aparezca en como material de la materia
+        long examCategoryId = 0;
+        for (FileCategory fc : fileCategoryDao.getCategories()) {
+            if (fc.getCategoryName().equalsIgnoreCase("exam")) {
+                examCategoryId = fc.getCategoryId();
+                break;
+            }
+        }
+        fileDao.associateCategory(answerFileModel.getFileId(), examCategoryId);
+
+        return answersDao.updateEmptyAnswer(examId,student,null,new Answer(exam,deliveredTime,student,null,answerFileModel , null,null));
     }
 
     @Transactional

@@ -17,8 +17,7 @@ public interface AnswerDao {
 
     boolean update(Long answerId, Answer answer);
 
-    boolean updateEmptyAnswer(Long examId, Long studentId, Answer answer);
-
+    Answer updateEmptyAnswer(Long examId, User student,Long teacherId, Answer answer);
     boolean delete(Long answerId);
 
     Optional<Answer> findById(Long answerId);
