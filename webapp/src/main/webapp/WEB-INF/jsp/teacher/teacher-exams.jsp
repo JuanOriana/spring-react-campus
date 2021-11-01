@@ -40,11 +40,11 @@
           <form:label path="file" for="file" class="form-label"><spring:message code="teacher.exams.upload.exam.attach"/></form:label>
           <form:input path="file" type="file" class="form-input" style="font-size: 26px"/>
           <form:errors path="file" element="p" cssClass="error-message"/>
-          <form:label path="startTime" for="startTime" class="form-label">Comienzo:</form:label>
+          <form:label path="startTime" for="startTime" class="form-label"><spring:message code="teacher.exams.upload.exam.start.date"/></form:label>
           <form:input path="startTime" type="datetime-local" class="form-input"
                       style="font-size: 26px" min="${minDateTime}"/>
           <form:errors path="startTime" element="p" cssClass="error-message"/>
-          <form:label path="endTime" for="endTime" class="form-label">Fin:</form:label>
+          <form:label path="endTime" for="endTime" class="form-label"><spring:message code="teacher.exams.upload.exam.enda.date"/></form:label>
           <form:input path="endTime" type="datetime-local" class="form-input"
                       style="font-size: 26px" min="${minDateTime}"/>
           <form:errors path="endTime" element="p" cssClass="error-message"/>

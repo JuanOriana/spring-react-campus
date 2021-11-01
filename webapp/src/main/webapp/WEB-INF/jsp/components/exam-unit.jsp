@@ -34,7 +34,7 @@
     </div>
     <div style="display: flex; align-items: center">
         <c:if test="${param.isTeacher}">
-            <p class="file-name"><c:out value="${param.examsSolved} corregidos de ${param.userCount}"/> </p>
+            <p class="file-name"><spring:message code="exam.unit.number.of.corrected.exams" htmlEscape="true" arguments="${param.examsSolved},${param.userCount}"/></p>
             <img src="<c:url value="/resources/images/trash.png"/>"
                  alt="delete" class="medium-icon" onclick="deleteById(${param.courseId},${requestScope.exam.examId})">
         </c:if>
