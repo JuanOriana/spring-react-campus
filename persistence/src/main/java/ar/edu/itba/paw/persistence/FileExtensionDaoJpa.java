@@ -5,8 +5,6 @@ import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileExtension;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -53,7 +51,7 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
     }
 
     @Override
-    public Optional<String> getExtension(Long extensionId) {
-        return Optional.ofNullable(em.find(FileCategory.class, extensionId).getCategoryName());
+    public Optional<FileExtension> findById(Long extensionId) {
+        return Optional.ofNullable(em.find(FileExtension.class, extensionId));
     }
 }

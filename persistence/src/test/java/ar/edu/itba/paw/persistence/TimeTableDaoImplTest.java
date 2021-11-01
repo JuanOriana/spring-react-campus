@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.TimetableDao;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.models.Timetable;
@@ -30,7 +31,7 @@ import static org.junit.Assert.*;
 public class TimeTableDaoImplTest extends BasicPopulator {
 
     @Autowired
-    private TimetableDaoImpl timetableDao;
+    private TimetableDao timetableDao;
 
 
     @Before

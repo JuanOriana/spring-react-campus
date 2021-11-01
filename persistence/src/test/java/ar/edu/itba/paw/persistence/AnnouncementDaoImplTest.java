@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.AnnouncementDao;
 import ar.edu.itba.paw.models.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,7 +31,7 @@ import static org.junit.Assert.*;
 public class AnnouncementDaoImplTest extends BasicPopulator {
 
     @Autowired
-    private AnnouncementDaoImpl announcementDao;
+    private AnnouncementDao announcementDao;
 
 
     private final LocalDateTime ANNOUNCEMENT_DATE = LocalDateTime.now();

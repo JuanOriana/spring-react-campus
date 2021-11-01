@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,7 +29,7 @@ import static org.junit.Assert.*;
 public class CourseDaoImplTest extends BasicPopulator {
 
     @Autowired
-    private CourseDaoImpl courseDao;
+    private CourseDao courseDao;
 
 
     private static final RowMapper<Course> COURSE_ROW_MAPPER = (rs, rowNum) ->

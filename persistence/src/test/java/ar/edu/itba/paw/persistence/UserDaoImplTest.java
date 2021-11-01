@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
 import org.junit.Before;
@@ -29,7 +30,7 @@ import static org.junit.Assert.*;
 @Transactional
 public class UserDaoImplTest extends BasicPopulator {
     @Autowired
-    UserDaoImpl userDao;
+    UserDao userDao;
 
     private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) ->
             new User.Builder()

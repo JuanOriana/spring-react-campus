@@ -14,5 +14,5 @@ public interface FileExtensionDao {
 
     List<FileExtension> getExtensions();
 
-    Optional<String> getExtension(Long extensionId);
+    Optional<FileExtension> findById(Long extensionId);
 }
