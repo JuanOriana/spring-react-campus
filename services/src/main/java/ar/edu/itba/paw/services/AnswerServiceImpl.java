@@ -146,4 +146,10 @@ public class AnswerServiceImpl implements AnswerService {
     public boolean didUserDeliver(Long examId, Long userId) {
         return answersDao.didUserDeliver(examId, userId);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public CampusPage<Answer> getFilteredAnswers(Long examId, String filter, Integer page, Integer pageSize) {
+        return answersDao.getFilteredAnswers(examId, filter, new CampusPageRequest(page, pageSize));
+    }
 }

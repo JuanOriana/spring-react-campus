@@ -10,7 +10,6 @@ import ar.edu.itba.paw.webapp.form.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -159,12 +158,16 @@ public class CourseController extends AuthController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/exam/{examId}")
-    public ModelAndView exam(@PathVariable Long courseId, @PathVariable Long examId, final SolveExamForm solveExamForm) {
+    public ModelAndView exam(@PathVariable Long courseId, @PathVariable Long examId, final SolveExamForm solveExamForm,
+                             @RequestParam(value = "page", required = false, defaultValue = "1")
+                             Integer page,
+                             @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+                             Integer pageSize) {
         ModelAndView mav;
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/correct-exam");
-            mav.addObject("correctedAnswers",answerService.getCorrectedAnswers(examId));
-            mav.addObject("uncorrectedAnswers",answerService.getNotCorrectedAnswers(examId));
+            mav.addObject("correctedAnswers", answerService.getCorrectedAnswers(examId));
+            mav.addObject("uncorrectedAnswers", answerService.getNotCorrectedAnswers(examId));
 
         } else {
             mav = new ModelAndView("solve-exam");
@@ -184,16 +187,11 @@ public class CourseController extends AuthController {
             LocalDateTime now = LocalDateTime.now();
             Answer answer = answerService.updateEmptyAnswer(examId, authFacade.getCurrentUser(),solveExamForm.getExam().getOriginalFilename(), solveExamForm.getExam().getBytes(),
                     solveExamForm.getExam().getSize(), now);
-//            Answer answer = answerService.create(examId, authFacade.getCurrentUserId(),
-//                    solveExamForm.getExam().getOriginalFilename(), solveExamForm.getExam().getBytes(),
-//                    solveExamForm.getExam().getSize(), now);
-
             LOGGER.debug("Answer in course {} created with id: {} at {}", courseId, answer.getAnswerId(),now);
-            System.out.println(now);
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
             return new ModelAndView("redirect:/course/"+courseId+"/exams");
         }
-        return exam(courseId,examId,solveExamForm);
+        return exam(courseId, examId, solveExamForm, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/exam/{examId}")

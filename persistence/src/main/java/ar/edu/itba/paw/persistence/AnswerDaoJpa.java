@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.AnswerDao;
-import ar.edu.itba.paw.models.Answer;
-import ar.edu.itba.paw.models.Exam;
-import ar.edu.itba.paw.models.FileModel;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.AnswerNotFoundException;
 import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import javafx.util.Pair;
@@ -16,7 +13,7 @@ import java.util.*;
 
 @Primary
 @Repository
-public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements AnswerDao {
+public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements AnswerDao {
 
     @Override
     public Answer create(Exam exam, Long studentId, Long teacherId, FileModel answerFile, Float score, String corrections, LocalDateTime deliveredTime) {
@@ -110,6 +107,24 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
         if(!answer.isPresent()) throw new AnswerNotFoundException();
         answer.get().setCorrections(null);
         answer.get().setScore(null);
+    }
+
+    @Override
+    public CampusPage<Answer> getFilteredAnswers(Long examId, String filter, CampusPageRequest pageRequest) {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("examId", examId);
+        String queryConditional = " ";
+        String mappingQueryConditional = " ";
+        if(filter.equalsIgnoreCase("corrected")) {
+            queryConditional = " AND score IS NOT NULL ";
+            mappingQueryConditional = " AND a.score IS NOT NULL ";
+        } else if(filter.equalsIgnoreCase("not-corrected")) {
+            queryConditional = " AND score IS NULL ";
+            mappingQueryConditional = " AND a.score IS NULL ";
+        }
+        String query = "SELECT answerId FROM answers WHERE examId = :examId" + queryConditional + "ORDER BY score DESC";
+        String mappingQuery = "SELECT a FROM Answer a WHERE a.answerId IN (:ids)" + mappingQueryConditional + "ORDER BY a.score DESC";
+        return listBy(properties, query, mappingQuery, pageRequest, Answer.class);
     }
 
     @Override

@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.models.Answer;
-import ar.edu.itba.paw.models.Exam;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import javafx.util.Pair;
 
 import java.time.LocalDateTime;
@@ -152,5 +150,16 @@ public interface AnswerService {
      * @return true if the user delivered an answer, false otherwise
      */
     boolean didUserDeliver(Long examId, Long userId);
+
+
+    /**
+     * Returns a filtered-paginated list of answers
+     * @param examId of the queried exam
+     * @param filter applied to the answer query
+     * @param page to be queried
+     * @param pageSize of the queried page
+     * @return page containing a list of answers
+     */
+    CampusPage<Answer> getFilteredAnswers(Long examId, String filter, Integer page, Integer pageSize);
 
 }

@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.models.Answer;
-import ar.edu.itba.paw.models.Exam;
-import ar.edu.itba.paw.models.FileModel;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import javafx.util.Pair;
 
 import java.time.LocalDateTime;
@@ -45,4 +42,6 @@ public interface AnswerDao {
     void createEmptyAnswers(Exam exam,List<User> students);
 
     boolean didUserDeliver(Long examId, Long userId);
+
+    CampusPage<Answer> getFilteredAnswers(Long examId, String filter, CampusPageRequest pageRequest);
 }
