@@ -203,13 +203,30 @@ public class CourseController extends AuthController {
         examService.delete(examId);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/exam/{examId}/answer/{answerId}/correct")
+    public ModelAndView correctAnswer(@PathVariable Long courseId,@PathVariable Long examId,
+                                      @PathVariable Long answerId,final AnswerCorrectionForm answerCorrectionForm) {
+        ModelAndView mav = new ModelAndView("teacher/correct-specific-exam");
+        mav.addObject("exam",examService.findById(examId).orElseThrow(ExamNotFoundException::new));
+        mav.addObject("answer",answerService.findById(answerId).orElseThrow(ExamNotFoundException::new));
+        mav.addObject("answerCorrectionForm",answerCorrectionForm);
+        return mav;
+
+
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/exam/{examId}/answer/{answerId}/correct")
     public ModelAndView correctAnswer(@PathVariable Long courseId,@PathVariable Long examId,
-                                      @PathVariable Long answerId) {
-        LOGGER.debug("Correcting answer {}", answerId);
-        answerService.correctExam(answerId,authFacade.getCurrentUser(), 10.0F);
-        return new ModelAndView("redirect:/course/"+courseId+"/exam/" + examId);
-
+                                      @PathVariable Long answerId,@Valid AnswerCorrectionForm answerCorrectionForm,
+                                      final BindingResult errors,
+                                      RedirectAttributes redirectAttributes) {
+        if(!errors.hasErrors()) {
+            LOGGER.debug("Correcting answer {}", answerId);
+            answerService.correctExam(answerId, authFacade.getCurrentUser(), answerCorrectionForm.getMark());
+            redirectAttributes.addFlashAttribute("successMessage","answer.solve.success.message");
+            return new ModelAndView("redirect:/course/" + courseId + "/exam/" + examId);
+        }
+        return correctAnswer(courseId,examId,answerId,answerCorrectionForm);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/exam/{examId}/answer/{answerId}/undo-correct")
