@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.sql.Time;
+import java.time.LocalTime;
 import java.util.*;
 
 @Controller
@@ -64,11 +63,11 @@ public class TimeTableController extends AuthController{
 
         for (Map.Entry<Course,List<Timetable>> entry : timeMap.entrySet()) {
             for (Timetable timetable : entry.getValue()){
-                Time begins = timetable.getBegins();
-                Time ends = timetable.getEnd();
+                LocalTime begins = timetable.getBegins();
+                LocalTime ends = timetable.getEnd();
                 for (int i = 0; i < hours.length; i++){
-                    Time timedHour = stringToTime(hours[i]);
-                    if ((begins.before(timedHour) || begins.equals(timedHour)) && ends.after(timedHour)){
+                    LocalTime timedHour = stringToTime(hours[i]);
+                    if ((begins.isBefore(timedHour) || begins.equals(timedHour)) && ends.isAfter(timedHour)){
                         timeTableMatrix.get(timetable.getDayOfWeek()).set(i,entry.getKey());
                     }
                 }
@@ -77,9 +76,9 @@ public class TimeTableController extends AuthController{
         return timeTableMatrix;
     }
 
-    private static Time stringToTime(String stringedTime){
+    private static LocalTime stringToTime(String stringedTime){
         String[] tokens = stringedTime.split(":");
-        return new Time(Integer.parseInt(tokens[0]),Integer.parseInt(tokens[1]),0);
+        return LocalTime.of(Integer.parseInt(tokens[0]),Integer.parseInt(tokens[1]));
 
     }
 

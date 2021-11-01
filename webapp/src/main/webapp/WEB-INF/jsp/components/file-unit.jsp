@@ -30,7 +30,7 @@
                     <spring:message code="file.unit.file.name" htmlEscape="true" arguments="${requestScope.file.name}"/>
                 </p>
             </a>
-            <c:if test="!${param.isMinimal}">
+            <c:if test="${!param.isMinimal}">
                 <c:forEach var="category" items="${requestScope.file.categories}">
                     <p class="file-category-name">
                         <spring:message code="category.${category.categoryName}" htmlEscape="true"/>
@@ -39,7 +39,7 @@
             </c:if>
         </div>
         <div style="display: flex; align-items: center">
-            <c:if test="!${param.isMinimal}">
+            <c:if test="${!param.isMinimal}">
                 <p class="file-name">
                     <spring:message code="file.unit.file.downloads" htmlEscape="true"
                                     arguments="${requestScope.file.downloads}"/>

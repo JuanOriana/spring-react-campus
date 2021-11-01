@@ -20,6 +20,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
     @Autowired
     private FileCategoryDao fileCategoryDao;
 
+
     private String getExtension(String filename) {
         String extension = "";
         int i = filename.lastIndexOf('.');
@@ -85,7 +86,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
 
     @Override
     public List<FileModel> list(Long userId) {
-        TypedQuery<FileModel> listFilesOfUser = em.createQuery("SELECT f FROM FileModel f JOIN Enrollment e WHERE e.user.userId = :userId", FileModel.class);
+        TypedQuery<FileModel> listFilesOfUser = em.createQuery("SELECT f FROM FileModel f, Enrollment e WHERE e.user.userId = :userId", FileModel.class);
         listFilesOfUser.setParameter("userId", userId);
         return listFilesOfUser.getResultList();
     }
@@ -129,7 +130,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
 
     @Override
     public List<FileModel> findByCategory(Long fileCategoryId) {
-        TypedQuery<FileModel> listByCategory = em.createQuery("SELECT f FROM FileModel f JOIN FileCategory fc WHERE fc.categoryId = :categoryId", FileModel.class);
+        TypedQuery<FileModel> listByCategory = em.createQuery("SELECT f FROM FileModel f, FileCategory fc WHERE fc.categoryId = :categoryId", FileModel.class);
         listByCategory.setParameter("categoryId", fileCategoryId);
         return listByCategory.getResultList();
     }
@@ -196,7 +197,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         String courseSelection = courseId < 0 ? "(SELECT courseId FROM user_to_course WHERE userId = :userId)" : "(:courseId)";
         return  "SELECT fileId " +
                 "FROM files NATURAL JOIN category_file_relationship " +
-                "WHERE fileName ILIKE :query AND courseId IN " + courseSelection + " " + query + " AND hidden IS NOT TRUE";
+                "WHERE fileName LIKE :query AND courseId IN " + courseSelection + " " + query + " AND hidden IS NOT TRUE";
     }
 
 }

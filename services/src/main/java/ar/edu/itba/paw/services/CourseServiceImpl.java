@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -41,8 +42,8 @@ public class CourseServiceImpl implements CourseService {
             Integer startHour = startTimes.get(i);
             Integer endHour = endTimes.get(i);
             if (startHour != null && endHour != null) {
-                timetableService.create(course, i, new Time(startHour, 0, 0),
-                        new Time(endHour, 0, 0));
+                timetableService.create(course, i, LocalTime.of(startHour, 0, 0),
+                        LocalTime.of(endHour, 0, 0));
             }
         }
         return course;

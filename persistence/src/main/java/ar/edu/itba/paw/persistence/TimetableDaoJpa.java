@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Primary
@@ -19,14 +21,14 @@ public class TimetableDaoJpa implements TimetableDao {
     private EntityManager em;
 
     @Override
-    public boolean create(Course course, int dayOfWeek, Time start, Time end) {
+    public boolean create(Course course, int dayOfWeek, LocalTime start, LocalTime end) {
         final Timetable timetable = new Timetable(course, dayOfWeek, start, end);
         em.persist(timetable);
         return true;
     }
 
     @Override
-    public boolean update(Long courseId, int dayOfWeek, Time start, Time end) {
+    public boolean update(Long courseId, int dayOfWeek, LocalTime start, LocalTime end) {
         List<Timetable> dbTimetable = findById(courseId);
         if (dbTimetable.isEmpty()) return false;
         for (Timetable t : dbTimetable){

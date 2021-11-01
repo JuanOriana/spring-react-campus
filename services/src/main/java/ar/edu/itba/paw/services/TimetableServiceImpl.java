@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -24,13 +25,13 @@ public class TimetableServiceImpl implements TimetableService {
 
     @Transactional
     @Override
-    public boolean create(Course course, int dayOfWeek, Time start, Time end) {
+    public boolean create(Course course, int dayOfWeek, LocalTime start, LocalTime end) {
         return timetableDaoDao.create(course, dayOfWeek, start, end);
     }
 
     @Transactional
     @Override
-    public boolean update(Long courseId, int dayOfWeek, Time start, Time end) {
+    public boolean update(Long courseId, int dayOfWeek, LocalTime start, LocalTime end) {
         return timetableDaoDao.update(courseId, dayOfWeek, start, end);
     }
 
@@ -49,7 +50,6 @@ public class TimetableServiceImpl implements TimetableService {
 
     @Transactional(readOnly = true)
     @Override
-    //TODO: rename this method
     public Timetable[] findByIdOrdered(Long courseId){
         Timetable[]  timeTables = new Timetable[7];
         List<Timetable> timetableList = timetableDaoDao.findById(courseId);

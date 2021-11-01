@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.config;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -8,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -61,9 +59,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         viewResolver.setSuffix(".jsp");
         return viewResolver;
     }
-
-    @Value("classpath:schema.sql")
-    private Resource schemaSql;
 
     @Bean
     public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
@@ -135,7 +130,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         props.setProperty("mail.host", "smtp.gmail.com");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", "465");
-        props.put("mail.debug", "true");
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.ssl.checkserveridentity", "true");

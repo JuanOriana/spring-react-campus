@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
-@Sql("classpath:schema.sql")
+@Sql("classpath:populators/announcement_populator.sql")
 @Rollback
 @Transactional
 public class AnnouncementDaoImplTest extends BasicPopulator {
@@ -54,18 +54,6 @@ public class AnnouncementDaoImplTest extends BasicPopulator {
                             .build())
                     .withCourse(null)
                     .build();
-
-
-    @Before
-    public void setUp() {
-        super.setUp();
-        insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
-        insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
-        insertUser(USER_ID, USER_FILE_NUMBER, USER_NAME, USER_SURNAME, USER_USERNAME, USER_EMAIL, USER_PASSWORD, USER_IS_ADMIN);
-        insertRole(TEACHER_ROLE_ID, TEACHER_ROLE_NAME);
-        insertUserToCourse(USER_ID, COURSE_ID, TEACHER_ROLE_ID);
-    }
-
 
 
     private Announcement getMockAnnouncement() {
@@ -100,46 +88,28 @@ public class AnnouncementDaoImplTest extends BasicPopulator {
     @Test
     public void testCreate() {
         Announcement announcement = getMockAnnouncement();
-        announcementDao.create(announcement.getDate(), announcement.getTitle(),
+        announcement = announcementDao.create(announcement.getDate(), announcement.getTitle(),
                 announcement.getContent(), announcement.getAuthor(), announcement.getCourse());
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
-    }
-
-
-    @Test(expected = DataIntegrityViolationException.class)
-    public void testCreateNonExistentCourseId() {
-        Announcement announcement = getMockAnnouncement();
-        announcement.getCourse().setCourseId(COURSE_ID + 1);
-        announcementDao.create(announcement.getDate(), announcement.getTitle(),
-                announcement.getContent(), announcement.getAuthor(), announcement.getCourse());
-        Assert.fail("Should have thrown assertion error  for non-existent foreign key 'course id' ");
+        assertEquals(1L, announcement.getAnnouncementId().longValue());
     }
 
     @Test
     public void testDelete() {
-        insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
-        announcementDao.delete(ANNOUNCEMENT_ID);
-        assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
+        assertTrue(announcementDao.delete(2L));
     }
 
     @Test
     public void testDeleteNoExist() {
         final Long NOT_EXISTING_ID = 100L;
-        insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
-        announcementDao.delete(NOT_EXISTING_ID);
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
+        assertFalse(announcementDao.delete(NOT_EXISTING_ID));
     }
 
 
     @Test
     public void getById() {
-        insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
-        Optional<Announcement> announcementOptional = announcementDao.findById(ANNOUNCEMENT_ID);
+        Optional<Announcement> announcementOptional = announcementDao.findById(2L);
         assertTrue(announcementOptional.isPresent());
-        assertEquals(ANNOUNCEMENT_ID, announcementOptional.get().getAnnouncementId());
+        assertEquals(2L, announcementOptional.get().getAnnouncementId().longValue());
         assertEquals(COURSE_ID, announcementOptional.get().getCourse().getCourseId());
         assertEquals(USER_ID, announcementOptional.get().getAuthor().getUserId());
         assertEquals("test_title", announcementOptional.get().getTitle());
@@ -149,55 +119,27 @@ public class AnnouncementDaoImplTest extends BasicPopulator {
     @Test
     public void getByIdNoExist() {
         final Long NOT_EXISTING_ID = 100L;
-        insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "announcements"));
         Optional<Announcement> announcementOptional = announcementDao.findById(NOT_EXISTING_ID);
         assertFalse(announcementOptional.isPresent());
     }
 
-    @Test
-    public void testList() {
-        insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
-        List<Announcement> list = announcementDao.listByUser(USER_ID, new CampusPageRequest(PAGE, PAGE_SIZE)).getContent();
-        assertNotNull(list);
-        assertEquals(1, list.size());
-        assertEquals(ANNOUNCEMENT_ID, list.get(0).getAnnouncementId());
-    }
 
-    @Test
-    public void testListCourseAnnouncements() {
-        insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
-        List<Announcement> list = announcementDao.listByCourse(COURSE_ID, new CampusPageRequest(PAGE, PAGE_SIZE)).getContent();
-        assertNotNull(list);
-        assertEquals(1, list.size());
-        assertEquals(ANNOUNCEMENT_ID, list.get(0).getAnnouncementId());
-    }
+
 
     @Test
     public void testListCourseAnnouncementsNonExistentId() {
-        insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
         List<Announcement> list = announcementDao.listByCourse(COURSE_ID + 1, new CampusPageRequest(PAGE, PAGE_SIZE)).getContent();
         assertNotNull(list);
         assertEquals(0, list.size());
     }
 
     @Test
-
     public void testUpdate() {
-        insertAnnouncement(ANNOUNCEMENT_ID, USER_ID, COURSE_ID, ANNOUNCEMENT_TITLE, ANNOUNCEMENT_CONTENT, ANNOUNCEMENT_DATE);
         Announcement announcement = getMockAnnouncement();
         announcement.setTitle("test_update_title");
         announcement.setContent("test_update_content");
-        final boolean isUpdated = announcementDao.update(ANNOUNCEMENT_ID, announcement);
+        final boolean isUpdated = announcementDao.update(2L, announcement);
         assertTrue(isUpdated);
-
-        String sqlGetAnnouncementOfId = String.format("SELECT * FROM announcements NATURAL JOIN users WHERE announcementId = %d;", ANNOUNCEMENT_ID);
-        Announcement announcementDb = jdbcTemplate.query(sqlGetAnnouncementOfId, ANNOUNCEMENT_ROW_MAPPER).get(0);
-
-        assertEquals(ANNOUNCEMENT_ID, announcementDb.getAnnouncementId());
-        assertEquals(USER_ID, announcementDb.getAuthor().getUserId());
-        assertEquals("test_update_title", announcementDb.getTitle());
-        assertEquals("test_update_content", announcementDb.getContent());
     }
 
 

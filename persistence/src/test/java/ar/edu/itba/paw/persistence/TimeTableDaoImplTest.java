@@ -5,19 +5,15 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.models.Timetable;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -25,22 +21,25 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
-@Sql("classpath:schema.sql")
 @Rollback
 @Transactional
-public class TimeTableDaoImplTest extends BasicPopulator {
+public class TimeTableDaoImplTest {
+
+    private final Long COURSE_ID = 1L;
+    private final Integer COURSE_YEAR = 2021;
+    private final Integer COURSE_QUARTER = 1;
+    private final String COURSE_BOARD = "S1";
+
+    private final Long SUBJECT_ID = 1L;
+    private final String SUBJECT_CODE = "A1";
+    private final String SUBJECT_NAME = "Protos";
+
+    protected final Integer TIME_TABLE_DAY_OF_WEEK = 1;
+    protected final LocalTime TIME_TABLE_START_OF_COURSE = LocalTime.of(12, 0);
+    protected final LocalTime TIME_TABLE_END_OF_COURSE = LocalTime.of(14, 0);
 
     @Autowired
     private TimetableDao timetableDao;
-
-
-    @Before
-    public void setUp() {
-        super.setUp();
-        insertSubject(SUBJECT_ID, SUBJECT_NAME, SUBJECT_CODE);
-        insertCourse(COURSE_ID, SUBJECT_ID, COURSE_QUARTER, COURSE_BOARD, COURSE_YEAR);
-        insertTimeTable(COURSE_ID, TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE.toString(), TIME_TABLE_END_OF_COURSE.toString());
-    }
 
     private Course getMockCourse() {
         return new Course.Builder()
@@ -54,13 +53,11 @@ public class TimeTableDaoImplTest extends BasicPopulator {
 
     @Test
     public void testCreate() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "timetables");
         final boolean timeTableEntryInsertion = timetableDao.create(getMockCourse(), TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE, TIME_TABLE_END_OF_COURSE);
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "timetables"));
         assertTrue(timeTableEntryInsertion);
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test(expected = AssertionError.class)
     public void testCreateNonExistentCourseId() {
         Course mockCourse = getMockCourse();
         mockCourse.setCourseId(COURSE_ID + 1);
@@ -68,64 +65,26 @@ public class TimeTableDaoImplTest extends BasicPopulator {
         Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
     }
 
-
-    @Test
-    public void testUpdate() {
-        Time startChangedTo = new Time(TimeUnit.HOURS.toMillis(16));
-        Time endChangedTo = new Time(TimeUnit.HOURS.toMillis(3));
-
-        final boolean isUpdated = timetableDao.update(COURSE_ID, TIME_TABLE_DAY_OF_WEEK, startChangedTo, endChangedTo);
-        assertTrue(isUpdated);
-
-        String sqlGetStartTimeOfCourseId = String.format("SELECT startTime FROM timetables WHERE courseId = %d", COURSE_ID);
-        Time startTimeOfCourseIdInDB = jdbcTemplate.queryForObject(sqlGetStartTimeOfCourseId, Time.class);
-        assertEquals(startChangedTo, startTimeOfCourseIdInDB);
-
-        String sqlGetDurationOfCourseId = String.format("SELECT endTime FROM timetables WHERE courseId = %d", COURSE_ID);
-        Time endTimeOfCourseIdInDB = jdbcTemplate.queryForObject(sqlGetDurationOfCourseId, Time.class);
-        assertEquals(endChangedTo, endTimeOfCourseIdInDB);
-    }
-
     @Test(expected = AssertionError.class)
     public void testUpdateNoExist() {
-        Time startChangedTo = new Time(TimeUnit.HOURS.toMillis(16));
-        Time durationChangedTo = new Time(TimeUnit.HOURS.toMillis(3));
-
+        LocalTime startChangedTo = LocalTime.of(16, 0);
+        LocalTime durationChangedTo = LocalTime.of(3, 0);
         final boolean isUpdated = timetableDao.update(COURSE_ID + 1, TIME_TABLE_DAY_OF_WEEK, startChangedTo, durationChangedTo);
         Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
-        assertFalse(isUpdated);
     }
 
-    @Test
-    public void testDelete() {
-        final boolean isDeleted = timetableDao.delete(COURSE_ID);
-        assertTrue(isDeleted);
-
-        assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "timetables"));
-    }
 
     @Test(expected = AssertionError.class)
     public void testDeleteNoExist() {
         final boolean isDeleted = timetableDao.delete(COURSE_ID + 1);
         Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
-        assertFalse(isDeleted);
     }
 
-    @Test
-    public void testGetById() {
-        List<Timetable> timetableOptional = timetableDao.findById(COURSE_ID);
-        assertEquals(1, timetableOptional.size());
-        //assertEquals(COURSE_ID, timetableOptional.get(0).getCourseId()); Commented so it compiles
-        assertEquals(TIME_TABLE_DAY_OF_WEEK, timetableOptional.get(0).getDayOfWeek());
-        assertEquals(TIME_TABLE_START_OF_COURSE, timetableOptional.get(0).getBegins());
-        assertEquals(TIME_TABLE_END_OF_COURSE, timetableOptional.get(0).getEnd());
-    }
 
     @Test(expected = AssertionError.class)
     public void getByIdNoExist() {
         List<Timetable> timetableOptional = timetableDao.findById(COURSE_ID + 1);
         Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
-        assertEquals(0, timetableOptional.size());
     }
 
 }

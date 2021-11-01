@@ -2,8 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Timetable;
-
-import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 
 
@@ -14,7 +13,7 @@ public interface TimetableService {
      * @param course The course to be persisted in the database
      * @return true if the course was successfully added, false otherwise
      */
-    boolean create(Course course, int dayOfWeek, Time start, Time end);
+    boolean create(Course course, int dayOfWeek, LocalTime start, LocalTime end);
 
     /**
      * Attempts to update a course's timetable
@@ -25,7 +24,7 @@ public interface TimetableService {
      * @param end       modified
      * @return true if the timetable was successfully updated, false otherwise
      */
-    boolean update(Long courseId, int dayOfWeek, Time start, Time end);
+    boolean update(Long courseId, int dayOfWeek, LocalTime start, LocalTime end);
 
     /**
      * Attempts to delete a course's timetable
@@ -49,5 +48,5 @@ public interface TimetableService {
      * @param courseId of the course to get the timetable from
      * @return array of timetables for the given courseId
      */
-    Timetable[] findByIdOrdered(Long courseId); // TODO: rename this method
+    Timetable[] findByIdOrdered(Long courseId);
 }
