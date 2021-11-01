@@ -24,7 +24,7 @@ public interface AnswerDao {
 
     Long getTotalResolvedByExam(Long examId);
 
-    void correctExam(Long answerId, User teacher, Float score);
+    void correctExam(Long answerId, User teacher, Float score, String corrections);
 
     void undoExamCorrection(Long answerId);
 

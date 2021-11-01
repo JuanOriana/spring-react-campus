@@ -5,11 +5,10 @@ import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import javafx.util.Pair;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
@@ -84,14 +83,15 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
     }
 
     @Override
-    public void correctExam(Long answerId, User teacher, Float score) {
+    public void correctExam(Long answerId, User teacher, Float score, String corrections) {
         Optional<Answer> dbAnswer = findById(answerId);
 
         if (dbAnswer.isPresent()) {
             dbAnswer.get().setScore(score);
             dbAnswer.get().setTeacher(teacher);
+            dbAnswer.get().setCorrections(corrections);
         } else {
-            // TODO: Throw exception and log error
+            throw new ExamNotFoundException();
         }
     }
 

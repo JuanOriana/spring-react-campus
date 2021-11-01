@@ -222,7 +222,7 @@ public class CourseController extends AuthController {
                                       RedirectAttributes redirectAttributes) {
         if(!errors.hasErrors()) {
             LOGGER.debug("Correcting answer {}", answerId);
-            answerService.correctExam(answerId, authFacade.getCurrentUser(), answerCorrectionForm.getMark());
+            answerService.correctExam(answerId, authFacade.getCurrentUser(), answerCorrectionForm.getMark(), answerCorrectionForm.getComments());
             redirectAttributes.addFlashAttribute("successMessage","answer.solve.success.message");
             return new ModelAndView("redirect:/course/" + courseId + "/exam/" + examId);
         }

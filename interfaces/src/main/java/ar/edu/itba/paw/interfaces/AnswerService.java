@@ -75,12 +75,13 @@ public interface AnswerService {
     /**
      * Attempts to persist in the database a correction for an exam
      *
-     * @param answerId of the answer that is being corrected
-     * @param teacher  that corrects that answer
-     * @param score    the score given
+     * @param answerId      of the answer that is being corrected
+     * @param teacher       that corrects that answer
+     * @param score         the score given
+     * @param corrections   the corrections of the sent exam
      */
 
-    void correctExam(Long answerId, User teacher, Float score);
+    void correctExam(Long answerId, User teacher, Float score, String corrections);
 
     /**
      * Attempts to retrieved all the corrected exams for a course

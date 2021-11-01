@@ -88,8 +88,8 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Transactional
     @Override
-    public void correctExam(Long answerId, User teacher, Float score) {
-        answersDao.correctExam(answerId, teacher, score);
+    public void correctExam(Long answerId, User teacher, Float score, String corrections) {
+        answersDao.correctExam(answerId, teacher, score, corrections);
     }
 
     @Transactional(readOnly = true)
