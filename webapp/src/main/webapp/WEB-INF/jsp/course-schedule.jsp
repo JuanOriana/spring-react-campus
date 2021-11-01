@@ -31,8 +31,8 @@
                             <c:set var="currentTime" value="${times[daysStatus.index]}"/>
                             <h3 style="margin-top: 3px; margin-left: 10px"><spring:message code="day.${day}"/></h3>
                             <p style="margin-left: 15px">&rsaquo;
-                                <c:out value="${currentTime.begins.hours}:${currentTime.begins.minutes < 10 ?'0':''}${currentTime.begins.minutes}
-                                - ${currentTime.end.hours}:${currentTime.end.minutes < 10 ?'0':''}${currentTime.end.minutes}"/>
+                                <c:out value="${currentTime.begins.hour}:${currentTime.begins.minute < 10 ?'0':''}${currentTime.begins.minute}
+                                - ${currentTime.end.hour}:${currentTime.end.minute < 10 ?'0':''}${currentTime.end.minute}"/>
                             </p>
                         </c:if>
                     </c:forEach>

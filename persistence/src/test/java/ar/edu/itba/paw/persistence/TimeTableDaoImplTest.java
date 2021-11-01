@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,8 +35,8 @@ public class TimeTableDaoImplTest {
     private final String SUBJECT_NAME = "Protos";
 
     protected final Integer TIME_TABLE_DAY_OF_WEEK = 1;
-    protected final Time TIME_TABLE_START_OF_COURSE = new Time(TimeUnit.HOURS.toMillis(12));
-    protected final Time TIME_TABLE_END_OF_COURSE = new Time(TimeUnit.HOURS.toMillis(14));
+    protected final LocalTime TIME_TABLE_START_OF_COURSE = LocalTime.of(12, 0);
+    protected final LocalTime TIME_TABLE_END_OF_COURSE = LocalTime.of(14, 0);
 
     @Autowired
     private TimetableDao timetableDao;
@@ -66,8 +67,8 @@ public class TimeTableDaoImplTest {
 
     @Test(expected = AssertionError.class)
     public void testUpdateNoExist() {
-        Time startChangedTo = new Time(TimeUnit.HOURS.toMillis(16));
-        Time durationChangedTo = new Time(TimeUnit.HOURS.toMillis(3));
+        LocalTime startChangedTo = LocalTime.of(16, 0);
+        LocalTime durationChangedTo = LocalTime.of(3, 0);
         final boolean isUpdated = timetableDao.update(COURSE_ID + 1, TIME_TABLE_DAY_OF_WEEK, startChangedTo, durationChangedTo);
         Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
     }

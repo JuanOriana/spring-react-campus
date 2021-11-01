@@ -4,6 +4,8 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FileExtension;
 import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.Subject;
+import com.sun.org.slf4j.internal.Logger;
+import com.sun.org.slf4j.internal.LoggerFactory;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +30,8 @@ import java.util.concurrent.TimeUnit;
 @Rollback
 @Transactional
 public class BasicPopulator {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(BasicPopulator.class);
     protected final Long ANNOUNCEMENT_ID = 1L;
-    protected final String ANNOUNCEMENT_CONTENT = "test_content";
-    protected final String ANNOUNCEMENT_TITLE = "test_title";
 
     protected final Long USER_ID = 1L;
     protected final Integer USER_FILE_NUMBER = 41205221;
@@ -55,16 +55,11 @@ public class BasicPopulator {
     protected final String SUBJECT_CODE = "A1";
     protected final String SUBJECT_NAME = "Protos";
 
-    protected final String SORT_DIRECTION = "desc";
-    protected final String SORT_PROPERTY = "date";
 
     protected final Integer PAGE = 1;
     protected final Integer PAGE_SIZE = 10;
 
     protected final Integer STUDENT_ROLE_ID = 1;
-    protected final Integer TEACHER_ROLE_ID = 3;
-    protected final String TEACHER_ROLE_NAME = "Teacher";
-    protected final String STUDENT_ROLE_NAME = "Student";
 
 
 
@@ -72,16 +67,9 @@ public class BasicPopulator {
     protected final Long FILE_EXTENSION_ID_OTHER = 0L;
     protected final String FILE_EXTENSION_OTHER = "other";
 
-    // FileCategory
-    protected final Long FILE_CATEGORY_ID = 1L;
-    protected final String FILE_CATEGORY = "Guia teorica";
-    protected final Long FILE_CATEGORY_ID2 = 2L;
-    protected final Long INEXISTENCE_FILE_CATEGORY_ID = 999L;
 
     // FileModel
     protected final Long FILE_ID = 1L;
-    protected final Long FILE_ID2 = 2L;
-    protected final String FILE_NAME2 = "test2.png";
     protected final String FILE_NAME = "test.png";
 
 
@@ -107,20 +95,20 @@ public class BasicPopulator {
                 ous.write(buffer, 0, read);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         } finally {
             try {
                 if (ous != null)
                     ous.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage());
             }
 
             try {
                 if (ios != null)
                     ios.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage());
             }
         }
         return new FileModel.Builder()
