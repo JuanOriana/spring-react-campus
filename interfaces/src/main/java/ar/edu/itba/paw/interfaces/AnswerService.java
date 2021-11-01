@@ -37,9 +37,12 @@ public interface AnswerService {
      * Attempts to update an answer
      *
      * @param examId of the exam's answer to be modified
-     * @param studentId of the student answer to update
-     * @param answer   modified answer
-     * @return true if the answer was successfully update, false otherwise
+     * @param student "owner" of the answer
+     * @param answerFileName the answer file name
+     * @param answerFile the answer file
+     * @param answerFileSize the answer file size
+     * @param deliveredTime the answer delivered time
+     * @return updated answer object
      */
     Answer updateEmptyAnswer(Long examId, User student, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime);
 
