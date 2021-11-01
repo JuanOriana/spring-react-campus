@@ -31,7 +31,7 @@
               action="<c:url value="${param.examId}/answer/${requestScope.answer.answerId}/undo-correct"/>">
             <button style="background: none">
                 <img src="<c:url value="/resources/images/x.png"/>"
-                     alt="check" class="medium-icon">
+                     alt="<spring:message code="img.alt.check" />" class="medium-icon">
             </button>
         </form>
     </c:if>
