@@ -2,7 +2,6 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.RoleDao;
 import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.Timetable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +20,11 @@ public class RoleDaoJpa implements RoleDao {
 
     @Override
     public Role create(String roleName) {
-        return null; // TODO
+        Role role = new Role.Builder()
+                .withRoleName(roleName)
+                .build();
+        em.persist(role);
+        return role;
     }
 
     @Override

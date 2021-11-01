@@ -29,6 +29,7 @@ public class Role {
         private String roleName;
 
         public Builder() {
+            // Default
         }
         public Builder withRoleId(int roleId){
             this.roleId= roleId;
@@ -40,11 +41,6 @@ public class Role {
         }
 
         public Role build() {
-            if (this.roleId == null) {
-                throw new NullPointerException("The property \"roleId\" is null. "
-                        + "Please set the value by \"roleId()\". "
-                        + "The properties \"roleId\" and \"roleName\" are required.");
-            }
             if (this.roleName == null) {
                 throw new NullPointerException("The property \"roleName\" is null. "
                         + "Please set the value by \"roleName()\". "

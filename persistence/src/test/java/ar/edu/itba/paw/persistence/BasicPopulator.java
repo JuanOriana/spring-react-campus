@@ -25,14 +25,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @ContextConfiguration(classes = TestConfig.class)
-@Sql("classpath:schema.sql")
 @Rollback
 @Transactional
 public class BasicPopulator {
-
-    @Autowired
-    private DataSource ds;
-    protected JdbcTemplate jdbcTemplate;
 
     protected final Long ANNOUNCEMENT_ID = 1L;
     protected final String ANNOUNCEMENT_CONTENT = "test_content";
@@ -76,14 +71,11 @@ public class BasicPopulator {
     // FileExtension
     protected final Long FILE_EXTENSION_ID_OTHER = 0L;
     protected final String FILE_EXTENSION_OTHER = "other";
-    protected final Long FILE_EXTENSION_ID = 1L;
-    protected final String FILE_EXTENSION = "pdf";
 
     // FileCategory
     protected final Long FILE_CATEGORY_ID = 1L;
     protected final String FILE_CATEGORY = "Guia teorica";
     protected final Long FILE_CATEGORY_ID2 = 2L;
-    protected final String FILE_CATEGORY2 = "PAW";
     protected final Long INEXISTENCE_FILE_CATEGORY_ID = 999L;
 
     // FileModel
@@ -92,109 +84,6 @@ public class BasicPopulator {
     protected final String FILE_NAME2 = "test2.png";
     protected final String FILE_NAME = "test.png";
 
-
-
-    protected final Integer TIME_TABLE_DAY_OF_WEEK = 1;
-    protected final Time TIME_TABLE_START_OF_COURSE = new Time(TimeUnit.HOURS.toMillis(12));
-    protected final Time TIME_TABLE_END_OF_COURSE = new Time(TimeUnit.HOURS.toMillis(14));
-
-
-
-    @Before
-    public void setUp() {
-        jdbcTemplate = new JdbcTemplate(ds);
-    }
-
-    protected void insertSubject(Long subjectId, String subjectName, String code) {
-        SimpleJdbcInsert subjectJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("subjects");
-        Map<String, Object> args = new HashMap<>();
-        args.put("subjectId", subjectId);
-        args.put("subjectName", subjectName);
-        args.put("code", code);
-        subjectJdbcInsert.execute(args);
-    }
-
-    protected void insertCourse(Long courseId, Long subjectId, int quarter, String board, int year) {
-        SimpleJdbcInsert courseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("courses");
-        Map<String, Object> args = new HashMap<>();
-        args.put("courseId", courseId);
-        args.put("subjectId", subjectId);
-        args.put("quarter", quarter);
-        args.put("board", board);
-        args.put("year", year);
-        courseJdbcInsert.execute(args);
-    }
-
-    protected void insertUser(Long userId, int fileNumber, String name, String surname, String username, String email,
-                              String password, boolean isAdmin) {
-        SimpleJdbcInsert userJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("users");
-        SimpleJdbcInsert profileImageJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("profile_images");
-        Map<String, Object> args = new HashMap<>();
-        args.put("userId", userId);
-        args.put("fileNumber", fileNumber);
-        args.put("name", name);
-        args.put("surname", surname);
-        args.put("username", username);
-        args.put("email", email);
-        args.put("password", password);
-        args.put("isAdmin", isAdmin);
-        userJdbcInsert.execute(args);
-        Map<String, Object> argsProfileImage = new HashMap<>();
-        argsProfileImage.put("image", null);
-        argsProfileImage.put("userid", userId);
-        profileImageJdbcInsert.execute(argsProfileImage);
-    }
-
-    protected void insertAnnouncement(Long announcementId, Long userId, Long courseId, String title, String content, LocalDateTime date) {
-        SimpleJdbcInsert announcementJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("announcements");
-        Map<String, Object> args = new HashMap<>();
-        args.put("announcementId", announcementId);
-        args.put("userId", userId);
-        args.put("courseId", courseId);
-        args.put("title", title);
-        args.put("content", content);
-        args.put("date", Timestamp.valueOf(date));
-        announcementJdbcInsert.execute(args);
-    }
-
-    protected void insertRole(int roleId, String roleName) {
-        SimpleJdbcInsert roleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("roles");
-        Map<String, Object> args = new HashMap<>();
-        args.put("roleId", roleId);
-        args.put("roleName", roleName);
-        roleJdbcInsert.execute(args);
-    }
-
-    protected void insertUserToCourse(Long userId, Long courseId, int roleId) {
-        SimpleJdbcInsert userToCourseJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("user_to_course");
-        Map<String, Object> args = new HashMap<>();
-        args.put("userId", userId);
-        args.put("courseId", courseId);
-        args.put("roleId", roleId);
-        userToCourseJdbcInsert.execute(args);
-    }
-    protected void insertFileCategory(Long fileCategoryId, String fileCategoryName) {
-        SimpleJdbcInsert fileCategoryJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("file_categories");
-        Map<String, Object> args = new HashMap<>();
-
-        args.put("categoryId", fileCategoryId);
-        args.put("categoryName", fileCategoryName);
-
-        fileCategoryJdbcInsert.execute(args);
-    }
-
-    protected void insertFileModelToDB(FileModel fModel) {
-        SimpleJdbcInsert fileModelJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("files");
-        Map<String, Object> args = new HashMap<>();
-        args.put("fileExtensionId", fModel.getExtension().getFileExtensionId());
-        args.put("fileSize", fModel.getSize());
-        args.put("fileDate", fModel.getDate());
-        args.put("fileName", fModel.getName());
-        args.put("file", fModel.getFile());
-        args.put("fileId", fModel.getFileId());
-        args.put("courseId", fModel.getCourse().getCourseId());
-        fileModelJdbcInsert.execute(args);
-    }
 
     protected FileModel createFileModelObject(String filePath, long fileId) {
         FileExtension fExtension = new FileExtension(FILE_EXTENSION_ID_OTHER, FILE_EXTENSION_OTHER);
@@ -244,47 +133,6 @@ public class BasicPopulator {
                 .withDate(LocalDateTime.now())
                 .withDownloads(0L)
                 .build();
-    }
-
-
-    protected void insertFileExtension(Long fileExtensionId, String fileExtension) {
-        SimpleJdbcInsert fileExtensionsJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("file_extensions");
-
-        Map<String, Object> args = new HashMap<>();
-        args.put("fileExtensionId", fileExtensionId);
-        args.put("fileExtension", fileExtension);
-
-        fileExtensionsJdbcInsert.execute(args);
-    }
-
-
-    protected void insertRole(Integer roleId, String roleName) {
-        SimpleJdbcInsert roleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("roles");
-        Map<String, Object> args = new HashMap<>();
-        args.put("roleId", roleId);
-        args.put("roleName", roleName);
-        roleJdbcInsert.execute(args);
-    }
-
-    protected void insertCategoryFileRelationShip(Long categoryId, Long fileId) {
-        SimpleJdbcInsert categoryFileJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("category_file_relationship");
-
-        Map<String, Object> args = new HashMap<>();
-        args.put("categoryId", categoryId);
-        args.put("fileId", fileId);
-
-        categoryFileJdbcInsert.execute(args);
-    }
-
-    protected void insertTimeTable(Long courseId,Integer dayOfWeek,String start, String endTime){
-        SimpleJdbcInsert timeTableJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("timetables");
-
-        Map<String,Object>  args = new HashMap<>();
-        args.put("courseId", courseId);
-        args.put("dayOfWeek", dayOfWeek);
-        args.put("startTime", start);
-        args.put("endtime", endTime);
-        timeTableJdbcInsert.execute(args);
     }
 
 
