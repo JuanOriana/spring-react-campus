@@ -57,12 +57,13 @@
           <c:if test="${exams.size() == 0}">
             <spring:message code="teacher.exams.none.yet"/>
           </c:if>
-          <c:forEach var="exam" items="${exams}">
-            <c:set var="exam" value="${exam}" scope="request"/>
+          <c:forEach var="exam" items="${exams.entrySet()}">
+            <c:set var="exam" value="${exam.key}" scope="request"/>
             <jsp:include page="../components/exam-unit.jsp">
               <jsp:param name="isTeacher" value="${true}"/>
               <jsp:param name="courseId" value="${course.courseId}"/>
-              <jsp:param name="userCount" value="${userCount}"/>
+              <jsp:param name="examsSolved" value="${exam.value.value}"/>
+              <jsp:param name="userCount" value="${exam.value.key}"/>
           </jsp:include>
           </c:forEach>
         </div>

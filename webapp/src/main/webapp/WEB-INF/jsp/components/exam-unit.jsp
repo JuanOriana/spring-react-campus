@@ -34,7 +34,7 @@
     </div>
     <div style="display: flex; align-items: center">
         <c:if test="${param.isTeacher}">
-            <p class="file-name">18 corregidos de <c:out value="${param.userCount}"/> </p>
+            <p class="file-name"><c:out value="${param.examsSolved} corregidos de ${param.userCount}"/> </p>
             <img src="<c:url value="/resources/images/trash.png"/>"
                  alt="delete" class="medium-icon" onclick="deleteById(${param.courseId},${requestScope.exam.examId})">
         </c:if>
