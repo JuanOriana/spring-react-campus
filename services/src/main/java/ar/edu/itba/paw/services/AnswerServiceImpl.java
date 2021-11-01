@@ -140,4 +140,10 @@ public class AnswerServiceImpl implements AnswerService {
     public Map<Exam, Pair<Long, Long>> getExamsAndTotals(Long courseId) {
         return answersDao.getExamsAndTotals(courseId);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean didUserDeliver(Long examId, Long userId) {
+        return answersDao.didUserDeliver(examId, userId);
+    }
 }

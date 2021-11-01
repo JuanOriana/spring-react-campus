@@ -10,7 +10,6 @@ import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import javafx.util.Pair;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -39,7 +38,16 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<AnswerDao> implements An
             em.persist(answer);
         }
     }
-    
+
+    @Override
+    public boolean didUserDeliver(Long examId, Long userId) {
+        TypedQuery<Answer> answerTypedQuery = em.createQuery("SELECT a FROM Answer a WHERE a.student.userId = :studentId AND a.exam.examId = :examId", Answer.class);
+        answerTypedQuery.setParameter("examId", examId);
+        answerTypedQuery.setParameter("studentId", userId);
+        Answer answer = answerTypedQuery.getSingleResult();
+        return answer.getDeliveredDate() != null;
+    }
+
     @Override
     public boolean update(Long answerId, Answer answer) {
         Optional<Answer> dbAnswer = findById(answerId);
