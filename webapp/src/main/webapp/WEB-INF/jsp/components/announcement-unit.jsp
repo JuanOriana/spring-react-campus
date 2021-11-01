@@ -44,7 +44,7 @@
                 </div>
                 <c:if test="${param.isTeacher}">
                     <img src="<c:url value="/resources/images/trash-red.png"/>"
-                         alt="delete" class="small-icon" style="margin-left: 10px"
+                         alt="<spring:message code="img.alt.delete" />" class="small-icon" style="margin-left: 10px"
                          onclick="deleteById(${requestScope.announcementItem.announcementId})">
                 </c:if>
             </div>

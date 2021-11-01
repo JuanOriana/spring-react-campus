@@ -36,7 +36,7 @@
         <c:if test="${param.isTeacher}">
             <p class="file-name"><spring:message code="exam.unit.number.of.corrected.exams" htmlEscape="true" arguments="${param.examsSolved},${param.userCount}"/></p>
             <img src="<c:url value="/resources/images/trash.png"/>"
-                 alt="delete" class="medium-icon" onclick="deleteById(${param.courseId},${requestScope.exam.examId})">
+                 alt="<spring:message code="img.alt.delete" />" class="medium-icon" onclick="deleteById(${param.courseId},${requestScope.exam.examId})">
         </c:if>
     </div>
 </div>
