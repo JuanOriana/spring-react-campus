@@ -129,9 +129,10 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
     }
 
     @Override
-    public List<Answer> getMarks(Long userId) {
-        TypedQuery<Answer> answerTypedQuery = em.createQuery("SELECT a FROM Answer a WHERE a.student.userId = :userId AND (a.deliveredDate IS NOT NULL OR a.exam.endTime < :today )", Answer.class);
+    public List<Answer> getMarks(Long userId, Long courseId) {
+        TypedQuery<Answer> answerTypedQuery = em.createQuery("SELECT a FROM Answer a WHERE a.student.userId = :userId AND a.exam.course.courseId = :courseId AND (a.deliveredDate IS NOT NULL OR a.exam.endTime < :today )", Answer.class);
         answerTypedQuery.setParameter("userId", userId);
+        answerTypedQuery.setParameter("courseId", courseId);
         answerTypedQuery.setParameter("today", LocalDateTime.now());
         return answerTypedQuery.getResultList();
     }

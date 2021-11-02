@@ -154,7 +154,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public List<Answer> getMarks(Long userId) {
-        return answersDao.getMarks(userId);
+    public List<Answer> getMarks(Long userId, Long courseId) {
+        return answersDao.getMarks(userId, courseId);
     }
 }

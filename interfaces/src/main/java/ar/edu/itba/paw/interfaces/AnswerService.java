@@ -151,7 +151,6 @@ public interface AnswerService {
      */
     boolean didUserDeliver(Long examId, Long userId);
 
-
     /**
      * Returns a filtered-paginated list of answers
      * @param examId of the queried exam
@@ -165,8 +164,9 @@ public interface AnswerService {
     /**
      * Returns a list of answers for a specific user
      * @param userId of the user to query the marks from
+     * @param courseId of the course
      * @return map of exam, answer entry for a specific user
      */
-    List<Answer> getMarks(Long userId);
+    List<Answer> getMarks(Long userId, Long courseId);
 
 }

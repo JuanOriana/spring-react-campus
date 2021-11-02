@@ -45,5 +45,5 @@ public interface AnswerDao {
 
     CampusPage<Answer> getFilteredAnswers(Long examId, String filter, CampusPageRequest pageRequest);
 
-    List<Answer> getMarks(Long userId);
+    List<Answer> getMarks(Long userId, Long courseId);
 }

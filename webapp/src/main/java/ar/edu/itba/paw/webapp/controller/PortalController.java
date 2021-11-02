@@ -35,7 +35,8 @@ public class PortalController extends AuthController{
         }
         return "redirect:/portal";
     }
-
+    @Autowired
+    AnswerService answerService;
     @RequestMapping("/portal")
     public ModelAndView portal(@RequestParam(value = "page", required = false, defaultValue = "1")
                                            Integer page,

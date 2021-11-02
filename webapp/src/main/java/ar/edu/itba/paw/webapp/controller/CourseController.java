@@ -97,6 +97,7 @@ public class CourseController extends AuthController {
         return mav;
     }
 
+
     @RequestMapping(method = RequestMethod.POST, value = "/announcements")
     public ModelAndView postAnnouncement(@PathVariable Long courseId,
                                          @Valid AnnouncementForm announcementForm, final BindingResult errors,
