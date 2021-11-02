@@ -9,7 +9,7 @@
     <c:import url="config/general-head.jsp"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
-        function startTimer(millis) {
+        function startTimer(millis,courseId) {
             let x = setInterval(function () {
 
                 // Get today's date and time
@@ -29,7 +29,7 @@
                 if (delta < 0) {
                     clearInterval(x);
                     $.ajax({
-                        url: '${pageContext.request.contextPath}/course/${course.courseId}}/exam/${examId}',
+                        url: '${pageContext.request.contextPath}/course/'+ courseId + '/exams',
                         type: 'POST',
                         success: function (result) {
                             console.log("success")
@@ -40,7 +40,7 @@
             }, 1000);
         }
         window.onload = function () {
-            startTimer(${millisToEnd});
+            startTimer(${millisToEnd},${courseId});
         }
     </script>
 </head>
