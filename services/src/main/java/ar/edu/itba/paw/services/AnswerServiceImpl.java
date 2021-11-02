@@ -152,4 +152,9 @@ public class AnswerServiceImpl implements AnswerService {
     public CampusPage<Answer> getFilteredAnswers(Long examId, String filter, Integer page, Integer pageSize) {
         return answersDao.getFilteredAnswers(examId, filter, new CampusPageRequest(page, pageSize));
     }
+
+    @Override
+    public List<Answer> getMarks(Long userId) {
+        return answersDao.getMarks(userId);
+    }
 }

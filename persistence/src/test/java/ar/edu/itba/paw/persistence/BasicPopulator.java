@@ -4,35 +4,17 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FileExtension;
 import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.Subject;
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.sql.DataSource;
 import java.io.*;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @ContextConfiguration(classes = TestConfig.class)
 @Rollback
 @Transactional
 public class BasicPopulator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BasicPopulator.class);
     protected final Long ANNOUNCEMENT_ID = 1L;
-
     protected final Long USER_ID = 1L;
     protected final Integer USER_FILE_NUMBER = 41205221;
     protected final String USER_NAME = "Paw";
@@ -94,21 +76,21 @@ public class BasicPopulator {
             while ((read = ios.read(buffer)) != -1) {
                 ous.write(buffer, 0, read);
             }
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+        } catch (IOException ignored) {
+
         } finally {
             try {
                 if (ous != null)
                     ous.close();
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage());
+            } catch (IOException ignored) {
+
             }
 
             try {
                 if (ios != null)
                     ios.close();
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage());
+            } catch (IOException ignored) {
+
             }
         }
         return new FileModel.Builder()

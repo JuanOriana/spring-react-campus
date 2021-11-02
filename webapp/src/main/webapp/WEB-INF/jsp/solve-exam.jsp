@@ -26,10 +26,10 @@
                     + minutes + "m " + seconds + "s ";
 
                 // If the count down is finished, write some text
-                if (delta < 1000) {
+                if (delta < 3000) {
                     clearInterval(x);
                     $.ajax({
-                        url: '${pageContext.request.contextPath}/course/'+ courseId + '/exams',
+                        url: '${pageContext.request.contextPath}/course/${course.courseId}/exam/${examId}',
                         type: 'POST',
                         success: function (result) {
                             console.log("success")

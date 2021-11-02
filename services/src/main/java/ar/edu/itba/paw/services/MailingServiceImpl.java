@@ -7,8 +7,6 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -28,9 +26,6 @@ public class MailingServiceImpl implements MailingService {
     private final CourseService courseService;
     private final UserService userService;
     private final String SERVER_MAIL = "mpvcampus@gmail.com";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MailingServiceImpl.class);
-
 
     @Autowired
     public MailingServiceImpl(Session session, SpringTemplateEngine templateEngine,
@@ -79,8 +74,7 @@ public class MailingServiceImpl implements MailingService {
             message.setSubject(subject);
             message.setContent(content, contentType);
             Transport.send(message);
-        } catch (MessagingException mex) {
-            LOGGER.error(mex.getMessage());
+        } catch (MessagingException ignored) {
         }
     }
 

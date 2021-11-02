@@ -162,4 +162,11 @@ public interface AnswerService {
      */
     CampusPage<Answer> getFilteredAnswers(Long examId, String filter, Integer page, Integer pageSize);
 
+    /**
+     * Returns a list of answers for a specific user
+     * @param userId of the user to query the marks from
+     * @return map of exam, answer entry for a specific user
+     */
+    List<Answer> getMarks(Long userId);
+
 }

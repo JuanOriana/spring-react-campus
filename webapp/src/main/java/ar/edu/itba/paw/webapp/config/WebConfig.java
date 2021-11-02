@@ -85,7 +85,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public DataSource dataSource() {
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
         ds.setDriverClass(org.postgresql.Driver.class);
-        // Change this to a config file in the future
         if (isOnDevBuild()) {
             ds.setUrl(environment.getRequiredProperty("db.dev.url"));
             ds.setUsername(environment.getRequiredProperty("db.dev.username"));

@@ -8,6 +8,7 @@ import javafx.util.Pair;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import javax.persistence.TypedQuery;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -118,7 +119,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
         if(filter.equalsIgnoreCase("corrected")) {
             queryConditional = " AND score IS NOT NULL ";
             mappingQueryConditional = " AND a.score IS NOT NULL ";
-        } else if(filter.equalsIgnoreCase("not-corrected")) {
+        } else if(filter.equalsIgnoreCase("not corrected")) {
             queryConditional = " AND score IS NULL ";
             mappingQueryConditional = " AND a.score IS NULL ";
         }
@@ -126,6 +127,15 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
         String mappingQuery = "SELECT a FROM Answer a WHERE a.answerId IN (:ids)" + mappingQueryConditional + "ORDER BY a.score DESC";
         return listBy(properties, query, mappingQuery, pageRequest, Answer.class);
     }
+
+    @Override
+    public List<Answer> getMarks(Long userId) {
+        TypedQuery<Answer> answerTypedQuery = em.createQuery("SELECT a FROM Answer a WHERE a.student.userId = :userId AND (a.deliveredDate IS NOT NULL OR a.exam.endTime < :today )", Answer.class);
+        answerTypedQuery.setParameter("userId", userId);
+        answerTypedQuery.setParameter("today", LocalDateTime.now());
+        return answerTypedQuery.getResultList();
+    }
+
 
     @Override
     public List<Answer> getCorrectedAnswers(Long examId) {

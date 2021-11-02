@@ -6,8 +6,6 @@ import ar.edu.itba.paw.interfaces.SubjectDao;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +30,6 @@ import static org.junit.Assert.*;
 @Rollback
 @Transactional
 public class UserDaoImplTest extends BasicPopulator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserDaoImplTest.class);
 
     @Autowired
     private UserDao userDao;
@@ -124,8 +120,7 @@ public class UserDaoImplTest extends BasicPopulator {
             byte[] bytea = Files.readAllBytes(file.toPath());
             boolean isUpdated = userDao.updateProfileImage(1337L, bytea);
             assertTrue(isUpdated);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+        } catch (IOException ignored) {
         }
     }
 

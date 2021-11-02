@@ -44,4 +44,6 @@ public interface AnswerDao {
     boolean didUserDeliver(Long examId, Long userId);
 
     CampusPage<Answer> getFilteredAnswers(Long examId, String filter, CampusPageRequest pageRequest);
+
+    List<Answer> getMarks(Long userId);
 }
