@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <title>Nuevo anuncio en curso</title>
+    <title th:text="#{mail.new.announcement.title}"></title>
 </head>
 
 <div style="background: #CBF3F0;
@@ -16,7 +16,7 @@
     font-size: 24px;
     text-align: center;
     margin-bottom: 20px;"><span th:text="${subjectName}"></span></h2>
-    <p style="text-align: center;">Publicado por: <span th:text="${author.getName()}"></span> <span th:text="${author.getSurname()}"></span></p>
+    <p style="text-align: center;"><span th:text="#{mail.new.announcement.published.by}"></span> <span th:text="${author.getName()}"></span> <span th:text="${author.getSurname()}"></span></p>
 
     <a style="text-decoration: none !important; color: inherit;" th:href="@{http://pawserver.it.itba.edu.ar/paw-2021b-4/course/{id}(id=${courseId})}">
     <div>
@@ -43,7 +43,7 @@
     </a>
 
     <div style="width: 100%; display: flex; align-items: center; justify-content: center; background: #2EC4B6; color: white;font-size: 16px;padding: 6px;">
-        <p>Campus <span th:text="${year}"></span> - Todos los derechos reservados</p>
+        <p th:text="#{footer.message}"></p>
     </div>
 
 </div>
