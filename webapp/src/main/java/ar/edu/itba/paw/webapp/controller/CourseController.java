@@ -20,7 +20,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -168,8 +170,11 @@ public class CourseController extends AuthController {
 
         } else {
             mav = new ModelAndView("solve-exam");
+            final Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
             mav.addObject("solveExamForm", solveExamForm);
-            mav.addObject("exam",examService.findById(examId).orElseThrow(ExamNotFoundException::new));
+            mav.addObject("exam",exam);
+            Instant instant = exam.getEndTime().atZone(ZoneId.systemDefault()).toInstant();
+            mav.addObject("millisToEnd",instant.toEpochMilli());
 
         }
         mav.addObject("examId",examId);

@@ -7,6 +7,42 @@
 <head>
     <title><spring:message code="page.title.course.subject.name" htmlEscape="true" arguments="${course.subject.name}"/></title>
     <c:import url="config/general-head.jsp"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script>
+        function startTimer(millis) {
+            let x = setInterval(function () {
+
+                // Get today's date and time
+                const now = new Date().getTime();
+                // Find the distance between now and the count down date
+                const delta = millis - now;
+                // Time calculations for days, hours, minutes and seconds
+                const days = Math.floor(delta / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((delta % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((delta % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((delta % (1000 * 60)) / 1000);
+                // Display the result in the element with id="demo"
+                document.getElementById("time-left").innerHTML = days + "d " + hours + "h "
+                    + minutes + "m " + seconds + "s ";
+
+                // If the count down is finished, write some text
+                if (distance < 0) {
+                    clearInterval(x);
+                    $.ajax({
+                        url: '${pageContext.request.requestURL}',
+                        type: 'POST',
+                        success: function (result) {
+                            console.log("success")
+                        }
+                    });
+                    document.getElementById("time-left").innerHTML = "FIN";
+                }
+            }, 1000);
+        }
+        window.onload = function () {
+            startTimer(${millisToEnd});
+        }
+    </script>
 </head>
 <body>
 <div class="page-organizer">
@@ -26,8 +62,9 @@
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> <c:out value="${exam.title}"/></h3>
                 <div class="big-wrapper">
+                    <h3 style="align-self: center">Tiempo restante: <span id="time-left"></span> </h3>
                     <h3 class="form-label"><spring:message code="solve.exam.description" htmlEscape="true"/></h3>
-                    <p><c:out value="${exam.description}"/></p>
+                    <p style="margin-left:30px; margin-top:10px; margin-bottom:10px;"><c:out value="${exam.description}"/></p>
                     <c:set var="file" value="${exam.examFile}" scope="request"/>
                     <jsp:include page="components/file-unit.jsp">
                         <jsp:param name="isMinimal" value="${true}"/>

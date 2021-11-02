@@ -229,6 +229,8 @@ body{
 }
 
 .big-wrapper{
+    display: flex;
+    flex-direction: column;
     background: white;
     width: 95%;
     border-radius: 12px;

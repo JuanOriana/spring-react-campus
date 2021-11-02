@@ -27,7 +27,7 @@
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> <c:out value="${exam.title}"/></h3>
                 <div class="big-wrapper">
                     <h3 class="form-label"><spring:message code="solve.exam.description" htmlEscape="true"/></h3>
-                    <p><c:out value="${exam.description}"/></p>
+                    <p style="margin-left:30px; margin-top:10px; margin-bottom:10px;"><c:out value="${exam.description}"/></p>
                     <c:set var="file" value="${exam.examFile}" scope="request"/>
                     <jsp:include page="../components/file-unit.jsp">
                         <jsp:param name="isMinimal" value="${true}"/>
