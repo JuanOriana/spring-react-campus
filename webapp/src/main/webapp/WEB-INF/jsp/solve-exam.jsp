@@ -29,7 +29,7 @@
                 if (delta < 0) {
                     clearInterval(x);
                     $.ajax({
-                        url: '${pageContext.request.requestURL}',
+                        url: '${pageContext.request.contextPath}/course/${course.courseId}}/exam/${examId}',
                         type: 'POST',
                         success: function (result) {
                             console.log("success")
@@ -78,7 +78,7 @@
                         <form:input type="file" path="exam" accept="application/pdf, application/msword" cssStyle="font-size: 18px;" />
                         <form:errors path="exam" element="p" cssStyle="color:red;margin-left: 15px"/>
                         <div style="display: flex; margin-top:5px; justify-content: center">
-                            <a class="styleless-anchor form-button" style="margin-right:15px; background: #a80011";
+                            <a class="styleless-anchor form-button" style="margin-right:15px; background: #a80011; text-align: center";
                             href="/course/${course.courseId}/exams">
                                 <spring:message code="solve.exam.cancel.submission" htmlEscape="true"/>
                             </a>
