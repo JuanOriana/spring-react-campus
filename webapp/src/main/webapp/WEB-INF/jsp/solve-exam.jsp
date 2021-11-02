@@ -26,7 +26,7 @@
                     + minutes + "m " + seconds + "s ";
 
                 // If the count down is finished, write some text
-                if (distance < 0) {
+                if (delta < 0) {
                     clearInterval(x);
                     $.ajax({
                         url: '${pageContext.request.requestURL}',
@@ -78,7 +78,10 @@
                         <form:input type="file" path="exam" accept="application/pdf, application/msword" cssStyle="font-size: 18px;" />
                         <form:errors path="exam" element="p" cssStyle="color:red;margin-left: 15px"/>
                         <div style="display: flex; margin-top:5px; justify-content: center">
-                            <button  class="form-button" style="margin-right:15px; background: #a80011";><spring:message code="solve.exam.cancel.submission" htmlEscape="true"/></button>
+                            <a class="styleless-anchor form-button" style="margin-right:15px; background: #a80011";
+                            href="/course/${course.courseId}/exams">
+                                <spring:message code="solve.exam.cancel.submission" htmlEscape="true"/>
+                            </a>
                             <button  class="form-button"><spring:message code="solve.exam.submit" htmlEscape="true"/></button>
                         </div>
                     </form:form>
