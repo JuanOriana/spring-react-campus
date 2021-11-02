@@ -18,7 +18,7 @@
     margin-bottom: 20px;"><span th:text="${subjectName}"></span></h2>
     <p style="text-align: center;"><span th:text="#{mail.new.announcement.published.by}"></span> <span th:text="${author.getName()}"></span> <span th:text="${author.getSurname()}"></span></p>
 
-    <a style="text-decoration: none !important; color: inherit;" th:href="@{http://pawserver.it.itba.edu.ar/paw-2021b-4/course/{id}(id=${courseId})}">
+    <a style="text-decoration: none !important; color: inherit;" th:href="${url}">
     <div>
         <div style="align-items: center;
     background: white;
