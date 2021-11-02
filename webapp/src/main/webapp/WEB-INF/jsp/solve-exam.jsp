@@ -26,7 +26,7 @@
                     + minutes + "m " + seconds + "s ";
 
                 // If the count down is finished, write some text
-                if (delta < 0) {
+                if (delta < 1000) {
                     clearInterval(x);
                     $.ajax({
                         url: '${pageContext.request.contextPath}/course/'+ courseId + '/exams',
