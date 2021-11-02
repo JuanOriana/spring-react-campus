@@ -22,7 +22,7 @@
                    acceptCharset="utf-8" cssStyle="margin: 0px 40px 40px 40px">
             <a href="<c:url value="/admin/course/select" />" class="styleless-anchor"
                style="display: flex; align-items: center">
-                <img src="<c:url value="/resources/images/page-arrow.png"/>" alt="back" class="back-img">
+                <img src="<c:url value="/resources/images/page-arrow.png"/>" alt="<spring:message code="add.user.img.alt.back"/>" class="back-img">
                 <p style="font-size: 22px; font-weight: 700"><spring:message code="back.button"/></p>
             </a>
             <h1 class="announcement-title" style="color:#176961; align-self:center">

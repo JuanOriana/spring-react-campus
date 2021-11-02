@@ -47,7 +47,7 @@
             </c:if>
             <c:if test="${param.isTeacher}">
                 <img src="<c:url value="/resources/images/trash.png"/>"
-                     alt="delete" class="medium-icon" onclick="deleteById(${requestScope.file.fileId})">
+                     alt="<spring:message code="img.alt.delete" />" class="medium-icon" onclick="deleteById(${requestScope.file.fileId})">
             </c:if>
             <c:if test="${param.isGlobal}">
                 <div style="padding-left: 5px; margin-left: 15px; border-left: 3px solid white">

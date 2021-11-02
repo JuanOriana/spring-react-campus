@@ -64,4 +64,12 @@ public interface ExamService {
      * @return the exam corresponding to the given id if it exists, null otherwise
      */
     Optional<Exam> findById(Long examId);
+
+    /**
+     * Determines if an exam belongs to a course
+     * @param examId of the queried exam
+     * @param courseId of the queried course
+     * @return true if the exam belongs to the course, false otherwise
+     */
+    boolean belongs(Long examId, Long courseId);
 }

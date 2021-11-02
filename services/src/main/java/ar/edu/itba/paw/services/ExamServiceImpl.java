@@ -60,7 +60,6 @@ public class ExamServiceImpl implements ExamService {
             return examDao.create(courseId,title, description, examFile,null, startTime, endTime);
         }else{
             throw new CourseNotFoundException();
-            //TODO:log error
         }
     }
 
@@ -86,5 +85,12 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public Optional<Exam> findById(Long examId) {
         return examDao.findById(examId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean belongs(Long examId, Long courseId) {
+        Optional<Exam> exam = findById(examId);
+        return exam.map(value -> value.getCourse().getCourseId().equals(courseId)).orElse(false);
     }
 }

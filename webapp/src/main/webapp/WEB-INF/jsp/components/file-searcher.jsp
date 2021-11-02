@@ -54,7 +54,7 @@
         </button>
         <img src="<c:url value="/resources/images/outline-arrow.png"/>"
              class="pagination-arrow"  style="transform: rotate(90deg); margin-left: 10px"
-             onclick="toggleFilters()" alt="toggle filters" id="filter-toggle">
+             onclick="toggleFilters()" alt="<spring:message code="file.search.img.alt.toggle.filters" />" id="filter-toggle">
     </div>
     <div class="file-filter-container" id="filter-container" style="display: none;">
         <div style="display: flex;justify-content: space-between;">

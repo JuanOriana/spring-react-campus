@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class ExceptionMessageUtil {
     private ExceptionMessageUtil() {
-
+        // Private for util classes, avoiding instantiation
     }
     public static String translate(String errorMessage) {
         String res = "";

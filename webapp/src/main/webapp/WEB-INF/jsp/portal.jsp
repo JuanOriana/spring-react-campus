@@ -24,7 +24,7 @@
                         </a>
                         <c:if test="${!coursesAsStudent.contains(courseItem)}">
                             <img src="<c:url value="/resources/images/graduation-hat.png"/>"
-                                 alt="teacher" style="margin-left: 10px" width="28px"/>
+                                 alt="<spring:message code="img.alt.teacher.icon" />" style="margin-left: 10px" width="28px"/>
                         </c:if>
                     </div>
                     <p class="course-extra-info"><spring:message code="portal.course.info" htmlEscape="true"
@@ -36,14 +36,14 @@
                 <c:if test="${currentPage > 1}">
                     <a href="<c:url value="/portal?page=${currentPage-1}&pageSize=${pageSize}"/>">
                         <img src="<c:url value="/resources/images/page-arrow.png"/>"
-                             alt="Next page" class="pagination-arrow x-rotated small-icon">
+                             alt="<spring:message code="img.alt.next.page" />" class="pagination-arrow x-rotated small-icon">
                     </a>
                 </c:if>
                 <spring:message code="page.actual" htmlEscape="true" arguments="${currentPage},${maxPage}" />
                 <c:if test="${currentPage < maxPage}">
                     <a href="<c:url value="/portal?page=${currentPage+1}&pageSize=${pageSize}"/>">
                         <img src="<c:url value="/resources/images/page-arrow.png"/>"
-                             alt="Next page" class="pagination-arrow small-icon">
+                             alt="<spring:message code="img.alt.next.page" />" class="pagination-arrow small-icon">
                     </a>
                 </c:if>
             </div>
