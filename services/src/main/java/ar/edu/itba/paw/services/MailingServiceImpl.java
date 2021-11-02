@@ -8,6 +8,9 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
@@ -26,6 +29,9 @@ public class MailingServiceImpl implements MailingService {
     private final CourseService courseService;
     private final UserService userService;
     private final String SERVER_MAIL = "mpvcampus@gmail.com";
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     public MailingServiceImpl(Session session, SpringTemplateEngine templateEngine,
@@ -63,7 +69,7 @@ public class MailingServiceImpl implements MailingService {
         model.put("year", "2021");
         model.put("courseId", course.getCourseId());
         model.put("author", author);
-        sendThymeleafTemplateEmail(to, "Nuevo anuncio en curso: " + course.getSubject().getName(), model, "new-announcement-notification.html");
+        sendThymeleafTemplateEmail(to, messageSource.getMessage( "mail.new.announcement.title", null, "", LocaleContextHolder.getLocale()) + ": " + course.getSubject().getName(), model, "new-announcement-notification.html");
     }
 
     private void transportMessage(Message message, List<String> to, String subject, String content, String contentType) {
