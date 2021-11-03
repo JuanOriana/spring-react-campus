@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.validation.Valid;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -318,6 +317,7 @@ public class CourseController extends AuthController {
         }
         if (!errors.hasErrors()) {
             LOGGER.debug("Attempting to send mail to {}", userId);
+
             mailingService.sendEmail(authFacade.getCurrentUser(), userId, mailForm.getSubject(),
                     mailForm.getContent(), courseId);
             redirectAttributes.addFlashAttribute("successMessage","email.success.message");

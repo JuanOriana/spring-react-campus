@@ -208,6 +208,24 @@ body{
     margin: 0 0 6px 2px;
 }
 
+/* TODO: ver si esto va aca */
+.announcement-course-link:link, .announcement-course-link:visited {
+    margin-top: 5px;
+    float: right;
+    border-radius: 15px 50px;
+    background-color: var(--cyan-darkest);
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.announcement-course-link:hover, .announcement-course-link:active {
+    background-color: var(--cyan-dark);
+}
+/******************************************/
+
 /*                  UTILS                  */
 
 .separator{

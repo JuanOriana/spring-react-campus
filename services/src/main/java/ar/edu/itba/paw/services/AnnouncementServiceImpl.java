@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -32,7 +33,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         List<User> userList = courseService.getStudents(announcement.getCourse().getCourseId());
         List<String> emailList = new ArrayList<>();
         userList.forEach(u->emailList.add(u.getEmail()));
-        mailingService.broadcastAnnouncementNotification(emailList, title, content, course, author);
+        final String baseUrl =
+                ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        mailingService.broadcastAnnouncementNotification(emailList, title, content, course, author, baseUrl);
         return announcement;
     }
 
