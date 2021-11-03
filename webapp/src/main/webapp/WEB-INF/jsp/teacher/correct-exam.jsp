@@ -55,6 +55,7 @@
                     </c:if>
                     <c:forEach var="answer" items="${answers}">
                         <c:set var="answer" value="${answer}" scope="request"/>
+                        <c:set var="dateTimeFormatter" value="${dateTimeFormatter}" scope="request"/>
                         <jsp:include page="../components/student-exam-unit.jsp">
                             <jsp:param name="examId" value="${exam.examId}"/>
                             <jsp:param name="isCorrected" value="${answer.score != null}"/>

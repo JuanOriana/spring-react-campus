@@ -15,9 +15,10 @@
                 <spring:message code="student.exam.unit.not.published" arguments="${requestScope.answer.deliveredDate}"/>
             </p>
         </c:if>
-        <c:if test="${requestScope.answer.deliveredDate != null}">
+        <c:if test="${requestScope.answer.deliveredDate != null&& requestScope.dateTimeFormatter != null}">
             <p class="file-name">
-                <spring:message code="student.exam.unit.published.at.title" arguments="${requestScope.answer.deliveredDate}"/>
+                <spring:message code="student.exam.unit.published.at.title"
+                                arguments="${requestScope.dateTimeFormatter.format(requestScope.answer.deliveredDate)}"/>
             </p>
         </c:if>
     </div>

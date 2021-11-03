@@ -176,6 +176,7 @@ public class CourseController extends AuthController {
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/correct-exam");
             CampusPage<Answer> answers = answerService.getFilteredAnswers(examId, filterBy, page, pageSize);
+            mav.addObject("dateTimeFormatter",dateTimeFormatter);
             mav.addObject("exam",exam);
             mav.addObject("answers", answers.getContent());
             mav.addObject("currentPage", answers.getPage());
