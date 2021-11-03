@@ -170,28 +170,29 @@ public class CourseController extends AuthController {
                              @RequestParam(value = "pageSize", required = false, defaultValue = "10")
                              Integer pageSize,
                              @RequestParam(value = "filter-by", required = false, defaultValue = "")
-                             String filter) {
+                             String filterBy) {
         ModelAndView mav;
+        final Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/correct-exam");
-            CampusPage<Answer> answers = answerService.getFilteredAnswers(examId, filter, page, pageSize);
+            CampusPage<Answer> answers = answerService.getFilteredAnswers(examId, filterBy, page, pageSize);
+            mav.addObject("exam",exam);
             mav.addObject("answers", answers.getContent());
             mav.addObject("currentPage", answers.getPage());
             mav.addObject("maxPage", answers.getTotal());
             mav.addObject("pageSize", answers.getSize());
+            mav.addObject("filterBy", filterBy);
             mav.addObject("correctedAnswers", answerService.getCorrectedAnswers(examId));
             mav.addObject("uncorrectedAnswers", answerService.getNotCorrectedAnswers(examId));
 
         } else {
             mav = new ModelAndView("solve-exam");
-            final Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
             mav.addObject("solveExamForm", solveExamForm);
             mav.addObject("exam",exam);
             Instant instant = exam.getEndTime().atZone(ZoneId.systemDefault()).toInstant();
             mav.addObject("millisToEnd",instant.toEpochMilli());
 
         }
-        mav.addObject("examId",examId);
         return mav;
     }
 

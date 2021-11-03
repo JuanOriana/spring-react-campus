@@ -29,7 +29,7 @@
                 if (delta < 3000) {
                     clearInterval(x);
                     $.ajax({
-                        url: '${pageContext.request.contextPath}/course/${course.courseId}/exam/${examId}',
+                        url: '${pageContext.request.contextPath}/course/${courseId}/exams',
                         type: 'GET',
                         success: function (result) {
                             console.log("success")
