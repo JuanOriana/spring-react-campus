@@ -79,7 +79,7 @@
                         <form:errors path="exam" element="p" cssStyle="color:red;margin-left: 15px"/>
                         <div style="display: flex; margin-top:5px; justify-content: center">
                             <a class="styleless-anchor form-button" style="margin-right:15px; background: #a80011; text-align: center";
-                            href="/course/${course.courseId}/exams">
+                            href="${pageContext.request.contextPath}/course/${course.courseId}/exams">
                                 <spring:message code="solve.exam.cancel.submission" htmlEscape="true"/>
                             </a>
                             <button  class="form-button"><spring:message code="solve.exam.submit" htmlEscape="true"/></button>
