@@ -4,11 +4,9 @@ import ar.edu.itba.paw.interfaces.AnswerDao;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.AnswerNotFoundException;
 import ar.edu.itba.paw.models.exception.ExamNotFoundException;
-import javafx.util.Pair;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import javax.persistence.TypedQuery;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -186,16 +184,16 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
     }
 
     @Override
-    public Map<Exam,Pair<Long,Long>> getExamsAndTotals(Long courseId){
-        TypedQuery<Exam> examTypedQuery = em.createQuery("SELECT ex FROM Exam ex WHERE ex.course.courseId = :courseId",Exam.class);
+    public Map<Exam, Pair<Long,Long>> getExamsAndTotals(Long courseId) {
+        TypedQuery<Exam> examTypedQuery = em.createQuery("SELECT ex FROM Exam ex WHERE ex.course.courseId = :courseId", Exam.class);
         examTypedQuery.setParameter("courseId",courseId);
         List<Exam> exams = examTypedQuery.getResultList();
         Map<Exam, Pair<Long,Long>> examLongMap = new HashMap<>();
 
-        for(Exam exam:exams){
+        for(Exam exam : exams){
             Long totalAnswers = getTotalAnswers(exam.getExamId());
             Long totalCorrected = getTotalCorrectedAnswers(exam.getExamId());
-            examLongMap.put(exam,new Pair<>(totalAnswers, totalCorrected));
+            examLongMap.put(exam, new Pair<>(totalAnswers, totalCorrected));
         }
 
         return examLongMap;

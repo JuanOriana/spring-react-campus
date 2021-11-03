@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.*;
-import javafx.util.Pair;
 
 import java.time.LocalDateTime;
 import java.util.List;

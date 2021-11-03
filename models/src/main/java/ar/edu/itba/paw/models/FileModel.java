@@ -23,7 +23,7 @@ public class FileModel {
     private FileExtension extension;
 
     @Column(name="filename")
-    private String name;
+    private String fileName;
 
     @Column
     private LocalDateTime fileDate;
@@ -57,7 +57,7 @@ public class FileModel {
         private Long fileId;
         private Long size;
         private FileExtension extension;
-        private String name;
+        private String fileName;
         private LocalDateTime fileDate;
         private byte[] file;
         private Course course;
@@ -68,12 +68,12 @@ public class FileModel {
         public Builder() {
         }
 
-        Builder(Long fileId, Long size, FileExtension extension, String name, LocalDateTime fileDate, byte[] file,
+        Builder(Long fileId, Long size, FileExtension extension, String fileName, LocalDateTime fileDate, byte[] file,
                 Course course, Long downloads, List<FileCategory> fileCategories, Boolean hidden) {
             this.fileId = fileId;
             this.size = size;
             this.extension = extension;
-            this.name = name;
+            this.fileName = fileName;
             this.fileDate = fileDate;
             this.file = file;
             this.course = course;
@@ -97,8 +97,8 @@ public class FileModel {
             return Builder.this;
         }
 
-        public Builder withName(String name){
-            this.name = name;
+        public Builder withName(String fileName){
+            this.fileName = fileName;
             return Builder.this;
         }
 
@@ -141,27 +141,27 @@ public class FileModel {
             if(this.size == null){
                 throw new NullPointerException("The property \"size\" is null. "
                         + "Please set the value by \"size()\". "
-                        + "The properties \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
+                        + "The properties \"size\", \"extension\", \"fileName\", \"fileDate\" and \"course\" are required.");
             }
             if(this.extension == null){
                 throw new NullPointerException("The property \"extension\" is null. "
                         + "Please set the value by \"extension()\". "
-                        + "The properties \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
+                        + "The properties \"size\", \"extension\", \"fileName\", \"fileDate\" and \"course\" are required.");
             }
-            if(this.name == null){
-                throw new NullPointerException("The property \"name\" is null. "
-                        + "Please set the value by \"name()\". "
-                        + "The properties \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
+            if(this.fileName == null){
+                throw new NullPointerException("The property \"fileName\" is null. "
+                        + "Please set the value by \"fileName()\". "
+                        + "The properties \"size\", \"extension\", \"fileName\", \"fileDate\" and \"course\" are required.");
             }
             if(this.fileDate == null){
                 throw new NullPointerException("The property \"fileDate\" is null. "
                         + "Please set the value by \"fileDate()\". "
-                        + "The properties \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
+                        + "The properties \"size\", \"extension\", \"fileName\", \"fileDate\" and \"course\" are required.");
             }
             if(this.course == null){
                 throw new NullPointerException("The property \"course\" is null. "
                         + "Please set the value by \"course()\". "
-                        + "The properties \"size\", \"extension\", \"name\", \"fileDate\" and \"course\" are required.");
+                        + "The properties \"size\", \"extension\", \"fileName\", \"fileDate\" and \"course\" are required.");
             }
 
             return new FileModel(this);
@@ -172,7 +172,7 @@ public class FileModel {
         this.fileId = builder.fileId;
         this.size = builder.size;
         this.extension = builder.extension;
-        this.name = builder.name;
+        this.fileName = builder.fileName;
         this.fileDate = builder.fileDate;
         this.file = builder.file;
         this.course = builder.course;
@@ -206,11 +206,11 @@ public class FileModel {
     }
 
     public String getName() {
-        return name;
+        return fileName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String fileName) {
+        this.fileName = fileName;
     }
 
     public LocalDateTime getDate() {
@@ -262,7 +262,7 @@ public class FileModel {
     }
 
     public void merge(FileModel fileModel) {
-        this.name = this.name.equals(fileModel.getName())  ? this.name : fileModel.getName();
+        this.fileName = this.fileName.equals(fileModel.getName())  ? this.fileName : fileModel.getName();
         this.extension = this.extension.equals(fileModel.getExtension()) ? this.extension : fileModel.extension;
         this.size = this.size.equals(fileModel.getSize()) ? this.size : fileModel.size;
         this.fileDate = this.fileDate.equals(fileModel.getDate()) ? this.fileDate : fileModel.fileDate;

@@ -137,12 +137,12 @@ public class CourseController extends AuthController {
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-exams");
             mav.addObject("createExamForm", createExamForm);
-            mav.addObject("exams",answerService.getExamsAndTotals(courseId));
+            mav.addObject("exams", answerService.getExamsAndTotals(courseId));
             mav.addObject("minDateTime", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm").format(LocalDateTime.now()));
         } else {
             mav = new ModelAndView("course-exams");
-            mav.addObject("unresolvedExams",answerService.getUnresolvedExams(authFacade.getCurrentUser().getUserId(),courseId));
-            mav.addObject("answerMarks",answerService.getMarks(authFacade.getCurrentUser().getUserId(),courseId));
+            mav.addObject("unresolvedExams", answerService.getUnresolvedExams(authFacade.getCurrentUser().getUserId(),courseId));
+            mav.addObject("answerMarks", answerService.getMarks(authFacade.getCurrentUser().getUserId(),courseId));
         }
         return mav;
     }
