@@ -22,7 +22,7 @@
 <body>
 <div class="file-unit" id="exam-${requestScope.exam.examId}">
     <div style="display: flex; align-items: center">
-        <a <c:if test="${param.isUnclickable}">style="pointer-events: none; display: flex; align-items: center"</c:if>
+        <a <c:if test="${param.isDelivered}">style="pointer-events: none; display: flex; align-items: center"</c:if>
            href="<c:url value="exam/${requestScope.exam.examId}"/>" class="styleless-anchor"
            style="display: flex;margin-left: 10px; align-items: center">
             <img src="<c:url value="/resources/images/test.png"/>"
@@ -33,6 +33,17 @@
         </a>
     </div>
     <div style="display: flex; align-items: center">
+        <c:if test="${param.isDelivered}">
+            <p class="file-name">
+                Nota:
+                <c:if test="${requestScope.answer.score != null}">
+                    <c:out value="${requestScope.answer.score}"/>
+                </c:if>
+                <c:if test="${requestScope.answer.score == null}">
+                    --
+                </c:if>
+            </p>
+        </c:if>
         <c:if test="${param.isTeacher}">
             <p class="file-name"><spring:message code="exam.unit.number.of.corrected.exams" htmlEscape="true" arguments="${param.examsSolved},${param.userCount}"/></p>
             <img src="<c:url value="/resources/images/trash.png"/>"

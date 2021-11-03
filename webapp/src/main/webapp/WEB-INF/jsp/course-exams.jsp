@@ -35,12 +35,13 @@
                         <c:set var="exam" value="${unresolvedExam}" scope="request"/>
                         <jsp:include page="./components/exam-unit.jsp"/>
                     </c:forEach>
-                    <c:if test="${resolvedExams.size() != 0}">
+                    <c:if test="${answerMarks.size() != 0}">
                     <h3 style="margin: 10px 0;"><spring:message code="course-exams.sent.exams"/></h3>
-                        <c:forEach var="resolvedExam" items="${resolvedExams}">
-                            <c:set var="exam" value="${resolvedExam}" scope="request"/>
+                        <c:forEach var="answer" items="${answerMarks}">
+                            <c:set var="exam" value="${answer.exam}" scope="request"/>
+                            <c:set var="answer" value="${answer}" scope="request"/>
                             <jsp:include page="./components/exam-unit.jsp">
-                                <jsp:param name="isUnclickable" value="${true}"/>
+                                <jsp:param name="isDelivered" value="${true}"/>
                             </jsp:include>
                         </c:forEach>
                     </c:if>

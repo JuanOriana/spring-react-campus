@@ -138,8 +138,8 @@ public class CourseController extends AuthController {
             mav.addObject("minDateTime", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm").format(LocalDateTime.now()));
         } else {
             mav = new ModelAndView("course-exams");
-            mav.addObject("resolvedExams",answerService.getResolvedExams(authFacade.getCurrentUser().getUserId(),courseId));
             mav.addObject("unresolvedExams",answerService.getUnresolvedExams(authFacade.getCurrentUser().getUserId(),courseId));
+            mav.addObject("answerMarks",answerService.getMarks(authFacade.getCurrentUser().getUserId(),courseId));
         }
         return mav;
     }
