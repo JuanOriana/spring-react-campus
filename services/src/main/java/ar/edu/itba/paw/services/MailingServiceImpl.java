@@ -10,7 +10,6 @@ import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
@@ -19,6 +18,7 @@ import org.thymeleaf.spring4.SpringTemplateEngine;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -43,7 +43,6 @@ public class MailingServiceImpl implements MailingService {
     }
 
 
-
     @Override
     public void sendEmail(User sender, Long receiverId, String subject, String content, Long courseId) {
         User user = userService.findById(receiverId).orElseThrow(UserNotFoundException::new);
@@ -53,7 +52,7 @@ public class MailingServiceImpl implements MailingService {
         model.put("student", sender);
         model.put("subject", subject);
         model.put("content", content);
-        model.put("year", "2021");
+        model.put("year", String.valueOf(LocalDateTime.now().getYear()));
         sendThymeleafTemplateEmail(getMimeMessage(sender.getEmail()), Collections.singletonList(user.getEmail()),
                 subject, model, "student-email-to-teacher.html");
     }
@@ -61,12 +60,13 @@ public class MailingServiceImpl implements MailingService {
 
     @Override
     @Async
-    public void broadcastAnnouncementNotification(List<String> to, String title, String content, Course course, User author) {
+    public void broadcastAnnouncementNotification(List<String> to, String title, String content, Course course, User author, String baseUrl) {
         Map<String, Object> model = new HashMap<>();
         model.put("title", title);
         model.put("content", content);
         model.put("subjectName", course.getSubject().getName());
-        model.put("year", "2021");
+        model.put("year", String.valueOf(LocalDateTime.now().getYear()));
+        model.put("url", baseUrl + "/course/" + course.getCourseId());
         model.put("courseId", course.getCourseId());
         model.put("author", author);
         sendThymeleafTemplateEmail(to, messageSource.getMessage( "mail.new.announcement.title", null, "", LocaleContextHolder.getLocale()) + ": " + course.getSubject().getName(), model, "new-announcement-notification.html");
