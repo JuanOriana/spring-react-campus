@@ -20,7 +20,7 @@ public class UserDaoJpa implements UserDao {
     @PersistenceContext
     private EntityManager em;
 
-    @Transactional
+
     @Override
     public User create(Integer fileNumber, String name, String surname, String username,
                        String email, String password, boolean isAdmin) {
@@ -37,7 +37,7 @@ public class UserDaoJpa implements UserDao {
         return user;
     }
 
-    @Transactional
+
     @Override
     public boolean update(Long userId, User user) {
         Optional<User> dbUser = findById(userId);
@@ -46,7 +46,7 @@ public class UserDaoJpa implements UserDao {
         return true;
     }
 
-    @Transactional
+
     @Override
     public boolean delete(Long userId) {
         Optional<User> dbUser = findById(userId);
@@ -55,7 +55,7 @@ public class UserDaoJpa implements UserDao {
         return true;
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public Optional<Role> getRole(Long userId, Long courseId) {
         TypedQuery<Role> dbRole = em.createQuery("SELECT e.role FROM Enrollment e WHERE e.course.courseId = :courseId AND e.user.userId = :userId", Role.class);
@@ -65,13 +65,13 @@ public class UserDaoJpa implements UserDao {
         return Optional.ofNullable(roles.isEmpty() ? null : roles.get(0));
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public Optional<User> findById(Long userId) {
         return Optional.ofNullable(em.find(User.class, userId));
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public Optional<User> findByUsername(String username) {
         final TypedQuery<User> query = em.createQuery("SELECT u from User u where u.username = :username",
@@ -80,21 +80,21 @@ public class UserDaoJpa implements UserDao {
         return query.getResultList().stream().findFirst();
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public List<User> list() {
         TypedQuery<User> listUsers = em.createQuery("SELECT u from User u", User.class);
         return listUsers.getResultList();
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public Optional<byte[]> getProfileImage(Long userId) {
         Optional<User> user = findById(userId);
         return user.map(User::getImage);
     }
 
-    @Transactional
+
     @Override
     public boolean updateProfileImage(Long userId, byte[] image) {
         Optional<User> user = findById(userId);

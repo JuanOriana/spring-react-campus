@@ -19,7 +19,7 @@ public class FileCategoryDaoJpa implements FileCategoryDao {
     @PersistenceContext
     private EntityManager em;
 
-    @Transactional
+
     @Override
     public FileCategory create(String newCategory) {
         final FileCategory fCategory = new FileCategory(newCategory);
@@ -27,7 +27,7 @@ public class FileCategoryDaoJpa implements FileCategoryDao {
         return fCategory;
     }
 
-    @Transactional
+
     @Override
     public boolean update(long fileCategoryId, String newFileCategory) {
         Optional<FileCategory> dbFileCategory = Optional.ofNullable(em.find(FileCategory.class, fileCategoryId));
@@ -36,7 +36,7 @@ public class FileCategoryDaoJpa implements FileCategoryDao {
         return true;
     }
 
-    @Transactional
+
     @Override
     public boolean delete(long fileCategoryId) {
         Optional<FileCategory> dbFileCategory = Optional.ofNullable(em.find(FileCategory.class, fileCategoryId));

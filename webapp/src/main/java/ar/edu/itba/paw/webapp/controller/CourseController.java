@@ -3,11 +3,10 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
+import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
-import ar.edu.itba.paw.webapp.form.AnnouncementForm;
-import ar.edu.itba.paw.webapp.form.FileForm;
-import ar.edu.itba.paw.webapp.form.MailForm;
+import ar.edu.itba.paw.webapp.form.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -34,6 +37,8 @@ public class CourseController extends AuthController {
     private final FileService fileService;
     private final UserService userService;
     private final MailingService mailingService;
+    private final ExamService examService;
+    private final AnswerService answerService;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private static final String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
     private static final int DEFAULT_PAGE = 1;
@@ -44,7 +49,8 @@ public class CourseController extends AuthController {
     public CourseController(AuthFacade authFacade, AnnouncementService announcementService,
                             CourseService courseService, FileCategoryService fileCategoryService,
                             FileExtensionService fileExtensionService, FileService fileService,
-                            UserService userService, MailingService mailingService, TimetableService timetableService) {
+                            UserService userService, MailingService mailingService,
+                            TimetableService timetableService,ExamService examService, AnswerService answerService) {
         super(authFacade);
         this.announcementService = announcementService;
         this.courseService = courseService;
@@ -54,6 +60,8 @@ public class CourseController extends AuthController {
         this.userService = userService;
         this.mailingService = mailingService;
         this.timetableService = timetableService;
+        this.examService = examService;
+        this.answerService = answerService;
     }
 
     @ModelAttribute
@@ -64,7 +72,7 @@ public class CourseController extends AuthController {
 
     @RequestMapping(method = RequestMethod.GET, value = "")
     public String coursePortal(@PathVariable Long courseId) {
-       return "redirect:/course/{courseId}/announcements";
+       return "redirect:/course/"+courseId+"/announcements";
 
     }
 
@@ -90,13 +98,16 @@ public class CourseController extends AuthController {
         return mav;
     }
 
+
     @RequestMapping(method = RequestMethod.POST, value = "/announcements")
     public ModelAndView postAnnouncement(@PathVariable Long courseId,
                                          @Valid AnnouncementForm announcementForm, final BindingResult errors,
                                          RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
-            Announcement announcement =announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
-                    authFacade.getCurrentUser(), courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
+            Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
+            final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+            Announcement announcement = announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
+                    authFacade.getCurrentUser(), course, baseUrl + "/course/" + course.getCourseId());
             LOGGER.debug("Announcement in course {} created with id: {}", courseId, announcement.getAnnouncementId());
             redirectAttributes.addFlashAttribute("successMessage", "announcement.success.message");
             return new ModelAndView("redirect:/course/"+courseId+"/announcements");
@@ -113,13 +124,127 @@ public class CourseController extends AuthController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/schedule")
     public ModelAndView schedule(@PathVariable Long courseId) {
-        timetableService.findByIdOrdered(courseId);
         Timetable[] times = timetableService.findByIdOrdered(courseId);
         ModelAndView mav = new ModelAndView("course-schedule");
         mav.addObject("times",times);
         mav.addObject("days",days);
         return mav;
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/exams")
+    public ModelAndView exams(@PathVariable Long courseId, final CreateExamForm createExamForm) {
+        ModelAndView mav;
+        if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
+            mav = new ModelAndView("teacher/teacher-exams");
+            mav.addObject("createExamForm", createExamForm);
+            mav.addObject("exams",answerService.getExamsAndTotals(courseId));
+            mav.addObject("minDateTime", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm").format(LocalDateTime.now()));
+        } else {
+            mav = new ModelAndView("course-exams");
+            mav.addObject("unresolvedExams",answerService.getUnresolvedExams(authFacade.getCurrentUser().getUserId(),courseId));
+            mav.addObject("answerMarks",answerService.getMarks(authFacade.getCurrentUser().getUserId(),courseId));
+        }
+        return mav;
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/exams")
+    public ModelAndView exams(@PathVariable Long courseId,
+                              @Valid CreateExamForm createExamForm, final BindingResult errors,
+                              RedirectAttributes redirectAttributes) {
+        if (!errors.hasErrors()) {
+            Exam exam = examService.create(courseId, createExamForm.getTitle(), createExamForm.getContent(),
+                    createExamForm.getFile().getOriginalFilename(), createExamForm.getFile().getBytes(),
+                    createExamForm.getFile().getSize(),LocalDateTime.parse(createExamForm.getStartTime()),
+                    LocalDateTime.parse(createExamForm.getEndTime()));
+            LOGGER.debug("Exam in course {} created with id: {}", courseId, exam.getExamId());
+            redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
+            return new ModelAndView("redirect:/course/"+courseId+"/exams");
+        }
+        return exams(courseId, createExamForm);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/exam/{examId}")
+    public ModelAndView exam(@PathVariable Long courseId, @PathVariable Long examId, final SolveExamForm solveExamForm,
+                             @RequestParam(value = "page", required = false, defaultValue = "1")
+                             Integer page,
+                             @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+                             Integer pageSize) {
+        ModelAndView mav;
+        if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
+            mav = new ModelAndView("teacher/correct-exam");
+            mav.addObject("correctedAnswers", answerService.getCorrectedAnswers(examId));
+            mav.addObject("uncorrectedAnswers", answerService.getNotCorrectedAnswers(examId));
+
+        } else {
+            mav = new ModelAndView("solve-exam");
+            final Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
+            mav.addObject("solveExamForm", solveExamForm);
+            mav.addObject("exam",exam);
+            Instant instant = exam.getEndTime().atZone(ZoneId.systemDefault()).toInstant();
+            mav.addObject("millisToEnd",instant.toEpochMilli());
+
+        }
+        mav.addObject("examId",examId);
+        return mav;
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/exam/{examId}")
+    public ModelAndView exam(@PathVariable Long courseId, @PathVariable Long examId,
+                             @Valid SolveExamForm solveExamForm, final BindingResult errors,
+                             RedirectAttributes redirectAttributes) {
+        if (!errors.hasErrors()) {
+            LocalDateTime now = LocalDateTime.now();
+            Answer answer = answerService.updateEmptyAnswer(examId, authFacade.getCurrentUser(),solveExamForm.getExam().getOriginalFilename(), solveExamForm.getExam().getBytes(),
+                    solveExamForm.getExam().getSize(), now);
+            LOGGER.debug("Answer in course {} created with id: {} at {}", courseId, answer.getAnswerId(),now);
+            redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
+            return new ModelAndView("redirect:/course/"+courseId+"/exams");
+        }
+        return exam(courseId, examId, solveExamForm, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/exam/{examId}")
+    @ResponseBody
+    public void deleteExam(@PathVariable Long courseId, @PathVariable Long examId) {
+        LOGGER.debug("Deleting exam {}", examId);
+        examService.delete(examId);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/exam/{examId}/answer/{answerId}/correct")
+    public ModelAndView correctAnswer(@PathVariable Long courseId,@PathVariable Long examId,
+                                      @PathVariable Long answerId,final AnswerCorrectionForm answerCorrectionForm) {
+        ModelAndView mav = new ModelAndView("teacher/correct-specific-exam");
+        mav.addObject("exam",examService.findById(examId).orElseThrow(ExamNotFoundException::new));
+        mav.addObject("answer",answerService.findById(answerId).orElseThrow(ExamNotFoundException::new));
+        mav.addObject("answerCorrectionForm",answerCorrectionForm);
+        return mav;
+
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/exam/{examId}/answer/{answerId}/correct")
+    public ModelAndView correctAnswer(@PathVariable Long courseId,@PathVariable Long examId,
+                                      @PathVariable Long answerId,@Valid AnswerCorrectionForm answerCorrectionForm,
+                                      final BindingResult errors,
+                                      RedirectAttributes redirectAttributes) {
+        if(!errors.hasErrors()) {
+            LOGGER.debug("Correcting answer {}", answerId);
+            answerService.correctExam(answerId, authFacade.getCurrentUser(), answerCorrectionForm.getMark(), answerCorrectionForm.getComments());
+            redirectAttributes.addFlashAttribute("successMessage","answer.solve.success.message");
+            return new ModelAndView("redirect:/course/" + courseId + "/exam/" + examId);
+        }
+        return correctAnswer(courseId,examId,answerId,answerCorrectionForm);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/exam/{examId}/answer/{answerId}/undo-correct")
+    public ModelAndView undoCorrectAnswer(@PathVariable Long courseId, @PathVariable Long examId,
+                                          @PathVariable Long answerId) {
+        LOGGER.debug("Undoing correction of answer {}", answerId);
+        answerService.undoExamCorrection(answerId);
+        return new ModelAndView("redirect:/course/"+courseId+"/exam/" + examId);
+
+    }
+
 
     @RequestMapping(method = RequestMethod.GET, value = "/files")
     public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm,
@@ -196,6 +321,7 @@ public class CourseController extends AuthController {
         }
         if (!errors.hasErrors()) {
             LOGGER.debug("Attempting to send mail to {}", userId);
+
             mailingService.sendEmail(authFacade.getCurrentUser(), userId, mailForm.getSubject(),
                     mailForm.getContent(), courseId);
             redirectAttributes.addFlashAttribute("successMessage","email.success.message");

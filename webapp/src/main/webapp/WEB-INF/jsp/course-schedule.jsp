@@ -20,7 +20,7 @@
                 <jsp:param name="quarter" value="${course.quarter}"/>
                 <jsp:param name="code" value="${course.subject.code}"/>
                 <jsp:param name="board" value="${course.board}"/>
-                <jsp:param name="itemId" value="${4}"/>
+                <jsp:param name="itemId" value="${5}"/>
             </jsp:include>
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course-schedule.section-heading.title"/> </h3>
@@ -31,8 +31,8 @@
                             <c:set var="currentTime" value="${times[daysStatus.index]}"/>
                             <h3 style="margin-top: 3px; margin-left: 10px"><spring:message code="day.${day}"/></h3>
                             <p style="margin-left: 15px">&rsaquo;
-                                <c:out value="${currentTime.begins.hours}:${currentTime.begins.minutes < 10 ?'0':''}${currentTime.begins.minutes}
-                                - ${currentTime.end.hours}:${currentTime.end.minutes < 10 ?'0':''}${currentTime.end.minutes}"/>
+                                <c:out value="${currentTime.begins.hour}:${currentTime.begins.minute < 10 ?'0':''}${currentTime.begins.minute}
+                                - ${currentTime.end.hour}:${currentTime.end.minute < 10 ?'0':''}${currentTime.end.minute}"/>
                             </p>
                         </c:if>
                     </c:forEach>

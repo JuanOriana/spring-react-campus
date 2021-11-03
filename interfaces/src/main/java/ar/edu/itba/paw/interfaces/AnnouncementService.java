@@ -12,9 +12,10 @@ public interface AnnouncementService {
      * @param content of the announcement to be created
      * @param author of the announcement to be created
      * @param course of the announcement to be created
+     * @param url of the announcement to be sent by e-mail
      * @return instance of the created announcement
      */
-    Announcement create(String title, String content, User author, Course course);
+    Announcement create(String title, String content, User author, Course course, String url);
 
     /**
      * Attempts to update a announcement

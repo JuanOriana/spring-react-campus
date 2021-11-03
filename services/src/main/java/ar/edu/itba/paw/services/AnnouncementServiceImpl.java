@@ -27,12 +27,12 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
     @Transactional
     @Override
-    public Announcement create(String title, String content, User author, Course course) {
+    public Announcement create(String title, String content, User author, Course course, String url) {
         Announcement announcement = announcementDao.create(LocalDateTime.now(), title, content, author, course);
         List<User> userList = courseService.getStudents(announcement.getCourse().getCourseId());
         List<String> emailList = new ArrayList<>();
         userList.forEach(u->emailList.add(u.getEmail()));
-        mailingService.broadcastAnnouncementNotification(emailList, title, content, course, author);
+        mailingService.broadcastAnnouncementNotification(emailList, title, content, course, author, url);
         return announcement;
     }
 

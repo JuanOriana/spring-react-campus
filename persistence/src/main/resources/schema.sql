@@ -108,3 +108,16 @@ CREATE TABLE IF NOT EXISTS profile_images
     userId INTEGER PRIMARY KEY,
     FOREIGN KEY (userId) REFERENCES users ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS exams
+(
+    examId SERIAL PRIMARY KEY ,
+    courseId INTEGER,
+    startTime TIMESTAMP,
+    endTime TIMESTAMP,
+    title text,
+    description text,
+    file_id INTEGER,
+    FOREIGN KEY (courseId) REFERENCES courses,
+    FOREIGN KEY (file_id) REFERENCES files
+)

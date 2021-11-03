@@ -25,6 +25,6 @@ public interface MailingService {
      * @param course  The course where de announcement what published
      * @param author  The author of the announcement
      */
-    void broadcastAnnouncementNotification(List<String> to, String title, String content, Course course, User author);
+    void broadcastAnnouncementNotification(List<String> to, String title, String content, Course course, User author, String baseUrl);
 
 }

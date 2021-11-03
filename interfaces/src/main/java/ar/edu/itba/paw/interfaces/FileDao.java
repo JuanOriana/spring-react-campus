@@ -37,4 +37,6 @@ public interface FileDao {
 
     void incrementDownloads(Long fileId);
 
+    FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course, boolean isHidden);
+
 }

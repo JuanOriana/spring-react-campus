@@ -2,7 +2,7 @@ package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Time;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "timetables")
@@ -16,17 +16,17 @@ public class Timetable {
     private Course course;
 
     @Column
-    private Time startTime;
+    private LocalTime startTime;
 
     @Column
-    private Time endTime;
+    private LocalTime endTime;
 
 
     /* Default */ Timetable() {
         // Just for Hibernate
     }
 
-    public Timetable(Course course, int dayOfWeek, Time startTime, Time endTime) {
+    public Timetable(Course course, int dayOfWeek, LocalTime startTime, LocalTime endTime) {
         this.primaryKey = new Pk();
         this.course = course;
         this.primaryKey.courseId = course.getCourseId();
@@ -35,7 +35,8 @@ public class Timetable {
         this.endTime = endTime;
     }
 
-    public Timetable(int dayOfWeek, Time startTime, Time endTime) {
+    public Timetable(int dayOfWeek, LocalTime startTime, LocalTime endTime) {
+        this.primaryKey = new Pk();
         this.primaryKey.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -57,19 +58,19 @@ public class Timetable {
         this.primaryKey.dayOfWeek = dayOfWeek;
     }
 
-    public Time getBegins() {
+    public LocalTime getBegins() {
         return startTime;
     }
 
-    public void setBegins(Time startTime) {
+    public void setBegins(LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEnd() {
+    public LocalTime getEnd() {
         return endTime;
     }
 
-    public void setEnd(Time endTime) {
+    public void setEnd(LocalTime endTime) {
         this.endTime = endTime;
     }
 

@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.webapp.auth.CourseVoter;
+import ar.edu.itba.paw.webapp.auth.CampusVoter;
 import ar.edu.itba.paw.webapp.auth.CampusUserDetailsService;
 import ar.edu.itba.paw.webapp.util.KeyReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public CourseVoter courseVoter() { return new CourseVoter(); }
+    public CampusVoter courseVoter() { return new CampusVoter(); }
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {

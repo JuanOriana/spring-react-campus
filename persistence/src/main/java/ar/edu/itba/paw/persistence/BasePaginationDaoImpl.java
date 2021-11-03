@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,9 +21,9 @@ public class BasePaginationDaoImpl<T> implements BasePaginationDao<T> {
     @PersistenceContext
     EntityManager em;
 
-    private List<Long> integerToLongArray(List<Integer> list) {
+    private List<Long> integerToLongArray(List<BigInteger> list) {
         return list.stream()
-                .mapToLong(Integer::longValue)
+                .mapToLong(BigInteger::longValue)
                 .boxed().collect(Collectors.toList());
     }
 

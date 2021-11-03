@@ -1,4 +1,5 @@
 package ar.edu.itba.paw.webapp.controller;
+import ar.edu.itba.paw.interfaces.AnswerService;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.RoleService;
 import ar.edu.itba.paw.interfaces.SubjectService;
@@ -34,7 +35,8 @@ public class PortalController extends AuthController{
         }
         return "redirect:/portal";
     }
-
+    @Autowired
+    AnswerService answerService;
     @RequestMapping("/portal")
     public ModelAndView portal(@RequestParam(value = "page", required = false, defaultValue = "1")
                                            Integer page,

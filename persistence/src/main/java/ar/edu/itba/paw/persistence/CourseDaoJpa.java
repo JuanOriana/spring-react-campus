@@ -17,7 +17,7 @@ import java.util.Optional;
 @Repository
 public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements CourseDao {
 
-    @Transactional
+
     @Override
     public Course create(Integer year, Integer quarter, String board, Long subjectId) {
         final Course course = new Course(year, quarter, board, new Subject(subjectId, null, null));
@@ -25,7 +25,7 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         return course;
     }
 
-    @Transactional
+
     @Override
     public boolean update(Long id, Course course) {
         Optional<Course> dbCourse = findById(id);
@@ -34,7 +34,7 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         return true;
     }
 
-    @Transactional
+
     @Override
     public boolean delete(Long id) {
         Optional<Course> dbCourse = findById(id);
@@ -114,7 +114,7 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         return !courseTypedQuery.getResultList().isEmpty();
     }
 
-    @Transactional
+
     @Override
     public boolean enroll(Long userId, Long courseId, Integer roleId) {
         User user = em.find(User.class, userId);
@@ -164,5 +164,13 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         courseTypedQuery.setParameter("quarter", quarter);
         courseTypedQuery.setParameter("subjectId", subjectId);
         return !courseTypedQuery.getResultList().isEmpty();
+    }
+
+    @Override
+    public Long getTotalStudents(Long courseId){
+        TypedQuery<Long> totalStudentsTypedQuery = em.createQuery("SELECT COUNT(DISTINCT enrollment.user.userId ) FROM Enrollment enrollment WHERE enrollment.course.courseId = :courseId AND enrollment.role.roleId = :roleId",Long.class);
+        totalStudentsTypedQuery.setParameter("courseId", courseId);
+        totalStudentsTypedQuery.setParameter("roleId", Roles.STUDENT.getValue());
+        return totalStudentsTypedQuery.getSingleResult();
     }
 }

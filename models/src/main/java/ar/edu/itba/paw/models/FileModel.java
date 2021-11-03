@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "files")
@@ -37,6 +38,9 @@ public class FileModel {
     @Column
     private Long downloads;
 
+    @Column
+    private Boolean hidden;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "category_file_relationship",
@@ -59,12 +63,13 @@ public class FileModel {
         private Course course;
         private Long downloads;
         private List<FileCategory> fileCategories;
+        private Boolean hidden = false;
 
         public Builder() {
         }
 
         Builder(Long fileId, Long size, FileExtension extension, String name, LocalDateTime fileDate, byte[] file,
-                Course course, Long downloads, List<FileCategory> fileCategories) {
+                Course course, Long downloads, List<FileCategory> fileCategories, Boolean hidden) {
             this.fileId = fileId;
             this.size = size;
             this.extension = extension;
@@ -74,6 +79,7 @@ public class FileModel {
             this.course = course;
             this.downloads = downloads;
             this.fileCategories = fileCategories;
+            this.hidden = hidden;
         }
 
         public Builder withFileId(Long fileId){
@@ -118,6 +124,11 @@ public class FileModel {
 
         public Builder withCategories(List<FileCategory> fileCategories) {
             this.fileCategories = fileCategories;
+            return Builder.this;
+        }
+
+        public Builder isHidden(Boolean hidden) {
+            this.hidden = hidden;
             return Builder.this;
         }
 
@@ -167,6 +178,7 @@ public class FileModel {
         this.course = builder.course;
         this.downloads = builder.downloads;
         this.fileCategories = builder.fileCategories;
+        this.hidden = builder.hidden;
     }
 
     public Long getFileId() {
@@ -241,6 +253,14 @@ public class FileModel {
         this.fileCategories = fileCategories;
     }
 
+    public Boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
+    }
+
     public void merge(FileModel fileModel) {
         this.name = this.name.equals(fileModel.getName())  ? this.name : fileModel.getName();
         this.extension = this.extension.equals(fileModel.getExtension()) ? this.extension : fileModel.extension;
@@ -250,5 +270,19 @@ public class FileModel {
         this.course = this.course.equals(fileModel.getCourse()) ? this.course : fileModel.course;
         this.downloads = this.downloads.equals(fileModel.getDownloads()) ? this.downloads : fileModel.downloads;
         this.fileCategories = this.fileCategories.equals(fileModel.getCategories()) ? this.fileCategories : fileModel.fileCategories;
+        this.hidden = this.hidden.equals(fileModel.isHidden()) ? this.hidden : fileModel.hidden;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileModel fileModel = (FileModel) o;
+        return fileId.equals(fileModel.fileId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fileId);
     }
 }

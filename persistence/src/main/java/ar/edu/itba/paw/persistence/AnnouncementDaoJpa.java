@@ -5,10 +5,6 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +14,7 @@ import java.util.Optional;
 @Repository
 public class AnnouncementDaoJpa extends BasePaginationDaoImpl<Announcement> implements AnnouncementDao {
 
-    @PersistenceContext
-    private EntityManager em;
 
-    @Transactional
     @Override
     public Announcement create(LocalDateTime date, String title, String content, User author, Course course) {
         final Announcement announcement = new Announcement.Builder()
@@ -35,7 +28,7 @@ public class AnnouncementDaoJpa extends BasePaginationDaoImpl<Announcement> impl
         return announcement;
     }
 
-    @Transactional
+
     @Override
     public boolean update(Long id, Announcement announcement) {
         Optional<Announcement> dbAnnouncement = findById(id);
@@ -44,7 +37,7 @@ public class AnnouncementDaoJpa extends BasePaginationDaoImpl<Announcement> impl
         return true;
     }
 
-    @Transactional
+
     @Override
     public boolean delete(Long id) {
         Optional<Announcement> dbAnnouncement = findById(id);
@@ -53,14 +46,14 @@ public class AnnouncementDaoJpa extends BasePaginationDaoImpl<Announcement> impl
         return true;
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public Optional<Announcement> findById(Long id) {
         return Optional.ofNullable(em.find(Announcement.class, id));
     }
 
 
-    @Transactional(readOnly = true)
+
     @Override
     public CampusPage<Announcement> listByUser(Long userId, CampusPageRequest pageRequest)
             throws PaginationArgumentException {
@@ -74,7 +67,7 @@ public class AnnouncementDaoJpa extends BasePaginationDaoImpl<Announcement> impl
         return listBy(properties, selectQuery, mappingQuery, pageRequest, Announcement.class);
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public CampusPage<Announcement> listByCourse(Long courseId, CampusPageRequest pageRequest)
             throws PaginationArgumentException {

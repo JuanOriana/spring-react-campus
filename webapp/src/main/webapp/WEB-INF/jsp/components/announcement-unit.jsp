@@ -33,18 +33,18 @@
                     <p><spring:message code="announcement.unit.announcement.publisher" htmlEscape="true"
                                        arguments="${requestScope.announcementItem.author.name},${requestScope.announcementItem.author.surname}"/></p>
                     <c:if test="${param.isGlobal}">
-                        <a href="<c:url value="/course/${requestScope.announcementItem.course.courseId}"/>"
-                           class="styleless-anchor">
                             <p>
-                                <spring:message code="announcement.unit.announcement.course" htmlEscape="true"
-                                               arguments="${requestScope.announcementItem.course.subject.name}"/>
+                                <a href="<c:url value="/course/${requestScope.announcementItem.course.courseId}"/>"
+                                         class="styleless-anchor, announcement-course-link">
+                                    <spring:message code="announcement.unit.announcement.title" htmlEscape="true"
+                                                    arguments="${requestScope.announcementItem.course.subject.name}"/>
+                                </a>
                             </p>
-                        </a>
                     </c:if>
                 </div>
                 <c:if test="${param.isTeacher}">
                     <img src="<c:url value="/resources/images/trash-red.png"/>"
-                         alt="delete" class="small-icon" style="margin-left: 10px"
+                         alt="<spring:message code="img.alt.delete" />" class="small-icon" style="margin-left: 10px"
                          onclick="deleteById(${requestScope.announcementItem.announcementId})">
                 </c:if>
             </div>

@@ -5,8 +5,6 @@ import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileExtension;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -20,7 +18,7 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
     @PersistenceContext
     private EntityManager em;
 
-    @Transactional
+
     @Override
     public FileExtension create(String fileExtension) {
         final FileExtension fExtension = new FileExtension(fileExtension);
@@ -28,7 +26,7 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
         return fExtension;
     }
 
-    @Transactional
+
     @Override
     public boolean update(long fileExtensionId, String fileExtension) {
         Optional<FileExtension> dbFileExtension = Optional.ofNullable(em.find(FileExtension.class, fileExtensionId));
@@ -37,7 +35,7 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
         return true;
     }
 
-    @Transactional
+
     @Override
     public boolean delete(long fileExtensionId) {
         Optional<FileExtension> dbFileExtension = Optional.ofNullable(em.find(FileExtension.class, fileExtensionId));
@@ -53,7 +51,7 @@ public class FileExtensionDaoJpa implements FileExtensionDao {
     }
 
     @Override
-    public Optional<String> getExtension(Long extensionId) {
-        return Optional.ofNullable(em.find(FileCategory.class, extensionId).getCategoryName());
+    public Optional<FileExtension> findById(Long extensionId) {
+        return Optional.ofNullable(em.find(FileExtension.class, extensionId));
     }
 }

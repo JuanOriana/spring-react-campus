@@ -77,7 +77,7 @@ public class FilesController extends AuthController {
         return mav;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/files/{fileId}")
+    @RequestMapping(method = RequestMethod.GET, value = "/file/{fileId}")
     public void downloadFile(@PathVariable Long fileId, HttpServletResponse response) {
         FileModel file = fileService.findById(fileId).orElseThrow(FileNotFoundException::new);
         if (!file.getExtension().getFileExtensionName().equals("pdf")) {
@@ -98,7 +98,7 @@ public class FilesController extends AuthController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/files/{fileId}")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/file/{fileId}")
     @ResponseBody
     public void deleteFile(@PathVariable Long fileId) {
         LOGGER.debug("Deleting file {}", fileId);

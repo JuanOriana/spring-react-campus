@@ -7,7 +7,6 @@ import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -21,6 +20,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
     @Autowired
     private FileCategoryDao fileCategoryDao;
 
+
     private String getExtension(String filename) {
         String extension = "";
         int i = filename.lastIndexOf('.');
@@ -30,7 +30,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         return extension;
     }
 
-    @Transactional
+
     @Override
     public FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course) {
         String fileExtension = getExtension(name);
@@ -57,7 +57,15 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         return fileModel;
     }
 
-    @Transactional
+
+    @Override
+    public FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course, boolean isHidden) {
+        FileModel f = create(size, date, name, file, course);
+        f.setHidden(true);
+        return f;
+    }
+
+
     @Override
     public boolean update(Long fileId, FileModel file) {
         Optional<FileModel> dbFile = findById(fileId);
@@ -66,7 +74,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         return true;
     }
 
-    @Transactional
+
     @Override
     public boolean delete(Long fileId) {
         Optional<FileModel> dbFile = findById(fileId);
@@ -75,34 +83,43 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         return true;
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public List<FileModel> list(Long userId) {
-        TypedQuery<FileModel> listFilesOfUser = em.createQuery("SELECT f FROM FileModel f JOIN Enrollment e WHERE e.user.userId = :userId", FileModel.class);
+        TypedQuery<FileModel> listFilesOfUser = em.createQuery("SELECT f FROM FileModel f, Enrollment e WHERE e.user.userId = :userId", FileModel.class);
         listFilesOfUser.setParameter("userId", userId);
         return listFilesOfUser.getResultList();
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public Optional<FileModel> findById(Long fileId) {
         return Optional.ofNullable(em.find(FileModel.class, fileId));
     }
 
 
-    @Transactional
+    // Revisar este metodo, no me gusta
     @Override
     public boolean associateCategory(Long fileId, Long fileCategoryId) {
         Optional<FileModel> optionalDBFile = findById(fileId);
         Optional<FileCategory> optionalFileCategory = fileCategoryDao.findById(fileCategoryId);
         if(!optionalDBFile.isPresent() || !optionalFileCategory.isPresent()) return false;
-        List<FileCategory> dbFile = optionalDBFile.get().getCategories();
-        for (FileCategory fileCategory : dbFile) if (fileCategory.getCategoryId() == fileCategoryId) return false;
-        dbFile.add(optionalFileCategory.get());
+        FileModel dbFile = optionalDBFile.get();
+        FileCategory dbCategory = optionalFileCategory.get();
+        List<FileCategory> fileCategories = optionalDBFile.get().getCategories();
+        if(fileCategories == null) {
+            List<FileCategory> categories = new ArrayList<>();
+            categories.add(dbCategory);
+            dbFile.setCategories(categories);
+            return true;
+        } else {
+            for (FileCategory fileCategory : fileCategories) if (fileCategory.getCategoryId() == fileCategoryId) return false;
+            fileCategories.add(optionalFileCategory.get());
+        }
         return true;
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public List<FileCategory> getFileCategories(Long fileId) {
         Optional<FileModel> optionalFileModel = findById(fileId);
@@ -110,15 +127,15 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         return optionalFileModel.get().getCategories();
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public List<FileModel> findByCategory(Long fileCategoryId) {
-        TypedQuery<FileModel> listByCategory = em.createQuery("SELECT f FROM FileModel f JOIN FileCategory fc WHERE fc.categoryId = :categoryId", FileModel.class);
+        TypedQuery<FileModel> listByCategory = em.createQuery("SELECT f FROM FileModel f, FileCategory fc WHERE fc.categoryId = :categoryId", FileModel.class);
         listByCategory.setParameter("categoryId", fileCategoryId);
         return listByCategory.getResultList();
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public List<FileModel> findByCourseId(Long courseId) {
         TypedQuery<FileModel> listByCourse = em.createQuery("SELECT f FROM FileModel f WHERE f.course.courseId = :courseId", FileModel.class);
@@ -128,13 +145,13 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
 
     @Override
     public boolean hasAccess(Long fileId, Long userId) {
-        TypedQuery<FileModel> queryHasAccess = em.createQuery("SELECT f FROM FileModel f, Enrollment e WHERE f.course.courseId = e.course.courseId AND e.user.userId = :userId", FileModel.class);
+        TypedQuery<FileModel> queryHasAccess = em.createQuery("SELECT f FROM FileModel f, Enrollment e WHERE f.fileId = :fileId AND e.user.userId = :userId", FileModel.class);
         queryHasAccess.setParameter("fileId", fileId);
         queryHasAccess.setParameter("userId", userId);
         return !queryHasAccess.getResultList().isEmpty();
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public CampusPage<FileModel> listByCourse(String keyword, List<Long> extensions, List<Long> categories, Long userId, Long courseId, CampusPageRequest pageRequest, CampusPageSort sort) throws PaginationArgumentException {
         return findFileByPage(keyword, extensions, categories, userId, courseId, pageRequest, sort);
@@ -145,7 +162,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         return findFileByPage(keyword, extensions, categories, userId, NO_COURSE, pageRequest, sort);
     }
 
-    @Transactional
+
     @Override
     public void incrementDownloads(Long fileId) {
         Optional<FileModel> optionalFileModel = findById(fileId);
@@ -168,7 +185,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
             properties.put("userId", userId);
         }
         String orderedQuery = unOrderedQuery + " ORDER BY " + sort.getProperty() + " " + sort.getDirection();
-        String mappingQuery = "SELECT f FROM FileModel f WHERE f.fileId IN (:ids) ORDER BY f." + sort.getProperty() + " " + sort.getDirection();
+        String mappingQuery = "SELECT f FROM FileModel f WHERE f.fileId IN (:ids) AND f.hidden = FALSE ORDER BY f." + sort.getProperty() + " " + sort.getDirection();
         return listBy(properties, orderedQuery, mappingQuery, pageRequest, FileModel.class);
     }
 
@@ -180,7 +197,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         String courseSelection = courseId < 0 ? "(SELECT courseId FROM user_to_course WHERE userId = :userId)" : "(:courseId)";
         return  "SELECT fileId " +
                 "FROM files NATURAL JOIN category_file_relationship " +
-                "WHERE fileName ILIKE :query AND courseId IN " + courseSelection + " " + query;
+                "WHERE fileName LIKE :query AND courseId IN " + courseSelection + " " + query + " AND hidden IS NOT TRUE";
     }
 
 }

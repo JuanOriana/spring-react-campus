@@ -2,75 +2,61 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.FileExtensionDao;
 import ar.edu.itba.paw.models.FileExtension;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
-
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
-@Sql("classpath:schema.sql")
+@Sql("classpath:populators/file_extension_populator.sql")
 @Rollback
 @Transactional
-public class FileExtensionDaoImplTest extends BasicPopulator {
+public class FileExtensionDaoImplTest {
+    private static final Long FILE_EXTENSION_ID = 1L;
+    private static final String FILE_EXTENSION = "pdf";
 
     @Autowired
     private FileExtensionDao fileExtensionDao;
 
-    private static final RowMapper<FileExtension> FILE_EXTENSION_ROW_MAPPER = (rs, rowNum) -> new FileExtension(rs.getLong("fileExtensionId"), rs.getString("fileExtension"));
-
-
-    @Before
-    public void setUp() {
-        super.setUp();
-        insertFileExtension(FILE_EXTENSION_ID, FILE_EXTENSION);
-    }
+    @PersistenceContext
+    private EntityManager em;
 
     @Test
     public void testCreate() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "file_extensions");
         FileExtension fileExtension = fileExtensionDao.create(FILE_EXTENSION);
         assertNotNull(fileExtension);
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "file_extensions"));
+        assertEquals(FILE_EXTENSION, fileExtension.getFileExtensionName());
     }
 
     @Test
     public void testUpdate() {
         String newExtension = "doc";
-        boolean wasUpdated = fileExtensionDao.update(FILE_EXTENSION_ID, newExtension);
+        boolean wasUpdated = fileExtensionDao.update(1337, newExtension);
         assertTrue(wasUpdated);
-
-        FileExtension fileExtensionFromDB = jdbcTemplate.query("SELECT * FROM file_extensions WHERE fileExtensionId = ?", new Object[]{FILE_EXTENSION_ID}, FILE_EXTENSION_ROW_MAPPER).get(0);
-
-        assertEquals(FILE_EXTENSION_ID, fileExtensionFromDB.getFileExtensionId());
-        assertEquals(newExtension, fileExtensionFromDB.getFileExtensionName());
     }
 
     @Test
     public void testDelete() {
-        boolean wasDeleted = fileExtensionDao.delete(FILE_EXTENSION_ID);
+        boolean wasDeleted = fileExtensionDao.delete(1337);
         assertTrue(wasDeleted);
-        assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "file_extensions"));
     }
 
     @Test
     public void testGetCategories() {
         List<FileExtension> list = fileExtensionDao.getExtensions();
         assertEquals(1, list.size());
-
         FileExtension fileExtension = list.get(0);
-        assertEquals(FILE_EXTENSION_ID, fileExtension.getFileExtensionId());
+        assertEquals(1337, fileExtension.getFileExtensionId().intValue());
 
     }
 }
