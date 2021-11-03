@@ -168,10 +168,17 @@ public class CourseController extends AuthController {
                              @RequestParam(value = "page", required = false, defaultValue = "1")
                              Integer page,
                              @RequestParam(value = "pageSize", required = false, defaultValue = "10")
-                             Integer pageSize) {
+                             Integer pageSize,
+                             @RequestParam(value = "filter-by", required = false, defaultValue = "")
+                             String filter) {
         ModelAndView mav;
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/correct-exam");
+            CampusPage<Answer> answers = answerService.getFilteredAnswers(examId, filter, page, pageSize);
+            mav.addObject("answers", answers.getContent());
+            mav.addObject("currentPage", answers.getPage());
+            mav.addObject("maxPage", answers.getTotal());
+            mav.addObject("pageSize", answers.getSize());
             mav.addObject("correctedAnswers", answerService.getCorrectedAnswers(examId));
             mav.addObject("uncorrectedAnswers", answerService.getNotCorrectedAnswers(examId));
 
@@ -200,7 +207,7 @@ public class CourseController extends AuthController {
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
             return new ModelAndView("redirect:/course/"+courseId+"/exams");
         }
-        return exam(courseId, examId, solveExamForm, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        return exam(courseId, examId, solveExamForm, DEFAULT_PAGE, DEFAULT_PAGE_SIZE, "");
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/exam/{examId}")
