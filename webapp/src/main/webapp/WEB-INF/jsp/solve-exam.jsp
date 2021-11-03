@@ -30,7 +30,7 @@
                     clearInterval(x);
                     $.ajax({
                         url: '${pageContext.request.contextPath}/course/${course.courseId}/exam/${examId}',
-                        type: 'POST',
+                        type: 'GET',
                         success: function (result) {
                             console.log("success")
                         }
