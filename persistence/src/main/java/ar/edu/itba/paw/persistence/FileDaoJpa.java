@@ -98,7 +98,6 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
     }
 
 
-    // Revisar este metodo, no me gusta
     @Override
     public boolean associateCategory(Long fileId, Long fileCategoryId) {
         Optional<FileModel> optionalDBFile = findById(fileId);
@@ -178,7 +177,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         Map<String, Object> properties = new HashMap<>();
         if(!extensions.isEmpty()) properties.put("extensionIds", extensions);
         if(!categories.isEmpty()) properties.put("categoryIds", categories);
-        properties.put("query", "%" + keyword + "%");
+        properties.put("query", "%" + keyword.toLowerCase() + "%");
         if(!courseId.equals(NO_COURSE)) {
             properties.put("courseId", courseId);
         } else {
@@ -197,7 +196,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         String courseSelection = courseId < 0 ? "(SELECT courseId FROM user_to_course WHERE userId = :userId)" : "(:courseId)";
         return  "SELECT fileId " +
                 "FROM files NATURAL JOIN category_file_relationship " +
-                "WHERE fileName LIKE :query AND courseId IN " + courseSelection + " " + query + " AND hidden IS NOT TRUE";
+                "WHERE LOWER(fileName) LIKE :query AND courseId IN " + courseSelection + " " + query + " AND hidden IS NOT TRUE";
     }
 
 }
