@@ -53,8 +53,8 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
     public CampusPage<Course> list(Long userId, CampusPageRequest pageRequest) {
         Map<String, Object> properties = new HashMap<>();
         properties.put("userId", userId);
-        String query = "SELECT courseId FROM courses NATURAL JOIN user_to_course WHERE userId = :userId ORDER BY year DESC";
-        String mappingQuery = "SELECT DISTINCT enrollment.course FROM Enrollment enrollment WHERE enrollment.course.courseId IN (:ids) ORDER BY enrollment.course.year DESC";
+        String query = "SELECT courseId FROM courses NATURAL JOIN user_to_course WHERE userId = :userId ORDER BY year DESC, quarter DESC";
+        String mappingQuery = "SELECT DISTINCT enrollment.course FROM Enrollment enrollment WHERE enrollment.course.courseId IN (:ids) ORDER BY enrollment.course.year DESC, enrollment.course.quarter DESC";
         return listBy(properties, query, mappingQuery, pageRequest, Course.class);
     }
 
