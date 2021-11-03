@@ -60,13 +60,13 @@ public class MailingServiceImpl implements MailingService {
 
     @Override
     @Async
-    public void broadcastAnnouncementNotification(List<String> to, String title, String content, Course course, User author, String baseUrl) {
+    public void broadcastAnnouncementNotification(List<String> to, String title, String content, Course course, User author, String url) {
         Map<String, Object> model = new HashMap<>();
         model.put("title", title);
         model.put("content", content);
         model.put("subjectName", course.getSubject().getName());
         model.put("year", String.valueOf(LocalDateTime.now().getYear()));
-        model.put("url", baseUrl + "/course/" + course.getCourseId());
+        model.put("url", url);
         model.put("courseId", course.getCourseId());
         model.put("author", author);
         sendThymeleafTemplateEmail(to, messageSource.getMessage( "mail.new.announcement.title", null, "", LocaleContextHolder.getLocale()) + ": " + course.getSubject().getName(), model, "new-announcement-notification.html");

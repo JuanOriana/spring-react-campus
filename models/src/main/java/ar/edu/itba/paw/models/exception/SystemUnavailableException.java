@@ -8,6 +8,6 @@ public class SystemUnavailableException extends RuntimeException {
     }
 
     public String getErrorMessage() {
-        return ExceptionMessageUtil.translate(this.errorMessage);
+        return this.errorMessage;
     }
 }

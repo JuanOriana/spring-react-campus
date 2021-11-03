@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import javax.validation.Valid;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -102,8 +104,10 @@ public class CourseController extends AuthController {
                                          @Valid AnnouncementForm announcementForm, final BindingResult errors,
                                          RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
+            Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
+            final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
             Announcement announcement = announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
-                    authFacade.getCurrentUser(), courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
+                    authFacade.getCurrentUser(), course, baseUrl + "/course/" + course.getCourseId());
             LOGGER.debug("Announcement in course {} created with id: {}", courseId, announcement.getAnnouncementId());
             redirectAttributes.addFlashAttribute("successMessage", "announcement.success.message");
             return new ModelAndView("redirect:/course/"+courseId+"/announcements");
