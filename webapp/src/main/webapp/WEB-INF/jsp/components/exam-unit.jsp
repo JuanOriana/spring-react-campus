@@ -35,7 +35,7 @@
     <div style="display: flex; align-items: center">
         <c:if test="${param.isDelivered}">
             <p class="file-name">
-                Nota:
+                <spring:message code="student.exam.unit.grade" />
                 <c:if test="${requestScope.answer.score != null}">
                     <c:out value="${requestScope.answer.score}"/>
                 </c:if>

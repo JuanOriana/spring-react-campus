@@ -32,7 +32,7 @@
                     <jsp:include page="../components/file-unit.jsp">
                         <jsp:param name="isMinimal" value="${true}"/>
                     </jsp:include>
-                    <h3 class="form-label">Solucion:</h3>
+                    <h3 class="form-label"><spring:message code="correct.specific.exam.solution" /></h3>
                     <c:if test="${answer.deliveredDate != null}">
                         <c:set var="file" value="${answer.answerFile}" scope="request"/>
                         <jsp:include page="../components/file-unit.jsp">
@@ -40,18 +40,18 @@
                         </jsp:include>
                     </c:if>
                     <c:if test="${answer.deliveredDate == null}">
-                        No se entrego el examen.
+                        <spring:message code="correct.specific.exam.not.done" />
                     </c:if>
                     <form:form modelAttribute="answerCorrectionForm" method="post" enctype="multipart/form-data"
                                acceptCharset="utf-8" cssStyle="margin: 30px 0; display: flex; padding:10px;
                                flex-direction: column; border: 2px solid #2EC4B6; border-radius:12px">
                         <form:label path="mark" class="form-label" cssStyle="margin: 0 0 5px 0">
-                           Nota
+                            <spring:message code="correct.specific.exam.grade" />
                         </form:label>
                         <form:input type="number" path="mark" min="0" max="10" cssStyle="font-size: 24px; margin-left:20px; width:50px;padding:3px" />
                         <form:errors path="mark" element="p" cssStyle="color:red;margin-left: 15px"/>
                         <form:label path="comments" for="comments" class="form-label">
-                            Comentarios
+                            <spring:message code="correct.specific.exam.comments" />
                         </form:label>
                         <form:textarea path="comments" class="form-input" style="width: 95%;resize: none" cols="50" rows="5"></form:textarea>
                         <form:errors path="comments" element="p" cssClass="error-message"/>

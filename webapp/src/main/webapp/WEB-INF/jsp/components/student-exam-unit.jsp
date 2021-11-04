@@ -24,7 +24,7 @@
     </div>
     <c:if test="${!param.isCorrected}">
     <a class="styleless-anchor"  href="<c:url value="${param.examId}/answer/${requestScope.answer.answerId}/correct"/>">
-        <img src="<c:url value="/resources/images/check.png"/>" alt="check" class="medium-icon">
+        <img src="<c:url value="/resources/images/check.png"/>" alt="<spring:message code="img.alt.check" />" class="medium-icon">
     </a>
     </c:if>
     <c:if test="${param.isCorrected}">

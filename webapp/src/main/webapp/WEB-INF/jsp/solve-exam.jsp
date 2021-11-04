@@ -62,7 +62,7 @@
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> <c:out value="${exam.title}"/></h3>
                 <div class="big-wrapper">
-                    <h3 style="align-self: center">Tiempo restante: <span id="time-left"></span> </h3>
+                    <h3 style="align-self: center"><spring:message code="solve.exam.time" /> <span id="time-left"></span> </h3>
                     <h3 class="form-label"><spring:message code="solve.exam.description" htmlEscape="true"/></h3>
                     <p style="margin-left:30px; margin-top:10px; margin-bottom:10px;"><c:out value="${exam.description}"/></p>
                     <c:set var="file" value="${exam.examFile}" scope="request"/>
