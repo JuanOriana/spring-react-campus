@@ -51,7 +51,7 @@
                      alt="<spring:message code="img.alt.check" />" class="medium-icon"
                      onclick="uncheckById(${requestScope.answer.answerId}, ${param.examId}+'/answer/' + ${requestScope.answer.answerId} + '/undo-correct' )">
             </button>
-        </form>
+<%--        </form>--%>
     </c:if>
 </div>
 </body>
