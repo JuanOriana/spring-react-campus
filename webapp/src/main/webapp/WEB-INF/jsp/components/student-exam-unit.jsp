@@ -1,7 +1,22 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <html>
-
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script>
+        function uncheckById(answerId, path){
+            const deleteMessage = "<spring:message code="alert.student.exam.unit.undo.correction" htmlEscape="true"/>"
+            const result = confirm(deleteMessage);
+            if (result === true){
+                const form = $('<form></form>');
+                form.attr("method", "post");
+                form.attr("action", path);
+                $(document.body).append(form);
+                form.submit();
+            }
+        }
+    </script>
+</head>
 <body>
 <div class="file-unit" id="file-${requestScope.answer.answerId}">
     <div style="display: flex; align-items: center">
@@ -28,11 +43,13 @@
     </a>
     </c:if>
     <c:if test="${param.isCorrected}">
-        <form style="display: flex; align-items: center" method="post"
-              action="<c:url value="${param.examId}/answer/${requestScope.answer.answerId}/undo-correct"/>">
+<%--        TODO: rev si esta bien el uso de la funcion uncheckById --%>
+<%--        <form style="display: flex; align-items: center" method="post"--%>
+<%--              action="<c:url value="${param.examId}/answer/${requestScope.answer.answerId}/undo-correct"/>">--%>
             <button style="background: none">
                 <img src="<c:url value="/resources/images/x.png"/>"
-                     alt="<spring:message code="img.alt.check" />" class="medium-icon">
+                     alt="<spring:message code="img.alt.check" />" class="medium-icon"
+                     onclick="uncheckById(${requestScope.answer.answerId}, ${param.examId}+'/answer/' + ${requestScope.answer.answerId} + '/undo-correct' )">
             </button>
         </form>
     </c:if>
