@@ -37,12 +37,10 @@ public class ExamDaoJpaTest extends BasicPopulator {
 
     @Test
     public void testCreate() {
-        Long fileAnswerId = 9999L;
         FileModel examFile = createFileModelObject("src/test/resources/test.png", FILE_ID);
-        FileModel answerFile = createFileModelObject("src/test/resources/test.png", fileAnswerId);
         LocalDateTime startTime = LocalDateTime.MIN;
         LocalDateTime endTime = LocalDateTime.now();
-        Exam exam = examDao.create(COURSE_ID, EXAM_TITLE, EXAM_DESCRIPTION, examFile, answerFile, startTime, endTime);
+        Exam exam = examDao.create(COURSE_ID, EXAM_TITLE, EXAM_DESCRIPTION, examFile, startTime, endTime);
         assertNotNull(exam);
     }
 
