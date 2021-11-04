@@ -46,7 +46,7 @@
 <%--        TODO: rev si esta bien el uso de la funcion uncheckById --%>
 <%--        <form style="display: flex; align-items: center" method="post"--%>
 <%--              action="<c:url value="${param.examId}/answer/${requestScope.answer.answerId}/undo-correct"/>">--%>
-            <button style="background: none">
+            <button style="background: none" type="button">
                 <img src="<c:url value="/resources/images/x.png"/>"
                      alt="<spring:message code="img.alt.check" />" class="medium-icon"
                      onclick="uncheckById(${requestScope.answer.answerId}, ${param.examId}+'/answer/' + ${requestScope.answer.answerId} + '/undo-correct' )">
