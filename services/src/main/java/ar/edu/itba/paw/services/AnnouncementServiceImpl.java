@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.MailingService;
 import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         List<User> userList = courseService.getStudents(announcement.getCourse().getCourseId());
         List<String> emailList = new ArrayList<>();
         userList.forEach(u->emailList.add(u.getEmail()));
-        mailingService.broadcastAnnouncementNotification(emailList, title, content, course, author, url);
+        mailingService.broadcastAnnouncementNotification(emailList, title, content, course, author, url, LocaleContextHolder.getLocale());
         return announcement;
     }
 

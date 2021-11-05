@@ -44,7 +44,7 @@ public class MailingServiceImpl implements MailingService {
 
 
     @Override
-    public void sendEmail(User sender, Long receiverId, String subject, String content, Long courseId) {
+    public void sendEmail(User sender, Long receiverId, String subject, String content, Long courseId, Locale locale) {
         User user = userService.findById(receiverId).orElseThrow(UserNotFoundException::new);
         Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
         Map<String,Object> model = new HashMap<>();
@@ -54,13 +54,13 @@ public class MailingServiceImpl implements MailingService {
         model.put("content", content);
         model.put("year", String.valueOf(LocalDateTime.now().getYear()));
         sendThymeleafTemplateEmail(getMimeMessage(sender.getEmail()), Collections.singletonList(user.getEmail()),
-                subject, model, "student-email-to-teacher.html");
+                subject, model, "student-email-to-teacher.html", locale);
     }
 
 
     @Override
     @Async
-    public void broadcastAnnouncementNotification(List<String> to, String title, String content, Course course, User author, String url) {
+    public void broadcastAnnouncementNotification(List<String> to, String title, String content, Course course, User author, String url, Locale locale) {
         Map<String, Object> model = new HashMap<>();
         model.put("title", title);
         model.put("content", content);
@@ -69,7 +69,7 @@ public class MailingServiceImpl implements MailingService {
         model.put("url", url);
         model.put("courseId", course.getCourseId());
         model.put("author", author);
-        sendThymeleafTemplateEmail(to, messageSource.getMessage( "mail.new.announcement.title", null, "", LocaleContextHolder.getLocale()) + ": " + course.getSubject().getName(), model, "new-announcement-notification.html");
+        sendThymeleafTemplateEmail(to, messageSource.getMessage( "mail.new.announcement.title", null, "", locale) + ": " + course.getSubject().getName(), model, "new-announcement-notification.html", locale);
     }
 
     private void transportMessage(Message message, List<String> to, String subject, String content, String contentType) {
@@ -96,8 +96,8 @@ public class MailingServiceImpl implements MailingService {
         }
     }
 
-    private void sendThymeleafTemplateEmail(List<String> to, String subject, Map<String, Object> args, String templateName) {
-        Context context = new Context();
+    private void sendThymeleafTemplateEmail(List<String> to, String subject, Map<String, Object> args, String templateName, Locale locale) {
+        Context context = new Context(locale);
         context.setVariables(args);
         String htmlBody = templateEngine.process(templateName, context);
         sendHtmlBroadcastEmail(to, subject, htmlBody);
@@ -107,8 +107,8 @@ public class MailingServiceImpl implements MailingService {
         transportMessage(new MimeMessage(session), to, subject, content, "text/html;charset=\"UTF-8\"");
     }
 
-    private void sendThymeleafTemplateEmail(Message message,List<String> to,String subject, Map<String, Object> args, String templateName) {
-        Context context = new Context();
+    private void sendThymeleafTemplateEmail(Message message,List<String> to,String subject, Map<String, Object> args, String templateName, Locale locale) {
+        Context context = new Context(locale);
         context.setVariables(args);
         String htmlBody = templateEngine.process(templateName, context);
         transportMessage(message,to,subject,htmlBody, "text/html;charset=\"UTF-8\"");

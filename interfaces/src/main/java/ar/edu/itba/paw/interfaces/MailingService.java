@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.User;
 
 import java.util.List;
+import java.util.Locale;
 
 public interface MailingService {
     /**
@@ -14,8 +15,9 @@ public interface MailingService {
      * @param subject       The email subject
      * @param content       The email content
      * @param courseId      The course where the email is being sent from
+     * @param locale        The locale of the user to translate the mailing template to
      */
-    void sendEmail(User sender, Long recipientId, String subject, String content, Long courseId);
+    void sendEmail(User sender, Long recipientId, String subject, String content, Long courseId, Locale locale);
 
     /**
      * Attempts to send a broadcast email to every student in course notifying of a new announcement
@@ -24,7 +26,8 @@ public interface MailingService {
      * @param content The content of the new announcement
      * @param course  The course where de announcement what published
      * @param author  The author of the announcement
+     * @param locale  The locale of the user to translate the mailing template to
      */
-    void broadcastAnnouncementNotification(List<String> to, String title, String content, Course course, User author, String baseUrl);
+    void broadcastAnnouncementNotification(List<String> to, String title, String content, Course course, User author, String baseUrl, Locale locale);
 
 }
