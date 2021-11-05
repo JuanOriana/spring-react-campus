@@ -135,11 +135,31 @@
         </div>
         <button type="button" class="form-button" style="align-self: end" onclick="clearFilters()"><spring:message code="file.search.button.clear.filters"/></button>
     </div>
-    <div>
-        <c:if test="${param.appliedFilters.length() > 0}">
-            <p><c:out value = "${param.appliedFilters}"/></p>
-        </c:if>
-    </div>
+
+<%--    TODO: ver el tema de "Practica" repetido (es por el indice 0 repetido) --%>
+    <c:if test="${requestScope.filteredCategories.size() > 0 || requestScope.filteredExtensions.size() > 0}">
+        <div>
+            <span class="file-checkbox-label"><spring:message code="file.search.filtered.by" htmlEscape="true"/></span>
+            <span> </span>
+            <span class="file-checkbox-label"><spring:message code="file.search.filtered.by.categories" htmlEscape="true"/></span>
+            <span> </span>
+            <c:forEach var="category" items="${requestScope.filteredCategories}">
+                <span class="file-checkbox-label">
+                    <spring:message code="category.${category.categoryName}" htmlEscape="true"/>
+                </span>
+                <span> </span>
+            </c:forEach>
+            <span class="file-checkbox-label">- <spring:message code="file.search.filtered.by.extensions" htmlEscape="true"/></span>
+            <span> </span>
+            <c:forEach var="extension" items="${requestScope.filteredExtensions}">
+                <span class="file-checkbox-label">
+                    <c:out value = "${extension.getFileExtensionName()}"/>
+                </span>
+                <span> </span>
+            </c:forEach>
+        </div>
+    </c:if>
+
 </form>
 </body>
 </html>

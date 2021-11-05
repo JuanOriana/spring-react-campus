@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,20 +64,18 @@ public class FilesController extends AuthController {
         List<FileCategory> fileCategoryList = fileCategoryService.getCategories();
         List<FileExtension> fileExtensionList = fileExtensionService.getExtensions();
 
-        StringBuilder listOfAppliedFilters = new StringBuilder();
+        List<FileCategory> listOfAppliedCategoryFilters = new ArrayList<>();
         for (Long categoryId : categoryType){
             if (categoryId >= 0){
-                listOfAppliedFilters.append(messageSource.getMessage("category." + fileCategoryList.get(categoryId.intValue()).getCategoryName(), null, "", LocaleContextHolder.getLocale()));
-                listOfAppliedFilters.append(", ");
+                listOfAppliedCategoryFilters.add(fileCategoryList.get(categoryId.intValue()));
             }
         }
+        List<FileExtension> listOfAppliedExtensionFilters = new ArrayList<>();
         for (Long extensionId : extensionType){
             if (extensionId >= 0){
-                listOfAppliedFilters.append(fileExtensionList.get(extensionId.intValue()).getFileExtensionName());
-                listOfAppliedFilters.append(", ");
+                listOfAppliedExtensionFilters.add(fileExtensionList.get(extensionId.intValue()));
             }
         }
-        String listOfAppliedFiltersNames = listOfAppliedFilters.toString();
 
         User user = authFacade.getCurrentUser();
         CampusPage<FileModel> filePage = fileService.listByUser(query, extensionType, categoryType, user.getUserId(),
@@ -85,7 +84,8 @@ public class FilesController extends AuthController {
         mav.addObject("categories", fileCategoryList);
         mav.addObject("files", filePage.getContent());
         mav.addObject("extensions", fileExtensionList);
-        mav.addObject("listOfAppliedFilters", listOfAppliedFiltersNames);
+        mav.addObject("filteredCategories", listOfAppliedCategoryFilters);
+        mav.addObject("filteredExtensions", listOfAppliedExtensionFilters);
         return loadFileParamsIntoModel(categoryType, extensionType, query, orderProperty, orderDirection, filePage, mav);
     }
 
