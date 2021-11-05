@@ -43,7 +43,7 @@ public class ExamServiceImpl implements ExamService {
                 }
             }
             fileDao.associateCategory(fileModel.getFileId(), examCategoryId);
-        Exam exam = examDao.create(courseId,title, description, fileModel,null, startTime, endTime);
+        Exam exam = examDao.create(courseId,title, description, fileModel, startTime, endTime);
         List<User> students = courseDao.getStudents(courseId);
         answerDao.createEmptyAnswers(exam,students);
         return exam;
@@ -57,7 +57,7 @@ public class ExamServiceImpl implements ExamService {
     public Exam create(Long courseId, String title, String description, FileModel examFile, LocalDateTime startTime, LocalDateTime endTime) {
         final Optional<Course> course = courseDao.findById(courseId);
         if(course.isPresent()){
-            return examDao.create(courseId,title, description, examFile,null, startTime, endTime);
+            return examDao.create(courseId,title, description, examFile, startTime, endTime);
         }else{
             throw new CourseNotFoundException();
         }

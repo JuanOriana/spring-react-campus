@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ExamDao {
 
-    Exam create(Long courseId, String title, String description, FileModel examFile, FileModel answersFile, LocalDateTime startTime, LocalDateTime endTime);
+    Exam create(Long courseId, String title, String description, FileModel examFile, LocalDateTime startTime, LocalDateTime endTime);
 
     boolean update(Long examId, Exam exam);
 

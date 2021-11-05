@@ -18,7 +18,7 @@ public class ExamDaoJpa extends BasePaginationDaoImpl<Exam> implements ExamDao {
 
 
     @Override
-    public Exam create(Long courseId, String title, String description, FileModel examFile, FileModel answersFile, LocalDateTime startTime, LocalDateTime endTime) {
+    public Exam create(Long courseId, String title, String description, FileModel examFile, LocalDateTime startTime, LocalDateTime endTime) {
         final Exam exam = new Exam.Builder()
                 .withCourse(new Course(courseId, null, null, null, null))
                 .withTitle(title)

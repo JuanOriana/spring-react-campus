@@ -33,9 +33,6 @@ public class Exam {
     @OneToOne
     private FileModel examFile;
 
-    @OneToOne
-    private FileModel answerFile;
-
 
     /* default */ Exam() {
         // For Hibernate
@@ -49,14 +46,12 @@ public class Exam {
         private String title;
         private String description;
         private FileModel examFile;
-        private FileModel answerFile;
 
 
         public Builder() {
         }
 
-        public Builder(Long examId,Course course, LocalDateTime startTime, LocalDateTime endTime, String title, String description, FileModel examFile,
-                       FileModel answerFile) {
+        public Builder(Long examId, Course course, LocalDateTime startTime, LocalDateTime endTime, String title, String description, FileModel examFile) {
             this.examId = examId;
             this.course = course;
             this.startTime = startTime;
@@ -64,7 +59,6 @@ public class Exam {
             this.title = title;
             this.description = description;
             this.examFile = examFile;
-            this.answerFile = answerFile;
         }
 
         public Builder withExamId(Long fileId) {
@@ -87,10 +81,6 @@ public class Exam {
             return Builder.this;
         }
 
-        public Builder withAnswerFile(FileModel file) {
-            this.answerFile = file;
-            return Builder.this;
-        }
 
         public Builder withStartTime(LocalDateTime startTime) {
             this.startTime = startTime;
@@ -102,7 +92,7 @@ public class Exam {
             return Builder.this;
         }
 
-        public Builder withCourse(Course course){
+        public Builder withCourse(Course course) {
             this.course = course;
             return Builder.this;
         }
@@ -137,10 +127,9 @@ public class Exam {
         }
     }
 
-    private Exam(Builder builder){
+    private Exam(Builder builder) {
         this.examId = builder.examId;
         this.examFile = builder.examFile;
-        this.answerFile = builder.answerFile;
         this.description = builder.description;
         this.course = builder.course;
         this.endTime = builder.endTime;
@@ -148,14 +137,13 @@ public class Exam {
         this.title = builder.title;
     }
 
-    public Exam(Course course, LocalDateTime startTime, LocalDateTime endTime, String title, String description, FileModel examFile, FileModel answerFile) {
+    public Exam(Course course, LocalDateTime startTime, LocalDateTime endTime, String title, String description, FileModel examFile) {
         this.course = course;
         this.startTime = startTime;
         this.endTime = endTime;
         this.title = title;
         this.description = description;
         this.examFile = examFile;
-        this.answerFile = answerFile;
     }
 
     public void merge(Exam exam) {
@@ -165,7 +153,6 @@ public class Exam {
         this.title = exam.title;
         this.description = exam.description;
         this.examFile = exam.examFile;
-        this.answerFile = exam.answerFile;
     }
 
     public Long getExamId() {
