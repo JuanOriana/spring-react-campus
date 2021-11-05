@@ -135,6 +135,11 @@
         </div>
         <button type="button" class="form-button" style="align-self: end" onclick="clearFilters()"><spring:message code="file.search.button.clear.filters"/></button>
     </div>
+    <div>
+        <c:if test="${param.appliedFilters.length() > 0}">
+            <p><c:out value = "${param.appliedFilters}"/></p>
+        </c:if>
+    </div>
 </form>
 </body>
 </html>

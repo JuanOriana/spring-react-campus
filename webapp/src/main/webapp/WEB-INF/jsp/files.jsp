@@ -23,6 +23,7 @@
                 <jsp:param name="query" value="${query}"/>
                 <jsp:param name="orderProperty" value="${orderProperty}"/>
                 <jsp:param name="orderDirection" value="${orderDirection}"/>
+                <jsp:param name="appliedFilters" value="${listOfAppliedFilters}"/>
             </jsp:include>
             <div class="file-grid">
                 <c:if test="${files.size() == 0}">
