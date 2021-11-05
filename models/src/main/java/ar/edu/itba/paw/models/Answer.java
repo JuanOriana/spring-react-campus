@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.models;
 
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -15,6 +18,7 @@ public class Answer {
     private Long answerId;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "examId")
     private Exam exam;
 
