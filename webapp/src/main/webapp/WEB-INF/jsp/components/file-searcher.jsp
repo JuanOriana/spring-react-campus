@@ -20,12 +20,17 @@
         function toggleFilters(){
             const filters = document.getElementById("filter-container");
             const toggler = document.getElementById("filter-toggle");
+            //TODO: ver el tema de por que falla
+            const filterlist = document.getElementById("filter-by-list");
+
             if (filters.style.display === "none") {
                 filters.style.display = "flex";
-                toggler.style.transform="rotate(-90deg)"
+                toggler.style.transform="rotate(-90deg)";
+                filterlist.style.display = "none";
             } else {
                 filters.style.display = "none";
-                toggler.style.transform="rotate(90deg)"
+                toggler.style.transform="rotate(90deg)";
+                filterlist.style.display = "block";
             }
         }
 
@@ -138,7 +143,7 @@
 
 <%--    TODO: ver el tema de "Practica" repetido (es por el indice 0 repetido) --%>
     <c:if test="${requestScope.filteredCategories.size() > 0 || requestScope.filteredExtensions.size() > 0}">
-        <div>
+        <div id="filter-by-list" style="display: block">
             <span class="file-checkbox-label"><spring:message code="file.search.filtered.by" htmlEscape="true"/></span>
             <span> </span>
             <span class="file-checkbox-label"><spring:message code="file.search.filtered.by.categories" htmlEscape="true"/></span>
@@ -149,6 +154,7 @@
                 </span>
                 <span> </span>
             </c:forEach>
+            <c:if test="${requestScope.filteredExtensions.size() > 0}">
             <span class="file-checkbox-label">- <spring:message code="file.search.filtered.by.extensions" htmlEscape="true"/></span>
             <span> </span>
             <c:forEach var="extension" items="${requestScope.filteredExtensions}">
@@ -157,6 +163,7 @@
                 </span>
                 <span> </span>
             </c:forEach>
+            </c:if>
         </div>
     </c:if>
 
