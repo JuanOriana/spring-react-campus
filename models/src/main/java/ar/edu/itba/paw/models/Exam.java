@@ -61,8 +61,8 @@ public class Exam {
             this.examFile = examFile;
         }
 
-        public Builder withExamId(Long fileId) {
-            this.examId = fileId;
+        public Builder withExamId(Long examId) {
+            this.examId = examId;
             return Builder.this;
         }
 
