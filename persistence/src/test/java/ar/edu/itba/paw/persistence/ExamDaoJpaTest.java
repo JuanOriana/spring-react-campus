@@ -30,14 +30,10 @@ public class ExamDaoJpaTest extends BasicPopulator {
     @Autowired
     private ExamDao examDao;
 
-    private final String EXAM_TITLE = "Exam title";
-    private final String EXAM_DESCRIPTION = "Exam description";
-    private final Long EXAM_ID = 1L;
-
 
     @Test
     public void testCreate() {
-        FileModel examFile = createFileModelObject("src/test/resources/test.png", FILE_ID);
+        FileModel examFile = createFileModelObject(FILE_PATH, FILE_ID);
         LocalDateTime startTime = LocalDateTime.MIN;
         LocalDateTime endTime = LocalDateTime.now();
         Exam exam = examDao.create(COURSE_ID, EXAM_TITLE, EXAM_DESCRIPTION, examFile, startTime, endTime);
@@ -51,7 +47,7 @@ public class ExamDaoJpaTest extends BasicPopulator {
 
     @Test
     public void testUpdate() {
-        FileModel examFile = createFileModelObject("src/test/resources/test.png", FILE_ID);
+        FileModel examFile = createFileModelObject(FILE_PATH, FILE_ID);
         Exam exam = new Exam.Builder()
                 .withCourse(new Course(COURSE_YEAR, COURSE_QUARTER, COURSE_BOARD, new Subject(SUBJECT_CODE, SUBJECT_NAME)))
                 .withStartTime(LocalDateTime.MIN)
