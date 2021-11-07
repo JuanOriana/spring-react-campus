@@ -30,7 +30,7 @@ public class AnswerDaoJpaTest extends BasicPopulator {
 
     private final Long DB_STUDENT_ID = 1337L;
     private final FileModel answerFile = createFileModelObject(FILE_PATH, FILE_ID);
-    private Subject subject = new Subject(SUBJECT_CODE, SUBJECT_NAME);
+    private final Subject subject = new Subject(SUBJECT_CODE, SUBJECT_NAME);
     private final Course course = new Course.Builder().withCourseId(COURSE_ID).withYear(COURSE_YEAR).withQuarter(COURSE_QUARTER).withBoard(COURSE_BOARD).withSubject(subject).build();
     private final Exam exam = new Exam.Builder().withExamId(EXAM_ID).withCourse(course).withTitle(EXAM_TITLE).withDescription(EXAM_DESCRIPTION).withExamFile(answerFile).withStartTime(LocalDateTime.MIN).withEndTime(LocalDateTime.MAX).build();
     private final User student = new User.Builder().withUserId(DB_STUDENT_ID).withUsername(USER_USERNAME).withName(USER_NAME).withSurname(USER_SURNAME).withEmail(USER_EMAIL).withFileNumber(USER_FILE_NUMBER).build();
@@ -183,5 +183,31 @@ public class AnswerDaoJpaTest extends BasicPopulator {
         assertEquals(Long.valueOf(0L), pair.getValue());
 
     }
+
+    @Test
+    public void testGetAverageScoreInCourse(){
+        Double score = answerDao.getAverageScoreOfExam(CORRECTED_EXAM_ID);
+
+        assertEquals(Double.valueOf(5), score);
+    }
+
+    @Test
+    public void testGetExamsAverage(){
+        Map<Exam,Double> examDoubleMap = answerDao.getExamsAverage(COURSE_ID);
+
+        assertFalse(examDoubleMap.isEmpty());
+        assertEquals(Double.valueOf(0), examDoubleMap.get(exam));
+
+    }
+
+    @Test
+    public void testGetAverageOfUserInCourse(){
+        Double average = answerDao.getAverageOfUserInCourse(student.getUserId(), COURSE_ID);
+
+        assertEquals(Double.valueOf(5),average);
+    }
+
+
+
 
 }

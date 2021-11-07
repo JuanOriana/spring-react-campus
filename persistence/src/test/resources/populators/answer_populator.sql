@@ -57,3 +57,6 @@ VALUES (1,1,'2021-09-26 21:14:35.138',1337);
 INSERT INTO answers(answerId,examId,deliveredDate,studentId,teacherId,score)
 VALUES (2,2,'2021-09-26 21:14:35.138',1337,1338,10);
 
+INSERT INTO answers(answerId,examId,deliveredDate,studentId,score)
+VALUES (3,2,'2021-09-26 21:14:35.138',1338,null);
+
