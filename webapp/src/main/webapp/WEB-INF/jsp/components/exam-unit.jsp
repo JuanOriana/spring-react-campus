@@ -28,14 +28,14 @@
             <img src="<c:url value="/resources/images/test.png"/>"
                  class="file-img" alt="${requestScope.exam.title}"/>
             <p class="file-name">
-                <spring:message code="file.unit.file.name" htmlEscape="true" arguments="${requestScope.exam.title}"/>
+                <spring:message code="exam.unit.file.name" htmlEscape="true" arguments="${requestScope.exam.title}"/>
             </p>
         </a>
     </div>
     <div style="display: flex; align-items: center">
         <c:if test="${param.isDelivered}">
             <p class="file-name">
-                <spring:message code="student.exam.unit.grade" />
+                <spring:message code="exam.unit.grade" />
                 <c:if test="${requestScope.answer.score != null}">
                     <c:out value="${requestScope.answer.score}"/>
                 </c:if>

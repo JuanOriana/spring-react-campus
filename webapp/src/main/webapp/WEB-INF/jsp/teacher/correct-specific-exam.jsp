@@ -26,7 +26,7 @@
             <div class="course-data-container">
                 <h3 class="section-heading" style="margin: 0 0 20px 20px"> <c:out value="${exam.title}"/></h3>
                 <div class="big-wrapper">
-                    <h3 class="form-label"><spring:message code="solve.exam.description" htmlEscape="true"/></h3>
+                    <h3 class="form-label"><spring:message code="correct.specific.exam.description" htmlEscape="true"/></h3>
                     <p style="margin-left:30px; margin-top:10px; margin-bottom:10px;"><c:out value="${exam.description}"/></p>
                     <c:set var="file" value="${exam.examFile}" scope="request"/>
                     <jsp:include page="../components/file-unit.jsp">
@@ -56,8 +56,8 @@
                         <form:textarea path="comments" class="form-input" style="width: 95%;resize: none" cols="50" rows="5"></form:textarea>
                         <form:errors path="comments" element="p" cssClass="error-message"/>
                         <div style="display: flex; margin-top:5px; justify-content: center">
-                            <button  class="form-button" style="margin-right:15px; background: #a80011";><spring:message code="solve.exam.cancel.submission" htmlEscape="true"/></button>
-                            <button  class="form-button"><spring:message code="solve.exam.submit" htmlEscape="true"/></button>
+                            <button  class="form-button" style="margin-right:15px; background: #a80011";><spring:message code="correct.specific.exam.cancel.submission" htmlEscape="true"/></button>
+                            <button  class="form-button"><spring:message code="correct.specific.exam.submit" htmlEscape="true"/></button>
                         </div>
                     </form:form>
                 </div>
