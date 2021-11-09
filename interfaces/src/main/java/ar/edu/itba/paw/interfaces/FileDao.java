@@ -2,12 +2,15 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.PaginationArgumentException;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface FileDao {
     FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course);
+
+    FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course, boolean isHidden);
 
     boolean update(Long fileId, FileModel file);
 
@@ -17,13 +20,13 @@ public interface FileDao {
 
     Optional<FileModel> findById(Long fileId);
 
-    boolean associateCategory(Long fileId, Long fileCategoryId);
-
     List<FileCategory> getFileCategories(Long fileId);
 
     List<FileModel> findByCategory(Long fileCategoryId);
 
     List<FileModel> findByCourseId(Long courseId);
+
+    boolean associateCategory(Long fileId, Long fileCategoryId);
 
     boolean hasAccess(Long fileId, Long userId);
 
@@ -36,7 +39,5 @@ public interface FileDao {
                                      CampusPageSort sort) throws PaginationArgumentException;
 
     void incrementDownloads(Long fileId);
-
-    FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course, boolean isHidden);
 
 }
