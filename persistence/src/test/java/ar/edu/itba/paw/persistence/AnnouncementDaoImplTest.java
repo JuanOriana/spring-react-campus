@@ -2,18 +2,13 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.AnnouncementDao;
 import ar.edu.itba.paw.models.*;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -106,8 +101,6 @@ public class AnnouncementDaoImplTest extends BasicPopulator {
         Optional<Announcement> announcementOptional = announcementDao.findById(NOT_EXISTING_ID);
         assertFalse(announcementOptional.isPresent());
     }
-
-
 
 
     @Test
