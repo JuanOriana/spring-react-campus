@@ -42,6 +42,8 @@ public class BasicPopulator {
     protected final Integer PAGE_SIZE = 10;
 
     protected final Integer STUDENT_ROLE_ID = 1;
+    protected final Integer TEACHER_ROLE_ID = 3;
+    protected final String TEACHER_ROLE_NAME = "Teacher";
 
 
 
