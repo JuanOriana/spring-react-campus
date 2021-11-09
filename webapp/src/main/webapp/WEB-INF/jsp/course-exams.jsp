@@ -36,7 +36,8 @@
                         <jsp:include page="./components/exam-unit.jsp"/>
                     </c:forEach>
                     <c:if test="${answerMarks.size() != 0}">
-                    <h3 style="margin: 10px 0;"><spring:message code="course-exams.sent.exams"/></h3>
+                        <h4 class="section-heading" style="margin-left:10px" >Average: <c:out value="${average}"/> </h4>
+                        <h3 style="margin: 10px 0;"><spring:message code="course-exams.sent.exams"/></h3>
                         <c:forEach var="answer" items="${answerMarks}">
                             <c:set var="exam" value="${answer.exam}" scope="request"/>
                             <c:set var="answer" value="${answer}" scope="request"/>

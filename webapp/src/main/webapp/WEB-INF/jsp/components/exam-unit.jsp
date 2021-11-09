@@ -45,7 +45,8 @@
             </p>
         </c:if>
         <c:if test="${param.isTeacher}">
-            <p class="file-name"><spring:message code="exam.unit.number.of.corrected.exams" htmlEscape="true" arguments="${param.examsSolved},${param.userCount}"/></p>
+            <p class="file-name">Promedio: <c:out value="${requestScope.decimalFormat.format(requestScope.average)}"/>
+            <p class="file-name" style="padding-left: 5px; margin-left: 15px; border-left: 3px solid white"><spring:message code="exam.unit.number.of.corrected.exams" htmlEscape="true" arguments="${param.examsSolved},${param.userCount}"/></p>
             <img src="<c:url value="/resources/images/trash.png"/>"
                  alt="<spring:message code="img.alt.delete" />" class="medium-icon" onclick="deleteById(${param.courseId},${requestScope.exam.examId})">
         </c:if>

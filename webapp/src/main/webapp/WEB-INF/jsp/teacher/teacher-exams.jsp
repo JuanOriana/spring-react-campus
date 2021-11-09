@@ -61,12 +61,14 @@
           </c:if>
           <c:forEach var="exam" items="${exams.entrySet()}">
             <c:set var="exam" value="${exam.key}" scope="request"/>
+            <c:set var="decimalFormat" value="${decimalFormat}" scope="request"/>
+            <c:set var="average" value="${examsToAverage.get(exam.key)}" scope="request"/>
             <jsp:include page="../components/exam-unit.jsp">
               <jsp:param name="isTeacher" value="${true}"/>
               <jsp:param name="courseId" value="${course.courseId}"/>
               <jsp:param name="examsSolved" value="${exam.value.value}"/>
               <jsp:param name="userCount" value="${exam.value.key}"/>
-          </jsp:include>
+            </jsp:include>
           </c:forEach>
         </div>
       </div>

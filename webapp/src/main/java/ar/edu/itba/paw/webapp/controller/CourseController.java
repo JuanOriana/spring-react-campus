@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -41,6 +42,7 @@ public class CourseController extends AuthController {
     private final ExamService examService;
     private final AnswerService answerService;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private static final DecimalFormat decimalFormat = new DecimalFormat("#.00");
     private static final String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
     private static final int DEFAULT_PAGE = 1;
     private static final int DEFAULT_PAGE_SIZE = 10;
@@ -140,10 +142,16 @@ public class CourseController extends AuthController {
             mav.addObject("createExamForm", createExamForm);
             mav.addObject("exams", answerService.getExamsAndTotals(courseId));
             mav.addObject("minDateTime", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm").format(LocalDateTime.now()));
+            mav.addObject("examsToAverage",answerService.getExamsAverage(courseId));
+            mav.addObject("decimalFormat",decimalFormat);
+
         } else {
             mav = new ModelAndView("course-exams");
-            mav.addObject("unresolvedExams", answerService.getUnresolvedExams(authFacade.getCurrentUser().getUserId(),courseId));
-            mav.addObject("answerMarks", answerService.getMarks(authFacade.getCurrentUser().getUserId(),courseId));
+            final Long userId = authFacade.getCurrentUser().getUserId();
+            mav.addObject("unresolvedExams", answerService.getUnresolvedExams(userId,courseId));
+            mav.addObject("answerMarks", answerService.getMarks(userId,courseId));
+            mav.addObject("average",String.format("%.2f",answerService.getAverageOfUserInCourse(userId,courseId)));
+
         }
         return mav;
     }
@@ -184,8 +192,7 @@ public class CourseController extends AuthController {
             mav.addObject("maxPage", answers.getTotal());
             mav.addObject("pageSize", answers.getSize());
             mav.addObject("filterBy", filterBy);
-            mav.addObject("correctedAnswers", answerService.getCorrectedAnswers(examId));
-            mav.addObject("uncorrectedAnswers", answerService.getNotCorrectedAnswers(examId));
+            mav.addObject("average", String.format("%.2f",answerService.getAverageScoreOfExam(examId)));
 
         } else {
             mav = new ModelAndView("solve-exam");
