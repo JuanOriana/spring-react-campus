@@ -35,25 +35,9 @@ public class AnnouncementDaoImplTest extends BasicPopulator {
 
 
     private final LocalDateTime ANNOUNCEMENT_DATE = LocalDateTime.now();
-
-    private static final RowMapper<Announcement> ANNOUNCEMENT_ROW_MAPPER = (rs, rowNum) ->
-            new Announcement.Builder()
-                    .withAnnouncementId(rs.getLong("announcementid"))
-                    .withDate(rs.getTimestamp("date").toLocalDateTime())
-                    .withTitle(rs.getString("title"))
-                    .withContent(rs.getString("content"))
-                    .withAuthor(new User.Builder()
-                            .withUserId(rs.getLong("userId"))
-                            .withFileNumber(rs.getInt("fileNumber"))
-                            .withName(rs.getString("name"))
-                            .withSurname(rs.getString("surname"))
-                            .withUsername(rs.getString("username"))
-                            .withEmail(rs.getString("email"))
-                            .withPassword(rs.getString("password"))
-                            .isAdmin(rs.getBoolean("isAdmin"))
-                            .build())
-                    .withCourse(null)
-                    .build();
+    private final Long DB_ANNOUNCEMENT_ID = 2L;
+    private final String DB_ANNOUNCEMENT_TITLE = "test_title";
+    private final String DB_ANNOUNCEMENT_CONTENT = "test_content";
 
 
     private Announcement getMockAnnouncement() {
@@ -78,8 +62,8 @@ public class AnnouncementDaoImplTest extends BasicPopulator {
         return new Announcement.Builder()
                 .withAnnouncementId(ANNOUNCEMENT_ID)
                 .withDate(ANNOUNCEMENT_DATE)
-                .withTitle("test_title")
-                .withContent("test_content")
+                .withTitle(DB_ANNOUNCEMENT_TITLE)
+                .withContent(DB_ANNOUNCEMENT_CONTENT)
                 .withAuthor(mockUser)
                 .withCourse(mockCourse)
                 .build();
@@ -90,12 +74,12 @@ public class AnnouncementDaoImplTest extends BasicPopulator {
         Announcement announcement = getMockAnnouncement();
         announcement = announcementDao.create(announcement.getDate(), announcement.getTitle(),
                 announcement.getContent(), announcement.getAuthor(), announcement.getCourse());
-        assertEquals(1L, announcement.getAnnouncementId().longValue());
+        assertEquals(ANNOUNCEMENT_ID, announcement.getAnnouncementId());
     }
 
     @Test
     public void testDelete() {
-        assertTrue(announcementDao.delete(2L));
+        assertTrue(announcementDao.delete(DB_ANNOUNCEMENT_ID));
     }
 
     @Test
@@ -106,18 +90,18 @@ public class AnnouncementDaoImplTest extends BasicPopulator {
 
 
     @Test
-    public void getById() {
-        Optional<Announcement> announcementOptional = announcementDao.findById(2L);
+    public void findById() {
+        Optional<Announcement> announcementOptional = announcementDao.findById(DB_ANNOUNCEMENT_ID);
         assertTrue(announcementOptional.isPresent());
-        assertEquals(2L, announcementOptional.get().getAnnouncementId().longValue());
+        assertEquals(DB_ANNOUNCEMENT_ID, announcementOptional.get().getAnnouncementId());
         assertEquals(COURSE_ID, announcementOptional.get().getCourse().getCourseId());
         assertEquals(USER_ID, announcementOptional.get().getAuthor().getUserId());
-        assertEquals("test_title", announcementOptional.get().getTitle());
-        assertEquals("test_content", announcementOptional.get().getContent());
+        assertEquals(DB_ANNOUNCEMENT_TITLE, announcementOptional.get().getTitle());
+        assertEquals(DB_ANNOUNCEMENT_CONTENT, announcementOptional.get().getContent());
     }
 
     @Test
-    public void getByIdNoExist() {
+    public void findByIdNoExist() {
         final Long NOT_EXISTING_ID = 100L;
         Optional<Announcement> announcementOptional = announcementDao.findById(NOT_EXISTING_ID);
         assertFalse(announcementOptional.isPresent());
@@ -128,7 +112,8 @@ public class AnnouncementDaoImplTest extends BasicPopulator {
 
     @Test
     public void testListCourseAnnouncementsNonExistentId() {
-        List<Announcement> list = announcementDao.listByCourse(COURSE_ID + 1, new CampusPageRequest(PAGE, PAGE_SIZE)).getContent();
+        final Long NOT_EXISTING_COURSE_ID = 100L;
+        List<Announcement> list = announcementDao.listByCourse(NOT_EXISTING_COURSE_ID, new CampusPageRequest(PAGE, PAGE_SIZE)).getContent();
         assertNotNull(list);
         assertEquals(0, list.size());
     }
@@ -138,7 +123,7 @@ public class AnnouncementDaoImplTest extends BasicPopulator {
         Announcement announcement = getMockAnnouncement();
         announcement.setTitle("test_update_title");
         announcement.setContent("test_update_content");
-        final boolean isUpdated = announcementDao.update(2L, announcement);
+        final boolean isUpdated = announcementDao.update(DB_ANNOUNCEMENT_ID, announcement);
         assertTrue(isUpdated);
     }
 
