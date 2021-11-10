@@ -32,7 +32,7 @@
     </script>
 </head>
 <body>
-<div class="file-unit" id="exam-${requestScope.exam.examId}">
+<div class="file-unit" id="exam-${requestScope.exam.examId}" style="flex-direction: column;justify-content: center">
     <div style="display: flex;align-items: center;justify-content: space-between; width: 100%">
         <div style="display: flex; align-items: center">
             <a <c:if test="${param.isDelivered}">style="pointer-events: none; display: flex; align-items: center"</c:if>

@@ -60,15 +60,33 @@ body{
     font-weight: 700;
     font-size: 20px;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
 }
+
 
 .logout-btn{
     color: saddlebrown;
     background: none;
     border: 2px solid saddlebrown;
     cursor: pointer;
+    border-radius: 12px;
+    margin-left: 10px;
+}
+
+.logout-btn:hover{
+    background: lightcoral;
+    transition: ease-in-out 0.2s;
+}
+
+@media (max-width: 990px) {
+    .user-nav-wrapper{
+        align-items: flex-end;
+        flex-direction: column;
+    }
+
+    .logout-btn{
+        margin-left: 0;
+    }
 }
 
 .success-box{
@@ -361,8 +379,8 @@ textarea:focus, input:focus{
     border-radius: 15px;
     margin:5px;
     background: var(--cyan-dark);
+    justify-content: space-around;
     display: flex;
-    flex-direction: column;
     padding: 20px 20px;
 }
 
