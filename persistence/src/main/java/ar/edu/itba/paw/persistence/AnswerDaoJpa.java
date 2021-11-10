@@ -45,8 +45,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
         TypedQuery<Answer> answerTypedQuery = em.createQuery("SELECT a FROM Answer a WHERE a.student.userId = :studentId AND a.exam.examId = :examId", Answer.class);
         answerTypedQuery.setParameter("examId", examId);
         answerTypedQuery.setParameter("studentId", userId);
-        Answer answer = answerTypedQuery.getSingleResult();
-        return answer.getDeliveredDate() != null;
+        return answerTypedQuery.getResultList().isEmpty();
     }
 
     @Override
@@ -150,7 +149,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
 
     @Override
     public List<Answer> getNotCorrectedAnswers(Long examId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NULL ORDER BY answer.deliveredDate ASC", Answer.class);
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NULL ORDER BY answer.deliveredDate DESC", Answer.class);
         correctedExamsTypedQuery.setParameter("examId", examId);
         return correctedExamsTypedQuery.getResultList();
     }
@@ -208,9 +207,13 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
 
     @Override
     public Double getAverageScoreOfExam(Long examId) {
-        TypedQuery<Double> averageQuery = em.createQuery("SELECT AVG(COALESCE(ans.score,0)) FROM Answer ans WHERE ans.exam.examId =:examId GROUP BY ans.exam.examId", Double.class);
+        TypedQuery<Double> averageQuery = em.createQuery("SELECT AVG(ans.score) FROM Answer ans WHERE ans.exam.examId =:examId AND ans.score IS NOT NULL GROUP BY ans.exam.examId", Double.class);
         averageQuery.setParameter("examId", examId);
-        return  averageQuery.getSingleResult();
+        List<Double> doubleList = averageQuery.getResultList();
+        if (doubleList.isEmpty()){
+            return 0.0;
+        }
+        return doubleList.get(0);
     }
 
     @Override
@@ -229,7 +232,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
 
     @Override
     public Double getAverageOfUserInCourse(Long studentId, Long courseId) {
-        TypedQuery<Double> averageQuery = em.createQuery("SELECT AVG(COALESCE(ans.score,0)) FROM Answer ans WHERE ans.exam.course.courseId =:courseId AND ans.student.userId =:studentId  GROUP BY ans.student.userId,ans.exam.course.courseId", Double.class);
+        TypedQuery<Double> averageQuery = em.createQuery("SELECT AVG(ans.score) FROM Answer ans WHERE ans.score IS NOT NULL AND ans.exam.course.courseId =:courseId AND ans.student.userId =:studentId", Double.class);
         averageQuery.setParameter("courseId", courseId);
         averageQuery.setParameter("studentId", studentId);
 
