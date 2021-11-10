@@ -30,7 +30,7 @@
             } else {
                 filters.style.display = "none";
                 toggler.style.transform="rotate(90deg)";
-                filterlist.style.display = "block";
+                filterlist.style.display = "flex";
             }
         }
 
@@ -93,7 +93,7 @@
             <label class="file-select-label"><spring:message code="file.search.type"/></label>
             <span>
                 <input class="file-checkbox" type="checkbox" id="extension-all" name="extension-type"
-                       value="${0}" onclick="toggleAll(this)"
+                       value="${-1}" onclick="toggleAll(this)"
                        <c:if test="${requestScope.extensionType.equals(requestScope.extensions)}">checked</c:if>>
                 <label class="file-checkbox-label" for="extension-all"><spring:message code="file.search.type.all" /></label>
             </span>
@@ -122,7 +122,7 @@
             <label class="file-select-label"><spring:message code="file.search.category"/></label>
             <span>
                 <input class="file-checkbox" type="checkbox" id="category-all" name="category-type"
-                       value="${0}" onclick="toggleAll(this)"
+                       value="${-1}" onclick="toggleAll(this)"
                        <c:if test="${requestScope.categoryType.equals(requestScope.categories)}">checked</c:if>>
                 <label class="file-checkbox-label" for="category-all"><spring:message code="file.search.category.all"/></label>
             </span>
@@ -143,27 +143,18 @@
 
 <%--    TODO: ver el tema de "Practica" repetido (es por el indice 0 repetido) --%>
     <c:if test="${requestScope.filteredCategories.size() > 0 || requestScope.filteredExtensions.size() > 0}">
-        <div id="filter-by-list" style="display: block">
-            <span class="file-checkbox-label"><spring:message code="file.search.filtered.by" htmlEscape="true"/></span>
-            <span> </span>
-            <span class="file-checkbox-label"><spring:message code="file.search.filtered.by.categories" htmlEscape="true"/></span>
-            <span> </span>
+        <div id="filter-by-list" style="display: flex; align-items: center; flex-wrap: wrap">
+            <p class="file-checkbox-label" style="font-weight: 700;"><spring:message code="file.search.filtered.by" htmlEscape="true"/> </p>
             <c:forEach var="category" items="${requestScope.filteredCategories}">
-                <span class="file-checkbox-label">
+                <p class="file-filter-pill">
                     <spring:message code="category.${category.categoryName}" htmlEscape="true"/>
-                </span>
-                <span> </span>
+                </p>
             </c:forEach>
-            <c:if test="${requestScope.filteredExtensions.size() > 0}">
-            <span class="file-checkbox-label">- <spring:message code="file.search.filtered.by.extensions" htmlEscape="true"/></span>
-            <span> </span>
             <c:forEach var="extension" items="${requestScope.filteredExtensions}">
-                <span class="file-checkbox-label">
-                    <c:out value = "${extension.getFileExtensionName()}"/>
-                </span>
-                <span> </span>
+                <p class="file-filter-pill-red">
+                    .<c:out value = "${extension.getFileExtensionName()}"/>
+                </p>
             </c:forEach>
-            </c:if>
         </div>
     </c:if>
 
