@@ -150,7 +150,7 @@ public class CourseController extends AuthController {
             final Long userId = authFacade.getCurrentUser().getUserId();
             mav.addObject("unresolvedExams", answerService.getUnresolvedExams(userId,courseId));
             mav.addObject("answerMarks", answerService.getMarks(userId,courseId));
-            mav.addObject("average",String.format("%.2f",answerService.getAverageOfUserInCourse(userId,courseId)));
+            mav.addObject("average",String.format("%.2f",10.0));
 
         }
         return mav;

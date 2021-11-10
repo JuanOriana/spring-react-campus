@@ -48,7 +48,7 @@
                         <form:label path="mark" class="form-label" cssStyle="margin: 0 0 5px 0">
                             <spring:message code="correct.specific.exam.grade" />
                         </form:label>
-                        <form:input type="number" path="mark" min="0" max="10" cssStyle="font-size: 24px; margin-left:20px; width:50px;padding:3px" />
+                        <form:input type="number" path="mark" min="0" max="10" step=".01" cssStyle="font-size: 24px; margin-left:20px; width:80px;padding:3px" />
                         <form:errors path="mark" element="p" cssStyle="color:red;margin-left: 15px"/>
                         <form:label path="comments" for="comments" class="form-label">
                             <spring:message code="correct.specific.exam.comments" />

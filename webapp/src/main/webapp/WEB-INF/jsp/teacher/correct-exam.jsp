@@ -51,7 +51,7 @@
                         </div>
                     </form>
 <%--                    TODO: translate--%>
-                    <h4 class="section-heading" style="margin-left:10px" >Average: <c:out value="${average}"/> </h4>
+                    <h4 class="section-heading" style="margin-left:10px" >Promedio: <c:out value="${average}"/> </h4>
                     <c:if test="${answers.size() == 0}">
                         <spring:message code="teacher.correct.exam.none.to.correct"/>
                     </c:if>

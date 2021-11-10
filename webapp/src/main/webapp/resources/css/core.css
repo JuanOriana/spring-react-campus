@@ -358,14 +358,12 @@ textarea:focus, input:focus{
 
 .file-unit{
     width: calc(100% - 40px);
-    height: 150px;
     border-radius: 15px;
     margin:5px;
     background: var(--cyan-dark);
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
+    flex-direction: column;
+    padding: 20px 20px;
 }
 
 .file-img{
@@ -520,4 +518,14 @@ textarea:focus, input:focus{
     color: var(--cyan-darkest);
     align-self: center;
     margin-top:30px;
+}
+
+
+.exam-comment{
+    color: lightyellow;
+    font-weight: 700;
+    margin-left: 40px;
+    border-top: 2px dotted white;
+    font-size: 18px;
+    padding-top: 10px;
 }
