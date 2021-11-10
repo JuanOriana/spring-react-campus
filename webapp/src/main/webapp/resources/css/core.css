@@ -379,7 +379,7 @@ textarea:focus, input:focus{
     border-radius: 15px;
     margin:5px;
     background: var(--cyan-dark);
-    justify-content: space-around;
+    justify-content: space-between;
     display: flex;
     padding: 20px 20px;
 }

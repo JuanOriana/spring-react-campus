@@ -21,7 +21,7 @@
 </head>
 <body>
     <div class="file-unit" id="file-${requestScope.file.fileId}">
-        <div style="display: flex; align-items: center">
+        <div style="display: flex; align-items: center; ">
             <a href="<c:url value="/file/${requestScope.file.fileId}"/>" class="styleless-anchor" target="_blank"
                style="display: flex;margin-left: 10px; align-items: center">
                 <img src="<c:url value="/resources/images/extensions/${requestScope.file.extension.fileExtensionName}.png"/>"
