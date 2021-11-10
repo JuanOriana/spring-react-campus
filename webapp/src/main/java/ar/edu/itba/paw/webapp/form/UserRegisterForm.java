@@ -13,16 +13,16 @@ public class UserRegisterForm {
     private int fileNumber;
 
     @NotBlank
-    @Pattern(regexp = "[a-zA-Z ]+") // Must have at leat one caracter and only letters
+    @Pattern(regexp = "[a-zA-Z ']+") // Must have at leat one caracter and only letters
     private String name;
 
     @NotBlank
-    @Pattern(regexp = "[a-zA-Z ]+") // Must have at leat one caracter and only letters
+    @Pattern(regexp = "[a-zA-Z ']+") // Must have at leat one caracter and only letters
     private String surname;
 
     @NotBlank
     @Size(min = 6, max = 50)
-    @Pattern(regexp = "[a-zA-Z]+")
+    @Pattern(regexp = "[a-zA-Z0-9]+")
     private String username;
 
     @NotBlank
