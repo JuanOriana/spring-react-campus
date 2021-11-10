@@ -152,7 +152,14 @@
             </c:forEach>
             <c:forEach var="extension" items="${requestScope.filteredExtensions}">
                 <p class="file-filter-pill-red">
-                    .<c:out value = "${extension.getFileExtensionName()}"/>
+                    <c:if test="${extension.getFileExtensionName()!='other'}">
+                        .<c:out value = "${extension.getFileExtensionName()}"/>
+                    </c:if>
+                    <c:if test="${extension.getFileExtensionName() =='other'}">
+                        <spring:message code="file.search.type.other" />
+                    </c:if>
+
+
                 </p>
             </c:forEach>
         </div>
