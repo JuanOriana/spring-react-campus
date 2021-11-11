@@ -47,7 +47,7 @@ public class AnswerDaoJpaTest extends BasicPopulator {
 
     @Test
     public void testDidUserDeliver() {
-        assertTrue(answerDao.didUserDeliver(EXAM_ID, DB_STUDENT_ID));
+        assertFalse(answerDao.didUserDeliver(EXAM_ID, DB_STUDENT_ID));
     }
 
     @Test
@@ -188,7 +188,7 @@ public class AnswerDaoJpaTest extends BasicPopulator {
     public void testGetAverageScoreInCourse(){
         Double score = answerDao.getAverageScoreOfExam(CORRECTED_EXAM_ID);
 
-        assertEquals(Double.valueOf(5), score);
+        assertEquals(Double.valueOf(10), score);
     }
 
     @Test
@@ -204,7 +204,7 @@ public class AnswerDaoJpaTest extends BasicPopulator {
     public void testGetAverageOfUserInCourse(){
         Double average = answerDao.getAverageOfUserInCourse(student.getUserId(), COURSE_ID);
 
-        assertEquals(Double.valueOf(5),average);
+        assertEquals(Double.valueOf(10),average);
     }
 
 

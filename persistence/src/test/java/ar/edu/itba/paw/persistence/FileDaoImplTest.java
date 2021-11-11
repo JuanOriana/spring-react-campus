@@ -36,8 +36,6 @@ public class FileDaoImplTest extends BasicPopulator {
     private FileDao fileDao;
 
     private final Long DB_FILE_ID = 1337L;
-    private final Long DB_USER_ID = 1337L;
-
 
     @Test
     public void testCreate() {
@@ -49,7 +47,7 @@ public class FileDaoImplTest extends BasicPopulator {
 
     @Test
     public void testUpdate() {
-        FileModel fModel = createFileModelObject("src/test/resources/test.png", 1337);
+        FileModel fModel = createFileModelObject("src/test/resources/test.png", DB_FILE_ID);
         fModel.setName("nuevoNombre");
         assertTrue(fileDao.update(DB_FILE_ID, fModel));
     }
@@ -80,7 +78,7 @@ public class FileDaoImplTest extends BasicPopulator {
 
     @Test
     public void testList() {
-        List<FileModel> list = fileDao.list(DB_FILE_ID);
+        List<FileModel> list = fileDao.list(USER_ID);
         assertNotNull(list);
         assertEquals(2L, list.size());
     }
@@ -112,7 +110,7 @@ public class FileDaoImplTest extends BasicPopulator {
     @Test
     public void testListByCourseCriteriaFilterByExtension() {
         List<FileModel> list = fileDao.listByCourse("",
-                Collections.singletonList(1L), new ArrayList<>(), DB_USER_ID, COURSE_ID,
+                Collections.singletonList(1L), new ArrayList<>(), USER_ID, COURSE_ID,
                 new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertEquals(2, list.size());
     }
@@ -120,7 +118,7 @@ public class FileDaoImplTest extends BasicPopulator {
     @Test
     public void testListByCourseCriteriaFilterByExtensionInexistence() {
         List<FileModel> list = fileDao.listByCourse("",
-                Collections.singletonList(999L), new ArrayList<>(), DB_USER_ID, COURSE_ID,
+                Collections.singletonList(999L), new ArrayList<>(), USER_ID, COURSE_ID,
                 new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertEquals(0, list.size());
     }
@@ -128,7 +126,7 @@ public class FileDaoImplTest extends BasicPopulator {
     @Test
     public void testListByCourseCriteriaFilterByCategory() {
         List<FileModel> list = fileDao.listByCourse("",
-                new ArrayList<>(), Collections.singletonList(2L), DB_USER_ID, COURSE_ID,
+                new ArrayList<>(), Collections.singletonList(2L), USER_ID, COURSE_ID,
                 new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertEquals(2, list.size());
     }
@@ -136,14 +134,14 @@ public class FileDaoImplTest extends BasicPopulator {
     @Test
     public void testListByUserCriteriaFilterByCategory() {
         List<FileModel> list = fileDao.listByUser("",
-                new ArrayList<>(), Collections.singletonList(2L), DB_USER_ID,
+                new ArrayList<>(), Collections.singletonList(2L), USER_ID,
                 new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertEquals(2, list.size());
     }
 
     @Test
     public void testHasAccess() {
-        assertTrue(fileDao.hasAccess(DB_FILE_ID, DB_USER_ID));
+        assertTrue(fileDao.hasAccess(DB_FILE_ID, USER_ID));
     }
 
 

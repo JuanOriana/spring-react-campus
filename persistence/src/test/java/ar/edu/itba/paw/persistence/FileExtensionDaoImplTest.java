@@ -11,9 +11,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
+
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -22,14 +22,12 @@ import static org.junit.Assert.*;
 @Rollback
 @Transactional
 public class FileExtensionDaoImplTest {
-    private static final Long FILE_EXTENSION_ID = 1L;
+    private static final Long FILE_EXTENSION_ID = 1337L;
     private static final String FILE_EXTENSION = "pdf";
 
     @Autowired
     private FileExtensionDao fileExtensionDao;
 
-    @PersistenceContext
-    private EntityManager em;
 
     @Test
     public void testCreate() {
@@ -41,22 +39,29 @@ public class FileExtensionDaoImplTest {
     @Test
     public void testUpdate() {
         String newExtension = "doc";
-        boolean wasUpdated = fileExtensionDao.update(1337, newExtension);
+        boolean wasUpdated = fileExtensionDao.update(FILE_EXTENSION_ID, newExtension);
         assertTrue(wasUpdated);
     }
 
     @Test
     public void testDelete() {
-        boolean wasDeleted = fileExtensionDao.delete(1337);
+        boolean wasDeleted = fileExtensionDao.delete(FILE_EXTENSION_ID);
         assertTrue(wasDeleted);
     }
 
     @Test
-    public void testGetCategories() {
+    public void testGetExtensions() {
         List<FileExtension> list = fileExtensionDao.getExtensions();
         assertEquals(1, list.size());
         FileExtension fileExtension = list.get(0);
-        assertEquals(1337, fileExtension.getFileExtensionId().intValue());
+        assertEquals(FILE_EXTENSION_ID, fileExtension.getFileExtensionId());
+    }
 
+    @Test
+    public void testFindById(){
+        Optional<FileExtension> optionalFileExtension = fileExtensionDao.findById(FILE_EXTENSION_ID);
+
+        assertTrue(optionalFileExtension.isPresent());
+        assertEquals(FILE_EXTENSION_ID, optionalFileExtension.get().getFileExtensionId());
     }
 }
