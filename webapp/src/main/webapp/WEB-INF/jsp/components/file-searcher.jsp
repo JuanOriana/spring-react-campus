@@ -52,7 +52,7 @@
 <form action="" class="file-query-container">
     <div style="display: flex; align-items: center; margin-bottom: 10px">
         <input class="form-input" name="query" id="query" style="width: 70%; height: 30px; border-top-right-radius: 0;
-        border-bottom-right-radius: 0; border:none; margin: 0" value="${param.query}">
+        border-bottom-right-radius: 0; border:none; margin: 0" value="${param.query}" placeholder="<spring:message code="file.search.placeholder" />">
         <button class="form-button" style="height: 100%; margin:0; width: 120px;border-top-left-radius: 0;
         border-bottom-left-radius: 0">
             <spring:message code="file.search.button" />

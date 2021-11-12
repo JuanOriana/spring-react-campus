@@ -1,8 +1,5 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.interfaces.CourseDao;
-import ar.edu.itba.paw.interfaces.RoleDao;
-import ar.edu.itba.paw.interfaces.SubjectDao;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
@@ -15,11 +12,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -34,18 +30,6 @@ public class UserDaoImplTest extends BasicPopulator {
     @Autowired
     private UserDao userDao;
 
-    @Autowired
-    private RoleDao roleDao;
-
-    @Autowired
-    private SubjectDao subjectDao;
-
-    @Autowired
-    private CourseDao courseDao;
-
-    @PersistenceContext
-    private EntityManager em;
-
 
     @Test
     public void testCreate() {
@@ -55,7 +39,7 @@ public class UserDaoImplTest extends BasicPopulator {
 
     @Test
     public void testDelete() {
-        assertTrue(userDao.delete(1337L));
+        assertTrue(userDao.delete(USER_ID));
     }
 
     @Test
@@ -65,15 +49,14 @@ public class UserDaoImplTest extends BasicPopulator {
 
     @Test
     public void testFindById() {
-        Optional<User> userOptional = userDao.findById(1337L);
-        assertNotNull(userOptional);
+        Optional<User> userOptional = userDao.findById(USER_ID);
         assertTrue(userOptional.isPresent());
+        assertEquals(USER_FILE_NUMBER, userOptional.get().getFileNumber());
     }
 
     @Test
     public void testFindByIdInvalidId() {
         Optional<User> userOptional = userDao.findById(USER_ID_INEXISTENCE);
-        assertNotNull(userOptional);
         assertFalse(userOptional.isPresent());
     }
 
@@ -88,13 +71,12 @@ public class UserDaoImplTest extends BasicPopulator {
                 .withPassword(USER_PASSWORD)
                 .isAdmin(USER_IS_ADMIN)
                 .build();
-        assertTrue(userDao.update(1337L, updateUser));
+        assertTrue(userDao.update(USER_ID, updateUser));
     }
 
     @Test
     public void testGetRole() {
-        Optional<Role> role = userDao.getRole(1337L, 1L);
-        assertNotNull(role);
+        Optional<Role> role = userDao.getRole(USER_ID, COURSE_ID);
         assertTrue(role.isPresent());
         assertEquals(STUDENT_ROLE_ID, role.get().getRoleId());
     }
@@ -102,26 +84,65 @@ public class UserDaoImplTest extends BasicPopulator {
     @Test
     public void testGetRoleInvalidCourse() {
         Optional<Role> role = userDao.getRole(USER_ID, 1337L); // In this case the course and the user are not releated
-        assertNotNull(role);
         assertFalse(role.isPresent());
     }
 
     @Test
     public void testGetProfileImage() {
-        Optional<byte[]> image = userDao.getProfileImage(1337L);
-        assertNotNull(image);
+        Optional<byte[]> image = userDao.getProfileImage(USER_ID);
         assertFalse(image.isPresent());
     }
 
     @Test
     public void testUpdateProfileImage() {
-        File file = new File("src/test/resources/test.png");
+        File file = new File(FILE_PATH);
         try {
             byte[] bytea = Files.readAllBytes(file.toPath());
-            boolean isUpdated = userDao.updateProfileImage(1337L, bytea);
+            boolean isUpdated = userDao.updateProfileImage(USER_ID, bytea);
             assertTrue(isUpdated);
         } catch (IOException ignored) {
         }
     }
+
+    @Test
+    public void testFindByUsername(){
+        Optional<User> userOptional = userDao.findByUsername(USER_USERNAME);
+
+        assertTrue(userOptional.isPresent());
+        assertEquals(USER_ID, userOptional.get().getUserId());
+    }
+
+    @Test
+    public void testFindByEmail(){
+        Optional<User> userOptional = userDao.findByEmail(USER_EMAIL);
+
+        assertTrue(userOptional.isPresent());
+        assertEquals(USER_ID, userOptional.get().getUserId());
+    }
+
+
+    @Test
+    public void testFindByFileNumber(){
+        Optional<User> userOptional = userDao.findByFileNumber(USER_FILE_NUMBER);
+
+        assertTrue(userOptional.isPresent());
+        assertEquals(USER_ID, userOptional.get().getUserId());
+    }
+
+    @Test
+    public void testGetMaxFileNumber(){
+        assertEquals(USER_FILE_NUMBER, userDao.getMaxFileNumber());
+    }
+
+    @Test
+    public void testList(){
+        List<User> list = userDao.list();
+
+        assertFalse(list.isEmpty());
+        assertEquals(1, list.size());
+        assertEquals(USER_ID, list.get(0).getUserId());
+    }
+
+
 
 }

@@ -1,7 +1,11 @@
 package ar.edu.itba.paw.models;
 
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -15,6 +19,7 @@ public class Answer {
     private Long answerId;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "examId")
     private Exam exam;
 
@@ -53,11 +58,9 @@ public class Answer {
         this.corrections = corrections;
     }
 
-    //TODO: IMPLEMENT BUILDER
     public Long getAnswerId() {
         return answerId;
     }
-
     public void setAnswerId(Long answerId) {
         this.answerId = answerId;
     }
@@ -139,5 +142,99 @@ public class Answer {
     @Override
     public int hashCode() {
         return Objects.hash(answerId, exam, student);
+    }
+
+    public static class Builder {
+        private Long answerId;
+        private Exam exam;
+        private LocalDateTime deliveredDate;
+        private User student;
+        private User teacher;
+        private FileModel answerFile;
+        private Float score;
+        private String corrections;
+
+
+        public Builder(){
+
+        }
+        public Builder(Long answerId, Exam exam, LocalDateTime deliveredDate, User student, User teacher, FileModel answerFile, Float score, String corrections) {
+            this.answerId = answerId;
+            this.exam = exam;
+            this.deliveredDate = deliveredDate;
+            this.student = student;
+            this.teacher = teacher;
+            this.answerFile = answerFile;
+            this.score = score;
+            this.corrections = corrections;
+        }
+
+        public Builder withAnswerId(Long answerId){
+            this.answerId = answerId;
+            return this;
+        }
+        public Builder withExam(Exam exam){
+            this.exam = exam;
+            return this;
+        }
+        public Builder withDeliveredDate(LocalDateTime time){
+            this.deliveredDate = time;
+            return this;
+        }
+        public Builder withStudent(User student){
+            this.student = student;
+            return this;
+        }
+        public Builder withTeacher(User teacher){
+            this.teacher = teacher;
+            return this;
+        }
+        public Builder withAnswerFile(FileModel file){
+            this.answerFile = file;
+            return this;
+        }
+        public Builder withScore(Float score){
+            this.score = score;
+            return this;
+        }
+        public Builder withCorrections(String corrections){
+            this.corrections = corrections;
+            return this;
+        }
+
+        public Answer build(){
+            if (this.answerId == null) {
+                throw new NullPointerException("The property \"answerId\" is null. "
+                        + "Please set the value by \"answerId()\". "
+                        + "The properties \"answerId\", \"exam\", \"student\"and\"deliveredDate\" are required.");
+            }
+            if (this.exam == null) {
+                throw new NullPointerException("The property \"exam\" is null. "
+                        + "Please set the value by \"exam()\". "
+                        + "The properties \"answerId\", \"exam\", \"student\"and\"deliveredDate\" are required.");
+            }
+            if (this.student == null) {
+                throw new NullPointerException("The property \"student\" is null. "
+                        + "Please set the value by \"student()\". "
+                        + "The properties \"answerId\", \"examId\", \"student\"and\"deliveredDate\" are required.");
+            }
+            if (this.deliveredDate == null) {
+                throw new NullPointerException("The property \"delivereddate\" is null. "
+                        + "Please set the value by \"deliveredDate()\". "
+                        + "The properties \"answerId\", \"examId\", \"student\"and\"deliveredDate\" are required.");
+            }
+            return new Answer(this);
+        }
+    }
+
+    private Answer(Builder builder){
+        this.answerId = builder.answerId;
+        this.exam = builder.exam;
+        this.student = builder.student;
+        this.deliveredDate = builder.deliveredDate;
+        this.teacher = builder.teacher;
+        this.score = builder.score;
+        this.corrections = builder.corrections;
+        this.answerFile = builder.answerFile;
     }
 }

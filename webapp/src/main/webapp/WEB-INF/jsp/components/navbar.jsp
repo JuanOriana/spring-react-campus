@@ -36,7 +36,7 @@
                     <spring:message code="navbar.user" htmlEscape="true" arguments="${currentUser.name}"/>
                 </h4>
             </a>
-            <a class="styleless-anchor" href="<c:url value ="/logout"/>">
+            <a class="styleless-anchor" onclick="return confirm('<spring:message code="navbar.logout.alert"/>')" href="<c:url value ="/logout"/>">
                 <button class="logout-btn"><spring:message code="navbar.button.logout"/></button>
             </a>
         </div>

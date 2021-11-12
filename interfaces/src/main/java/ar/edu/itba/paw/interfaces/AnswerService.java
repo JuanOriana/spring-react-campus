@@ -11,12 +11,12 @@ public interface AnswerService {
     /**
      * Attempts to persist an answer entry in the data base
      *
-     * @param examId       id of the exam that was resolved
-     * @param studentId    id of the student that resolves the exam
+     * @param examId         id of the exam that was resolved
+     * @param studentId      id of the student that resolves the exam
      * @param answerFileName name of the answer file
-     * @param answerFile   the answer given in a file
+     * @param answerFile     the answer given in a file
      * @param answerFileSize the size of the file
-     * @param deliveredTime the last sending
+     * @param deliveredTime  the last sending
      * @return an Answer instance holding the passed values
      */
     Answer create(Long examId, Long studentId, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime);
@@ -33,12 +33,12 @@ public interface AnswerService {
     /**
      * Attempts to update an answer
      *
-     * @param examId of the exam's answer to be modified
-     * @param student "owner" of the answer
+     * @param examId         of the exam's answer to be modified
+     * @param student        "owner" of the answer
      * @param answerFileName the answer file name
-     * @param answerFile the answer file
+     * @param answerFile     the answer file
      * @param answerFileSize the answer file size
-     * @param deliveredTime the answer delivered time
+     * @param deliveredTime  the answer delivered time
      * @return updated answer object
      */
     Answer updateEmptyAnswer(Long examId, User student, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime);
@@ -72,10 +72,10 @@ public interface AnswerService {
     /**
      * Attempts to persist in the database a correction for an exam
      *
-     * @param answerId      of the answer that is being corrected
-     * @param teacher       that corrects that answer
-     * @param score         the score given
-     * @param corrections   the corrections of the sent exam
+     * @param answerId    of the answer that is being corrected
+     * @param teacher     that corrects that answer
+     * @param score       the score given
+     * @param corrections the corrections of the sent exam
      */
 
     void correctExam(Long answerId, User teacher, Float score, String corrections);
@@ -109,7 +109,7 @@ public interface AnswerService {
      * @param studentId of the queried user
      * @return a list of all the exams resolved by the user
      */
-    List<Exam> getResolvedExams(Long studentId,Long courseId);
+    List<Exam> getResolvedExams(Long studentId, Long courseId);
 
     /**
      * Attempts to return a list of the unresolved exams by the user
@@ -117,7 +117,7 @@ public interface AnswerService {
      * @param studentId of the queried user
      * @return a list of all the exams unresolved by the user
      */
-    List<Exam> getUnresolvedExams(Long studentId,Long courseId);
+    List<Exam> getUnresolvedExams(Long studentId, Long courseId);
 
     /**
      * Attempts to return the number of answers to an exam
@@ -137,13 +137,15 @@ public interface AnswerService {
 
     /**
      * Attempts to return a map of exams with the number of answers and corrected answers
+     *
      * @param courseId of the queried course
      * @return a map with an Exam as a key and a Pair<Long,Long> where the first is totalAnswers and the second is totalCorrectedAnswers
      */
-    Map<Exam, Pair<Long,Long>> getExamsAndTotals(Long courseId);
+    Map<Exam, Pair<Long, Long>> getExamsAndTotals(Long courseId);
 
     /**
      * Determines if user delivered an answer or not for an exam
+     *
      * @param examId of the queried exam
      * @param userId of the queried user
      * @return true if the user delivered an answer, false otherwise
@@ -152,9 +154,10 @@ public interface AnswerService {
 
     /**
      * Returns a filtered-paginated list of answers
-     * @param examId of the queried exam
-     * @param filter applied to the answer query
-     * @param page to be queried
+     *
+     * @param examId   of the queried exam
+     * @param filter   applied to the answer query
+     * @param page     to be queried
      * @param pageSize of the queried page
      * @return page containing a list of answers
      */
@@ -162,10 +165,35 @@ public interface AnswerService {
 
     /**
      * Returns a list of answers for a specific user
-     * @param userId of the user to query the marks from
+     *
+     * @param userId   of the user to query the marks from
      * @param courseId of the course
      * @return map of exam, answer entry for a specific user
      */
     List<Answer> getMarks(Long userId, Long courseId);
 
+    /**
+     * Attemps to get the average of score for an exam
+     *
+     * @param examId of the queried exam
+     * @return the average of scores for the exam
+     */
+    Double getAverageScoreOfExam(Long examId);
+
+    /**
+     * Attemps to return a map of exams with de average of score for each exam in the course
+     *
+     * @param courseId of the queried course
+     * @return a map with a exam as key and double as value that is the average score for that exam
+     */
+    Map<Exam, Double> getExamsAverage(Long courseId);
+
+    /**
+     * Attempts to return the average score of a student in a course.
+     *
+     * @param studentId of the queried student
+     * @param courseId  of the queried course
+     * @return the average score fot the student in the course
+     */
+    Double getAverageOfUserInCourse(Long studentId, Long courseId);
 }

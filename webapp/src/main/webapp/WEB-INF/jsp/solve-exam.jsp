@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"  %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -64,7 +65,10 @@
                 <div class="big-wrapper">
                     <h3 style="align-self: center"><spring:message code="solve.exam.time" /> <span id="time-left"></span> </h3>
                     <h3 class="form-label"><spring:message code="solve.exam.description" htmlEscape="true"/></h3>
-                    <p style="margin-left:30px; margin-top:10px; margin-bottom:10px;"><c:out value="${exam.description}"/></p>
+                    <p style="margin-left:30px; margin-top:10px; margin-bottom:10px;">
+                        <c:set var="newline" value="<%= \"\n\" %>" />
+                        ${fn:replace(fn:escapeXml(exam.description), newline, '<br />')}
+                    </p>
                     <c:set var="file" value="${exam.examFile}" scope="request"/>
                     <jsp:include page="components/file-unit.jsp">
                         <jsp:param name="isMinimal" value="${true}"/>

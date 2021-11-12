@@ -1,18 +1,18 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.FileDao;
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.CampusPageRequest;
+import ar.edu.itba.paw.models.CampusPageSort;
+import ar.edu.itba.paw.models.FileCategory;
+import ar.edu.itba.paw.models.FileModel;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -30,25 +30,31 @@ import static org.junit.Assert.*;
 @Transactional
 public class FileDaoImplTest extends BasicPopulator {
 
+    private static final String SORT_DIRECTION = "ASC";
+    private static final String SORT_PROPERTY = "NAME";
     @Autowired
     private FileDao fileDao;
 
-
-    private FileCategory creatFileCategoryObject(Long fileCategoryId, String fileCategory) {
-        return new FileCategory(fileCategoryId, fileCategory);
-    }
+    private final Long DB_FILE_ID = 1337L;
 
     @Test
     public void testCreate() {
-        FileModel mockFile = createFileModelObject("src/test/resources/test.png", FILE_ID);
+        FileModel mockFile = createFileModelObject(FILE_PATH, FILE_ID);
         FileModel fileModel = fileDao.create(mockFile.getSize(), LocalDateTime.now(), mockFile.getName(),
                 mockFile.getFile(), mockFile.getCourse());
         assertNotNull(fileModel);
     }
 
     @Test
+    public void testUpdate() {
+        FileModel fModel = createFileModelObject("src/test/resources/test.png", DB_FILE_ID);
+        fModel.setName("nuevoNombre");
+        assertTrue(fileDao.update(DB_FILE_ID, fModel));
+    }
+
+    @Test
     public void testDelete() {
-        assertTrue(fileDao.delete(1337L));
+        assertTrue(fileDao.delete(DB_FILE_ID));
     }
 
     @Test(expected = AssertionError.class)
@@ -58,92 +64,88 @@ public class FileDaoImplTest extends BasicPopulator {
     }
 
     @Test
-    public void testGetById() {
-        Optional<FileModel> fileFromDB = fileDao.findById(1337L);
+    public void testFindById() {
+        Optional<FileModel> fileFromDB = fileDao.findById(DB_FILE_ID);
         assertTrue(fileFromDB.isPresent());
-        assertEquals(1337L, fileFromDB.get().getFileId().longValue());
+        assertEquals(DB_FILE_ID, fileFromDB.get().getFileId());
     }
 
     @Test(expected = AssertionError.class)
-    public void testGetByIdNoExist() {
+    public void testFindByIdNoExist() {
         fileDao.findById(FILE_ID + 1);
         Assert.fail("Should have thrown assertion error for non-existent key 'file id' ");
     }
 
     @Test
     public void testList() {
-        List<FileModel> list = fileDao.list(1337L);
+        List<FileModel> list = fileDao.list(USER_ID);
         assertNotNull(list);
         assertEquals(2L, list.size());
     }
 
     @Test
-    public void testUpdate() {
-        FileModel fModel = createFileModelObject("src/test/resources/test.png", 1337);
-        fModel.setName("nuevoNombre");
-        assertTrue(fileDao.update(1337L, fModel));
-    }
-
-    @Test
     public void testGetFileCategories() {
-        List<FileCategory> list = fileDao.getFileCategories(1337L);
+        List<FileCategory> list = fileDao.getFileCategories(DB_FILE_ID);
         assertEquals(1, list.size());
     }
 
     @Test
-    public void testGetByCategory() {
+    public void testFindByCategory() {
         List<FileModel> list = fileDao.findByCategory(2L);
-        assertEquals(2L, list.size());
 
-        FileModel file = list.get(0);
-        assertEquals(FILE_NAME, file.getName());
+        assertEquals(2L, list.size());
+        assertEquals(FILE_NAME, list.get(0).getName());
 
     }
 
     @Test
-    public void testGetByCourseId() {
-        List<FileModel> list = fileDao.findByCourseId(2L);
+    public void testFindByCourseId() {
+        List<FileModel> list = fileDao.findByCourseId(COURSE_ID);
         assertEquals(2L, list.size());
         FileModel file = list.get(0);
-        assertEquals(2L, file.getCourse().getCourseId().longValue());
+        assertEquals(COURSE_ID, file.getCourse().getCourseId());
     }
 
- /*
+
     @Test
-    public void testListByCriteriaFilterByExtension() {
+    public void testListByCourseCriteriaFilterByExtension() {
         List<FileModel> list = fileDao.listByCourse("",
-                Collections.singletonList(1L), new ArrayList<>(), 1337L, 2L,
+                Collections.singletonList(1L), new ArrayList<>(), USER_ID, COURSE_ID,
                 new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
         assertEquals(2, list.size());
     }
 
-   @Test
-    public void testListByCriteriaFilterByCategory() {
-        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
-        insertFileModelToDB(createFileModelObject("src/test/resources/test2.png", FILE_ID2));
-        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
-        insertCategoryFileRelationShip(FILE_CATEGORY_ID2, FILE_ID2);
-        assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
-
+    @Test
+    public void testListByCourseCriteriaFilterByExtensionInexistence() {
         List<FileModel> list = fileDao.listByCourse("",
-                new ArrayList<>(), Collections.singletonList(FILE_CATEGORY_ID), USER_ID, COURSE_ID,
+                Collections.singletonList(999L), new ArrayList<>(), USER_ID, COURSE_ID,
                 new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
-        assertEquals(1, list.size());
-        assertEquals(FILE_ID, list.get(0).getFileId());
+        assertEquals(0, list.size());
     }
 
     @Test
-    public void testListByCriteriaFilterByCategoryInexistance() {
-        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
-        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
-        assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
-
+    public void testListByCourseCriteriaFilterByCategory() {
         List<FileModel> list = fileDao.listByCourse("",
-                new ArrayList<>(), Collections.singletonList(INEXISTENCE_FILE_CATEGORY_ID), USER_ID, COURSE_ID,
+                new ArrayList<>(), Collections.singletonList(2L), USER_ID, COURSE_ID,
                 new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
-        assertTrue(list.isEmpty());
+        assertEquals(2, list.size());
     }
 
+    @Test
+    public void testListByUserCriteriaFilterByCategory() {
+        List<FileModel> list = fileDao.listByUser("",
+                new ArrayList<>(), Collections.singletonList(2L), USER_ID,
+                new CampusPageRequest(PAGE, PAGE_SIZE), new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
+        assertEquals(2, list.size());
+    }
+
+    @Test
+    public void testHasAccess() {
+        assertTrue(fileDao.hasAccess(DB_FILE_ID, USER_ID));
+    }
+
+
+/*
     @Test
     public void testListByCriteriaEmptyCourse() {
         insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
@@ -182,19 +184,6 @@ public class FileDaoImplTest extends BasicPopulator {
         assertEquals(FILE_ID2, list.get(0).getFileId());
     }
 
-    @Test
-    public void testListByCriteriaSearch2Files() { // If name of file 1 or 2 is changed this test might fail
-        insertFileModelToDB(createFileModelObject("src/test/resources/test.png", FILE_ID));
-        insertFileModelToDB(createFileModelObject("src/test/resources/test2.png", FILE_ID2));
-        insertCategoryFileRelationShip(FILE_CATEGORY_ID, FILE_ID);
-        insertCategoryFileRelationShip(FILE_CATEGORY_ID2, FILE_ID2);
-
-        assertEquals(2, JdbcTestUtils.countRowsInTable(jdbcTemplate, "category_file_relationship"));
-        List<FileModel> list = fileDao.listByCourse("test", new ArrayList<>(),
-                new ArrayList<>(), USER_ID, COURSE_ID, new CampusPageRequest(PAGE, PAGE_SIZE),
-                new CampusPageSort(SORT_DIRECTION, SORT_PROPERTY)).getContent();
-        assertFalse(list.isEmpty());
-        assertEquals(2, list.size());
-    }*/
+}*/
 
 }

@@ -6,9 +6,14 @@ import ar.edu.itba.paw.models.exception.AnswerNotFoundException;
 import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Primary
 @Repository
@@ -27,9 +32,9 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
     }
 
     @Override
-    public void createEmptyAnswers(Exam exam,List<User> students){
+    public void createEmptyAnswers(Exam exam, List<User> students) {
         Answer answer;
-        for(User student:students){
+        for (User student : students) {
             answer = new Answer(exam, null, student, null, null, null, null);
             em.persist(answer);
         }
@@ -40,8 +45,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
         TypedQuery<Answer> answerTypedQuery = em.createQuery("SELECT a FROM Answer a WHERE a.student.userId = :studentId AND a.exam.examId = :examId", Answer.class);
         answerTypedQuery.setParameter("examId", examId);
         answerTypedQuery.setParameter("studentId", userId);
-        Answer answer = answerTypedQuery.getSingleResult();
-        return answer.getDeliveredDate() != null;
+        return answerTypedQuery.getResultList().isEmpty();
     }
 
     @Override
@@ -54,13 +58,13 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
     }
 
     @Override
-    public Answer updateEmptyAnswer(Long examId, User student,Long teacherId, Answer answer){
+    public Answer updateEmptyAnswer(Long examId, User student, Long teacherId, Answer answer) {
         TypedQuery<Answer> getEmptyAnswer = em.createQuery("SELECT a FROM Answer a WHERE a.student.userId = :studentId AND a.exam.examId = :examId", Answer.class);
         getEmptyAnswer.setParameter("examId", examId);
         getEmptyAnswer.setParameter("studentId", student.getUserId());
         Answer oldAnswer = getEmptyAnswer.getSingleResult();
-        if (oldAnswer != null){
-             this.update(oldAnswer.getAnswerId(), answer);
+        if (oldAnswer != null) {
+            this.update(oldAnswer.getAnswerId(), answer);
         }
 
         return oldAnswer;
@@ -103,7 +107,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
     @Override
     public void undoExamCorrection(Long answerId) {
         Optional<Answer> answer = findById(answerId);
-        if(!answer.isPresent()) throw new AnswerNotFoundException();
+        if (!answer.isPresent()) throw new AnswerNotFoundException();
         answer.get().setCorrections(null);
         answer.get().setScore(null);
     }
@@ -114,10 +118,10 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
         properties.put("examId", examId);
         String queryConditional = " ";
         String mappingQueryConditional = " ";
-        if(filter.equalsIgnoreCase("corrected")) {
+        if (filter.equalsIgnoreCase("corrected")) {
             queryConditional = " AND score IS NOT NULL ";
             mappingQueryConditional = " AND a.score IS NOT NULL ";
-        } else if(filter.equalsIgnoreCase("not corrected")) {
+        } else if (filter.equalsIgnoreCase("not corrected")) {
             queryConditional = " AND score IS NULL ";
             mappingQueryConditional = " AND a.score IS NULL ";
         }
@@ -145,7 +149,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
 
     @Override
     public List<Answer> getNotCorrectedAnswers(Long examId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NULL ORDER BY answer.deliveredDate ASC", Answer.class);
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NULL ORDER BY answer.deliveredDate DESC", Answer.class);
         correctedExamsTypedQuery.setParameter("examId", examId);
         return correctedExamsTypedQuery.getResultList();
     }
@@ -184,19 +188,56 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
     }
 
     @Override
-    public Map<Exam, Pair<Long,Long>> getExamsAndTotals(Long courseId) {
+    public Map<Exam, Pair<Long, Long>> getExamsAndTotals(Long courseId) {
+        // TODO: Ver si toda esta logica corresponde al DAO o al service
         TypedQuery<Exam> examTypedQuery = em.createQuery("SELECT ex FROM Exam ex WHERE ex.course.courseId = :courseId", Exam.class);
-        examTypedQuery.setParameter("courseId",courseId);
+        examTypedQuery.setParameter("courseId", courseId);
         List<Exam> exams = examTypedQuery.getResultList();
-        Map<Exam, Pair<Long,Long>> examLongMap = new HashMap<>();
+        Map<Exam, Pair<Long, Long>> examLongMap = new HashMap<>();
 
-        for(Exam exam : exams){
+        for (Exam exam : exams) {
             Long totalAnswers = getTotalAnswers(exam.getExamId());
             Long totalCorrected = getTotalCorrectedAnswers(exam.getExamId());
             examLongMap.put(exam, new Pair<>(totalAnswers, totalCorrected));
         }
 
         return examLongMap;
+    }
+
+
+    @Override
+    public Double getAverageScoreOfExam(Long examId) {
+        TypedQuery<Double> averageQuery = em.createQuery("SELECT AVG(ans.score) FROM Answer ans WHERE ans.exam.examId =:examId AND ans.score IS NOT NULL GROUP BY ans.exam.examId", Double.class);
+        averageQuery.setParameter("examId", examId);
+        List<Double> doubleList = averageQuery.getResultList();
+        if (doubleList.isEmpty()){
+            return 0.0;
+        }
+        return doubleList.get(0);
+    }
+
+    @Override
+    public Map<Exam, Double> getExamsAverage(Long courseId) {
+        // TODO: Ver si toda esta logica corresponde al DAO o al service
+        TypedQuery<Exam> examTypedQuery = em.createQuery("SELECT ex FROM Exam ex WHERE ex.course.courseId =:courseId", Exam.class);
+        examTypedQuery.setParameter("courseId", courseId);
+        List<Exam> exams = examTypedQuery.getResultList();
+        Map<Exam, Double> examLongMap = new HashMap<>();
+
+        for (Exam ex : exams) {
+            examLongMap.put(ex, getAverageScoreOfExam(ex.getExamId()));
+        }
+        return examLongMap;
+    }
+
+    @Override
+    public Double getAverageOfUserInCourse(Long studentId, Long courseId) {
+        TypedQuery<Double> averageQuery = em.createQuery("SELECT COALESCE(AVG(ans.score),0) FROM Answer ans WHERE ans.score IS NOT NULL AND ans.exam.course.courseId =:courseId AND ans.student.userId =:studentId", Double.class);
+        averageQuery.setParameter("courseId", courseId);
+        averageQuery.setParameter("studentId", studentId);
+
+        return averageQuery.getSingleResult();
+
     }
 
 

@@ -11,8 +11,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -25,13 +23,11 @@ import static org.junit.Assert.*;
 public class FileCategoryDaoImplTest {
 
     private static final String FILE_CATEGORY = "exam";
-    private static final long FILE_CATEGORY_ID = 1L;
+    private static final long FILE_CATEGORY_ID = 1337;
 
     @Autowired
     private FileCategoryDao fileCategoryDao;
 
-    @PersistenceContext
-    private EntityManager em;
 
     @Test
     public void testCreate() {
@@ -41,14 +37,13 @@ public class FileCategoryDaoImplTest {
 
     @Test
     public void testUpdate() {
-        String newCategoryName = "Guia Practica";
-        boolean wasUpdated = fileCategoryDao.update(1337, newCategoryName);
-        assertTrue(wasUpdated);
+        final String uptadedCategoryName = "Guia Practica";
+        assertTrue(fileCategoryDao.update(FILE_CATEGORY_ID, uptadedCategoryName));
     }
 
     @Test
     public void testDelete() {
-        boolean wasDeleted = fileCategoryDao.delete(1337);
+        boolean wasDeleted = fileCategoryDao.delete(FILE_CATEGORY_ID);
         assertTrue(wasDeleted);
     }
 
@@ -57,7 +52,7 @@ public class FileCategoryDaoImplTest {
         List<FileCategory> list = fileCategoryDao.getCategories();
         assertEquals(1, list.size());
         FileCategory fileCategory = list.get(0);
-        assertEquals(1337, fileCategory.getCategoryId());
+        assertEquals(FILE_CATEGORY_ID, fileCategory.getCategoryId());
     }
 
 }

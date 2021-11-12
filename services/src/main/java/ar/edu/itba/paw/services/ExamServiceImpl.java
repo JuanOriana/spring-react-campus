@@ -42,10 +42,10 @@ public class ExamServiceImpl implements ExamService {
                     break;
                 }
             }
-            fileDao.associateCategory(fileModel.getFileId(), examCategoryId);
+        fileDao.associateCategory(fileModel.getFileId(), examCategoryId);
         Exam exam = examDao.create(courseId,title, description, fileModel, startTime, endTime);
         List<User> students = courseDao.getStudents(courseId);
-        answerDao.createEmptyAnswers(exam,students);
+        answerDao.createEmptyAnswers(exam, students);
         return exam;
         } else {
             throw new CourseNotFoundException();

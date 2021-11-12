@@ -156,4 +156,19 @@ public class AnswerServiceImpl implements AnswerService {
     public List<Answer> getMarks(Long userId, Long courseId) {
         return answersDao.getMarks(userId, courseId);
     }
+
+    @Override
+    public Double getAverageScoreOfExam(Long examId) {
+        return answersDao.getAverageScoreOfExam(examId);
+    }
+
+    @Override
+    public Map<Exam, Double> getExamsAverage(Long courseId) {
+        return answersDao.getExamsAverage(courseId);
+    }
+
+    @Override
+    public Double getAverageOfUserInCourse(Long studentId, Long courseId) {
+        return answersDao.getAverageOfUserInCourse(studentId, courseId);
+    }
 }

@@ -42,6 +42,8 @@ public class BasicPopulator {
     protected final Integer PAGE_SIZE = 10;
 
     protected final Integer STUDENT_ROLE_ID = 1;
+    protected final Integer TEACHER_ROLE_ID = 3;
+    protected final String TEACHER_ROLE_NAME = "Teacher";
 
 
 
@@ -53,6 +55,12 @@ public class BasicPopulator {
     // FileModel
     protected final Long FILE_ID = 1L;
     protected final String FILE_NAME = "test.png";
+    protected final String FILE_PATH = "src/test/resources/test.png";
+
+
+    protected final String EXAM_TITLE = "Exam title";
+    protected final String EXAM_DESCRIPTION = "Exam description";
+    protected final Long EXAM_ID = 1L;
 
 
     protected FileModel createFileModelObject(String filePath, long fileId) {

@@ -26,7 +26,7 @@
         <jsp:param name="itemId" value="${4}"/>
       </jsp:include>
       <div class="course-data-container">
-        <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="course-exams.section-heading.title"/> </h3>
+        <h3 class="section-heading" style="margin: 0 0 20px 20px"> <spring:message code="teacher.exams.section-heading.title"/> </h3>
         <form:form modelAttribute="createExamForm" class="form-wrapper reduced" method="post" enctype="multipart/form-data" acceptCharset="utf-8">
           <h1 class="announcement-title" style="color:#176961; align-self:center"><spring:message code="teacher.exams.upload.card.title"/></h1>
           <form:label path="title" for="title" class="form-label">
@@ -50,7 +50,7 @@
           <form:input path="endTime" type="datetime-local" class="form-input"
                       style="font-size: 26px" min="${minDateTime}"/>
           <form:errors path="endTime" element="p" cssClass="error-message"/>
-          <button class="form-button"><spring:message code="teacher.course.button.create.announcement" htmlEscape="true"/></button>
+          <button class="form-button"><spring:message code="teacher.exams.button.create.announcement" htmlEscape="true"/></button>
         </form:form>
         <div class="separator reduced">.</div>
 
@@ -61,12 +61,14 @@
           </c:if>
           <c:forEach var="exam" items="${exams.entrySet()}">
             <c:set var="exam" value="${exam.key}" scope="request"/>
+            <c:set var="decimalFormat" value="${decimalFormat}" scope="request"/>
+            <c:set var="average" value="${examsToAverage.get(exam.key)}" scope="request"/>
             <jsp:include page="../components/exam-unit.jsp">
               <jsp:param name="isTeacher" value="${true}"/>
               <jsp:param name="courseId" value="${course.courseId}"/>
               <jsp:param name="examsSolved" value="${exam.value.value}"/>
               <jsp:param name="userCount" value="${exam.value.key}"/>
-          </jsp:include>
+            </jsp:include>
           </c:forEach>
         </div>
       </div>
