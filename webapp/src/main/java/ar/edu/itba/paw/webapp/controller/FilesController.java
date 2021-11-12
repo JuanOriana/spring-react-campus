@@ -9,6 +9,8 @@ import ar.edu.itba.paw.webapp.auth.AuthFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,7 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class FilesController extends AuthController {
@@ -27,6 +31,9 @@ public class FilesController extends AuthController {
     private final FileService fileService;
     private final FileCategoryService fileCategoryService;
     private final FileExtensionService fileExtensionService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     public FilesController(FileService fileService, FileCategoryService fileCategoryService,
@@ -53,13 +60,32 @@ public class FilesController extends AuthController {
                                       Integer page,
                               @RequestParam(value = "pageSize", required = false, defaultValue = "10")
                                       Integer pageSize) {
+
+        List<FileCategory> fileCategoryList = fileCategoryService.getCategories();
+        List<FileExtension> fileExtensionList = fileExtensionService.getExtensions();
+
+        List<FileCategory> listOfAppliedCategoryFilters = new ArrayList<>();
+        for (Long categoryId : categoryType){
+            if (categoryId >= 0){
+                listOfAppliedCategoryFilters.add(fileCategoryList.get(categoryId.intValue()));
+            }
+        }
+        List<FileExtension> listOfAppliedExtensionFilters = new ArrayList<>();
+        for (Long extensionId : extensionType){
+            if (extensionId >= 0){
+                listOfAppliedExtensionFilters.add(fileExtensionList.get(extensionId.intValue()));
+            }
+        }
+
         User user = authFacade.getCurrentUser();
         CampusPage<FileModel> filePage = fileService.listByUser(query, extensionType, categoryType, user.getUserId(),
                 page, pageSize, orderDirection, orderProperty);
         ModelAndView mav = new ModelAndView("files");
-        mav.addObject("categories", fileCategoryService.getCategories());
+        mav.addObject("categories", fileCategoryList);
         mav.addObject("files", filePage.getContent());
-        mav.addObject("extensions", fileExtensionService.getExtensions());
+        mav.addObject("extensions", fileExtensionList);
+        mav.addObject("filteredCategories", listOfAppliedCategoryFilters);
+        mav.addObject("filteredExtensions", listOfAppliedExtensionFilters);
         return loadFileParamsIntoModel(categoryType, extensionType, query, orderProperty, orderDirection, filePage, mav);
     }
 
