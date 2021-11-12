@@ -20,12 +20,17 @@
         function toggleFilters(){
             const filters = document.getElementById("filter-container");
             const toggler = document.getElementById("filter-toggle");
+            //TODO: ver el tema de por que falla
+            const filterlist = document.getElementById("filter-by-list");
+
             if (filters.style.display === "none") {
                 filters.style.display = "flex";
-                toggler.style.transform="rotate(-90deg)"
+                toggler.style.transform="rotate(-90deg)";
+                filterlist.style.display = "none";
             } else {
                 filters.style.display = "none";
-                toggler.style.transform="rotate(90deg)"
+                toggler.style.transform="rotate(90deg)";
+                filterlist.style.display = "flex";
             }
         }
 
@@ -88,7 +93,7 @@
             <label class="file-select-label"><spring:message code="file.search.type"/></label>
             <span>
                 <input class="file-checkbox" type="checkbox" id="extension-all" name="extension-type"
-                       value="${0}" onclick="toggleAll(this)"
+                       value="${-1}" onclick="toggleAll(this)"
                        <c:if test="${requestScope.extensionType.equals(requestScope.extensions)}">checked</c:if>>
                 <label class="file-checkbox-label" for="extension-all"><spring:message code="file.search.type.all" /></label>
             </span>
@@ -117,7 +122,7 @@
             <label class="file-select-label"><spring:message code="file.search.category"/></label>
             <span>
                 <input class="file-checkbox" type="checkbox" id="category-all" name="category-type"
-                       value="${0}" onclick="toggleAll(this)"
+                       value="${-1}" onclick="toggleAll(this)"
                        <c:if test="${requestScope.categoryType.equals(requestScope.categories)}">checked</c:if>>
                 <label class="file-checkbox-label" for="category-all"><spring:message code="file.search.category.all"/></label>
             </span>
@@ -135,6 +140,31 @@
         </div>
         <button type="button" class="form-button" style="align-self: end" onclick="clearFilters()"><spring:message code="file.search.button.clear.filters"/></button>
     </div>
+
+<%--    TODO: ver el tema de "Practica" repetido (es por el indice 0 repetido) --%>
+    <c:if test="${requestScope.filteredCategories.size() > 0 || requestScope.filteredExtensions.size() > 0}">
+        <div id="filter-by-list" style="display: flex; align-items: center; flex-wrap: wrap">
+            <p class="file-checkbox-label" style="font-weight: 700;"><spring:message code="file.search.filtered.by" htmlEscape="true"/> </p>
+            <c:forEach var="category" items="${requestScope.filteredCategories}">
+                <p class="file-filter-pill">
+                    <spring:message code="category.${category.categoryName}" htmlEscape="true"/>
+                </p>
+            </c:forEach>
+            <c:forEach var="extension" items="${requestScope.filteredExtensions}">
+                <p class="file-filter-pill-red">
+                    <c:if test="${extension.getFileExtensionName()!='other'}">
+                        .<c:out value = "${extension.getFileExtensionName()}"/>
+                    </c:if>
+                    <c:if test="${extension.getFileExtensionName() =='other'}">
+                        <spring:message code="file.search.type.other" />
+                    </c:if>
+
+
+                </p>
+            </c:forEach>
+        </div>
+    </c:if>
+
 </form>
 </body>
 </html>

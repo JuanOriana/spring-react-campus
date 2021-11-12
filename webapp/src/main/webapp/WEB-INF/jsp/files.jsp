@@ -19,6 +19,8 @@
             <c:set var="extensions" value="${extensions}" scope="request"/>
             <c:set var="extensionType" value="${extensionType}" scope="request"/>
             <c:set var="categoryType" value="${categoryType}" scope="request"/>
+            <c:set var="filteredCategories" value="${filteredCategories}" scope="request"/>
+            <c:set var="filteredExtensions" value="${filteredExtensions}" scope="request"/>
             <jsp:include page="components/file-searcher.jsp">
                 <jsp:param name="query" value="${query}"/>
                 <jsp:param name="orderProperty" value="${orderProperty}"/>

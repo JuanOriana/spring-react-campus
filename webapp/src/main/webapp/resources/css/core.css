@@ -432,6 +432,22 @@ textarea:focus, input:focus{
     color: var(--cyan-light);
 }
 
+.file-filter-pill,
+.file-filter-pill-red
+{
+    color: white;
+    font-weight: 700;
+    border-radius: 12px;
+    padding:4px 8px;
+    margin-left: 6px;
+    margin-bottom: 2px;
+    background: var(--cyan-dark);
+}
+
+.file-filter-pill-red{
+    background: #a80011;
+}
+
 .file-category-name{
     background: var(--cyan-darkest);
     color:white;
