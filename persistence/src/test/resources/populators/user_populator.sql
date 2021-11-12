@@ -1,5 +1,5 @@
 INSERT INTO users(userid, filenumber, name, surname, username, email, password, isadmin)
-VALUES (1337, 1, 'Matias', 'Pavan', 'mpavan', 'mpavan@itba.edu.ar', 'top_secret', true);
+VALUES (1, 41205221, 'Paw', '2021', 'paw2021', 'paw2021@itba.edu.ar', 'asd123', true);
 
 INSERT INTO roles(roleid, rolename)
 VALUES (1, 'Yoda');
@@ -11,4 +11,4 @@ INSERT INTO courses(courseid, subjectid, quarter, board, year)
 VALUES (1, 1, 2, 'S', 2021);
 
 INSERT INTO user_to_course(courseid, userid, roleid)
-VALUES (1, 1337, 1);
+VALUES (1, 1, 1);

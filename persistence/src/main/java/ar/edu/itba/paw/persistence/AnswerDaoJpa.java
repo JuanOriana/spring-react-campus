@@ -232,7 +232,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
 
     @Override
     public Double getAverageOfUserInCourse(Long studentId, Long courseId) {
-        TypedQuery<Double> averageQuery = em.createQuery("SELECT AVG(ans.score) FROM Answer ans WHERE ans.score IS NOT NULL AND ans.exam.course.courseId =:courseId AND ans.student.userId =:studentId", Double.class);
+        TypedQuery<Double> averageQuery = em.createQuery("SELECT COALESCE(AVG(ans.score),0) FROM Answer ans WHERE ans.score IS NOT NULL AND ans.exam.course.courseId =:courseId AND ans.student.userId =:studentId", Double.class);
         averageQuery.setParameter("courseId", courseId);
         averageQuery.setParameter("studentId", studentId);
 
