@@ -18,8 +18,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -60,34 +59,23 @@ public class TimeTableDaoImplTest {
         assertTrue(timeTableEntryInsertion);
     }
 
-    @Test(expected = AssertionError.class)
-    public void testCreateNonExistentCourseId() {
-        Course mockCourse = getMockCourse();
-        mockCourse.setCourseId(COURSE_ID + 1);
-        timetableDao.create(mockCourse, TIME_TABLE_DAY_OF_WEEK, TIME_TABLE_START_OF_COURSE, TIME_TABLE_END_OF_COURSE);
-        Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
-    }
-
-    @Test(expected = AssertionError.class)
+    @Test
     public void testUpdateNoExist() {
         LocalTime startChangedTo = LocalTime.of(16, 0);
         LocalTime durationChangedTo = LocalTime.of(3, 0);
-        timetableDao.update(COURSE_ID + 1, TIME_TABLE_DAY_OF_WEEK, startChangedTo, durationChangedTo);
-        Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
+        assertFalse(timetableDao.update(COURSE_ID + 1, TIME_TABLE_DAY_OF_WEEK, startChangedTo, durationChangedTo));
     }
 
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testDeleteNoExist() {
-        timetableDao.delete(COURSE_ID + 1);
-        Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
+        assertFalse(timetableDao.delete(COURSE_ID + 1));
     }
 
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testFindByIdNoExist() {
-        timetableDao.findById(COURSE_ID + 1);
-        Assert.fail("Should have thrown assertion error for non-existent foreign key 'course id' ");
+        assertTrue(timetableDao.findById(COURSE_ID + 1).isEmpty());
     }
 
     @Test

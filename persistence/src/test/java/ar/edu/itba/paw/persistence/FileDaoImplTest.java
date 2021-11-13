@@ -57,10 +57,9 @@ public class FileDaoImplTest extends BasicPopulator {
         assertTrue(fileDao.delete(DB_FILE_ID));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testDeleteNoExist() {
-        fileDao.delete(9999L);
-        Assert.fail("Should have thrown assertion error for non-existent key 'file id' ");
+        assertFalse(fileDao.delete(9999L));
     }
 
     @Test
@@ -70,10 +69,9 @@ public class FileDaoImplTest extends BasicPopulator {
         assertEquals(DB_FILE_ID, fileFromDB.get().getFileId());
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testFindByIdNoExist() {
-        fileDao.findById(FILE_ID + 1);
-        Assert.fail("Should have thrown assertion error for non-existent key 'file id' ");
+        assertFalse(fileDao.findById(FILE_ID + 1).isPresent());
     }
 
     @Test

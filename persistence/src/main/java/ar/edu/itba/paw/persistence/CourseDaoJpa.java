@@ -17,14 +17,12 @@ import java.util.Optional;
 @Repository
 public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements CourseDao {
 
-
     @Override
     public Course create(Integer year, Integer quarter, String board, Long subjectId) {
         final Course course = new Course(year, quarter, board, new Subject(subjectId, null, null));
         em.persist(course);
         return course;
     }
-
 
     @Override
     public boolean update(Long id, Course course) {
@@ -33,7 +31,6 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         dbCourse.get().merge(course);
         return true;
     }
-
 
     @Override
     public boolean delete(Long id) {
@@ -57,7 +54,6 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         String mappingQuery = "SELECT DISTINCT enrollment.course FROM Enrollment enrollment WHERE enrollment.course.courseId IN (:ids) ORDER BY enrollment.course.year DESC, enrollment.course.quarter DESC";
         return listBy(properties, query, mappingQuery, pageRequest, Course.class);
     }
-
 
     @Override
     public List<Course> listCurrent(Long userId) {
@@ -84,8 +80,10 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         return listUserTypedQuery.getResultList();
     }
 
+
+
     @Override
-    public Map<User, Role> getTeachers(Long courseId) {
+    public Map<User, Role> getPrivilegedUsers(Long courseId) {
         Map<User,Role> userRoleMap = new HashMap<>();
 
         TypedQuery<Role> listRolesTypedQuery = em.createQuery("SELECT role FROM Role role WHERE role.roleId NOT IN (:roleId)", Role.class);
@@ -103,6 +101,23 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         }
 
         return userRoleMap;
+    }
+
+    public List<User> getUserListByRole(Long courseId, Integer roleId) {
+        TypedQuery<User> listUserTypedQuery = em.createQuery("SELECT enrollment.user FROM Enrollment enrollment WHERE enrollment.course.courseId = :courseId AND enrollment.role.roleId = :roleId", User.class);
+        listUserTypedQuery.setParameter("courseId", courseId);
+        listUserTypedQuery.setParameter("roleId", roleId);
+        return listUserTypedQuery.getResultList();
+    }
+
+    @Override
+    public List<User> getTeachers(Long courseId) {
+        return getUserListByRole(courseId,Roles.TEACHER.getValue());
+    }
+
+    @Override
+    public List<User> getHelpers(Long courseId) {
+        return getUserListByRole(courseId,Roles.ASSISTANT.getValue());
     }
 
 

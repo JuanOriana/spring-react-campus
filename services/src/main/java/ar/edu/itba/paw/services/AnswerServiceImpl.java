@@ -23,6 +23,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Autowired
     private FileDao fileDao;
+
     @Autowired
     private FileCategoryDao fileCategoryDao;
 
@@ -64,7 +65,7 @@ public class AnswerServiceImpl implements AnswerService {
         }
         fileDao.associateCategory(answerFileModel.getFileId(), examCategoryId);
 
-        return answersDao.updateEmptyAnswer(examId,student,null,new Answer(exam,deliveredTime,student,null,answerFileModel , null,null));
+        return answersDao.updateEmptyAnswer(examId, student,null, new Answer(exam,deliveredTime,student,null, answerFileModel , null,null));
     }
 
     @Transactional

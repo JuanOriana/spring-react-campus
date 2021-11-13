@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.CampusPage;
+import ar.edu.itba.paw.models.CampusPageRequest;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
 
@@ -23,6 +25,8 @@ public interface UserDao {
     List<User> list();
 
     Optional<byte[]> getProfileImage(Long userId);
+
+    CampusPage<User> getStudentsByCourse(Long courseId, CampusPageRequest pageRequest);
 
     boolean updateProfileImage(Long userId, byte[] image);
 

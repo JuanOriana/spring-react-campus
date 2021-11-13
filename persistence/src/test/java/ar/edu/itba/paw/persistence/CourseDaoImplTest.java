@@ -120,7 +120,7 @@ public class CourseDaoImplTest extends BasicPopulator {
                 .build();
         Role role = new Role.Builder().withRoleId(TEACHER_ROLE_ID).withRoleName(TEACHER_ROLE_NAME).build();
 
-        Map<User, Role> teachersMap = courseDao.getTeachers(COURSE_ID);
+        Map<User, Role> teachersMap = courseDao.getPrivilegedUsers(COURSE_ID);
 
         assertFalse(teachersMap.isEmpty());
         assertEquals(role.getRoleId(), teachersMap.get(user).getRoleId());

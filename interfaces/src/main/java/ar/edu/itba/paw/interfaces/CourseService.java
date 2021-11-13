@@ -66,7 +66,21 @@ public interface CourseService {
      * @param courseId of the course to get the teachers from
      * @return map of Users as a key where the value is the teacher Role in that course
      */
-    Map<User, Role> getTeachers(Long courseId);
+    Map<User, Role> getPrivilegedUsers(Long courseId);
+
+    /**
+     * Gets the list of teachers for the given course
+     * @param courseId of the course to get the teachers from
+     * @return list of Users where its role is a teacher in the given course
+     */
+    List<User> getTeachers(Long courseId);
+
+    /**
+     * Gets the list of helpers for the given course
+     * @param courseId of the course to get the teachers from
+     * @return list of Users where its role is a helper in the given course
+     */
+    List<User> getHelpers(Long courseId);
 
     /**
      * Gets the list of students for the given course
@@ -126,12 +140,5 @@ public interface CourseService {
      * @return list of years where there are courses present
      */
     List<Integer> getAvailableYears();
-
-    /**
-     *  Attempts to return the quantity of students of a course
-     * @param courseId of the queried course
-     * @return an integer that are the total of students on that course
-     */
-    Long getTotalStudents(Long courseId);
 
 }

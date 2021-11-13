@@ -48,7 +48,7 @@ public class AdminController extends AuthController {
     @RequestMapping(method = RequestMethod.GET, value = "/user/new")
     public ModelAndView newUser(final UserRegisterForm userRegisterForm){
         ModelAndView mav = new ModelAndView("admin/new-user");
-        mav.addObject("nextFileNumber",userService.getMaxFileNumber()+1);
+        mav.addObject("nextFileNumber",userService.getMaxFileNumber() + 1);
         mav.addObject("userRegisterForm", userRegisterForm);
         return mav;
     }
@@ -102,17 +102,26 @@ public class AdminController extends AuthController {
     @RequestMapping(method = RequestMethod.GET, value = "/course/enroll")
     public ModelAndView addUserToCourse(final UserToCourseForm userToCourseForm,
                                         @RequestParam(name = "courseId") Long courseId,
-                                        final String successMessage){
+                                        final String successMessage,
+                                        @RequestParam(value = "page", required = false, defaultValue = "1")
+                                        Integer page,
+                                        @RequestParam(value = "pageSize", required = false, defaultValue = "10")
+                                        Integer pageSize) {
         ModelAndView mav = new ModelAndView("admin/add-user-to-course");
         List<User> unenrolledUsers = courseService.listUnenrolledUsers(courseId);
         unenrolledUsers.sort(Comparator.comparingInt(User::getFileNumber));
-        mav.addObject("userToCourseForm",userToCourseForm);
+        mav.addObject("userToCourseForm", userToCourseForm);
         mav.addObject("users", unenrolledUsers);
-        mav.addObject("course",courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
-        mav.addObject("roles",roleService.list());
-        mav.addObject("courseStudents", courseService.getStudents(courseId));
-        mav.addObject("courseTeachers", courseService.getTeachers(courseId).keySet());
+        mav.addObject("course", courseService.findById(courseId).orElseThrow(CourseNotFoundException::new));
+        mav.addObject("roles", roleService.list());
+        CampusPage<User> users = userService.getStudentsByCourse(courseId, page, pageSize);
+        mav.addObject("courseStudents", users.getContent());
+        mav.addObject("courseTeachers", courseService.getTeachers(courseId));
+        mav.addObject("courseHelpers", courseService.getHelpers(courseId));
         mav.addObject("successMessage",successMessage);
+        mav.addObject("currentPage", users.getPage());
+        mav.addObject("maxPage", users.getTotal());
+        mav.addObject("pageSize", users.getSize());
         return mav;
     }
 
@@ -123,9 +132,9 @@ public class AdminController extends AuthController {
         if (!errors.hasErrors()) {
             courseService.enroll(userToCourseForm.getUserId(), courseId, userToCourseForm.getRoleId());
             successMessage ="user.success.message";
-            LOGGER.debug("User {} succesfully enrolled in {}", userToCourseForm.getUserId(), courseId);
+            LOGGER.debug("User {} successfully enrolled in {}", userToCourseForm.getUserId(), courseId);
         }
-        return addUserToCourse(userToCourseForm,courseId,successMessage);
+        return addUserToCourse(userToCourseForm, courseId, successMessage, 1, 10);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/course/all")

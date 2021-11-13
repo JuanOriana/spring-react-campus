@@ -121,7 +121,7 @@ public class CourseController extends AuthController {
     @RequestMapping(method = RequestMethod.GET, value = "/teachers")
     public ModelAndView teachers(@PathVariable Long courseId) {
         final ModelAndView mav = new ModelAndView("teachers");
-        mav.addObject("teacherSet", courseService.getTeachers(courseId).entrySet());
+        mav.addObject("teacherSet", courseService.getPrivilegedUsers(courseId).entrySet());
         return mav;
     }
 

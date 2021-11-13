@@ -29,7 +29,7 @@ public class FileServiceImpl implements FileService {
     @Transactional
     @Override
     public FileModel create(Long size, String name, byte[] file, Course course, List<Long> categories) {
-        FileModel fileModel = this.create(size, name, file, course);
+        FileModel fileModel = create(size, name, file, course);
         fileModel.setCategories(associateCategories(fileModel.getFileId(), categories));
         return fileModel;
     }

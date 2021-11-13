@@ -86,5 +86,10 @@ public class UserServiceImpl implements UserService {
         return userDao.getMaxFileNumber();
     }
 
+    @Override
+    public CampusPage<User> getStudentsByCourse(Long courseId, Integer page, Integer pageSize) {
+        return userDao.getStudentsByCourse(courseId, new CampusPageRequest(page, pageSize));
+    }
+
 
 }

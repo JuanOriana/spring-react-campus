@@ -1,8 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
-import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,16 +10,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Primary
 @Repository
-public class UserDaoJpa implements UserDao {
-
-    @PersistenceContext
-    private EntityManager em;
-
+public class UserDaoJpa extends BasePaginationDaoImpl<User> implements UserDao {
 
     @Override
     public User create(Integer fileNumber, String name, String surname, String username,
@@ -90,6 +87,16 @@ public class UserDaoJpa implements UserDao {
 
 
     @Override
+    public CampusPage<User> getStudentsByCourse(Long courseId, CampusPageRequest pageRequest) {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("courseId", courseId);
+        properties.put("roleId", Roles.STUDENT.getValue());
+        String query = "SELECT userId FROM user_to_course WHERE courseId = :courseId AND roleId = :roleId";
+        String mappingQuery = "SELECT DISTINCT enrollment.user FROM Enrollment enrollment WHERE enrollment.user.userId IN (:ids)";
+        return listBy(properties, query, mappingQuery, pageRequest, User.class);
+    }
+
+    @Override
     public Optional<byte[]> getProfileImage(Long userId) {
         Optional<User> user = findById(userId);
         return user.map(User::getImage);
@@ -101,10 +108,6 @@ public class UserDaoJpa implements UserDao {
         Optional<User> user = findById(userId);
         if(!user.isPresent()) return false;
         user.get().setImage(image);
-//        Query update = em.createNativeQuery("UPDATE profile_images set image = :image WHERE userid = :userid");
-//        update.setParameter("image", image);
-//        update.setParameter("userid", userId);
-//        update.executeUpdate();
         return true;
     }
 

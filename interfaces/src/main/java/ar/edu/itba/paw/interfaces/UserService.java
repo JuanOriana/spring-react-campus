@@ -80,4 +80,13 @@ public interface UserService {
      */
     public Integer getMaxFileNumber();
 
+    /**
+     * Gets a paginated list of students for the given course
+     * @param courseId of the course to get the teachers from
+     * @param page queried by the user
+     * @param pageSize queried by the user
+     * @return List of Users in that course
+     */
+    CampusPage<User> getStudentsByCourse(Long courseId, Integer page, Integer pageSize);
+
 }

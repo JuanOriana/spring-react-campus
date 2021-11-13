@@ -87,8 +87,18 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional(readOnly = true)
     @Override
-    public Map<User, Role> getTeachers(Long courseId) {
+    public Map<User, Role> getPrivilegedUsers(Long courseId) {
+        return courseDao.getPrivilegedUsers(courseId);
+    }
+
+    @Override
+    public List<User> getTeachers(Long courseId) {
         return courseDao.getTeachers(courseId);
+    }
+
+    @Override
+    public List<User> getHelpers(Long courseId) {
+        return courseDao.getHelpers(courseId);
     }
 
     @Transactional(readOnly = true)
@@ -140,11 +150,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Integer> getAvailableYears() {
         return courseDao.getAvailableYears();
-    }
-
-    @Override
-    public Long getTotalStudents(Long courseId) {
-        return courseDao.getTotalStudents(courseId);
     }
 
 }

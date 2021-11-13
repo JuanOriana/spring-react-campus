@@ -23,7 +23,11 @@ public interface CourseDao {
 
     List<User> getStudents(Long courseId);
 
-    Map<User, Role> getTeachers(Long courseId);
+    Map<User, Role> getPrivilegedUsers(Long courseId);
+
+    List<User> getTeachers(Long courseId);
+
+    List<User> getHelpers(Long courseId);
 
     boolean belongs(Long userId, Long courseId);
 
