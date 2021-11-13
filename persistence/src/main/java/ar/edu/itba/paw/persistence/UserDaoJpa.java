@@ -100,10 +100,11 @@ public class UserDaoJpa implements UserDao {
     public boolean updateProfileImage(Long userId, byte[] image) {
         Optional<User> user = findById(userId);
         if(!user.isPresent()) return false;
-        Query update = em.createNativeQuery("UPDATE profile_images set image = :image WHERE userid = :userid");
-        update.setParameter("image", image);
-        update.setParameter("userid", userId);
-        update.executeUpdate();
+        user.get().setImage(image);
+//        Query update = em.createNativeQuery("UPDATE profile_images set image = :image WHERE userid = :userid");
+//        update.setParameter("image", image);
+//        update.setParameter("userid", userId);
+//        update.executeUpdate();
         return true;
     }
 
