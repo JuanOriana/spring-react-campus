@@ -279,6 +279,25 @@ public class CourseController extends AuthController {
                                       Integer page,
                               @RequestParam(value = "pageSize", required = false, defaultValue = "10")
                                       Integer pageSize) {
+
+
+        //TODO: ver si este codigo y el de FilesController (linea 64) se puede hacer una func
+        List<FileCategory> fileCategoryList = fileCategoryService.getCategories();
+        List<FileExtension> fileExtensionList = fileExtensionService.getExtensions();
+
+        List<FileCategory> listOfAppliedCategoryFilters = new ArrayList<>();
+        for (Long categoryId : categoryType){
+            if (categoryId >= 0){
+                listOfAppliedCategoryFilters.add(fileCategoryList.get(categoryId.intValue()));
+            }
+        }
+        List<FileExtension> listOfAppliedExtensionFilters = new ArrayList<>();
+        for (Long extensionId : extensionType){
+            if (extensionId >= 0){
+                listOfAppliedExtensionFilters.add(fileExtensionList.get(extensionId.intValue()));
+            }
+        }
+
         CampusPage<FileModel> filePage = fileService.listByCourse(query, extensionType, categoryType,
                 authFacade.getCurrentUserId(), courseId, page, pageSize, orderDirection, orderProperty);
         final ModelAndView mav;
@@ -288,12 +307,14 @@ public class CourseController extends AuthController {
         } else {
             mav = new ModelAndView("course-files");
         }
-        mav.addObject("categories", fileCategoryService.getCategories());
+        mav.addObject("categories", fileCategoryList);
         mav.addObject("files", filePage.getContent());
-        mav.addObject("extensions", fileExtensionService.getExtensions());
+        mav.addObject("extensions", fileExtensionList);
         mav.addObject("currentPage", filePage.getPage());
         mav.addObject("maxPage", filePage.getTotal());
         mav.addObject("pageSize", filePage.getSize());
+        mav.addObject("filteredCategories", listOfAppliedCategoryFilters);
+        mav.addObject("filteredExtensions", listOfAppliedExtensionFilters);
         return FilesController.loadFileParamsIntoModel(categoryType, extensionType, query, orderProperty, orderDirection, filePage, mav);
     }
 
