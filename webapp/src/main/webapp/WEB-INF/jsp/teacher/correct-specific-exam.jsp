@@ -56,7 +56,10 @@
                         <form:textarea path="comments" class="form-input" style="width: 95%;resize: none" cols="50" rows="5"></form:textarea>
                         <form:errors path="comments" element="p" cssClass="error-message"/>
                         <div style="display: flex; margin-top:5px; justify-content: center">
-                            <button  class="form-button" style="margin-right:15px; background: #a80011";><spring:message code="correct.specific.exam.cancel.submission" htmlEscape="true"/></button>
+                            <a class="styleless-anchor form-button" style="margin-right:15px; background: #a80011; text-align: center";
+                               href="${pageContext.request.contextPath}/course/${course.courseId}/exam/${exam.examId}">
+                                <spring:message code="correct.specific.exam.cancel.submission" htmlEscape="true"/>
+                            </a>
                             <button  class="form-button"><spring:message code="correct.specific.exam.submit" htmlEscape="true"/></button>
                         </div>
                     </form:form>
