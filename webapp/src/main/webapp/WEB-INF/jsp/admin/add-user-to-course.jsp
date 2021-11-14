@@ -64,6 +64,25 @@
                                 <li><c:out value="${student.name} ${student.surname}"/></li>
                             </c:forEach>
                         </ul>
+                        <c:if test="${maxPage > 1}">
+                            <div class="pagination-wrapper" style="align-self: center; font-size: 14px; margin-right: 25%">
+                                <c:if test="${currentPage > 1}">
+                                    <a href="<c:url
+                                    value="/admin/course/enroll?courseid=${course.courseId}&page=${currentPage-1}&pageSize=${pageSize}"/>">
+                                        <img src="<c:url value="/resources/images/page-arrow.png"/>"
+                                             alt="Previous page" class="pagination-arrow x-rotated mini-icon">
+                                    </a>
+                                </c:if>
+                                <spring:message code="page.actual" htmlEscape="true" arguments="${currentPage},${maxPage}" />
+                                <c:if test="${currentPage < maxPage}">
+                                    <a href="<c:url
+                                    value="/admin/course/enroll?courseid=${course.courseId}&page=${currentPage+1}&pageSize=${pageSize}"/>">
+                                        <img src="<c:url value="/resources/images/page-arrow.png"/>"
+                                             alt="Next page" class="pagination-arrow mini-icon">
+                                    </a>
+                                </c:if>
+                            </div>
+                        </c:if>
                     </div>
                     <div class="user-column">
                         <c:if test="${courseTeachers.size() > 0}">
