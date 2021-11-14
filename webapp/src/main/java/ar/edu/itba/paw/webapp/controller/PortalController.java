@@ -1,8 +1,5 @@
 package ar.edu.itba.paw.webapp.controller;
-import ar.edu.itba.paw.interfaces.AnswerService;
-import ar.edu.itba.paw.interfaces.CourseService;
-import ar.edu.itba.paw.interfaces.RoleService;
-import ar.edu.itba.paw.interfaces.SubjectService;
+import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.webapp.auth.AuthFacade;
@@ -12,20 +9,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.format.DateTimeFormatter;
+
 @Controller
 public class PortalController extends AuthController{
 
     private final CourseService courseService;
     protected final RoleService roleService;
     protected final SubjectService subjectService;
+    protected final AnnouncementService announcementService;
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+    private static final int ANNOUNCEMENT_SIZE = 5;
+
 
     @Autowired
     public PortalController(AuthFacade authFacade, CourseService courseService,
-                            RoleService roleService, SubjectService subjectService) {
+                            RoleService roleService, SubjectService subjectService, AnnouncementService announcementService) {
         super(authFacade);
         this.courseService = courseService;
         this.roleService = roleService;
         this.subjectService = subjectService;
+        this.announcementService = announcementService;
     }
 
     @RequestMapping("/")
@@ -51,6 +56,8 @@ public class PortalController extends AuthController{
         mav.addObject("currentPage", courses.getPage());
         mav.addObject("maxPage", courses.getTotal());
         mav.addObject("pageSize", courses.getSize());
+        mav.addObject("announcements", announcementService.listByUser(userId,1,ANNOUNCEMENT_SIZE));
+        mav.addObject("dateTimeFormatter",dateTimeFormatter);
         return mav;
     }
 

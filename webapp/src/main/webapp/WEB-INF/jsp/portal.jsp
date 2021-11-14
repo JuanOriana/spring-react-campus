@@ -47,7 +47,18 @@
                     </a>
                 </c:if>
             </div>
+        </div>
 
+        <div class="portal-announcements">
+            <c:if test="${announcements.size > 0}">
+                <h2 class="section-heading"><spring:message code="portal.last.announcements"/></h2>
+                <c:forEach var="announcementItem" items="${announcements.content}">
+                    <c:set var="announcementItem" value="${announcementItem}" scope="request"/>
+                    <jsp:include page="components/announcement-unit.jsp">
+                        <jsp:param name="isGlobal" value="${true}"/>
+                    </jsp:include>
+                </c:forEach>
+            </c:if>
         </div>
     </div>
     <jsp:include page="components/footer.jsp"/>

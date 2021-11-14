@@ -160,6 +160,15 @@ body{
     width: 100%;
 }
 
+.portal-announcements{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    align-items: center;
+    margin: 30px 0;
+
+}
+
 /*                  COURSE-SECTIONS-COl                  */
 
 .course-sections-col{
