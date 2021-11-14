@@ -53,7 +53,7 @@
             </form:select>
             <form:errors path="roleId" element="p" cssClass="error-message"/>
             <button class="form-button"><spring:message code="add.user.button.add"/></button>
-            <c:if test="${courseTeachers.size() > 0 || courseStudents.size() > 0}">
+            <c:if test="${courseTeachers.size() > 0 || courseStudents.size() > 0 || courseHelpers.size() > 0}">
                 <div class="user-container">
                     <div class="user-column">
                         <h3 class="form-label" style="margin:0">
@@ -66,14 +66,27 @@
                         </ul>
                     </div>
                     <div class="user-column">
-                        <h3 class="form-label" style="margin:0">
-                            <spring:message code="add.user.teachers" htmlEscape="true"/>
-                        </h3>
-                        <ul>
-                            <c:forEach var="teacher" items="${courseTeachers}">
-                                <li><c:out value="${teacher.name} ${teacher.surname}"/></li>
-                            </c:forEach>
-                        </ul>
+                        <c:if test="${courseTeachers.size() > 0}">
+                            <h3 class="form-label" style="margin:0">
+                                <spring:message code="add.user.teachers"/>
+                            </h3>
+                            <ul>
+                                <c:forEach var="teacher" items="${courseTeachers}">
+                                    <li><c:out value="${teacher.name} ${teacher.surname}"/></li>
+                                </c:forEach>
+
+                            </ul>
+                        </c:if>
+                        <c:if test="${courseHelpers.size() > 0}">
+                            <h3 class="form-label" style="margin:0">
+                                <spring:message code="add.user.helpers"/>
+                            </h3>
+                            <ul>
+                                <c:forEach var="helper" items="${courseHelpers}">
+                                    <li><c:out value="${helper.name} ${helper.surname}"/></li>
+                                </c:forEach>
+                            </ul>
+                        </c:if>
                     </div>
                 </div>
             </c:if>
