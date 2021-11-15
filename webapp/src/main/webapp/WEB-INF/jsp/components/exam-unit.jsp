@@ -56,20 +56,29 @@
                         --
                     </c:if>
                 </p>
-                <img src="<c:url value="/resources/images/outline-arrow.png"/>"
-                     class="pagination-arrow"  style="transform: rotate(90deg); margin-left: 10px"
-                     onclick="toggleComment(${requestScope.answer.answerId})" alt=<spring:message code="exam.unit.toggle.corrections"/>
-                     id="comment-toggle-${requestScope.answer.answerId}">
+                <c:if test="${requestScope.answer.corrections != null}">
+                    <img src="<c:url value="/resources/images/outline-arrow.png"/>"
+                         class="pagination-arrow"  style="transform: rotate(90deg); margin-left: 10px"
+                         onclick="toggleComment(${requestScope.answer.answerId})"
+                         alt=<spring:message code="exam.unit.toggle.corrections"/>
+                         id="comment-toggle-${requestScope.answer.answerId}">
+                </c:if>
             </c:if>
             <c:if test="${param.isTeacher}">
-                <p class="file-name">Promedio: <c:out value="${requestScope.decimalFormat.format(requestScope.average)}"/>
+                <p class="file-name">Promedio:
+                        <c:if test="${requestScope.average == 0}">
+                            0
+                        </c:if>
+                        <c:if test="${requestScope.average != 0}">
+                            <c:out value="${requestScope.decimalFormat.format(requestScope.average)}"/>
+                        </c:if>
                 <p class="file-name" style="padding-left: 5px; margin-left: 15px; border-left: 3px solid white"><spring:message code="exam.unit.number.of.corrected.exams" htmlEscape="true" arguments="${param.examsSolved},${param.userCount}"/></p>
                 <img src="<c:url value="/resources/images/trash.png"/>"
                      alt="<spring:message code="img.alt.delete" />" class="medium-icon" onclick="deleteById(${param.courseId},${requestScope.exam.examId})">
             </c:if>
         </div>
     </div>
-    <c:if test="${param.isDelivered && !param.isTeacher}">
+    <c:if test="${param.isDelivered && !param.isTeacher && requestScope.answer.corrections != null}">
         <p class="exam-comment" id="comment-${requestScope.answer.answerId}" style="display: none">
             <spring:message code="exam.unit.corrections" arguments="${requestScope.answer.corrections}" htmlEscape="true"/>
     </c:if>
