@@ -173,16 +173,17 @@ public class AnswerDaoJpaTest extends BasicPopulator {
         assertTrue(exams.isEmpty());
     }
 
-    @Test
-    public void testGetExamsAndTotals(){
-        Map<Exam,Pair<Long,Long>> examPairMap = answerDao.getExamsAndTotals(COURSE_ID);
-
-        assertFalse(examPairMap.isEmpty());
-        Pair<Long,Long> pair =examPairMap.get(exam);
-        assertEquals(Long.valueOf(1L), pair.getKey());
-        assertEquals(Long.valueOf(0L), pair.getValue());
-
-    }
+    // TODO: PASARLO AL EXAM SERVICE TEST
+//    @Test
+//    public void testGetExamsAndTotals(){
+//        Map<Exam,Pair<Long,Long>> examPairMap = answerDao.getExamsAndTotals(COURSE_ID);
+//
+//        assertFalse(examPairMap.isEmpty());
+//        Pair<Long,Long> pair =examPairMap.get(exam);
+//        assertEquals(Long.valueOf(1L), pair.getKey());
+//        assertEquals(Long.valueOf(0L), pair.getValue());
+//
+//    }
 
     @Test
     public void testGetAverageScoreInCourse(){

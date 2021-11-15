@@ -2,8 +2,11 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.FileModel;
+import ar.edu.itba.paw.models.Pair;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ExamService {
@@ -72,4 +75,13 @@ public interface ExamService {
      * @return true if the exam belongs to the course, false otherwise
      */
     boolean belongs(Long examId, Long courseId);
+
+    /**
+     * Attempts to return a map of exams with the number of answers and corrected answers
+     *
+     * @param courseId of the queried course
+     * @return a map with an Exam as a key and a Pair<Long,Long> where the first is totalAnswers and the second is totalCorrectedAnswers
+     */
+    Map<Exam, Pair<Long, Long>> getExamsAndTotals(Long courseId);
+
 }

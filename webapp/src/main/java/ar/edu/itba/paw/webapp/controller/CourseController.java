@@ -140,7 +140,7 @@ public class CourseController extends AuthController {
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-exams");
             mav.addObject("createExamForm", createExamForm);
-            mav.addObject("exams", answerService.getExamsAndTotals(courseId));
+            mav.addObject("exams", examService.getExamsAndTotals(courseId));
             mav.addObject("minDateTime", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm").format(LocalDateTime.now()));
             mav.addObject("examsToAverage",answerService.getExamsAverage(courseId));
             mav.addObject("decimalFormat",decimalFormat);

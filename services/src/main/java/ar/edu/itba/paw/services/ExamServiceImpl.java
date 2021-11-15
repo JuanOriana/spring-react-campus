@@ -6,8 +6,12 @@ import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -92,5 +96,20 @@ public class ExamServiceImpl implements ExamService {
     public boolean belongs(Long examId, Long courseId) {
         Optional<Exam> exam = findById(examId);
         return exam.map(value -> value.getCourse().getCourseId().equals(courseId)).orElse(false);
+    }
+
+
+    @Override
+    public Map<Exam, Pair<Long, Long>> getExamsAndTotals(Long courseId) {
+        List<Exam> exams = examDao.listByCourse(courseId);
+        Map<Exam, Pair<Long, Long>> examLongMap = new HashMap<>();
+
+        for (Exam exam : exams) {
+            Long totalAnswers = answerDao.getTotalAnswers(exam.getExamId());
+            Long totalCorrected = answerDao.getTotalCorrectedAnswers(exam.getExamId());
+            examLongMap.put(exam, new Pair<>(totalAnswers, totalCorrected));
+        }
+
+        return examLongMap;
     }
 }

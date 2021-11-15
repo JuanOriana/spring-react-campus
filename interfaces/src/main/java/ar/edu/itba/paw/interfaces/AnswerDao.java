@@ -37,8 +37,6 @@ public interface AnswerDao {
 
     Long getTotalCorrectedAnswers(Long examId);
 
-    Map<Exam, Pair<Long, Long>> getExamsAndTotals(Long courseId);
-
     void createEmptyAnswers(Exam exam, List<User> students);
 
     boolean didUserDeliver(Long examId, Long userId);

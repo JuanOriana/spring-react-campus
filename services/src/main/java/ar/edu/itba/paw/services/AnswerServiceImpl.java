@@ -135,11 +135,6 @@ public class AnswerServiceImpl implements AnswerService {
         return answersDao.getTotalCorrectedAnswers(examId);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public Map<Exam, Pair<Long, Long>> getExamsAndTotals(Long courseId) {
-        return answersDao.getExamsAndTotals(courseId);
-    }
 
     @Transactional(readOnly = true)
     @Override

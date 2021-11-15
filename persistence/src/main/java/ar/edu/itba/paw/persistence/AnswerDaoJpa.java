@@ -7,7 +7,6 @@ import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -186,24 +185,6 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
         unresolvedExamsTypedQuery.setParameter("nowTime", LocalDateTime.now());
         return unresolvedExamsTypedQuery.getResultList();
     }
-
-    @Override
-    public Map<Exam, Pair<Long, Long>> getExamsAndTotals(Long courseId) {
-        // TODO: Ver si toda esta logica corresponde al DAO o al service
-        TypedQuery<Exam> examTypedQuery = em.createQuery("SELECT ex FROM Exam ex WHERE ex.course.courseId = :courseId", Exam.class);
-        examTypedQuery.setParameter("courseId", courseId);
-        List<Exam> exams = examTypedQuery.getResultList();
-        Map<Exam, Pair<Long, Long>> examLongMap = new HashMap<>();
-
-        for (Exam exam : exams) {
-            Long totalAnswers = getTotalAnswers(exam.getExamId());
-            Long totalCorrected = getTotalCorrectedAnswers(exam.getExamId());
-            examLongMap.put(exam, new Pair<>(totalAnswers, totalCorrected));
-        }
-
-        return examLongMap;
-    }
-
 
     @Override
     public Double getAverageScoreOfExam(Long examId) {

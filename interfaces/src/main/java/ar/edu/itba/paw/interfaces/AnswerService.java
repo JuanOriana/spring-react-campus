@@ -136,14 +136,6 @@ public interface AnswerService {
     Long getTotalCorrectedAnswers(Long examId);
 
     /**
-     * Attempts to return a map of exams with the number of answers and corrected answers
-     *
-     * @param courseId of the queried course
-     * @return a map with an Exam as a key and a Pair<Long,Long> where the first is totalAnswers and the second is totalCorrectedAnswers
-     */
-    Map<Exam, Pair<Long, Long>> getExamsAndTotals(Long courseId);
-
-    /**
      * Determines if user delivered an answer or not for an exam
      *
      * @param examId of the queried exam
