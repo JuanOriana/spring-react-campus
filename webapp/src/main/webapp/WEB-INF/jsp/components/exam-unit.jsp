@@ -62,7 +62,7 @@
                      id="comment-toggle-${requestScope.answer.answerId}">
             </c:if>
             <c:if test="${param.isTeacher}">
-                <p class="file-name">Promedio: <c:out value="${requestScope.decimalFormat.format(requestScope.average)}"/>
+                <p class="file-name"><spring:message code="exam.unit.average" arguments="${requestScope.decimalFormat.format(requestScope.average)}" htmlEscape="true"/>
                 <p class="file-name" style="padding-left: 5px; margin-left: 15px; border-left: 3px solid white"><spring:message code="exam.unit.number.of.corrected.exams" htmlEscape="true" arguments="${param.examsSolved},${param.userCount}"/></p>
                 <img src="<c:url value="/resources/images/trash.png"/>"
                      alt="<spring:message code="img.alt.delete" />" class="medium-icon" onclick="deleteById(${param.courseId},${requestScope.exam.examId})">
@@ -71,7 +71,15 @@
     </div>
     <c:if test="${param.isDelivered && !param.isTeacher}">
         <p class="exam-comment" id="comment-${requestScope.answer.answerId}" style="display: none">
-            <spring:message code="exam.unit.corrections" arguments="${requestScope.answer.corrections}" htmlEscape="true"/>
+            <c:choose>
+                <c:when test="${requestScope.answer.corrections.length() > 0}">
+                    <spring:message code="exam.unit.corrections" arguments="${requestScope.answer.corrections}" htmlEscape="true"/>
+                </c:when>
+                <c:otherwise>
+                    <spring:message code="exam.unit.no.corrections.yet" htmlEscape="true"/>
+                </c:otherwise>
+            </c:choose>
+        </p>
     </c:if>
 </div>
 </body>
