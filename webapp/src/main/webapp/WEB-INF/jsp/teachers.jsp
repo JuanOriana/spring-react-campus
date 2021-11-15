@@ -40,7 +40,7 @@
                                 <p><spring:message code="teachers.teacher.email" htmlEscape="true" arguments="${teacher.key.email}"/></p>
                             </div>
                             <a class="styleless-anchor" href="<c:url value="/course/${courseId}/mail/${teacher.key.userId}"/>">
-                                <img alt="<spring:message code="img.alt.mail.icon" />" class="mail-icon"
+                                <img alt="<spring:message code="img.alt.mail.icon" />" class="mail-icon" title="<spring:message code="teachers.mail.icon.hover.text" />"
                                      src="https://i.pinimg.com/originals/3a/4e/95/3a4e95aa862636d6f22c95fded897f94.jpg"/>
                             </a>
                         </div>
