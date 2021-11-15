@@ -1,7 +1,4 @@
-import ar.edu.itba.paw.models.Announcement;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Subject;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 
 import java.time.LocalDateTime;
 
@@ -38,6 +35,10 @@ public class BaseServiceTestUtil {
     public static final String SUBJECT_CODE = "A1";
     public static final String SUBJECT_NAME = "Protos";
 
+    public static final Long EXAM_ID = 1L;
+    public static final String EXAM_DESCRIPTION = "Exam description";
+    public static final String EXAM_TITLE = "Exam title";
+
     public static Course getMockCourse() {
         return new Course.Builder()
                 .withCourseId(COURSE_ID)
@@ -71,6 +72,18 @@ public class BaseServiceTestUtil {
                 .withContent(ANNOUNCEMENT_CONTENT)
                 .withAuthor(mockUser)
                 .withCourse(mockCourse)
+                .build();
+    }
+
+    public static Exam getMockExam(){
+        return new Exam.Builder()
+                .withExamId(EXAM_ID)
+                .withExamFile(null)
+                .withCourse(getMockCourse())
+                .withDescription(EXAM_DESCRIPTION)
+                .withTitle(EXAM_TITLE)
+                .withEndTime(LocalDateTime.MAX)
+                .withStartTime(LocalDateTime.MIN)
                 .build();
     }
 

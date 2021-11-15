@@ -19,8 +19,6 @@ public interface AnswerDao {
 
     Optional<Answer> findById(Long answerId);
 
-    Long getTotalResolvedByExam(Long examId);
-
     void correctExam(Long answerId, User teacher, Float score, String corrections);
 
     void undoExamCorrection(Long answerId);
@@ -29,15 +27,9 @@ public interface AnswerDao {
 
     List<Answer> getNotCorrectedAnswers(Long examId);
 
-    List<Exam> getResolvedExams(Long studentId, Long courseId);
-
-    List<Exam> getUnresolvedExams(Long studentId, Long courseId);
-
     Long getTotalAnswers(Long examId);
 
     Long getTotalCorrectedAnswers(Long examId);
-
-    Map<Exam, Pair<Long, Long>> getExamsAndTotals(Long courseId);
 
     void createEmptyAnswers(Exam exam, List<User> students);
 
@@ -46,10 +38,6 @@ public interface AnswerDao {
     CampusPage<Answer> getFilteredAnswers(Long examId, String filter, CampusPageRequest pageRequest);
 
     List<Answer> getMarks(Long userId, Long courseId);
-
-    Double getAverageScoreOfExam(Long examId);
-
-    Map<Exam, Double> getExamsAverage(Long courseId);
 
     Double getAverageOfUserInCourse(Long studentId, Long courseId);
 }

@@ -7,7 +7,6 @@ import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -82,13 +81,6 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
     @Override
     public Optional<Answer> findById(Long answerId) {
         return Optional.ofNullable(em.find(Answer.class, answerId));
-    }
-
-    @Override
-    public Long getTotalResolvedByExam(Long examId) {
-        TypedQuery<Long> totalResolvedTypedQuery = em.createQuery("SELECT COUNT(DISTINCT a.student.userId) FROM Answer a WHERE a.exam.examId = :examId", Long.class);
-        totalResolvedTypedQuery.setParameter("examId", examId);
-        return totalResolvedTypedQuery.getSingleResult();
     }
 
     @Override
@@ -168,67 +160,6 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
         return totalAnswersTypedQuery.getSingleResult();
     }
 
-
-    @Override
-    public List<Exam> getResolvedExams(Long studentId, Long courseId) {
-        TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT DISTINCT(answer.exam) FROM Answer answer WHERE answer.student.userId = :studentId AND answer.exam.course.courseId = :courseId AND (answer.deliveredDate IS NOT NULL OR answer.exam.endTime < :nowTime)", Exam.class);
-        resolverExamsTypedQuery.setParameter("studentId", studentId);
-        resolverExamsTypedQuery.setParameter("courseId", courseId);
-        resolverExamsTypedQuery.setParameter("nowTime", LocalDateTime.now());
-        return resolverExamsTypedQuery.getResultList();
-    }
-
-    @Override
-    public List<Exam> getUnresolvedExams(Long studentId, Long courseId) {
-        TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId AND answer.deliveredDate IS NOT NULL) AND exam.course.courseId = :courseId AND exam.endTime > :nowTime", Exam.class);
-        unresolvedExamsTypedQuery.setParameter("studentId", studentId);
-        unresolvedExamsTypedQuery.setParameter("courseId", courseId);
-        unresolvedExamsTypedQuery.setParameter("nowTime", LocalDateTime.now());
-        return unresolvedExamsTypedQuery.getResultList();
-    }
-
-    @Override
-    public Map<Exam, Pair<Long, Long>> getExamsAndTotals(Long courseId) {
-        // TODO: Ver si toda esta logica corresponde al DAO o al service
-        TypedQuery<Exam> examTypedQuery = em.createQuery("SELECT ex FROM Exam ex WHERE ex.course.courseId = :courseId", Exam.class);
-        examTypedQuery.setParameter("courseId", courseId);
-        List<Exam> exams = examTypedQuery.getResultList();
-        Map<Exam, Pair<Long, Long>> examLongMap = new HashMap<>();
-
-        for (Exam exam : exams) {
-            Long totalAnswers = getTotalAnswers(exam.getExamId());
-            Long totalCorrected = getTotalCorrectedAnswers(exam.getExamId());
-            examLongMap.put(exam, new Pair<>(totalAnswers, totalCorrected));
-        }
-
-        return examLongMap;
-    }
-
-
-    @Override
-    public Double getAverageScoreOfExam(Long examId) {
-        TypedQuery<Double> averageQuery = em.createQuery("SELECT AVG(ans.score) FROM Answer ans WHERE ans.exam.examId =:examId AND ans.score IS NOT NULL GROUP BY ans.exam.examId", Double.class);
-        averageQuery.setParameter("examId", examId);
-        List<Double> doubleList = averageQuery.getResultList();
-        if (doubleList.isEmpty()){
-            return 0.0;
-        }
-        return doubleList.get(0);
-    }
-
-    @Override
-    public Map<Exam, Double> getExamsAverage(Long courseId) {
-        // TODO: Ver si toda esta logica corresponde al DAO o al service
-        TypedQuery<Exam> examTypedQuery = em.createQuery("SELECT ex FROM Exam ex WHERE ex.course.courseId =:courseId", Exam.class);
-        examTypedQuery.setParameter("courseId", courseId);
-        List<Exam> exams = examTypedQuery.getResultList();
-        Map<Exam, Double> examLongMap = new HashMap<>();
-
-        for (Exam ex : exams) {
-            examLongMap.put(ex, getAverageScoreOfExam(ex.getExamId()));
-        }
-        return examLongMap;
-    }
 
     @Override
     public Double getAverageOfUserInCourse(Long studentId, Long courseId) {

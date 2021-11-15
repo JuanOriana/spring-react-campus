@@ -61,4 +61,41 @@ public class ExamDaoJpa extends BasePaginationDaoImpl<Exam> implements ExamDao {
     public Optional<Exam> findById(Long examId) {
         return Optional.ofNullable(em.find(Exam.class, examId));
     }
+
+    @Override
+    public List<Exam> getUnresolvedExams(Long studentId, Long courseId) {
+        TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId AND answer.deliveredDate IS NOT NULL) AND exam.course.courseId = :courseId AND exam.endTime > :nowTime", Exam.class);
+        unresolvedExamsTypedQuery.setParameter("studentId", studentId);
+        unresolvedExamsTypedQuery.setParameter("courseId", courseId);
+        unresolvedExamsTypedQuery.setParameter("nowTime", LocalDateTime.now());
+        return unresolvedExamsTypedQuery.getResultList();
+    }
+
+    @Override
+    public List<Exam> getResolvedExams(Long studentId, Long courseId) {
+        TypedQuery<Exam> resolverExamsTypedQuery = em.createQuery("SELECT DISTINCT(answer.exam) FROM Answer answer WHERE answer.student.userId = :studentId AND answer.exam.course.courseId = :courseId AND (answer.deliveredDate IS NOT NULL OR answer.exam.endTime < :nowTime)", Exam.class);
+        resolverExamsTypedQuery.setParameter("studentId", studentId);
+        resolverExamsTypedQuery.setParameter("courseId", courseId);
+        resolverExamsTypedQuery.setParameter("nowTime", LocalDateTime.now());
+        return resolverExamsTypedQuery.getResultList();
+    }
+
+
+    @Override
+    public Long getTotalResolvedByExam(Long examId) {
+        TypedQuery<Long> totalResolvedTypedQuery = em.createQuery("SELECT COUNT(DISTINCT a.student.userId) FROM Answer a WHERE a.exam.examId = :examId", Long.class);
+        totalResolvedTypedQuery.setParameter("examId", examId);
+        return totalResolvedTypedQuery.getSingleResult();
+    }
+
+    @Override
+    public Double getAverageScoreOfExam(Long examId) {
+        TypedQuery<Double> averageQuery = em.createQuery("SELECT AVG(ans.score) FROM Answer ans WHERE ans.exam.examId =:examId AND ans.score IS NOT NULL GROUP BY ans.exam.examId", Double.class);
+        averageQuery.setParameter("examId", examId);
+        List<Double> doubleList = averageQuery.getResultList();
+        if (doubleList.isEmpty()){
+            return 0.0;
+        }
+        return doubleList.get(0);
+    }
 }
