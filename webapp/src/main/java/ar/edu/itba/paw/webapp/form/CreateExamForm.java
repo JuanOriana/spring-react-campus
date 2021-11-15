@@ -1,18 +1,14 @@
 package ar.edu.itba.paw.webapp.form;
 
-import ar.edu.itba.paw.webapp.constraint.annotation.IsAfterDate;
 import ar.edu.itba.paw.webapp.constraint.annotation.MaxFileSize;
 import ar.edu.itba.paw.webapp.constraint.annotation.NotEmptyFile;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-//@IsAfterDate(startDate="startDate",endDate="endDate")
 public class CreateExamForm{
 
     @Size(min=2,max=50)
@@ -66,6 +62,7 @@ public class CreateExamForm{
 
     public void setStartTime(String startTime) {
         this.startTime = startTime;
+        handleTimeDiff(startTime,endTime);
     }
 
     public String getEndTime() {
@@ -74,6 +71,12 @@ public class CreateExamForm{
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+        handleTimeDiff(startTime,endTime);
+    }
 
+    private void handleTimeDiff(String startTime,String endTime){
+        if (startTime != null && endTime != null && !startTime.isEmpty() && !endTime.isEmpty()
+                && LocalDateTime.parse(startTime).isAfter(LocalDateTime.parse(endTime)))
+            this.endTime = null;
     }
 }
