@@ -167,7 +167,7 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
 
     @Override
     public List<Integer> getAvailableYears() {
-        TypedQuery<Integer> listYearsTypedQuery = em.createQuery("SELECT DISTINCT course.year FROM Course course", Integer.class);
+        TypedQuery<Integer> listYearsTypedQuery = em.createQuery("SELECT DISTINCT course.year FROM Course course ORDER BY course.year ASC", Integer.class);
         return listYearsTypedQuery.getResultList();
     }
 
