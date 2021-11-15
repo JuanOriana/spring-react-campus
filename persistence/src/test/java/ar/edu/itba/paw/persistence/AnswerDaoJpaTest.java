@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -89,12 +88,6 @@ public class AnswerDaoJpaTest extends BasicPopulator {
         assertEquals(EXAM_ID, answerOptional.get().getExam().getExamId());
     }
 
-    @Test
-    public void testGetTotalResolvedByExam() {
-        Long totalResolved = answerDao.getTotalResolvedByExam(EXAM_ID);
-
-        assertEquals(Long.valueOf(1L), totalResolved);
-    }
 
     @Test
     public void testGetFilteredAnswers() {
@@ -158,57 +151,13 @@ public class AnswerDaoJpaTest extends BasicPopulator {
         assertEquals(Long.valueOf(1L), totalAnswers);
     }
 
-    @Test
-    public void testGetResolvedExams() {
-        List<Exam> exams = answerDao.getResolvedExams(student.getUserId(), COURSE_ID);
-
-        assertFalse(exams.isEmpty());
-        assertEquals(2, exams.size());
-    }
 
     @Test
-    public void testGetUnResolvedExams() {
-        List<Exam> exams = answerDao.getUnresolvedExams(student.getUserId(), COURSE_ID);
-
-        assertTrue(exams.isEmpty());
-    }
-
-    // TODO: PASARLO AL EXAM SERVICE TEST
-//    @Test
-//    public void testGetExamsAndTotals(){
-//        Map<Exam,Pair<Long,Long>> examPairMap = answerDao.getExamsAndTotals(COURSE_ID);
-//
-//        assertFalse(examPairMap.isEmpty());
-//        Pair<Long,Long> pair =examPairMap.get(exam);
-//        assertEquals(Long.valueOf(1L), pair.getKey());
-//        assertEquals(Long.valueOf(0L), pair.getValue());
-//
-//    }
-
-    @Test
-    public void testGetAverageScoreInCourse(){
-        Double score = answerDao.getAverageScoreOfExam(CORRECTED_EXAM_ID);
-
-        assertEquals(Double.valueOf(10), score);
-    }
-
-    @Test
-    public void testGetExamsAverage(){
-        Map<Exam,Double> examDoubleMap = answerDao.getExamsAverage(COURSE_ID);
-
-        assertFalse(examDoubleMap.isEmpty());
-        assertEquals(Double.valueOf(0), examDoubleMap.get(exam));
-
-    }
-
-    @Test
-    public void testGetAverageOfUserInCourse(){
+    public void testGetAverageOfUserInCourse() {
         Double average = answerDao.getAverageOfUserInCourse(student.getUserId(), COURSE_ID);
 
-        assertEquals(Double.valueOf(10),average);
+        assertEquals(Double.valueOf(10), average);
     }
-
-
 
 
 }

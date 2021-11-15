@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -46,11 +45,11 @@ public class ExamServiceImpl implements ExamService {
                     break;
                 }
             }
-        fileDao.associateCategory(fileModel.getFileId(), examCategoryId);
-        Exam exam = examDao.create(courseId,title, description, fileModel, startTime, endTime);
-        List<User> students = courseDao.getStudents(courseId);
-        answerDao.createEmptyAnswers(exam, students);
-        return exam;
+            fileDao.associateCategory(fileModel.getFileId(), examCategoryId);
+            Exam exam = examDao.create(courseId, title, description, fileModel, startTime, endTime);
+            List<User> students = courseDao.getStudents(courseId);
+            answerDao.createEmptyAnswers(exam, students);
+            return exam;
         } else {
             throw new CourseNotFoundException();
         }
@@ -60,9 +59,9 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public Exam create(Long courseId, String title, String description, FileModel examFile, LocalDateTime startTime, LocalDateTime endTime) {
         final Optional<Course> course = courseDao.findById(courseId);
-        if(course.isPresent()){
-            return examDao.create(courseId,title, description, examFile, startTime, endTime);
-        }else{
+        if (course.isPresent()) {
+            return examDao.create(courseId, title, description, examFile, startTime, endTime);
+        } else {
             throw new CourseNotFoundException();
         }
     }
@@ -111,5 +110,40 @@ public class ExamServiceImpl implements ExamService {
         }
 
         return examLongMap;
+    }
+
+    @Override
+    public Map<Exam, Double> getExamsAverage(Long courseId) {
+        List<Exam> exams = examDao.listByCourse(courseId);
+        Map<Exam, Double> examLongMap = new HashMap<>();
+
+        for (Exam ex : exams) {
+            examLongMap.put(ex, examDao.getAverageScoreOfExam(ex.getExamId()));
+        }
+        return examLongMap;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Exam> getResolvedExams(Long studentId, Long courseId) {
+        return examDao.getResolvedExams(studentId, courseId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Exam> getUnresolvedExams(Long studentId, Long courseId) {
+        return examDao.getUnresolvedExams(studentId, courseId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Long getTotalResolvedByExam(Long examId) {
+        return answerDao.getTotalAnswers(examId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Double getAverageScoreOfExam(Long examId) {
+        return examDao.getAverageScoreOfExam(examId);
     }
 }

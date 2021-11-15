@@ -30,6 +30,9 @@ public class ExamDaoJpaTest extends BasicPopulator {
     @Autowired
     private ExamDao examDao;
 
+    private final Long CORRECTED_EXAM_ID = 2L;
+    private final Long DB_STUDENT_ID = 1337L;
+
 
     @Test
     public void testCreate() {
@@ -56,7 +59,7 @@ public class ExamDaoJpaTest extends BasicPopulator {
                 .withDescription(EXAM_DESCRIPTION)
                 .withExamFile(examFile)
                 .build();
-        assertTrue(examDao.update(EXAM_ID,exam));
+        assertTrue(examDao.update(EXAM_ID, exam));
     }
 
     @Test
@@ -64,8 +67,7 @@ public class ExamDaoJpaTest extends BasicPopulator {
         List<Exam> list = examDao.listByCourse(COURSE_ID);
 
         assertNotNull(list);
-        assertEquals(1, list.size());
-        assertEquals(EXAM_ID, list.get(0).getExamId());
+        assertEquals(2, list.size());
     }
 
     @Test
@@ -74,5 +76,34 @@ public class ExamDaoJpaTest extends BasicPopulator {
         assertNotNull(examOptional);
         assertTrue(examOptional.isPresent());
         assertEquals(EXAM_ID, examOptional.get().getExamId());
+    }
+
+    @Test
+    public void testGetAverageScoreInCourse() {
+        Double score = examDao.getAverageScoreOfExam(CORRECTED_EXAM_ID);
+
+        assertEquals(Double.valueOf(10), score);
+    }
+
+    @Test
+    public void testGetUnResolvedExams() {
+        List<Exam> exams = examDao.getUnresolvedExams(DB_STUDENT_ID, COURSE_ID);
+
+        assertTrue(exams.isEmpty());
+    }
+
+    @Test
+    public void testGetTotalResolvedByExam() {
+        Long totalResolved = examDao.getTotalResolvedByExam(EXAM_ID);
+
+        assertEquals(Long.valueOf(1L), totalResolved);
+    }
+
+    @Test
+    public void testGetResolvedExams() {
+        List<Exam> exams = examDao.getResolvedExams(DB_STUDENT_ID, COURSE_ID);
+
+        assertFalse(exams.isEmpty());
+        assertEquals(2, exams.size());
     }
 }

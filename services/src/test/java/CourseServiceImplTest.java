@@ -1,23 +1,19 @@
 import ar.edu.itba.paw.interfaces.CourseDao;
-import ar.edu.itba.paw.interfaces.TimetableService;
-import ar.edu.itba.paw.models.*;
-import ar.edu.itba.paw.models.exception.DuplicateCourseException;
+import ar.edu.itba.paw.models.CampusPage;
+import ar.edu.itba.paw.models.CampusPageRequest;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.exception.PaginationArgumentException;
 import ar.edu.itba.paw.services.CourseServiceImpl;
-import ar.edu.itba.paw.services.TimetableServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.dao.DuplicateKeyException;
 
-import java.sql.Time;
-import java.time.Year;
-import java.util.*;
+import java.util.ArrayList;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CourseServiceImplTest {

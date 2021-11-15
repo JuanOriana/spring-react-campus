@@ -1,10 +1,11 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Answer;
+import ar.edu.itba.paw.models.CampusPage;
+import ar.edu.itba.paw.models.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface AnswerService {
@@ -62,14 +63,6 @@ public interface AnswerService {
     Optional<Answer> findById(Long answerId);
 
     /**
-     * Attempts to return the number of answers for a exam
-     *
-     * @param examId of the queried exam
-     * @return a number that represents the total of answers
-     */
-    Long getTotalResolvedByExam(Long examId);
-
-    /**
      * Attempts to persist in the database a correction for an exam
      *
      * @param answerId    of the answer that is being corrected
@@ -103,21 +96,6 @@ public interface AnswerService {
      */
     void undoExamCorrection(Long answerId);
 
-    /**
-     * Attempts to return a list of the resolved exams by the user
-     *
-     * @param studentId of the queried user
-     * @return a list of all the exams resolved by the user
-     */
-    List<Exam> getResolvedExams(Long studentId, Long courseId);
-
-    /**
-     * Attempts to return a list of the unresolved exams by the user
-     *
-     * @param studentId of the queried user
-     * @return a list of all the exams unresolved by the user
-     */
-    List<Exam> getUnresolvedExams(Long studentId, Long courseId);
 
     /**
      * Attempts to return the number of answers to an exam
@@ -164,21 +142,6 @@ public interface AnswerService {
      */
     List<Answer> getMarks(Long userId, Long courseId);
 
-    /**
-     * Attemps to get the average of score for an exam
-     *
-     * @param examId of the queried exam
-     * @return the average of scores for the exam
-     */
-    Double getAverageScoreOfExam(Long examId);
-
-    /**
-     * Attemps to return a map of exams with de average of score for each exam in the course
-     *
-     * @param courseId of the queried course
-     * @return a map with a exam as key and double as value that is the average score for that exam
-     */
-    Map<Exam, Double> getExamsAverage(Long courseId);
 
     /**
      * Attempts to return the average score of a student in a course.

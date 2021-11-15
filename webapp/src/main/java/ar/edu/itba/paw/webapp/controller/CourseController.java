@@ -26,7 +26,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/course/{courseId}")
@@ -43,7 +45,7 @@ public class CourseController extends AuthController {
     private final AnswerService answerService;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.00");
-    private static final String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
+    private static final String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
     private static final int DEFAULT_PAGE = 1;
     private static final int DEFAULT_PAGE_SIZE = 10;
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
@@ -53,7 +55,7 @@ public class CourseController extends AuthController {
                             CourseService courseService, FileCategoryService fileCategoryService,
                             FileExtensionService fileExtensionService, FileService fileService,
                             UserService userService, MailingService mailingService,
-                            TimetableService timetableService,ExamService examService, AnswerService answerService) {
+                            TimetableService timetableService, ExamService examService, AnswerService answerService) {
         super(authFacade);
         this.announcementService = announcementService;
         this.courseService = courseService;
@@ -75,16 +77,16 @@ public class CourseController extends AuthController {
 
     @RequestMapping(method = RequestMethod.GET, value = "")
     public String coursePortal(@PathVariable Long courseId) {
-       return "redirect:/course/"+courseId+"/announcements";
+        return "redirect:/course/" + courseId + "/announcements";
 
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/announcements")
     public ModelAndView announcements(@PathVariable Long courseId, final AnnouncementForm announcementForm,
                                       @RequestParam(value = "page", required = false, defaultValue = "1")
-                                                  Integer page,
+                                              Integer page,
                                       @RequestParam(value = "pageSize", required = false, defaultValue = "10")
-                                                  Integer pageSize) {
+                                              Integer pageSize) {
         final ModelAndView mav;
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/teacher-course");
@@ -94,7 +96,7 @@ public class CourseController extends AuthController {
         }
         CampusPage<Announcement> announcements = announcementService.listByCourse(courseId, page, pageSize);
         mav.addObject("announcementList", announcements.getContent());
-        mav.addObject("dateTimeFormatter",dateTimeFormatter);
+        mav.addObject("dateTimeFormatter", dateTimeFormatter);
         mav.addObject("currentPage", announcements.getPage());
         mav.addObject("maxPage", announcements.getTotal());
         mav.addObject("pageSize", announcements.getSize());
@@ -113,7 +115,7 @@ public class CourseController extends AuthController {
                     authFacade.getCurrentUser(), course, baseUrl + "/course/" + course.getCourseId());
             LOGGER.debug("Announcement in course {} created with id: {}", courseId, announcement.getAnnouncementId());
             redirectAttributes.addFlashAttribute("successMessage", "announcement.success.message");
-            return new ModelAndView("redirect:/course/"+courseId+"/announcements");
+            return new ModelAndView("redirect:/course/" + courseId + "/announcements");
         }
         return announcements(courseId, announcementForm, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
     }
@@ -129,8 +131,8 @@ public class CourseController extends AuthController {
     public ModelAndView schedule(@PathVariable Long courseId) {
         Timetable[] times = timetableService.findByIdOrdered(courseId);
         ModelAndView mav = new ModelAndView("course-schedule");
-        mav.addObject("times",times);
-        mav.addObject("days",days);
+        mav.addObject("times", times);
+        mav.addObject("days", days);
         return mav;
     }
 
@@ -142,15 +144,15 @@ public class CourseController extends AuthController {
             mav.addObject("createExamForm", createExamForm);
             mav.addObject("exams", examService.getExamsAndTotals(courseId));
             mav.addObject("minDateTime", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm").format(LocalDateTime.now()));
-            mav.addObject("examsToAverage",answerService.getExamsAverage(courseId));
-            mav.addObject("decimalFormat",decimalFormat);
+            mav.addObject("examsToAverage", examService.getExamsAverage(courseId));
+            mav.addObject("decimalFormat", decimalFormat);
 
         } else {
             mav = new ModelAndView("course-exams");
             final Long userId = authFacade.getCurrentUser().getUserId();
-            mav.addObject("unresolvedExams", answerService.getUnresolvedExams(userId,courseId));
-            mav.addObject("answerMarks", answerService.getMarks(userId,courseId));
-            mav.addObject("average",String.format("%.2f",answerService.getAverageOfUserInCourse(userId, courseId)));
+            mav.addObject("unresolvedExams", examService.getUnresolvedExams(userId, courseId));
+            mav.addObject("answerMarks", answerService.getMarks(userId, courseId));
+            mav.addObject("average", String.format("%.2f", answerService.getAverageOfUserInCourse(userId, courseId)));
 
         }
         return mav;
@@ -163,11 +165,11 @@ public class CourseController extends AuthController {
         if (!errors.hasErrors()) {
             Exam exam = examService.create(courseId, createExamForm.getTitle(), createExamForm.getContent(),
                     createExamForm.getFile().getOriginalFilename(), createExamForm.getFile().getBytes(),
-                    createExamForm.getFile().getSize(),LocalDateTime.parse(createExamForm.getStartTime()),
+                    createExamForm.getFile().getSize(), LocalDateTime.parse(createExamForm.getStartTime()),
                     LocalDateTime.parse(createExamForm.getEndTime()));
             LOGGER.debug("Exam in course {} created with id: {}", courseId, exam.getExamId());
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
-            return new ModelAndView("redirect:/course/"+courseId+"/exams");
+            return new ModelAndView("redirect:/course/" + courseId + "/exams");
         }
         return exams(courseId, createExamForm);
     }
@@ -175,31 +177,31 @@ public class CourseController extends AuthController {
     @RequestMapping(method = RequestMethod.GET, value = "/exam/{examId}")
     public ModelAndView exam(@PathVariable Long courseId, @PathVariable Long examId, final SolveExamForm solveExamForm,
                              @RequestParam(value = "page", required = false, defaultValue = "1")
-                             Integer page,
+                                     Integer page,
                              @RequestParam(value = "pageSize", required = false, defaultValue = "10")
-                             Integer pageSize,
+                                     Integer pageSize,
                              @RequestParam(value = "filter-by", required = false, defaultValue = "")
-                             String filterBy) {
+                                     String filterBy) {
         ModelAndView mav;
         final Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
         if (courseService.isPrivileged(authFacade.getCurrentUser().getUserId(), courseId)) {
             mav = new ModelAndView("teacher/correct-exam");
             CampusPage<Answer> answers = answerService.getFilteredAnswers(examId, filterBy, page, pageSize);
-            mav.addObject("dateTimeFormatter",dateTimeFormatter);
-            mav.addObject("exam",exam);
+            mav.addObject("dateTimeFormatter", dateTimeFormatter);
+            mav.addObject("exam", exam);
             mav.addObject("answers", answers.getContent());
             mav.addObject("currentPage", answers.getPage());
             mav.addObject("maxPage", answers.getTotal());
             mav.addObject("pageSize", answers.getSize());
             mav.addObject("filterBy", filterBy);
-            mav.addObject("average", String.format("%.2f",answerService.getAverageScoreOfExam(examId)));
+            mav.addObject("average", String.format("%.2f", examService.getAverageScoreOfExam(examId)));
 
         } else {
             mav = new ModelAndView("solve-exam");
             mav.addObject("solveExamForm", solveExamForm);
-            mav.addObject("exam",exam);
+            mav.addObject("exam", exam);
             Instant instant = exam.getEndTime().atZone(ZoneId.systemDefault()).toInstant();
-            mav.addObject("millisToEnd",instant.toEpochMilli());
+            mav.addObject("millisToEnd", instant.toEpochMilli());
 
         }
         return mav;
@@ -211,11 +213,11 @@ public class CourseController extends AuthController {
                              RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
             LocalDateTime now = LocalDateTime.now();
-            Answer answer = answerService.updateEmptyAnswer(examId, authFacade.getCurrentUser(),solveExamForm.getExam().getOriginalFilename(), solveExamForm.getExam().getBytes(),
+            Answer answer = answerService.updateEmptyAnswer(examId, authFacade.getCurrentUser(), solveExamForm.getExam().getOriginalFilename(), solveExamForm.getExam().getBytes(),
                     solveExamForm.getExam().getSize(), now);
-            LOGGER.debug("Answer in course {} created with id: {} at {}", courseId, answer.getAnswerId(),now);
+            LOGGER.debug("Answer in course {} created with id: {} at {}", courseId, answer.getAnswerId(), now);
             redirectAttributes.addFlashAttribute("successMessage", "exam.success.message");
-            return new ModelAndView("redirect:/course/"+courseId+"/exams");
+            return new ModelAndView("redirect:/course/" + courseId + "/exams");
         }
         return exam(courseId, examId, solveExamForm, DEFAULT_PAGE, DEFAULT_PAGE_SIZE, "");
     }
@@ -228,29 +230,29 @@ public class CourseController extends AuthController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/exam/{examId}/answer/{answerId}/correct")
-    public ModelAndView correctAnswer(@PathVariable Long courseId,@PathVariable Long examId,
-                                      @PathVariable Long answerId,final AnswerCorrectionForm answerCorrectionForm) {
+    public ModelAndView correctAnswer(@PathVariable Long courseId, @PathVariable Long examId,
+                                      @PathVariable Long answerId, final AnswerCorrectionForm answerCorrectionForm) {
         ModelAndView mav = new ModelAndView("teacher/correct-specific-exam");
-        mav.addObject("exam",examService.findById(examId).orElseThrow(ExamNotFoundException::new));
-        mav.addObject("answer",answerService.findById(answerId).orElseThrow(ExamNotFoundException::new));
-        mav.addObject("answerCorrectionForm",answerCorrectionForm);
+        mav.addObject("exam", examService.findById(examId).orElseThrow(ExamNotFoundException::new));
+        mav.addObject("answer", answerService.findById(answerId).orElseThrow(ExamNotFoundException::new));
+        mav.addObject("answerCorrectionForm", answerCorrectionForm);
         return mav;
 
 
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/exam/{examId}/answer/{answerId}/correct")
-    public ModelAndView correctAnswer(@PathVariable Long courseId,@PathVariable Long examId,
-                                      @PathVariable Long answerId,@Valid AnswerCorrectionForm answerCorrectionForm,
+    public ModelAndView correctAnswer(@PathVariable Long courseId, @PathVariable Long examId,
+                                      @PathVariable Long answerId, @Valid AnswerCorrectionForm answerCorrectionForm,
                                       final BindingResult errors,
                                       RedirectAttributes redirectAttributes) {
-        if(!errors.hasErrors()) {
+        if (!errors.hasErrors()) {
             LOGGER.debug("Correcting answer {}", answerId);
             answerService.correctExam(answerId, authFacade.getCurrentUser(), answerCorrectionForm.getMark(), answerCorrectionForm.getComments());
-            redirectAttributes.addFlashAttribute("successMessage","answer.solve.success.message");
+            redirectAttributes.addFlashAttribute("successMessage", "answer.solve.success.message");
             return new ModelAndView("redirect:/course/" + courseId + "/exam/" + examId);
         }
-        return correctAnswer(courseId,examId,answerId,answerCorrectionForm);
+        return correctAnswer(courseId, examId, answerId, answerCorrectionForm);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/exam/{examId}/answer/{answerId}/undo-correct")
@@ -258,7 +260,7 @@ public class CourseController extends AuthController {
                                           @PathVariable Long answerId) {
         LOGGER.debug("Undoing correction of answer {}", answerId);
         answerService.undoExamCorrection(answerId);
-        return new ModelAndView("redirect:/course/"+courseId+"/exam/" + examId);
+        return new ModelAndView("redirect:/course/" + courseId + "/exam/" + examId);
 
     }
 
@@ -286,14 +288,14 @@ public class CourseController extends AuthController {
         List<FileExtension> fileExtensionList = fileExtensionService.getExtensions();
 
         List<FileCategory> listOfAppliedCategoryFilters = new ArrayList<>();
-        for (Long categoryId : categoryType){
-            if (categoryId >= 0){
+        for (Long categoryId : categoryType) {
+            if (categoryId >= 0) {
                 listOfAppliedCategoryFilters.add(fileCategoryList.get(categoryId.intValue()));
             }
         }
         List<FileExtension> listOfAppliedExtensionFilters = new ArrayList<>();
-        for (Long extensionId : extensionType){
-            if (extensionId >= 0){
+        for (Long extensionId : extensionType) {
+            if (extensionId >= 0) {
                 listOfAppliedExtensionFilters.add(fileExtensionList.get(extensionId.intValue()));
             }
         }
@@ -329,7 +331,7 @@ public class CourseController extends AuthController {
                     Collections.singletonList(fileForm.getCategoryId()));
             LOGGER.debug("File in course {} created with id: {}", courseId, createdFile.getFileId());
             redirectAttributes.addFlashAttribute("successMessage", "file.success.message");
-            return new ModelAndView("redirect:/course/"+courseId+"/files");
+            return new ModelAndView("redirect:/course/" + courseId + "/files");
         }
         return files(courseId, fileForm, new ArrayList<>(),
                 new ArrayList<>(), "", "date", "desc", DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
@@ -339,13 +341,13 @@ public class CourseController extends AuthController {
     @RequestMapping(method = RequestMethod.GET, value = "/mail/{userId}")
     public ModelAndView sendMail(@PathVariable final Long courseId, @PathVariable final Long userId,
                                  final MailForm mailForm) {
-        if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) {
-            LOGGER.warn("User of id {} does not exist or is not a teacher in {}", userId ,courseId);
+        if (!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) {
+            LOGGER.warn("User of id {} does not exist or is not a teacher in {}", userId, courseId);
             throw new UserNotFoundException();
         }
         ModelAndView mav = new ModelAndView("sendmail");
         mav.addObject("user", userService.findById(userId).orElseThrow(UserNotFoundException::new));
-        mav.addObject("mailForm",mailForm);
+        mav.addObject("mailForm", mailForm);
         return mav;
     }
 
@@ -353,7 +355,7 @@ public class CourseController extends AuthController {
     public ModelAndView sendMail(@PathVariable Long courseId, @PathVariable Long userId,
                                  @Valid MailForm mailForm, final BindingResult errors,
                                  RedirectAttributes redirectAttributes) {
-        if(!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) {
+        if (!courseService.belongs(userId, courseId) && !courseService.isPrivileged(userId, courseId)) {
             LOGGER.warn("User of id {} does not exist or is not a teacher in {}", userId, courseId);
             throw new UserNotFoundException();
         }
@@ -362,10 +364,10 @@ public class CourseController extends AuthController {
 
             mailingService.sendEmail(authFacade.getCurrentUser(), userId, mailForm.getSubject(),
                     mailForm.getContent(), courseId, LocaleContextHolder.getLocale());
-            redirectAttributes.addFlashAttribute("successMessage","email.success.message");
+            redirectAttributes.addFlashAttribute("successMessage", "email.success.message");
             return new ModelAndView("redirect:/course/{courseId}/teachers");
         }
-        return sendMail(courseId,userId,mailForm);
+        return sendMail(courseId, userId, mailForm);
     }
 
 }

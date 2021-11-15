@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -52,7 +51,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Transactional
     @Override
-    public Answer updateEmptyAnswer(Long examId, User student, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime){
+    public Answer updateEmptyAnswer(Long examId, User student, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime) {
         Exam exam = examDao.findById(examId).orElseThrow(ExamNotFoundException::new);
         FileModel answerFileModel = fileDao.create(answerFileSize, deliveredTime, answerFileName, answerFile, exam.getCourse());
         answerFileModel.setHidden(true);
@@ -65,7 +64,7 @@ public class AnswerServiceImpl implements AnswerService {
         }
         fileDao.associateCategory(answerFileModel.getFileId(), examCategoryId);
 
-        return answersDao.updateEmptyAnswer(examId, student,null, new Answer(exam,deliveredTime,student,null, answerFileModel , null,null));
+        return answersDao.updateEmptyAnswer(examId, student, null, new Answer(exam, deliveredTime, student, null, answerFileModel, null, null));
     }
 
     @Transactional
@@ -80,11 +79,6 @@ public class AnswerServiceImpl implements AnswerService {
         return answersDao.findById(answerId);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public Long getTotalResolvedByExam(Long examId) {
-        return answersDao.getTotalResolvedByExam(examId);
-    }
 
     @Transactional
     @Override
@@ -111,17 +105,6 @@ public class AnswerServiceImpl implements AnswerService {
         answersDao.undoExamCorrection(answerId);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<Exam> getResolvedExams(Long studentId,Long courseId) {
-        return answersDao.getResolvedExams(studentId,courseId);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<Exam> getUnresolvedExams(Long studentId,Long courseId) {
-        return answersDao.getUnresolvedExams(studentId,courseId);
-    }
 
     @Transactional(readOnly = true)
     @Override
@@ -151,16 +134,6 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public List<Answer> getMarks(Long userId, Long courseId) {
         return answersDao.getMarks(userId, courseId);
-    }
-
-    @Override
-    public Double getAverageScoreOfExam(Long examId) {
-        return answersDao.getAverageScoreOfExam(examId);
-    }
-
-    @Override
-    public Map<Exam, Double> getExamsAverage(Long courseId) {
-        return answersDao.getExamsAverage(courseId);
     }
 
     @Override
