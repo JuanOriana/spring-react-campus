@@ -125,8 +125,8 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
             queryConditional = " AND score IS NULL ";
             mappingQueryConditional = " AND a.score IS NULL ";
         }
-        String query = "SELECT answerId FROM answers WHERE examId = :examId" + queryConditional + "ORDER BY score DESC";
-        String mappingQuery = "SELECT a FROM Answer a WHERE a.answerId IN (:ids)" + mappingQueryConditional + "ORDER BY a.score DESC";
+        String query = "SELECT answerId FROM answers WHERE examId = :examId" + queryConditional + "ORDER BY deliveredDate ASC,score DESC";
+        String mappingQuery = "SELECT a FROM Answer a WHERE a.answerId IN (:ids)" + mappingQueryConditional + "ORDER BY deliveredDate ASC,a.score DESC";
         return listBy(properties, query, mappingQuery, pageRequest, Answer.class);
     }
 
@@ -149,7 +149,7 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
 
     @Override
     public List<Answer> getNotCorrectedAnswers(Long examId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NULL ORDER BY answer.deliveredDate DESC", Answer.class);
+        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NULL ORDER BY answer.deliveredDate ASC", Answer.class);
         correctedExamsTypedQuery.setParameter("examId", examId);
         return correctedExamsTypedQuery.getResultList();
     }
