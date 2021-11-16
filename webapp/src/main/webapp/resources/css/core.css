@@ -265,6 +265,10 @@ body{
     margin: 20px 2px;
     cursor: pointer;
 }
+
+.back-to-portal-button:hover, .back-to-portal-button:active {
+    background-color: var(--cyan-dark);
+}
 /******************************************/
 
 /*                  UTILS                  */
