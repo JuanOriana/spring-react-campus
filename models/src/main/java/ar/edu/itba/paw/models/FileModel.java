@@ -29,6 +29,7 @@ public class FileModel {
     private LocalDateTime fileDate;
 
     @Column
+    @Basic(fetch = FetchType.LAZY) // Pull the blob only when necessary!!
     private byte[] file;
 
     @ManyToOne
