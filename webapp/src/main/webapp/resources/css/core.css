@@ -236,7 +236,6 @@ body{
     margin: 0 0 6px 2px;
 }
 
-/* TODO: ver si esto va aca */
 .announcement-course-link:link, .announcement-course-link:visited {
     margin-top: 5px;
     float: right;
@@ -251,6 +250,20 @@ body{
 
 .announcement-course-link:hover, .announcement-course-link:active {
     background-color: var(--cyan-dark);
+}
+
+.back-to-portal-button{
+    background-color: var(--cyan-darkest);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 10px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 20px 2px;
+    cursor: pointer;
 }
 /******************************************/
 

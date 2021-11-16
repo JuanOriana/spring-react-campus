@@ -12,6 +12,12 @@
     <jsp:include page="components/navbar.jsp"/>
     <div class="page-container">
         <h1 class="error-title"><spring:message code="404.page.message"/></h1>
+        <p>
+            <a href="<c:url value="/portal"/>"
+               class="styleless-anchor, back-to-portal-button">
+                <spring:message code="back.to.portal.button" htmlEscape="true"/>
+            </a>
+        </p>
     </div>
     <jsp:include page="components/footer.jsp"/>
 </div>

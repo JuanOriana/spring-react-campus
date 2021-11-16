@@ -11,7 +11,13 @@
 <div class="page-organizer">
   <%@ include file="components/navbar.jsp" %>
   <div class="page-container">
-    <h1><spring:message code="400.page.message"/></h1>
+    <h1 class="error-title"><spring:message code="400.page.message"/></h1>
+    <p>
+      <a href="<c:url value="/portal"/>"
+         class="styleless-anchor, back-to-portal-button">
+        <spring:message code="back.to.portal.button" htmlEscape="true"/>
+      </a>
+    </p>
   </div>
   <jsp:include page="components/footer.jsp"/>
 </div>
