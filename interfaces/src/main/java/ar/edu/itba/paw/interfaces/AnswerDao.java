@@ -23,10 +23,6 @@ public interface AnswerDao {
 
     void undoExamCorrection(Long answerId);
 
-    List<Answer> getCorrectedAnswers(Long examId);
-
-    List<Answer> getNotCorrectedAnswers(Long examId);
-
     Long getTotalAnswers(Long examId);
 
     Long getTotalCorrectedAnswers(Long examId);
