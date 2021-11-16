@@ -28,23 +28,6 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Transactional
     @Override
-    public Answer create(Long examId, Long studentId, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime) {
-        Exam exam = examDao.findById(examId).orElseThrow(ExamNotFoundException::new);
-        FileModel answerFileModel = fileDao.create(answerFileSize, deliveredTime, answerFileName, answerFile, exam.getCourse());
-        answerFileModel.setHidden(true);
-        long examCategoryId = 0;
-        for (FileCategory fc : fileCategoryDao.getCategories()) {
-            if (fc.getCategoryName().equalsIgnoreCase("exam")) {
-                examCategoryId = fc.getCategoryId();
-                break;
-            }
-        }
-        fileDao.associateCategory(answerFileModel.getFileId(), examCategoryId);
-        return answersDao.create(exam, studentId, null, answerFileModel, null, null, deliveredTime);
-    }
-
-    @Transactional
-    @Override
     public boolean update(Long answerId, Answer answer) {
         return answersDao.update(answerId, answer);
     }
@@ -84,19 +67,6 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public void correctExam(Long answerId, User teacher, Float score, String corrections) {
         answersDao.correctExam(answerId, teacher, score, corrections);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<Answer> getCorrectedAnswers(Long examId) {
-        return answersDao.getCorrectedAnswers(examId);
-    }
-
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<Answer> getNotCorrectedAnswers(Long examId) {
-        return answersDao.getNotCorrectedAnswers(examId);
     }
 
     @Transactional

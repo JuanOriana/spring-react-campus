@@ -130,27 +130,6 @@ public class AnswerDaoJpaTest extends BasicPopulator {
     }
 
     @Test
-    public void testGetCorrectedAnswersEmpty() {
-        List<Answer> answerList = answerDao.getCorrectedAnswers(EXAM_ID);
-
-        assertTrue(answerList.isEmpty());
-    }
-
-    @Test
-    public void testGetCorrectedAnswers() {
-        List<Answer> answerList = answerDao.getCorrectedAnswers(CORRECTED_EXAM_ID);
-
-        assertFalse(answerList.isEmpty());
-    }
-
-    @Test
-    public void testGetNotCorrectedAnswers() {
-        List<Answer> answerList = answerDao.getNotCorrectedAnswers(EXAM_ID);
-
-        assertFalse(answerList.isEmpty());
-    }
-
-    @Test
     public void testGetTotalAnswers() {
         Long totalAnswers = answerDao.getTotalAnswers(EXAM_ID);
 
