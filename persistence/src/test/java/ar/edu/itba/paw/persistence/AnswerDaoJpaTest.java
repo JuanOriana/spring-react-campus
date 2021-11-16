@@ -90,9 +90,29 @@ public class AnswerDaoJpaTest extends BasicPopulator {
 
 
     @Test
-    public void testGetFilteredAnswers() {
-        //TODO
+    public void testGetFilteredCorrectedAnswers(){
+        final Long correctedAnswerId = 2L;
+        CampusPage<Answer> campusPage = answerDao.getFilteredAnswers(CORRECTED_EXAM_ID,"corrected",new CampusPageRequest(1, 10) );
+        assertNotNull(campusPage);
+
+        assertFalse(campusPage.getContent().isEmpty());
+
+        assertEquals(1, campusPage.getContent().size());
+        assertEquals(correctedAnswerId,campusPage.getContent().get(0).getAnswerId());
     }
+
+    @Test
+    public void testGetFilteredNotCorrectedAnswers(){
+        CampusPage<Answer> campusPage = answerDao.getFilteredAnswers(CORRECTED_EXAM_ID,"not corrected",new CampusPageRequest(1, 10) );
+        assertNotNull(campusPage);
+
+        assertFalse(campusPage.getContent().isEmpty());
+
+        assertEquals(1, campusPage.getContent().size());
+
+    }
+
+
 
     @Test
     public void testGetMarks() {
