@@ -10,19 +10,6 @@ import java.util.Optional;
 
 public interface AnswerService {
     /**
-     * Attempts to persist an answer entry in the data base
-     *
-     * @param examId         id of the exam that was resolved
-     * @param studentId      id of the student that resolves the exam
-     * @param answerFileName name of the answer file
-     * @param answerFile     the answer given in a file
-     * @param answerFileSize the size of the file
-     * @param deliveredTime  the last sending
-     * @return an Answer instance holding the passed values
-     */
-    Answer create(Long examId, Long studentId, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime);
-
-    /**
      * Attempts to update an answer
      *
      * @param answerId of the answer to be modified
@@ -72,22 +59,6 @@ public interface AnswerService {
      */
 
     void correctExam(Long answerId, User teacher, Float score, String corrections);
-
-    /**
-     * Attempts to retrieved all the corrected exams for a course
-     *
-     * @param examId of the queried exam
-     * @return a list of all the exams that are already corrected
-     */
-    List<Answer> getCorrectedAnswers(Long examId);
-
-    /**
-     * Attempts to retrieved all the not corrected exams for a course
-     *
-     * @param examId of the queried exam
-     * @return a list of all the exams that are not already corrected
-     */
-    List<Answer> getNotCorrectedAnswers(Long examId);
 
     /**
      * Attempts to delete a correction to an answer

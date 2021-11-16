@@ -63,6 +63,9 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
         getEmptyAnswer.setParameter("studentId", student.getUserId());
         Answer oldAnswer = getEmptyAnswer.getSingleResult();
         if (oldAnswer != null) {
+            answer.setScore(oldAnswer.getScore()); // if the exam was already corrected, not delete that value
+            answer.setCorrections(oldAnswer.getCorrections());
+            answer.setTeacher(oldAnswer.getTeacher());
             this.update(oldAnswer.getAnswerId(), answer);
         }
 
@@ -131,20 +134,6 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
         return answerTypedQuery.getResultList();
     }
 
-
-    @Override
-    public List<Answer> getCorrectedAnswers(Long examId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NOT NULL", Answer.class);
-        correctedExamsTypedQuery.setParameter("examId", examId);
-        return correctedExamsTypedQuery.getResultList();
-    }
-
-    @Override
-    public List<Answer> getNotCorrectedAnswers(Long examId) {
-        TypedQuery<Answer> correctedExamsTypedQuery = em.createQuery("SELECT answer FROM Answer answer WHERE answer.exam.examId = :examId AND answer.score IS NULL ORDER BY answer.deliveredDate ASC", Answer.class);
-        correctedExamsTypedQuery.setParameter("examId", examId);
-        return correctedExamsTypedQuery.getResultList();
-    }
 
     @Override
     public Long getTotalAnswers(Long examId) {
