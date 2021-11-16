@@ -217,6 +217,7 @@ body{
     padding: 20px;
     border-bottom: 3px solid var(--cyan-darkest);
     margin-bottom: 5px;
+    word-break: break-word;
 }
 
 .announcement-header{
