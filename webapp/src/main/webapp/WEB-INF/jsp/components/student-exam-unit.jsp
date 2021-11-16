@@ -38,14 +38,11 @@
         </c:if>
     </div>
     <c:if test="${!param.isCorrected}">
-    <a class="styleless-anchor"  href="<c:url value="${param.examId}/answer/${requestScope.answer.answerId}/correct"/>">
+    <a class="styleless-anchor"  href="<c:url value="${param.examId}/answer/${requestScope.answer.answerId}/correct"/>" style="display: flex;align-items: center">
         <img src="<c:url value="/resources/images/check.png"/>" alt="<spring:message code="img.alt.check" />" class="medium-icon">
     </a>
     </c:if>
     <c:if test="${param.isCorrected}">
-<%--        TODO: rev si esta bien el uso de la funcion uncheckById --%>
-<%--        <form style="display: flex; align-items: center" method="post"--%>
-<%--              action="<c:url value="${param.examId}/answer/${requestScope.answer.answerId}/undo-correct"/>">--%>
            <div style="display: flex; align-items: center">
                 <p class="file-name" style="margin-right: 10px"><c:out value="${requestScope.answer.score}"/></p>
                 <button style="background: none; border:none" type="button">
