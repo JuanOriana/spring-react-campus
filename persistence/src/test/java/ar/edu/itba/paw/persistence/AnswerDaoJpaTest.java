@@ -28,6 +28,7 @@ public class AnswerDaoJpaTest extends BasicPopulator {
     private AnswerDao answerDao;
 
     private final Long DB_STUDENT_ID = 1337L;
+    private final Long DB_FILE_ID = 1337L;
     private final FileModel answerFile = createFileModelObject(FILE_PATH, FILE_ID);
     private final Subject subject = new Subject(SUBJECT_CODE, SUBJECT_NAME);
     private final Course course = new Course.Builder().withCourseId(COURSE_ID).withYear(COURSE_YEAR).withQuarter(COURSE_QUARTER).withBoard(COURSE_BOARD).withSubject(subject).build();
@@ -68,12 +69,12 @@ public class AnswerDaoJpaTest extends BasicPopulator {
                 .withDeliveredDate(LocalDateTime.now())
                 .withStudent(student)
                 .withExam(exam)
-                .withScore(9.5F)
+                .withAnswerFile(createFileModelObject(FILE_PATH, DB_FILE_ID))
                 .build();
 
         Answer dbAnswer = answerDao.updateEmptyAnswer(EXAM_ID, student, null, answer);
         assertNotNull(dbAnswer);
-        assertEquals(Float.valueOf(9.5F), dbAnswer.getScore());
+        assertEquals(DB_FILE_ID, dbAnswer.getAnswerFile().getFileId());
     }
 
     @Test
