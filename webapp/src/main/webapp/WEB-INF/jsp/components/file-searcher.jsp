@@ -141,7 +141,6 @@
         <button type="button" class="form-button" style="align-self: end" onclick="clearFilters()"><spring:message code="file.search.button.clear.filters"/></button>
     </div>
 
-<%--    TODO: ver el tema de "Practica" repetido (es por el indice 0 repetido) --%>
     <c:if test="${requestScope.filteredCategories.size() > 0 || requestScope.filteredExtensions.size() > 0}">
         <div id="filter-by-list" style="display: flex; align-items: center; flex-wrap: wrap">
             <p class="file-checkbox-label" style="font-weight: 700;"><spring:message code="file.search.filtered.by" htmlEscape="true"/> </p>
@@ -158,7 +157,6 @@
                     <c:if test="${extension.getFileExtensionName() =='other'}">
                         <spring:message code="file.search.type.other" />
                     </c:if>
-
 
                 </p>
             </c:forEach>

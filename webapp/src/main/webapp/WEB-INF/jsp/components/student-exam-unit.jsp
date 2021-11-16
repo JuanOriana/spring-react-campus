@@ -51,7 +51,6 @@
                          onclick="uncheckById(${requestScope.answer.answerId}, ${param.examId}+'/answer/' + ${requestScope.answer.answerId} + '/undo-correct' )">
                 </button>
            </div>
-<%--        </form>--%>
     </c:if>
 </div>
 </body>

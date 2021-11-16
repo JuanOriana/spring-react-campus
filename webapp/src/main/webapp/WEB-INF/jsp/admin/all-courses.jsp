@@ -78,7 +78,7 @@
                 <c:if test="${currentPage > 1}">
                     <a href="<c:url value="/admin/course/all?year=${year}&quarter=${quarter}&page=${currentPage-1}&pageSize=${pageSize}"/>">
                         <img src="<c:url value="/resources/images/page-arrow.png"/>"
-                             alt="<spring:message code="img.alt.next.page"/>" class="pagination-arrow x-rotated">
+                             alt="<spring:message code="img.alt.previous.page"/>" class="pagination-arrow x-rotated">
                     </a>
                 </c:if>
                 <spring:message code="page.actual" htmlEscape="true" arguments="${currentPage},${maxPage}" />
