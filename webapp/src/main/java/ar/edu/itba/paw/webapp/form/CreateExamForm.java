@@ -14,7 +14,7 @@ public class CreateExamForm{
     @Size(min=2,max=50)
     private String title;
 
-    @Size(min=2)
+    @Size(min=2,max=255)
     private String content;
 
     @NotEmptyFile
