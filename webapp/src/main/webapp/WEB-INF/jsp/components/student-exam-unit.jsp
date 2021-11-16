@@ -44,8 +44,6 @@
     </c:if>
     <c:if test="${param.isCorrected}">
 <%--        TODO: rev si esta bien el uso de la funcion uncheckById --%>
-<%--        <form style="display: flex; align-items: center" method="post"--%>
-<%--              action="<c:url value="${param.examId}/answer/${requestScope.answer.answerId}/undo-correct"/>">--%>
            <div style="display: flex; align-items: center">
                 <p class="file-name" style="margin-right: 10px"><c:out value="${requestScope.answer.score}"/></p>
                 <button style="background: none; border:none" type="button">
@@ -54,7 +52,6 @@
                          onclick="uncheckById(${requestScope.answer.answerId}, ${param.examId}+'/answer/' + ${requestScope.answer.answerId} + '/undo-correct' )">
                 </button>
            </div>
-<%--        </form>--%>
     </c:if>
 </div>
 </body>
