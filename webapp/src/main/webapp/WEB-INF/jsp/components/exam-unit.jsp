@@ -39,7 +39,7 @@
                href="<c:url value="exam/${requestScope.exam.examId}"/>" class="styleless-anchor"
                style="display: flex;margin-left: 10px; align-items: center">
                 <img src="<c:url value="/resources/images/test.png"/>"
-                     class="file-img" alt="${requestScope.exam.title}"/>
+                     class="file-img" alt='<c:out value="${requestScope.exam.title}"/>'/>
                 <p class="file-name">
                     <spring:message code="exam.unit.file.name" htmlEscape="true" arguments="${requestScope.exam.title}"/>
                 </p>
