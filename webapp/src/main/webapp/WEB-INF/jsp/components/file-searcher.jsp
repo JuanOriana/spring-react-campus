@@ -20,7 +20,6 @@
         function toggleFilters(){
             const filters = document.getElementById("filter-container");
             const toggler = document.getElementById("filter-toggle");
-            //TODO: ver el tema de por que falla
             const filterlist = document.getElementById("filter-by-list");
 
             if (filters.style.display === "none") {
