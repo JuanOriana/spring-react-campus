@@ -33,6 +33,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         List<User> userList = courseService.getStudents(announcement.getCourse().getCourseId());
         List<String> emailList = new ArrayList<>();
         userList.forEach(u->emailList.add(u.getEmail()));
+        // Passing locale as parameter because broadcastAnnouncementNotification is async and runs in another thread
         mailingService.broadcastAnnouncementNotification(emailList, title, content, course, author, url, LocaleContextHolder.getLocale());
         return announcement;
     }

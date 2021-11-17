@@ -281,9 +281,6 @@ public class CourseController extends AuthController {
                                       Integer page,
                               @RequestParam(value = "pageSize", required = false, defaultValue = "10")
                                       Integer pageSize) {
-
-
-        //TODO: ver si este codigo y el de FilesController (linea 64) se puede hacer una func
         List<FileCategory> fileCategoryList = fileCategoryService.getCategories();
         List<FileExtension> fileExtensionList = fileExtensionService.getExtensions();
 

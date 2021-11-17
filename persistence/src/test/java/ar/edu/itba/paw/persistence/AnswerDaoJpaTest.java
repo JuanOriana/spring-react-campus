@@ -28,6 +28,7 @@ public class AnswerDaoJpaTest extends BasicPopulator {
     private AnswerDao answerDao;
 
     private final Long DB_STUDENT_ID = 1337L;
+    private final Long DB_FILE_ID = 1337L;
     private final FileModel answerFile = createFileModelObject(FILE_PATH, FILE_ID);
     private final Subject subject = new Subject(SUBJECT_CODE, SUBJECT_NAME);
     private final Course course = new Course.Builder().withCourseId(COURSE_ID).withYear(COURSE_YEAR).withQuarter(COURSE_QUARTER).withBoard(COURSE_BOARD).withSubject(subject).build();
@@ -68,12 +69,12 @@ public class AnswerDaoJpaTest extends BasicPopulator {
                 .withDeliveredDate(LocalDateTime.now())
                 .withStudent(student)
                 .withExam(exam)
-                .withScore(9.5F)
+                .withAnswerFile(createFileModelObject(FILE_PATH, DB_FILE_ID))
                 .build();
 
         Answer dbAnswer = answerDao.updateEmptyAnswer(EXAM_ID, student, null, answer);
         assertNotNull(dbAnswer);
-        assertEquals(Float.valueOf(9.5F), dbAnswer.getScore());
+        assertEquals(DB_FILE_ID, dbAnswer.getAnswerFile().getFileId());
     }
 
     @Test
@@ -90,9 +91,29 @@ public class AnswerDaoJpaTest extends BasicPopulator {
 
 
     @Test
-    public void testGetFilteredAnswers() {
-        //TODO
+    public void testGetFilteredCorrectedAnswers(){
+        final Long correctedAnswerId = 2L;
+        CampusPage<Answer> campusPage = answerDao.getFilteredAnswers(CORRECTED_EXAM_ID,"corrected",new CampusPageRequest(1, 10) );
+        assertNotNull(campusPage);
+
+        assertFalse(campusPage.getContent().isEmpty());
+
+        assertEquals(1, campusPage.getContent().size());
+        assertEquals(correctedAnswerId,campusPage.getContent().get(0).getAnswerId());
     }
+
+    @Test
+    public void testGetFilteredNotCorrectedAnswers(){
+        CampusPage<Answer> campusPage = answerDao.getFilteredAnswers(CORRECTED_EXAM_ID,"not corrected",new CampusPageRequest(1, 10) );
+        assertNotNull(campusPage);
+
+        assertFalse(campusPage.getContent().isEmpty());
+
+        assertEquals(1, campusPage.getContent().size());
+
+    }
+
+
 
     @Test
     public void testGetMarks() {
@@ -107,27 +128,6 @@ public class AnswerDaoJpaTest extends BasicPopulator {
         List<Answer> answerList = answerDao.getMarks(USER_ID_INEXISTENCE, COURSE_ID);
 
         assertTrue(answerList.isEmpty());
-    }
-
-    @Test
-    public void testGetCorrectedAnswersEmpty() {
-        List<Answer> answerList = answerDao.getCorrectedAnswers(EXAM_ID);
-
-        assertTrue(answerList.isEmpty());
-    }
-
-    @Test
-    public void testGetCorrectedAnswers() {
-        List<Answer> answerList = answerDao.getCorrectedAnswers(CORRECTED_EXAM_ID);
-
-        assertFalse(answerList.isEmpty());
-    }
-
-    @Test
-    public void testGetNotCorrectedAnswers() {
-        List<Answer> answerList = answerDao.getNotCorrectedAnswers(EXAM_ID);
-
-        assertFalse(answerList.isEmpty());
     }
 
     @Test

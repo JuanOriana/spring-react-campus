@@ -34,7 +34,9 @@ public class User {
     @Column(name = "isAdmin")
     private Boolean admin;
 
+    // Only pull blob when asked!
     @Column(table = "profile_images")
+    @Basic(fetch = FetchType.LAZY)
     private byte[] image;
 
 

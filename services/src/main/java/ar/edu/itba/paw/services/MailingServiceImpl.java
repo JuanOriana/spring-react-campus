@@ -28,7 +28,7 @@ public class MailingServiceImpl implements MailingService {
     private final SpringTemplateEngine templateEngine;
     private final CourseService courseService;
     private final UserService userService;
-    private final String SERVER_MAIL = "mpvcampus@gmail.com";
+    private static final String SERVER_MAIL = "mpvcampus@gmail.com";
 
     @Autowired
     private MessageSource messageSource;

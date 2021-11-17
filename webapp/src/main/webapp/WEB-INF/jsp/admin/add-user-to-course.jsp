@@ -68,7 +68,7 @@
                             <div class="pagination-wrapper" style="align-self: center; font-size: 14px; margin-right: 25%">
                                 <c:if test="${currentPage > 1}">
                                     <a href="<c:url
-                                    value="/admin/course/enroll?courseid=${course.courseId}&page=${currentPage-1}&pageSize=${pageSize}"/>">
+                                    value="/admin/course/enroll?courseId=${course.courseId}&page=${currentPage-1}&pageSize=${pageSize}"/>">
                                         <img src="<c:url value="/resources/images/page-arrow.png"/>"
                                              alt="<spring:message code="img.alt.previous.page"/>" class="pagination-arrow x-rotated mini-icon">
                                     </a>
@@ -76,7 +76,7 @@
                                 <spring:message code="page.actual" htmlEscape="true" arguments="${currentPage},${maxPage}" />
                                 <c:if test="${currentPage < maxPage}">
                                     <a href="<c:url
-                                    value="/admin/course/enroll?courseid=${course.courseId}&page=${currentPage+1}&pageSize=${pageSize}"/>">
+                                    value="/admin/course/enroll?courseId=${course.courseId}&page=${currentPage+1}&pageSize=${pageSize}"/>">
                                         <img src="<c:url value="/resources/images/page-arrow.png"/>"
                                              alt="<spring:message code="img.alt.next.page"/>" class="pagination-arrow mini-icon">
                                     </a>
