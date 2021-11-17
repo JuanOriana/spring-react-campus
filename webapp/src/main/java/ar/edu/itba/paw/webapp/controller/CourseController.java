@@ -110,6 +110,7 @@ public class CourseController extends AuthController {
                                          RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
             Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
+            // Inject this via @Configuration in the future, no need to build the url each time the endpoint is reached
             final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
             Announcement announcement = announcementService.create(announcementForm.getTitle(), announcementForm.getContent(),
                     authFacade.getCurrentUser(), course, baseUrl + "/course/" + course.getCourseId());

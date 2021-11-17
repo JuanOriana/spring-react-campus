@@ -42,7 +42,8 @@ import java.util.concurrent.TimeUnit;
 @PropertySource(value= {"classpath:application.properties"})
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    private static final boolean DEV_BUILD = false; // Change this to a config/profile in the future
+    // Change this to a config/profile in the future
+    private static final boolean DEV_BUILD = false;
     private static boolean isOnDevBuild() {
         return DEV_BUILD;
     }
