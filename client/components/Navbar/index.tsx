@@ -52,7 +52,7 @@ function Navbar({
                   active={pathname === section.path}
                   key={section.path}
                 >
-                  <Link href="/portal">{section.name}</Link>
+                  <Link href={section.path}>{section.name}</Link>
                 </NavSectionItem>
               ))}
             </NavSectionsContainer>
