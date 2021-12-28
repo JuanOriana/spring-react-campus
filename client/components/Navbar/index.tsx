@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes, { InferProps } from "prop-types";
 import Link from "next/link";
+
 import {
   LogoutButton,
   NavContainer,
@@ -11,6 +12,7 @@ import {
 } from "./styles";
 Navbar.propTypes = {
   currentTab: PropTypes.number,
+  router: PropTypes.shape({ pathname: PropTypes.string }),
   currentUser: PropTypes.shape({
     isAdmin: PropTypes.bool,
     image: PropTypes.object,
@@ -18,10 +20,23 @@ Navbar.propTypes = {
   }),
 };
 
+interface Section {
+  path: string;
+  name: string;
+}
+
 function Navbar({
   currentTab = 0,
   currentUser,
+  router,
 }: InferProps<typeof Navbar.propTypes>) {
+  const pathname = router?.pathname;
+  const sections: Section[] = [
+    { path: "/portal", name: "Mis cursos" },
+    { path: "/announcements", name: "Mis anuncios" },
+    { path: "/files", name: "Mis archivos" },
+    { path: "/timetable", name: "Mis horarios" },
+  ];
   return (
     <NavContainer>
       <NavTitle>
@@ -31,18 +46,14 @@ function Navbar({
         <>
           {!currentUser.isAdmin && (
             <NavSectionsContainer>
-              <NavSectionItem>
-                <Link href="/portal">Mis cursos</Link>
-              </NavSectionItem>
-              <NavSectionItem>
-                <Link href="/announcements">Mis anuncios</Link>
-              </NavSectionItem>
-              <NavSectionItem>
-                <Link href="/files">Mis archivos</Link>
-              </NavSectionItem>
-              <NavSectionItem>
-                <Link href="/timetable">Mis hoarios</Link>
-              </NavSectionItem>
+              {sections.map((section) => (
+                <NavSectionItem
+                  active={pathname === section.path}
+                  key={section.path}
+                >
+                  <Link href="/portal">{section.name}</Link>
+                </NavSectionItem>
+              ))}
             </NavSectionsContainer>
           )}
           <UserWrapper>

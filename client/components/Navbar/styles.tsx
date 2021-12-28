@@ -24,11 +24,11 @@ export const NavSectionsContainer = styled.ul`
   margin-left: 48px;
 `;
 
-export const NavSectionItem = styled.li`
+export const NavSectionItem = styled.li<{ active?: boolean }>`
+  font-weight: ${(props) => (props.active ? 700 : 500)};
   list-style-type: none;
   margin-right: 40px;
   font-size: 16px;
-  font-weight: 500;
 `;
 
 export const NavSectionItemActive = styled.li`

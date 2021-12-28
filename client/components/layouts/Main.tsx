@@ -26,6 +26,7 @@ const Main = ({ children, router }: InferProps<typeof MainPropTypes>) => {
         <Navbar
           currentTab={1}
           currentUser={{ isAdmin: false, image: {}, name: "Juan" }}
+          router={router}
         />
         <PageContainer>{children}</PageContainer>
         <Footer />
