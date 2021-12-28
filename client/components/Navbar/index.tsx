@@ -10,6 +10,7 @@ import {
   NavTitle,
   UserWrapper,
 } from "./styles";
+
 Navbar.propTypes = {
   currentTab: PropTypes.number,
   router: PropTypes.shape({ pathname: PropTypes.string }),
@@ -40,7 +41,7 @@ function Navbar({
   return (
     <NavContainer>
       <NavTitle>
-        <Link href="/">Campus</Link>
+        <Link href="/">CAMPUS</Link>
       </NavTitle>
       {currentUser && (
         <>

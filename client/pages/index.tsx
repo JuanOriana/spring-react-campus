@@ -1,9 +1,6 @@
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
 const Home: NextPage = () => {
-  const router = useRouter();
-
-  return <div>xd</div>;
+  return <div>Should be unreacheable</div>;
 };
 
 export default Home;
