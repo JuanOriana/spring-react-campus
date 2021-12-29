@@ -3,10 +3,25 @@ import AnnouncementUnit from "../components/AnnouncementUnit";
 import FileUnit from "../components/FileUnit";
 import AdminSectionsCol from "../components/AdminSectionsCol";
 import CourseSectionsCol from "../components/CourseSectionsCol";
+import FileSearcher from "../components/FileSearcher";
 const Portal: NextPage = () => {
   return (
     <div>
       Hola
+      <FileSearcher
+        orderDirection={"asc"}
+        orderProperty={"name"}
+        categoryType={[2]}
+        categories={[
+          { categoryName: "Hola", categoryId: 1 },
+          { categoryName: "Dos", categoryId: 2 },
+        ]}
+        extensionType={[2]}
+        extensions={[
+          { fileExtensionName: "Hola", fileExtensionId: 1 },
+          { fileExtensionName: "Dos", fileExtensionId: 2 },
+        ]}
+      />
       <CourseSectionsCol
         courseId={1}
         courseName={"PAW"}
