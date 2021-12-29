@@ -2,10 +2,19 @@ import type { NextPage } from "next";
 import AnnouncementUnit from "../components/AnnouncementUnit";
 import FileUnit from "../components/FileUnit";
 import AdminSectionsCol from "../components/AdminSectionsCol";
+import CourseSectionsCol from "../components/CourseSectionsCol";
 const Portal: NextPage = () => {
   return (
     <div>
       Hola
+      <CourseSectionsCol
+        courseId={1}
+        courseName={"PAW"}
+        board={"F"}
+        code={"98.2"}
+        quarter={1}
+        year={2012}
+      />
       <AdminSectionsCol />
       <AnnouncementUnit
         course={{ courseId: 2 }}

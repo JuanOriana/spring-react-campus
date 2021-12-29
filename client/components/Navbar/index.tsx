@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes, { InferProps } from "prop-types";
 import Link from "next/link";
+import { Section } from "../../types";
 
 import {
   LogoutButton,
@@ -19,11 +20,6 @@ Navbar.propTypes = {
     name: PropTypes.string,
   }),
 };
-
-interface Section {
-  path: string;
-  name: string;
-}
 
 function Navbar({ currentUser, router }: InferProps<typeof Navbar.propTypes>) {
   const pathname = router?.pathname;

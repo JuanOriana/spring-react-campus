@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes, { InferProps } from "prop-types";
+import { Section } from "../../types";
 import {
   AdminSectionsColWrapper,
   AdminSectionsColTitle,
@@ -11,11 +12,6 @@ import { useRouter } from "next/router";
 AdminSectionsCol.propTypes = {
   isSmall: PropTypes.bool,
 };
-
-interface Section {
-  path: string;
-  name: string;
-}
 
 function AdminSectionsCol({
   isSmall,
