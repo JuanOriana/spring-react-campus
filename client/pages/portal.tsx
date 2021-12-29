@@ -1,10 +1,12 @@
 import type { NextPage } from "next";
 import AnnouncementUnit from "../components/AnnouncementUnit";
 import FileUnit from "../components/FileUnit";
+import AdminSectionsCol from "../components/AdminSectionsCol";
 const Portal: NextPage = () => {
   return (
     <div>
       Hola
+      <AdminSectionsCol />
       <AnnouncementUnit
         course={{ courseId: 2 }}
         isGlobal={true}

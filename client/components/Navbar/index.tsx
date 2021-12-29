@@ -12,7 +12,6 @@ import {
 } from "./styles";
 
 Navbar.propTypes = {
-  currentTab: PropTypes.number,
   router: PropTypes.shape({ pathname: PropTypes.string }),
   currentUser: PropTypes.shape({
     isAdmin: PropTypes.bool,
@@ -26,11 +25,7 @@ interface Section {
   name: string;
 }
 
-function Navbar({
-  currentTab = 0,
-  currentUser,
-  router,
-}: InferProps<typeof Navbar.propTypes>) {
+function Navbar({ currentUser, router }: InferProps<typeof Navbar.propTypes>) {
   const pathname = router?.pathname;
   const sections: Section[] = [
     { path: "/portal", name: "Mis cursos" },
