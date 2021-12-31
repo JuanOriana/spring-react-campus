@@ -43,3 +43,13 @@ export const PaginationArrow = styled.img`
   margin: 0 8px;
   height: 36px;
 `;
+
+export const FileFilterPill = styled.div<{ red: boolean }>`
+  color: white;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 4px 8px;
+  margin-left: 6px;
+  margin-bottom: 2px;
+  background: ${(props) => (props.red ? "#a80011" : props.theme.cyanLight)};
+`;

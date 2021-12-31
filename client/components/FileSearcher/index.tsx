@@ -9,6 +9,7 @@ import {
   FileCheckboxLabel,
   FileCheckbox,
   PaginationArrow,
+  FileFilterPill,
 } from "./syles";
 
 interface codeToMessage {
@@ -272,29 +273,27 @@ function FileSearcher({
           </FormButton>
         </FileFilterContainer>
       )}
-
-      {/*  //TODO: HACER*/}
-      {/*// <c:if test="${requestScope.filteredCategories.size() > 0 || requestScope.filteredExtensions.size() > 0}">*/}
-      {/*// <div id="filter-by-list" style="display: flex; align-items: center; flex-wrap: wrap">*/}
-      {/*// <p class="file-checkbox-label" style="font-weight: 700;"><spring:message code="file.search.filtered.by" htmlEscape="true"/> </p>*/}
-      {/*// <c:forEach var="category" items="${requestScope.filteredCategories}">*/}
-      {/*// <p class="file-filter-pill">*/}
-      {/*// <spring:message code="category.${category.categoryName}" htmlEscape="true"/>*/}
-      {/*// </p>*/}
-      {/*// </c:forEach>*/}
-      {/*// <c:forEach var="extension" items="${requestScope.filteredExtensions}">*/}
-      {/*// <p class="file-filter-pill-red">*/}
-      {/*// <c:if test="${extension.getFileExtensionName()!='other'}">*/}
-      {/*// .<c:out value = "${extension.getFileExtensionName()}"/>*/}
-      {/*// </c:if>*/}
-      {/*// <c:if test="${extension.getFileExtensionName() =='other'}">*/}
-      {/*// <spring:message code="file.search.type.other" />*/}
-      {/*// </c:if>*/}
-      {/*//*/}
-      {/*// </p>*/}
-      {/*// </c:forEach>*/}
-      {/*// </div>*/}
-      {/*// </c:if>*/}
+      {/*TODO: CAMBIAR ESTO DE LOS TIPOS A LA CATEGORIA COMPLETA*/}
+      {!isAmplified && (categoryType!.length > 0 || extensionType!.length > 0) && (
+        <div
+          style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+        >
+          <FileCheckboxLabel style={{ fontWeight: 700 }}>
+            Filtrado por:
+          </FileCheckboxLabel>
+          {categoryType!.map((category) => (
+            <FileFilterPill key={category} red={false}>
+              {category}
+            </FileFilterPill>
+          ))}
+          {extensionType!.map((extension) => (
+            // FIX OTHER!
+            <FileFilterPill key={extension} red={true}>
+              {extension}
+            </FileFilterPill>
+          ))}
+        </div>
+      )}
     </FileQueryContainer>
   );
 }

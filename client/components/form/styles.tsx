@@ -41,7 +41,7 @@ export const FormInput = styled.input`
   font-size: 18px;
   margin: 0 10px;
   border-radius: 12px;
-  border: 2px solid var(--cyan-dark);
+  border: 2px solid ${(props) => props.theme.cyanDark};
   padding: 5px;
   outline: none;
 `;
