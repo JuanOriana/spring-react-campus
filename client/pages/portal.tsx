@@ -7,19 +7,19 @@ import FileSearcher from "../components/FileSearcher";
 const Portal: NextPage = () => {
   return (
     <div>
-      Hola
       <FileSearcher
-        orderDirection={"asc"}
-        orderProperty={"name"}
-        categoryType={[2]}
+        orderDirection={"desc"}
+        orderProperty={"date"}
+        categoryType={[1]}
         categories={[
           { categoryName: "Hola", categoryId: 1 },
           { categoryName: "Dos", categoryId: 2 },
         ]}
         extensionType={[2]}
         extensions={[
-          { fileExtensionName: "Hola", fileExtensionId: 1 },
-          { fileExtensionName: "Dos", fileExtensionId: 2 },
+          { fileExtensionName: "Otros", fileExtensionId: 1 },
+          { fileExtensionName: "Hola", fileExtensionId: 2 },
+          { fileExtensionName: "Dos", fileExtensionId: 3 },
         ]}
       />
       <CourseSectionsCol

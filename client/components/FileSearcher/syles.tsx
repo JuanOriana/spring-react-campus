@@ -10,7 +10,7 @@ export const FileQueryContainer = styled.form`
 `;
 
 export const FileFilterContainer = styled.div`
-  display: none;
+  display: flex;
   padding: 0 30px;
   flex-direction: column;
 `;

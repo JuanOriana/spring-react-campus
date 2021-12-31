@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes, { InferProps, number, string } from "prop-types";
 import { FormButton, FormInput, FormLabel } from "../form/styles";
 import {
@@ -23,6 +23,7 @@ FileSearcher.propTypes = {
   extensionType: PropTypes.array,
   categories: PropTypes.array,
   categoryType: PropTypes.array,
+  query: PropTypes.string,
 };
 
 //LOS VALORES NO SE SETTEAN EN BASE A LO QUE ESTA EN LA URL
@@ -33,6 +34,7 @@ function FileSearcher({
   extensionType,
   categories,
   categoryType,
+  query,
 }: InferProps<typeof FileSearcher.propTypes>) {
   const orderings: codeToMessage[] = [
     { code: "date", message: "Fecha" },
@@ -43,6 +45,28 @@ function FileSearcher({
     { code: "asc", message: "Ascendente" },
     { code: "desc", message: "Descendente" },
   ];
+
+  const [isAmplified, setIsAmplified] = useState(false);
+  const [catCheckState, setCatCheckState] = useState(new Array(1));
+  const [extCheckState, setExtCheckState] = useState(new Array(1));
+  const [catAllState, setCatAllState] = useState(
+    arrayEquals(categories!, categoryType!)
+  );
+  const [extAllState, setExtAllState] = useState(
+    arrayEquals(extensions!, extensionType!)
+  );
+
+  useEffect(() => {
+    const initCatCheckState = new Array(categories!.length);
+    const initExtCheckState = new Array(extensions!.length);
+    initCatCheckState.fill(false);
+    initExtCheckState.fill(false);
+
+    categoryType!.map((idx) => (initCatCheckState[idx - 1] = true));
+    extensionType!.map((idx) => (initExtCheckState[idx - 1] = true));
+    setCatCheckState(initCatCheckState);
+    setExtCheckState(initExtCheckState);
+  }, []);
 
   function arrayEquals(a: any[], b: any[]) {
     return (
@@ -70,6 +94,7 @@ function FileSearcher({
             margin: 0,
           }}
           placeholder="Escribe el nombre del archivo"
+          defaultValue={query ? query : ""}
         />
         <FormButton
           style={{
@@ -85,116 +110,168 @@ function FileSearcher({
         <PaginationArrow
           src="/resources/images/outline-arrow.png"
           style={{ transform: "rotate(90deg)", marginLeft: "10px" }}
+          onClick={() => setIsAmplified((lastState) => !lastState)}
           alt="encender filtros"
           id="filter-toggle"
         />
       </div>
 
-      <FileFilterContainer style={{ display: "none" }}>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <FileSelectLabel>Buscar por:</FileSelectLabel>
-            <FileSelect name="order-property" id="order-property">
-              {orderings.map((ordering) => (
-                <option
-                  key={ordering.code}
-                  value={ordering.code}
-                  selected={orderProperty == ordering.code}
-                >
-                  {ordering.message}
-                </option>
-              ))}
-            </FileSelect>
-            <FileSelectLabel>Ordenar de forma</FileSelectLabel>
-            <FileSelect name="order-direction" id="order-direction">
-              {directions.map((direction) => (
-                <option
-                  key={direction.code}
-                  value={direction.code}
-                  selected={orderDirection == direction.code}
-                >
-                  {direction.message}
-                </option>
-              ))}
-            </FileSelect>
-          </div>
+      {isAmplified && (
+        <FileFilterContainer>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <FileSelectLabel>Buscar por:</FileSelectLabel>
+              <FileSelect
+                name="order-property"
+                id="order-property"
+                defaultValue={orderProperty ? orderProperty : undefined}
+              >
+                {orderings.map((ordering) => (
+                  <option key={ordering.code} value={ordering.code}>
+                    {ordering.message}
+                  </option>
+                ))}
+              </FileSelect>
+              <FileSelectLabel>Ordenar de forma</FileSelectLabel>
+              <FileSelect
+                name="order-direction"
+                id="order-direction"
+                defaultValue={orderDirection ? orderDirection : undefined}
+              >
+                {directions.map((direction) => (
+                  <option key={direction.code} value={direction.code}>
+                    {direction.message}
+                  </option>
+                ))}
+              </FileSelect>
+            </div>
 
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <FileSelectLabel>Tipo de archivo</FileSelectLabel>
-            <span>
-              <FileCheckbox
-                type="checkbox"
-                id="extension-all"
-                name="extension-type"
-                value={-1}
-                checked={arrayEquals(extensions!, extensionType!)}
-              />
-              <FileCheckboxLabel>Todo</FileCheckboxLabel>
-            </span>
-            {extensions!.map((extension, index) => (
-              <>
-                {index !== 0 && (
-                  <span key={index}>
-                    <FileCheckbox
-                      type="checkbox"
-                      id={`extension-${extension.fileExtensionId}`}
-                      name="extension-type"
-                      value={extension.fileExtensionId}
-                      checked={extensionType!.includes(
-                        extension.fileExtensionId
-                      )}
-                    />
-                    <FileCheckboxLabel>
-                      {extension.fileExtensionName}
-                    </FileCheckboxLabel>
-                  </span>
-                )}
-              </>
-            ))}
-            <span>
-              <FileCheckbox
-                type="checkbox"
-                id={`extension-${extensions![0].fileExtensionId}`}
-                name="extension-type"
-                value={extensions![0].fileExtensionId}
-                checked={extensionType!.includes(
-                  extensions![0].fileExtensionId
-                )}
-              />
-              <FileCheckboxLabel>Otros</FileCheckboxLabel>
-            </span>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <FileSelectLabel>Categoria</FileSelectLabel>
-            <span>
-              <FileCheckbox
-                type="checkbox"
-                id="category-all"
-                name="category-type"
-                value={-1}
-                checked={arrayEquals(categories!, categoryType!)}
-              />
-              <FileCheckboxLabel>Todas</FileCheckboxLabel>
-            </span>
-            {categories!.map((category, index) => (
-              <span key={index}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <FileSelectLabel>Tipo de archivo</FileSelectLabel>
+              <span>
                 <FileCheckbox
                   type="checkbox"
-                  id={`category-${category.categoryId}`}
-                  name="category-type"
-                  value={category.categoryId}
-                  checked={categoryType!.includes(category.categoryId)}
+                  id="extension-all"
+                  name="extension-type"
+                  value={-1}
+                  checked={extAllState}
+                  onChange={() => {
+                    setExtAllState(!extAllState);
+                    const newExtCheckState = [...extCheckState];
+                    newExtCheckState.fill(!extAllState);
+                    setExtCheckState(newExtCheckState);
+                  }}
                 />
-                <FileCheckboxLabel>{category.categoryName}</FileCheckboxLabel>
+                <FileCheckboxLabel>Todo</FileCheckboxLabel>
               </span>
-            ))}
+              {extensions!.map((extension, index) => (
+                <>
+                  {index !== 0 && (
+                    <span key={index}>
+                      <FileCheckbox
+                        type="checkbox"
+                        id={`extension-${extension.fileExtensionId}`}
+                        name="extension-type"
+                        value={extension.fileExtensionId}
+                        checked={extCheckState[index]}
+                        onChange={() => {
+                          setExtAllState(false);
+                          setExtCheckState((lastValue) => {
+                            const newArr = [...lastValue];
+                            newArr[index] = !newArr[index];
+                            return newArr;
+                          });
+                        }}
+                      />
+                      <FileCheckboxLabel>
+                        {extension.fileExtensionName}
+                      </FileCheckboxLabel>
+                    </span>
+                  )}
+                </>
+              ))}
+              <span>
+                <FileCheckbox
+                  type="checkbox"
+                  id={`extension-${extensions![0].fileExtensionId}`}
+                  name="extension-type"
+                  value={extensions![0].fileExtensionId}
+                  checked={extCheckState[0]}
+                  onChange={() => {
+                    setExtAllState(false);
+                    setExtCheckState((lastValue) => {
+                      const newArr = [...lastValue];
+                      newArr[0] = !newArr[0];
+                      return newArr;
+                    });
+                  }}
+                />
+                <FileCheckboxLabel>Otros</FileCheckboxLabel>
+              </span>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <FileSelectLabel>Categoria</FileSelectLabel>
+              <span>
+                <FileCheckbox
+                  type="checkbox"
+                  id="category-all"
+                  name="category-type"
+                  value={-1}
+                  checked={catAllState}
+                  onChange={() => {
+                    setCatAllState(!catAllState);
+                    const newCatCheckState = [...catCheckState];
+                    newCatCheckState.fill(!catAllState);
+                    setCatCheckState(newCatCheckState);
+                  }}
+                />
+                <FileCheckboxLabel>Todas</FileCheckboxLabel>
+              </span>
+              {categories!.map((category, index) => (
+                <span key={index}>
+                  <FileCheckbox
+                    type="checkbox"
+                    id={`category-${category.categoryId}`}
+                    name="category-type"
+                    value={category.categoryId}
+                    checked={catCheckState[index]}
+                    onChange={() => {
+                      setCatAllState(false);
+                      setCatCheckState((lastValue) => {
+                        const newArr = [...lastValue];
+                        newArr[index] = !newArr[index];
+                        return newArr;
+                      });
+                    }}
+                  />
+                  <FileCheckboxLabel>{category.categoryName}</FileCheckboxLabel>
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-        <FormButton type="button" style={{ alignSelf: "end" }}>
-          Limpiar Filtros
-        </FormButton>
-      </FileFilterContainer>
+          <FormButton
+            type="button"
+            style={{ alignSelf: "end" }}
+            onClick={() => {
+              setExtAllState(false);
+              setCatAllState(false);
+              setExtCheckState((lastValue) => {
+                const newArr = [...lastValue];
+                newArr.fill(false);
+                return newArr;
+              });
+              setCatCheckState((lastValue) => {
+                const newArr = [...lastValue];
+                newArr.fill(false);
+                return newArr;
+              });
+            }}
+          >
+            Limpiar Filtros
+          </FormButton>
+        </FileFilterContainer>
+      )}
 
       {/*  //TODO: HACER*/}
       {/*// <c:if test="${requestScope.filteredCategories.size() > 0 || requestScope.filteredExtensions.size() > 0}">*/}
