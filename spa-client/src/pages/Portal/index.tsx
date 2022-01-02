@@ -1,12 +1,34 @@
-import type { NextPage, GetServerSideProps } from "next";
-import AnnouncementUnit from "../components/AnnouncementUnit";
-import FileUnit from "../components/FileUnit";
-import AdminSectionsCol from "../components/AdminSectionsCol";
-import CourseSectionsCol from "../components/CourseSectionsCol";
-import FileSearcher from "../components/FileSearcher";
-const Portal: NextPage = () => {
+import React from "react";
+import FileSearcher from "../../components/FileSearcher";
+import CourseSectionsCol from "../../components/CourseSectionsCol";
+import AdminSectionsCol from "../../components/AdminSectionsCol";
+import AnnouncementUnit from "../../components/AnnouncementUnit";
+import FileUnit from "../../components/FileUnit";
+import ExamUnit from "../../components/ExamUnit";
+import StudentExamUnit from "../../components/StudentExamUnit";
+
+function Portal() {
   return (
     <div>
+      <ExamUnit
+        exam={{ title: "hola", examId: 1 }}
+        average={10}
+        userCount={18}
+        examsSolved={10}
+        isTeacher={false}
+        isDelivered={true}
+        answer={{ score: 10, corrections: "nada" }}
+      />
+      <StudentExamUnit
+        answer={{
+          answerId: 1,
+          deliveredDate: "hoy",
+          student: { name: "pable", surname: "perez" },
+          score: 10,
+        }}
+        examId={1}
+        isCorrected={true}
+      />
       <FileSearcher
         orderDirection={"desc"}
         orderProperty={"date"}
@@ -58,6 +80,6 @@ const Portal: NextPage = () => {
       />
     </div>
   );
-};
+}
 
 export default Portal;
