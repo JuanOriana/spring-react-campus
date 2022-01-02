@@ -1,4 +1,5 @@
-import { SectionHeading, TimetableLayout, Days, Time } from "./styles";
+import { TimetableLayout, Days, Time } from "./styles";
+import { SectionHeading } from "../../components/generalStyles/utils";
 
 function Timetable() {
   const days: string[] = [

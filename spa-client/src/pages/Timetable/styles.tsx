@@ -1,11 +1,5 @@
 import styled from "styled-components";
 
-export const SectionHeading = styled.h2`
-  color: ${(props) => props.theme.cyanDarkest};
-  font-size: 24px;
-  margin-bottom: 20px;
-`;
-
 export const TimetableLayout = styled.table`
   color: #efefef;
   border-collapse: collapse;

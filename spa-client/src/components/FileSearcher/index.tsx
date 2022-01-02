@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes, { InferProps } from "prop-types";
-import { FormButton, FormInput } from "../form/styles";
+import { FormButton, FormInput } from "../generalStyles/form";
 import {
   FileFilterContainer,
   FileQueryContainer,
