@@ -40,7 +40,7 @@ public class User {
     private byte[] image;
 
 
-    /* Default */ User() {
+    public User() {
         // Just for Hibernate
     }
 
