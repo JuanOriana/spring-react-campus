@@ -1,9 +1,5 @@
 package ar.edu.itba.paw.webapp.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -23,5 +19,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         res.setContentType(MediaType.APPLICATION_JSON_VALUE);
         res.getOutputStream().println("{ \"error\": \"" + e.getMessage() + "\" }");
+        res.addHeader("WWW-Authenticate", "Basic realm=\"User Visible Realm\"");
+        res.addHeader("WWW-Authenticate", "Bearer token");
     }
 }
