@@ -25,6 +25,7 @@ public class JwtManager {
                             .getBody();
             User user = new User();
             user.setUsername(body.getSubject());
+            user.setPassword("");
             user.setIsAdmin(body.get("isAdmin", Boolean.class));
             return Optional.of(user);
         } catch (JwtException | ClassCastException e) {

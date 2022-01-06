@@ -27,8 +27,8 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
                 isUser = true;
             }
         }
-
-        if(isUser){
+        boolean hasBasicHeader = request.getHeader("Authorization").contains("Basic");
+        if(isUser && hasBasicHeader){
             response.addHeader("Authorization","Bearer " + JwtManager.tokenize(authentication.getName(), isAdmin));
         }
     }
