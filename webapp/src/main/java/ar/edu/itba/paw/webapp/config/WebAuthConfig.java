@@ -1,10 +1,8 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.webapp.auth.AuthenticationFilter;
-import ar.edu.itba.paw.webapp.auth.RestAuthenticationEntryPoint;
+import ar.edu.itba.paw.webapp.auth.*;
 import ar.edu.itba.paw.webapp.auth.basic.BasicAuthenticationProvider;
-import ar.edu.itba.paw.webapp.auth.CampusVoter;
-import ar.edu.itba.paw.webapp.auth.CampusUserDetailsService;
+import ar.edu.itba.paw.webapp.auth.filters.AuthenticationFilter;
 import ar.edu.itba.paw.webapp.auth.handlers.AuthenticationFailureHandler;
 import ar.edu.itba.paw.webapp.auth.handlers.AuthenticationSuccessHandler;
 import ar.edu.itba.paw.webapp.auth.jwt.JwtAuthenticationProvider;
@@ -132,4 +130,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+
+
 }

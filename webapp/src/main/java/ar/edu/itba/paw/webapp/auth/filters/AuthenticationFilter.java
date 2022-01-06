@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.auth;
+package ar.edu.itba.paw.webapp.auth.filters;
 
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.auth.basic.BasicAuthenticationToken;
