@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.auth.handlers;
 
 import ar.edu.itba.paw.webapp.auth.jwt.JwtManager;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -17,6 +18,7 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
+        if(authentication instanceof AnonymousAuthenticationToken) return;
         boolean isAdmin = false;
         boolean isUser = false;
         for(GrantedAuthority a : authentication.getAuthorities()) {
