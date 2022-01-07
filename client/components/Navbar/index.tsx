@@ -24,10 +24,10 @@ Navbar.propTypes = {
 function Navbar({ currentUser, router }: InferProps<typeof Navbar.propTypes>) {
   const pathname = router?.pathname;
   const sections: Section[] = [
-    { path: "/portal", name: "Mis cursos" },
+    { path: "/Portal", name: "Mis cursos" },
     { path: "/announcements", name: "Mis anuncios" },
     { path: "/files", name: "Mis archivos" },
-    { path: "/timetable", name: "Mis horarios" },
+    { path: "/Timetable", name: "Mis horarios" },
   ];
   return (
     <NavContainer>

@@ -31,7 +31,7 @@ function StudentExamUnit({
     <FileUnitWrapper>
       <div style={{ display: "flex", alignItems: "center" }}>
         <FileImg
-          src="/resources/images/test.png"
+          src="/images/test.png"
           alt={answer.student.name ? answer.student.name : ""}
         />
         <FileName
@@ -53,14 +53,14 @@ function StudentExamUnit({
           to={`${examId}/answer/${answer.answerId}/correct`}
           style={{ display: "flex", alignItems: "center" }}
         >
-          <MediumIcon src="/resources/images/check.png" alt="Check" />
+          <MediumIcon src="/images/check.png" alt="Check" />
         </Link>
       )}
       {isCorrected && (
         <div style={{ display: "flex", alignItems: "center" }}>
           <FileName style={{ marginRight: "10px" }}>{answer.score}</FileName>
           <button style={{ background: "none", border: "none" }} type="button">
-            <MediumIcon src="/resources/images/x.png" alt="check" />
+            <MediumIcon src="/images/x.png" alt="check" />
           </button>
         </div>
       )}

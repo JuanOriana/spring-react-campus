@@ -49,7 +49,8 @@ function Announcements() {
             to={`/announcements?page=${currentPage - 1}&pageSize=${pageSize}`}
           >
             <PaginationArrow
-              src="/resources/images/page-arrow.png"
+              xRotated={true}
+              src="/images/page-arrow.png"
               alt="Pagina previa"
             />
           </Link>
@@ -60,7 +61,7 @@ function Announcements() {
             href={`/announcements?page=${currentPage + 1}&pageSize=${pageSize}`}
           >
             <PaginationArrow
-              src="/resources/images/page-arrow.png"
+              src="/images/page-arrow.png"
               alt="Siguiente pagina"
             />
           </a>

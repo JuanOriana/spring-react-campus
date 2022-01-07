@@ -54,9 +54,7 @@ function AnnouncementUnit({
               </p>
             )}
           </div>
-          {isTeacher && (
-            <SmallIcon src="/resources/images/trash-red.png" alt="delete" />
-          )}
+          {isTeacher && <SmallIcon src="/images/trash-red.png" alt="delete" />}
         </div>
       </AnnouncementHeader>
       <AnnouncementDate>{announcement.date}</AnnouncementDate>

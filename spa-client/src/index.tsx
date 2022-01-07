@@ -26,3 +26,7 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root")
 );
+
+// Servicios y modelos
+// Type definition typescript
+// endpoint -> servicio + modelos

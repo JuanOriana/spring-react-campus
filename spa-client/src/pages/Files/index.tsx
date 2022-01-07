@@ -15,11 +15,12 @@ import { useNavigate } from "react-router-dom";
 function Files() {
   const query = useQuery();
   const navigate = useNavigate();
-  const [files, setFiles] = useState(new Array(0));
   const [currentPage] = usePagination(10);
+  const [files, setFiles] = useState(new Array(0));
   const orderDirection = getQueryOrDefault(query, "order-direction", "desc");
   const orderProperty = getQueryOrDefault(query, "order-property", "date");
   const maxPage = 3;
+
   useEffect(() => {
     setFiles([
       {
@@ -32,6 +33,7 @@ function Files() {
       },
     ]);
   }, []);
+
   return (
     <>
       <SectionHeading>Archivos</SectionHeading>
@@ -62,7 +64,6 @@ function Files() {
           ))}
         </FileGrid>
       </BigWrapper>
-
       <PaginationWrapper style={{ alignSelf: "center" }}>
         {currentPage > 1 && (
           <button
@@ -73,7 +74,8 @@ function Files() {
             style={{ background: "none", border: "none" }}
           >
             <PaginationArrow
-              src="/resources/images/page-arrow.png"
+              xRotated={true}
+              src="/images/page-arrow.png"
               alt="Pagina previa"
             />
           </button>
@@ -88,7 +90,7 @@ function Files() {
             style={{ background: "none", border: "none" }}
           >
             <PaginationArrow
-              src="/resources/images/page-arrow.png"
+              src="/images/page-arrow.png"
               alt="Pagina siguiente"
             />
           </button>

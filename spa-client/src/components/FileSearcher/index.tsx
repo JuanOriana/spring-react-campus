@@ -117,7 +117,7 @@ function FileSearcher({
           Buscar
         </FormButton>
         <PaginationArrow
-          src="/resources/images/outline-arrow.png"
+          src="/images/outline-arrow.png"
           style={{ transform: "rotate(90deg)", marginLeft: "10px" }}
           onClick={() => setIsAmplified((lastState) => !lastState)}
           alt="encender filtros"
@@ -305,5 +305,4 @@ function FileSearcher({
     </FileQueryContainer>
   );
 }
-
 export default FileSearcher;

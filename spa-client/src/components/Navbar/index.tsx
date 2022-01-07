@@ -52,7 +52,7 @@ function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
           <UserWrapper>
             <Link to="/user">
               {!currentUser?.image && (
-                <img src="/resources/images/default-user-image.png" />
+                <img src="/images/default-user-image.png" />
               )}
               {currentUser?.image && (
                 <img src={`/user/profile-image/${currentUser.userId}`} />

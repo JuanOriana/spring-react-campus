@@ -51,7 +51,7 @@ function ExamUnit({
             to={`exam/${exam.examId}`}
           >
             <FileImg
-              src="/resources/images/test.png"
+              src="/images/test.png"
               alt={exam.title ? exam.title : "Exam"}
             />
             <FileName>{exam.title}</FileName>
@@ -66,7 +66,7 @@ function ExamUnit({
               </FileName>
               {answer!.corrections && (
                 <PaginationArrow
-                  src="/resources/images/outline-arrow.png"
+                  src="/images/outline-arrow.png"
                   style={{ transform: "rotate(90deg)", marginLeft: "10px" }}
                   alt="Ver correcciones"
                   onClick={() => setShowCorrections((lastVal) => !lastVal)}
@@ -86,7 +86,7 @@ function ExamUnit({
               >
                 {examsSolved}/{userCount}
               </FileName>
-              <MediumIcon src="/resources/images/trash.png" alt="Borrar" />
+              <MediumIcon src="/images/trash.png" alt="Borrar" />
             </>
           )}
         </div>

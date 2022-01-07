@@ -50,9 +50,7 @@ function FileUnit({
           }}
         >
           <FileImg
-            src={`/resources/images/extensions/${
-              file?.extension!.fileExtensionName
-            }.png`}
+            src={`/images/extensions/${file?.extension!.fileExtensionName}.png`}
             alt={file && file.name ? file.name! : "file"}
           />
           <FileName>{file.name}</FileName>
@@ -66,9 +64,7 @@ function FileUnit({
       </div>
       <div style={{ display: "flex", alignItems: "center" }}>
         {!isMinimal && <FileName>{file.downloads}</FileName>}
-        {isTeacher && (
-          <MediumIcon src="/resources/images/trash.png" alt="delete" />
-        )}
+        {isTeacher && <MediumIcon src="/images/trash.png" alt="delete" />}
         {isGlobal && (
           <div
             style={{

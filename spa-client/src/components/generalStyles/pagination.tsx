@@ -8,7 +8,8 @@ export const PaginationWrapper = styled.div`
   margin: 20px 0;
 `;
 
-export const PaginationArrow = styled.img`
+export const PaginationArrow = styled.img<{ xRotated?: boolean }>`
+  transform: ${(props) => (props.xRotated ? "rotate(180deg);" : "")};
   cursor: pointer;
   margin: 0 8px;
   height: 36px;
