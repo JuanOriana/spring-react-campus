@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes, { InferProps } from "prop-types";
 import { Link, useLocation } from "react-router-dom";
-import { Section } from "../../../types";
+import type Section from "../../../types/Section";
 
 import {
   LogoutButton,

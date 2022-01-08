@@ -1,6 +1,6 @@
 import { ThemeProvider } from "styled-components";
-import Navbar from "../Navbar";
-import Footer from "../Footer";
+import Navbar from "../../Navbar";
+import Footer from "../../Footer";
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { PageContainer, PageOrganizer } from "./styles";
@@ -13,7 +13,7 @@ const theme = {
   successFront: "#39614C",
 };
 
-function App() {
+function MainLayout() {
   return (
     <ThemeProvider theme={theme}>
       <PageOrganizer>
@@ -27,4 +27,4 @@ function App() {
   );
 }
 
-export default App;
+export default MainLayout;

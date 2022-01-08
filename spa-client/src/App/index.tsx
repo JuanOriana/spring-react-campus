@@ -7,7 +7,10 @@ import FileUnit from "../components/FileUnit";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import React from "react";
-import { PageContainer, PageOrganizer } from "../components/layouts/styles";
+import {
+  PageContainer,
+  PageOrganizer,
+} from "../components/layouts/MainLayout/styles";
 import ExamUnit from "../components/ExamUnit";
 import StudentExamUnit from "../components/StudentExamUnit";
 

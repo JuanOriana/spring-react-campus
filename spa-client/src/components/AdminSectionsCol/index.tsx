@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes, { InferProps } from "prop-types";
-import { Section } from "../../../types";
-import { useLocation } from 'react-router-dom'
-import {Link} from "react-router-dom";
+import type Section from "../../../types/Section";
+import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   AdminSectionsColWrapper,
   AdminSectionsColTitle,

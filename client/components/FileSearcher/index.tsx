@@ -47,6 +47,7 @@ function FileSearcher({
     { code: "desc", message: "Descendente" },
   ];
 
+  //TODO: ADD TYPES
   const [isAmplified, setIsAmplified] = useState(false);
   const [catCheckState, setCatCheckState] = useState(new Array(1));
   const [extCheckState, setExtCheckState] = useState(new Array(1));
