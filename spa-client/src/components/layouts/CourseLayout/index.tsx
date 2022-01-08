@@ -48,7 +48,7 @@ function CourseLayout() {
 }
 
 export function useCourseData() {
-  useOutletContext<CourseData>();
+  return useOutletContext<CourseData>();
 }
 
 export default CourseLayout;

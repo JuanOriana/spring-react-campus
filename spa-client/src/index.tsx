@@ -11,6 +11,7 @@ import Announcements from "./pages/Announcements";
 import User from "./pages/User";
 import Files from "./pages/Files";
 import CourseSchedule from "./pages/courses/CourseSchedule";
+import CourseTeachers from "./pages/courses/CourseTeachers";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -26,6 +27,7 @@ ReactDOM.render(
           <Route path="*" element={<Custom404 />} />
           <Route path="course/:courseId" element={<CourseLayout />}>
             <Route index element={<Custom404 />} />
+            <Route path={"teachers"} element={<CourseTeachers />} />
             <Route path={"schedule"} element={<CourseSchedule />} />
           </Route>
         </Route>
