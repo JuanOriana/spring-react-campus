@@ -1,12 +1,13 @@
 import styled from "styled-components";
 
-export const FormWrapper = styled.form`
+export const FormWrapper = styled.form<{ reduced: boolean }>`
+  width: ${(props) => (props.reduced ? "90%" : "95%")};
+
   align-self: center;
   background: white;
   display: flex;
   flex-direction: column;
   border: 10px solid ${(props) => props.theme.cyanDark};
-  width: 95%;
   border-radius: 12px;
   min-height: 200px;
   padding: 20px;
@@ -38,6 +39,15 @@ export const FormLabel = styled.label`
 `;
 
 export const FormInput = styled.input`
+  font-size: 18px;
+  margin: 0 10px;
+  border-radius: 12px;
+  border: 2px solid ${(props) => props.theme.cyanDark};
+  padding: 5px;
+  outline: none;
+`;
+
+export const FormArea = styled.textarea`
   font-size: 18px;
   margin: 0 10px;
   border-radius: 12px;

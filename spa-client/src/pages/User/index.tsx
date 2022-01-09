@@ -22,7 +22,6 @@ function User() {
   const {
     register,
     handleSubmit,
-    setError,
     reset,
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });

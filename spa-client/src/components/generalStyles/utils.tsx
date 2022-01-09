@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
-export const Separator = styled.div`
+export const Separator = styled.div<{ reduced: boolean }>`
+  width: ${(props) => (props.reduced ? "90%" : "auto")};
   height: 3px;
   border-top: 3px solid ${(props) => props.theme.cyanDarkest};
   border-bottom: 3px solid ${(props) => props.theme.cyanDarkest};
