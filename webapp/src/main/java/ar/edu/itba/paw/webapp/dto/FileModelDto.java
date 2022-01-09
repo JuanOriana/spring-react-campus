@@ -12,7 +12,6 @@ public class FileModelDto {
     private FileExtensionDto extension;
     private String fileName;
     private LocalDateTime fileDate;
-    private byte[] file;
     private CourseDto course;
     private long downloads;
     private Boolean hidden;
@@ -29,7 +28,6 @@ public class FileModelDto {
         dto.extension = FileExtensionDto.fromFileExtension(file.getExtension());
         dto.fileName = file.getName();
         dto.fileDate = file.getDate();
-        dto.file = file.getFile();
         dto.course = CourseDto.fromCourse(file.getCourse());
         dto.downloads = file.getDownloads();
         dto.hidden = file.isHidden();
@@ -74,14 +72,6 @@ public class FileModelDto {
 
     public void setFileDate(LocalDateTime fileDate) {
         this.fileDate = fileDate;
-    }
-
-    public byte[] getFile() {
-        return file;
-    }
-
-    public void setFile(byte[] file) {
-        this.file = file;
     }
 
     public CourseDto getCourse() {
