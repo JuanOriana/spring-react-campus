@@ -7,20 +7,29 @@ import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileExtension;
 import ar.edu.itba.paw.models.FileModel;
+import ar.edu.itba.paw.models.exception.FileNotFoundException;
 import ar.edu.itba.paw.webapp.dto.FileCampusPageDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.core.*;
-import java.util.ArrayList;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Path("files")
 @Component
 public class FileControllerREST {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FilesController.class);
 
     @Autowired
     private FileService fileService;
@@ -63,5 +72,25 @@ public class FileControllerREST {
         return Response.ok(
                 FileCampusPageDto.fromCampusPage(filePage))
                 .build();
+    }
+
+    @GET
+    @Path("/{fileId}")
+    @Produces(value = {MediaType.APPLICATION_OCTET_STREAM})
+    public Response downloadFile(@PathParam("fileId") Long fileId) {
+        FileModel file = fileService.findById(fileId).orElseThrow(FileNotFoundException::new);
+        InputStream is = new ByteArrayInputStream(file.getFile());
+        fileService.incrementDownloads(fileId);
+        if (!file.getExtension().getFileExtensionName().equals("pdf")) {
+            return Response.ok(is, MediaType.APPLICATION_OCTET_STREAM)
+                    .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"" )
+                    .build();
+        }
+        else {
+            Response.ResponseBuilder response = Response.ok(is);
+            response.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"" );
+            response.type("application/pdf");
+            return response.build();
+        }
     }
 }
