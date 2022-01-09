@@ -5,12 +5,11 @@ import ar.edu.itba.paw.interfaces.FileExtensionService;
 import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.FileNotFoundException;
-import ar.edu.itba.paw.webapp.auth.AuthFacade;
+import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class FilesController extends AuthController {

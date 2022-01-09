@@ -5,7 +5,7 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
-import ar.edu.itba.paw.webapp.auth.AuthFacade;
+import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.form.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

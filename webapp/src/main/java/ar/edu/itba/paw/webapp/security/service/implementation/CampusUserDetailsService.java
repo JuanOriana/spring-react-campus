@@ -1,7 +1,8 @@
-package ar.edu.itba.paw.webapp.auth;
+package ar.edu.itba.paw.webapp.security.service.implementation;
 
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.webapp.security.model.CampusUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

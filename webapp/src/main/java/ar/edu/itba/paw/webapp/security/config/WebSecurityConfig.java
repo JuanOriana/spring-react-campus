@@ -1,7 +1,7 @@
-package ar.edu.itba.paw.webapp.config;
+package ar.edu.itba.paw.webapp.security.config;
 
-import ar.edu.itba.paw.webapp.auth.CampusVoter;
-import ar.edu.itba.paw.webapp.auth.CampusUserDetailsService;
+import ar.edu.itba.paw.webapp.security.voter.CampusVoter;
+import ar.edu.itba.paw.webapp.security.service.implementation.CampusUserDetailsService;
 import ar.edu.itba.paw.webapp.util.KeyReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,8 +30,8 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableWebSecurity
-@ComponentScan({"ar.edu.itba.paw.webapp.auth"})
-public class WebAuthConfig extends WebSecurityConfigurerAdapter {
+@ComponentScan({"ar.edu.itba.paw.webapp.security"})
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CampusUserDetailsService userDetailsService;

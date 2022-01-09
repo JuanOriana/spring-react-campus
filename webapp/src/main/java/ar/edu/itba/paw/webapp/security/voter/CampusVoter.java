@@ -1,8 +1,9 @@
-package ar.edu.itba.paw.webapp.auth;
+package ar.edu.itba.paw.webapp.security.voter;
 
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
@@ -10,7 +11,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.FilterInvocation;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;

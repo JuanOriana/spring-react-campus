@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.webapp.auth.AuthFacade;
+import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.form.UserProfileForm;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
