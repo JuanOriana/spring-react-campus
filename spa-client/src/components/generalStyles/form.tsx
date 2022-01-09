@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const FormWrapper = styled.form<{ reduced: boolean }>`
+export const FormWrapper = styled.form<{ reduced?: boolean }>`
   width: ${(props) => (props.reduced ? "90%" : "95%")};
 
   align-self: center;
@@ -56,6 +56,14 @@ export const FormArea = styled.textarea`
   outline: none;
 `;
 
+export const FormSelect = styled.select`
+  font-size: 18px;
+  margin: 0 10px;
+  border-radius: 12px;
+  border: 2px solid ${(props) => props.theme.cyanDark};
+  padding: 5px;
+  outline: none;
+`;
 export const ErrorMessage = styled.p`
   color: red;
   margin-left: 10px;

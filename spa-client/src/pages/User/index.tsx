@@ -61,9 +61,12 @@ function User() {
               type="file"
               accept="image/png, image/jpeg"
               {...register("image", {
-                required: true,
                 validate: {
-                  size: (image) => image && image[0].size / (1024 * 1024) < 5,
+                  required: (image) =>
+                    image !== undefined && image[0] !== undefined,
+
+                  size: (image) =>
+                    image && image[0] && image[0].size / (1024 * 1024) < 5,
                 },
               })}
             />
