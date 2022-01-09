@@ -46,7 +46,11 @@ function CourseAnnouncements() {
         )}
 
         {announcements.map((announcement) => (
-          <AnnouncementUnit course={course} announcement={announcement} />
+          <AnnouncementUnit
+            course={course}
+            announcement={announcement}
+            isTeacher={isTeacher}
+          />
         ))}
 
         <BasicPagination

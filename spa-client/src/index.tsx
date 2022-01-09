@@ -13,6 +13,7 @@ import Files from "./pages/Files";
 import CourseSchedule from "./pages/courses/CourseSchedule";
 import CourseTeachers from "./pages/courses/CourseTeachers";
 import CourseAnnouncements from "./pages/courses/CourseAnnouncements";
+import CourseFiles from "./pages/courses/CourseFiles";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -29,6 +30,7 @@ ReactDOM.render(
           <Route path="course/:courseId" element={<CourseLayout />}>
             <Route index element={<Navigate to={"announcements"} />} />
             <Route path={"announcements"} element={<CourseAnnouncements />} />
+            <Route path={"files"} element={<CourseFiles />} />
             <Route path={"teachers"} element={<CourseTeachers />} />
             <Route path={"schedule"} element={<CourseSchedule />} />
           </Route>
