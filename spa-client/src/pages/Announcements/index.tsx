@@ -8,6 +8,7 @@ import {
 } from "../../components/generalStyles/pagination";
 import { Link } from "react-router-dom";
 import { usePagination } from "../../hooks/usePagination";
+import BasicPagination from "../../components/BasicPagination";
 
 function Announcements() {
   const [announcements, setAnnouncements] = useState(new Array(0));
@@ -43,30 +44,12 @@ function Announcements() {
         />
       ))}
 
-      <PaginationWrapper>
-        {currentPage > 1 && (
-          <Link
-            to={`/announcements?page=${currentPage - 1}&pageSize=${pageSize}`}
-          >
-            <PaginationArrow
-              xRotated={true}
-              src="/images/page-arrow.png"
-              alt="Pagina previa"
-            />
-          </Link>
-        )}
-        Pagina {currentPage} de {maxPage}
-        {currentPage < maxPage && (
-          <a
-            href={`/announcements?page=${currentPage + 1}&pageSize=${pageSize}`}
-          >
-            <PaginationArrow
-              src="/images/page-arrow.png"
-              alt="Siguiente pagina"
-            />
-          </a>
-        )}
-      </PaginationWrapper>
+      <BasicPagination
+        currentPage={currentPage}
+        pageSize={pageSize}
+        maxPage={maxPage}
+        baseURL={"/announcements"}
+      />
     </>
   );
 }

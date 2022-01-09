@@ -12,7 +12,7 @@ const times = [
   null,
 ];
 
-function Custom404() {
+function CourseSchedule() {
   const days: string[] = [
     "Lunes",
     "Martes",
@@ -50,4 +50,4 @@ function Custom404() {
   );
 }
 
-export default Custom404;
+export default CourseSchedule;

@@ -13,7 +13,7 @@ interface Teacher {
   surname: string;
   email: string;
 }
-function Custom404() {
+function CourseTeachers() {
   const teachers: Map<Teacher, number> = new Map();
   teachers.set(
     {
@@ -73,4 +73,4 @@ function Custom404() {
   );
 }
 
-export default Custom404;
+export default CourseTeachers;

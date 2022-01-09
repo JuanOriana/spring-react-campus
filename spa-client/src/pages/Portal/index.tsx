@@ -13,6 +13,7 @@ import {
   PortalAnnouncements,
   CourseName,
 } from "./styles";
+import BasicPagination from "../../components/BasicPagination";
 
 function Portal() {
   const [courses, setCourses] = useState(new Array(0));
@@ -64,26 +65,14 @@ function Portal() {
             </p>
           </Course>
         ))}
-        <PaginationWrapper style={{ fontSize: "18px" }}>
-          {currentPage > 1 && (
-            <Link to={`/portal?page=${currentPage - 1}&pageSize=${pageSize}`}>
-              <PaginationArrow
-                xRotated={true}
-                src="/images/page-arrow.png"
-                alt="Pagina previa"
-              />
-            </Link>
-          )}
-          Pagina {currentPage} de {maxPage}
-          {currentPage < maxPage && (
-            <a href={`/portal?page=${currentPage + 1}&pageSize=${pageSize}`}>
-              <PaginationArrow
-                src="/images/page-arrow.png"
-                alt="Siguiente pagina"
-              />
-            </a>
-          )}
-        </PaginationWrapper>
+
+        <BasicPagination
+          currentPage={currentPage}
+          pageSize={pageSize}
+          maxPage={maxPage}
+          baseURL={`/portal`}
+          style={{ fontSize: "18px" }}
+        />
       </CoursesContainer>
 
       <PortalAnnouncements>

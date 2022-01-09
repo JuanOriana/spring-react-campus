@@ -1,7 +1,7 @@
 import { ThemeProvider } from "styled-components";
 import Navbar from "../../Navbar";
 import Footer from "../../Footer";
-import React from "react";
+import React, { useMemo } from "react";
 import { Outlet } from "react-router-dom";
 import { PageContainer, PageOrganizer } from "./styles";
 
