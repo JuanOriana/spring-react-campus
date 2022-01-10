@@ -59,7 +59,7 @@ function CourseTeachers() {
               </p>
               <p>{teacher.email}</p>
             </div>
-            <Link to={`course/${course.courseId}/mail/${teacher.userId}`}>
+            <Link to={`/course/${course.courseId}/mail/${teacher.userId}`}>
               <MailIcon
                 alt="Correo"
                 title="Enviar corre"

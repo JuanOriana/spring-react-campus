@@ -14,6 +14,7 @@ import CourseSchedule from "./pages/courses/CourseSchedule";
 import CourseTeachers from "./pages/courses/CourseTeachers";
 import CourseAnnouncements from "./pages/courses/CourseAnnouncements";
 import CourseFiles from "./pages/courses/CourseFiles";
+import Mail from "./pages/courses/Mail";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -27,6 +28,7 @@ ReactDOM.render(
           <Route path="files" element={<Files />} />
           <Route path="user" element={<User />} />
           <Route path="*" element={<Custom404 />} />
+          <Route path="course/:courseId/mail/:mailId" element={<Mail />} />
           <Route path="course/:courseId" element={<CourseLayout />}>
             <Route index element={<Navigate to={"announcements"} />} />
             <Route path={"announcements"} element={<CourseAnnouncements />} />
