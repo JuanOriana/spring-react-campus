@@ -9,7 +9,7 @@ public class CourseDto {
     private int quarter;
     private String board;
     private SubjectDto subject;
-    private String courseUri; //TODO: ver si el baseUrl "/courses/" queda asi o se cambia
+    private String courseUri; //TODO: ver si el tipo "String" esta bien o va "URI"
 
     public static CourseDto fromCourse(Course course){
         if (course == null){
@@ -22,7 +22,7 @@ public class CourseDto {
         dto.quarter = course.getQuarter();
         dto.board = course.getBoard();
         dto.subject = SubjectDto.fromSubject(course.getSubject());
-        StringBuilder aux = new StringBuilder("/courses/");
+        StringBuilder aux = new StringBuilder("/courses/"); //TODO: ver si el baseUrl se pasa como parametro o queda asi
         dto.courseUri = aux.append(course.getCourseId().toString()).toString();
         return dto;
     }

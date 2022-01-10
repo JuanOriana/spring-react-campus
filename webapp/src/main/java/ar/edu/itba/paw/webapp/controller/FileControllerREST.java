@@ -64,7 +64,7 @@ public class FileControllerREST {
             fileExtensionList = fileExtensionService.getExtensions().stream().map(FileExtension::getFileExtensionId).collect(Collectors.toList());
         }
 
-        CampusPage<FileModel> filePage = null;
+        CampusPage<FileModel> filePage = null; //TODO: cambiar a la paginacion usando header "Link"
         if (courseId == -1){
             filePage = fileService.listByUser(query, fileExtensionList, fileCategoryList, userId,
                     page, pageSize, orderDirection, orderProperty);
