@@ -42,12 +42,12 @@ public class FileControllerREST {
 
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response files(@DefaultValue("-1") @QueryParam("course-id") Long courseId,
-                                 @DefaultValue("") @QueryParam("category-type") List<Long> categoryType,
-                          @DefaultValue("") @QueryParam("extension-type") List<Long> extensionType,
+    public Response files(@DefaultValue("-1") @QueryParam("courseId") Long courseId,
+                                 @DefaultValue("") @QueryParam("categoryType") List<Long> categoryType,
+                          @DefaultValue("") @QueryParam("extensionType") List<Long> extensionType,
                           @DefaultValue("") @QueryParam("query") String query,
-                          @DefaultValue("date") @QueryParam("order-property") String orderProperty,
-                          @DefaultValue("desc") @QueryParam("order-direction") String orderDirection,
+                          @DefaultValue("date") @QueryParam("orderProperty") String orderProperty,
+                          @DefaultValue("desc") @QueryParam("orderDirection") String orderDirection,
                           @DefaultValue("1") @QueryParam("page") Integer page,
                           @DefaultValue("10") @QueryParam("pageSize") Integer pageSize) {
 
