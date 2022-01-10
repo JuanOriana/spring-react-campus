@@ -35,7 +35,8 @@ public class CampusUserDetailsService implements UserDetailsService {
         final User user = userService.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
         final Collection<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority(user.isAdmin() ? "ADMIN" : "USER"));
+        authorities.add(new SimpleGrantedAuthority("USER"));
+        if(Boolean.TRUE.equals(user.isAdmin())) authorities.add(new SimpleGrantedAuthority("ADMIN"));
         final String password;
         if(user.getPassword() == null || !BCRYPT_HASH_PATTERN.matcher(user.getPassword()).matches()) {
             password = encoder.encode(user.getPassword());

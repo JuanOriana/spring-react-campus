@@ -42,7 +42,7 @@ public class AuthenticationEntryPoint implements org.springframework.security.we
 
         response.setStatus(status.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        
+
         mapper.writeValue(response.getWriter(), errorDetails);
     }
 }
