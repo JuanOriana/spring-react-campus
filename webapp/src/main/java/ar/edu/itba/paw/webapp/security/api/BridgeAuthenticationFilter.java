@@ -31,16 +31,19 @@ public class BridgeAuthenticationFilter extends OncePerRequestFilter {
 
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         boolean isPresent = authorizationHeader != null;
-        if(!isPresent) chain.doFilter(request, response);
-        if(authorizationHeader.startsWith("Bearer ")) {
-            String payload = authorizationHeader.substring(JWT_TOKEN_OFFSET);
-            BasicAuthenticationFilter basicAuthenticationFilter = new BasicAuthenticationFilter(authenticationManager, authenticationEntryPoint, payload);
-            basicAuthenticationFilter.doFilter(request, response, chain);
-        } else if(authorizationHeader.startsWith("Basic ")) {
-            String payload = authorizationHeader.substring(BASIC_TOKEN_OFFSET);
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, authenticationEntryPoint, payload);
-            jwtAuthenticationFilter.doFilter(request, response, chain);
+        if(isPresent) {
+            if (authorizationHeader.startsWith("Bearer ")) {
+                String payload = authorizationHeader.substring(JWT_TOKEN_OFFSET);
+                BasicAuthenticationFilter basicAuthenticationFilter = new BasicAuthenticationFilter(authenticationManager, authenticationEntryPoint, payload);
+                basicAuthenticationFilter.doFilter(request, response, chain);
+            } else if (authorizationHeader.startsWith("Basic ")) {
+                String payload = authorizationHeader.substring(BASIC_TOKEN_OFFSET);
+                JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, authenticationEntryPoint, payload);
+                jwtAuthenticationFilter.doFilter(request, response, chain);
+            }
         }
+
+        chain.doFilter(request, response);
 
     }
 }

@@ -114,7 +114,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/announcements").hasAuthority("USER")
                     .antMatchers("/timetable").hasAuthority("USER")
                     .antMatchers("/files").hasAuthority("USER")
-                    .antMatchers("/**").authenticated()
+                    .antMatchers("/**").permitAll()
                 //.accessDecisionManager(accessDecisionManager())
             .and()
                 .addFilterBefore(bridgeAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
