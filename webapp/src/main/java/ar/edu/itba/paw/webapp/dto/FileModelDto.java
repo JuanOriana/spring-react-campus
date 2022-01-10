@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FileModel;
 
 import java.time.LocalDateTime;
@@ -15,6 +14,7 @@ public class FileModelDto {
     private CourseDto course;
     private long downloads;
     private Boolean hidden;
+    private String fileUri;
     //TODO: ver si hace falta poner el FileCategory tmbn
 
     public static FileModelDto fromFile(FileModel file) {
@@ -31,6 +31,8 @@ public class FileModelDto {
         dto.course = CourseDto.fromCourse(file.getCourse());
         dto.downloads = file.getDownloads();
         dto.hidden = file.isHidden();
+        StringBuilder aux = new StringBuilder("/files/");
+        dto.fileUri = aux.append(file.getFileId().toString()).toString();
         return dto;
     }
 
@@ -96,5 +98,13 @@ public class FileModelDto {
 
     public void setHidden(Boolean hidden) {
         this.hidden = hidden;
+    }
+
+    public String getFileUri() {
+        return fileUri;
+    }
+
+    public void setFileUri(String fileUri) {
+        this.fileUri = fileUri;
     }
 }

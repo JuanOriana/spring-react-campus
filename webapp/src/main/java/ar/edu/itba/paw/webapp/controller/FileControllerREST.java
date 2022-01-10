@@ -13,17 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.core.*;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,7 +42,7 @@ public class FileControllerREST {
 
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response files(@DefaultValue("") @QueryParam("category-type") List<Long> categoryType,
+    public Response allUserFiles(@DefaultValue("") @QueryParam("category-type") List<Long> categoryType,
                           @DefaultValue("") @QueryParam("extension-type") List<Long> extensionType,
                           @DefaultValue("") @QueryParam("query") String query,
                           @DefaultValue("date") @QueryParam("order-property") String orderProperty,
@@ -71,6 +65,39 @@ public class FileControllerREST {
 
         CampusPage<FileModel> filePage = fileService.listByUser(query, fileExtensionList, fileCategoryList, userId,
                 page, pageSize, orderDirection, orderProperty);
+
+        return Response.ok(
+                FileCampusPageDto.fromCampusPage(filePage))
+                .build();
+    }
+
+    @GET
+    @Path("/course/{courseId}")
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response allCourseFiles(@PathParam("courseId") Long courseId,
+                                   @DefaultValue("") @QueryParam("category-type") List<Long> categoryType,
+                                 @DefaultValue("") @QueryParam("extension-type") List<Long> extensionType,
+                                 @DefaultValue("") @QueryParam("query") String query,
+                                 @DefaultValue("date") @QueryParam("order-property") String orderProperty,
+                                 @DefaultValue("desc") @QueryParam("order-direction") String orderDirection,
+                                 @DefaultValue("1") @QueryParam("page") Integer page,
+                                 @DefaultValue("10") @QueryParam("pageSize") Integer pageSize) {
+
+        //User user = authFacade.getCurrentUser(); //TODO: ver como pasarle el userId actual
+        //BORRAR
+        long userId = 3;
+
+        List<Long> fileCategoryList = categoryType;
+        if (categoryType.size() <= 1){
+            fileCategoryList = fileCategoryService.getCategories().stream().map(FileCategory::getCategoryId).collect(Collectors.toList());
+        }
+        List<Long> fileExtensionList = extensionType;
+        if (extensionType.size() <= 1){
+            fileExtensionList = fileExtensionService.getExtensions().stream().map(FileExtension::getFileExtensionId).collect(Collectors.toList());
+        }
+
+        CampusPage<FileModel> filePage = fileService.listByCourse(query, fileExtensionList, fileCategoryList,
+                userId, courseId, page, pageSize, orderDirection, orderProperty);
 
         return Response.ok(
                 FileCampusPageDto.fromCampusPage(filePage))
