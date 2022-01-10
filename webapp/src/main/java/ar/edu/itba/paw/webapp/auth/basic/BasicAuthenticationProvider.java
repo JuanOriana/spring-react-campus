@@ -2,8 +2,8 @@ package ar.edu.itba.paw.webapp.auth.basic;
 
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.webapp.auth.CampusUser;
 import ar.edu.itba.paw.webapp.auth.exceptions.InvalidCredentialException;
+import ar.edu.itba.paw.webapp.security.model.CampusUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
