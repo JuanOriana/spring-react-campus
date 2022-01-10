@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.security.config;
 
 import ar.edu.itba.paw.webapp.security.api.AuthenticationEntryPoint;
+import ar.edu.itba.paw.webapp.security.api.AuthenticationFailureHandler;
+import ar.edu.itba.paw.webapp.security.api.AuthenticationSuccessHandler;
 import ar.edu.itba.paw.webapp.security.api.BridgeAuthenticationFilter;
 import ar.edu.itba.paw.webapp.security.api.basic.BasicAuthenticationProvider;
 import ar.edu.itba.paw.webapp.security.api.jwt.JwtAuthenticationProvider;
@@ -36,7 +38,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@ComponentScan({"ar.edu.itba.paw.webapp.security.service", "ar.edu.itba.paw.webapp.security", })
+@ComponentScan({"ar.edu.itba.paw.webapp.security" })
 @PropertySource(value= {"classpath:application.properties"})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -51,6 +53,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtAuthenticationProvider jwtAuthenticationProvider;
+
+    @Autowired
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
+    private AuthenticationFailureHandler authenticationFailureHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -76,7 +84,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public BridgeAuthenticationFilter bridgeAuthenticationFilter() throws Exception {
-        return new BridgeAuthenticationFilter(authenticationManagerBean(), authenticationEntryPoint);
+        BridgeAuthenticationFilter bridgeAuthenticationFilter = new BridgeAuthenticationFilter();
+        bridgeAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
+        bridgeAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        bridgeAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
+        return bridgeAuthenticationFilter;
     }
 
     @Bean
@@ -114,6 +126,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/announcements").hasAuthority("USER")
                     .antMatchers("/timetable").hasAuthority("USER")
                     .antMatchers("/files").hasAuthority("USER")
+                    .antMatchers("/users").hasAuthority("ADMIN")
                     .antMatchers("/**").permitAll()
                 //.accessDecisionManager(accessDecisionManager())
             .and()

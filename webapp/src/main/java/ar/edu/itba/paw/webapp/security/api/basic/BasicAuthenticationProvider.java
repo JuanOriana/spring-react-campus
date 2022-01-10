@@ -29,7 +29,7 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        BasicAuthentication auth = (BasicAuthentication) authentication;
+        BasicAuthenticationToken auth = (BasicAuthenticationToken) authentication;
         String[] credentials = new String(Base64.getDecoder().decode(auth.getToken())).split(":");
         if(credentials.length != 2) {
             throw new InvalidUsernamePasswordException("Invalid username/password");
@@ -45,12 +45,13 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
         if(user.isAdmin()){
             authorityList.add(new SimpleGrantedAuthority("ADMIN"));
         }
-
-        return new BasicAuthentication(credentials[0], credentials[1], authorityList);
+        BasicAuthenticationToken authenticationToken = new BasicAuthenticationToken(credentials[0], credentials[1], authorityList);
+        authenticationToken.setToken(auth.getToken());
+        return authenticationToken;
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return (BasicAuthentication.class.isAssignableFrom(authentication));
+        return (BasicAuthenticationToken.class.isAssignableFrom(authentication));
     }
 }

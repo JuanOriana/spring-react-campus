@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.security.service.implementation;
 
 
+import ar.edu.itba.paw.webapp.security.api.exception.ExpiredAuthenticationTokenException;
 import ar.edu.itba.paw.webapp.security.api.exception.InvalidAuthenticationTokenException;
 import ar.edu.itba.paw.webapp.security.api.model.AuthenticationTokenDetails;
 import ar.edu.itba.paw.webapp.security.api.model.Authority;
@@ -20,6 +21,9 @@ import java.util.stream.Collectors;
 public class TokenParser {
     @Autowired
     Settings settings;
+
+    @Autowired
+    TokenIssuer tokenIssuer;
 
     public AuthenticationTokenDetails parseToken(String token) {
         try {
@@ -42,7 +46,7 @@ public class TokenParser {
         } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException | SignatureException e) {
             throw new InvalidAuthenticationTokenException("Invalid token", e);
         } catch (ExpiredJwtException e) {
-            throw new InvalidAuthenticationTokenException("Expired token", e);
+            throw new ExpiredAuthenticationTokenException("The access token expired", e);
         } catch (InvalidClaimException e) {
             throw new InvalidAuthenticationTokenException("Invalid value for claim \"" + e.getClaimName() + "\"", e);
         } catch (Exception e) {

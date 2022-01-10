@@ -14,16 +14,20 @@ import java.util.UUID;
 @Component
 public class AuthenticationTokenServiceImpl implements AuthenticationTokenService {
 
-
+    @Value("${authentication.jwt.validFor}")
+    private Long validFor;
 
     @Autowired
     TokenIssuer tokenIssuer;
+
+    @Autowired
+    TokenParser tokenParser;
 
     @Override
     public String issueToken(String username, Set<Authority> authorities) {
         String id = UUID.randomUUID().toString();
         ZonedDateTime issuedDate = ZonedDateTime.now();
-        ZonedDateTime expirationDate = issuedDate.plusSeconds(10);
+        ZonedDateTime expirationDate = issuedDate.plusSeconds(validFor);
 
         AuthenticationTokenDetails authenticationTokenDetails = new AuthenticationTokenDetails.Builder()
                 .withId(id)
@@ -37,11 +41,22 @@ public class AuthenticationTokenServiceImpl implements AuthenticationTokenServic
 
     @Override
     public AuthenticationTokenDetails parseToken(String token) {
-        return null;
+        return tokenParser.parseToken(token);
     }
 
     @Override
     public String refreshToken(AuthenticationTokenDetails currentAuthenticationTokenDetails) {
-        return null;
+        ZonedDateTime issuedDate = ZonedDateTime.now();
+        ZonedDateTime expirationDate = issuedDate.plusSeconds(validFor);
+
+        AuthenticationTokenDetails newTokenDetails = new AuthenticationTokenDetails.Builder()
+                .withId(currentAuthenticationTokenDetails.getId())
+                .withUsername(currentAuthenticationTokenDetails.getUsername())
+                .withAuthorities(currentAuthenticationTokenDetails.getAuthorities())
+                .withIssuedDate(issuedDate)
+                .withExpirationDate(expirationDate)
+                .build();
+
+        return tokenIssuer.issueToken(newTokenDetails);
     }
 }

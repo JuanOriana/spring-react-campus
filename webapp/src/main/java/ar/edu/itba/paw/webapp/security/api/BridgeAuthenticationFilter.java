@@ -1,49 +1,52 @@
 package ar.edu.itba.paw.webapp.security.api;
 
-import ar.edu.itba.paw.webapp.security.api.basic.BasicAuthenticationFilter;
-import ar.edu.itba.paw.webapp.security.api.jwt.JwtAuthenticationFilter;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.web.filter.OncePerRequestFilter;
+import ar.edu.itba.paw.webapp.security.api.basic.BasicAuthenticationToken;
+import ar.edu.itba.paw.webapp.security.api.jwt.JwtAuthenticationToken;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
 
-public class BridgeAuthenticationFilter extends OncePerRequestFilter {
-    private final int BASIC_TOKEN_OFFSET = 6;
-    private final int JWT_TOKEN_OFFSET = 7;
-    private final AuthenticationManager authenticationManager;
-    private final AuthenticationEntryPoint authenticationEntryPoint;
 
-    public BridgeAuthenticationFilter(AuthenticationManager authenticationManager,
-                                        AuthenticationEntryPoint authenticationEntryPoint) {
-        this.authenticationManager = authenticationManager;
-        this.authenticationEntryPoint = authenticationEntryPoint;
+public class BridgeAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+    private static final int BASIC_TOKEN_OFFSET = 6;
+    private static final int JWT_TOKEN_OFFSET = 7;
+
+    @Override
+    protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
+        return true;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain chain) throws ServletException, IOException {
-
-        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        boolean isPresent = authorizationHeader != null;
-        if(isPresent) {
-            if (authorizationHeader.startsWith("Bearer ")) {
-                String payload = authorizationHeader.substring(JWT_TOKEN_OFFSET);
-                BasicAuthenticationFilter basicAuthenticationFilter = new BasicAuthenticationFilter(authenticationManager, authenticationEntryPoint, payload);
-                basicAuthenticationFilter.doFilter(request, response, chain);
-            } else if (authorizationHeader.startsWith("Basic ")) {
-                String payload = authorizationHeader.substring(BASIC_TOKEN_OFFSET);
-                JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, authenticationEntryPoint, payload);
-                jwtAuthenticationFilter.doFilter(request, response, chain);
-            }
-        }
-
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        super.successfulAuthentication(request, response, chain, authResult);
         chain.doFilter(request, response);
+    }
 
+    public BridgeAuthenticationFilter() {
+        super("/");
+    }
+
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException, IOException, ServletException {
+
+        String header = request.getHeader("Authorization");
+        header = header != null ? header : "";
+        if (header.startsWith("Bearer ")) {
+            String authToken = header.substring(JWT_TOKEN_OFFSET);
+            return getAuthenticationManager().authenticate(new JwtAuthenticationToken(authToken));
+        }
+        else if(header.startsWith("Basic ")){
+            String basicToken = header.substring(BASIC_TOKEN_OFFSET);
+            return getAuthenticationManager().authenticate(new BasicAuthenticationToken(basicToken));
+        }
+        throw new InsufficientAuthenticationException("No authorization credentials were provided.");
     }
 }
