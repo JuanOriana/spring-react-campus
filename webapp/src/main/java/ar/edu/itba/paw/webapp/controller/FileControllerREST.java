@@ -14,6 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -91,6 +94,19 @@ public class FileControllerREST {
             response.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"" );
             response.type("application/pdf");
             return response.build();
+        }
+    }
+
+    @DELETE
+    @Path("/{fileId}")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response deleteFile(@PathParam("fileId") Long fileId) {
+        LOGGER.debug("Deleting file {}", fileId);
+        boolean removedSuccessfully = fileService.delete(fileId);
+        if (removedSuccessfully){
+            return Response.status(Response.Status.NO_CONTENT).build(); //Devuelve un 204 sin contenido si logro borrarlo
+        }else{
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
 }
