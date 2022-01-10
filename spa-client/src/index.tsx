@@ -15,30 +15,41 @@ import CourseTeachers from "./pages/courses/CourseTeachers";
 import CourseAnnouncements from "./pages/courses/CourseAnnouncements";
 import CourseFiles from "./pages/courses/CourseFiles";
 import Mail from "./pages/courses/Mail";
+import { ThemeProvider } from "styled-components";
+
+const theme = {
+  cyanDarkest: "#176961",
+  cyanDark: "#2EC4B6",
+  cyanLight: "#CBF3F0",
+  successBack: "#45FF9F",
+  successFront: "#39614C",
+};
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Navigate to={"/portal"} />} />
-          <Route path="portal" element={<Portal />} />
-          <Route path="timetable" element={<Timetable />} />
-          <Route path="announcements" element={<Announcements />} />
-          <Route path="files" element={<Files />} />
-          <Route path="user" element={<User />} />
-          <Route path="*" element={<Custom404 />} />
-          <Route path="course/:courseId/mail/:mailId" element={<Mail />} />
-          <Route path="course/:courseId" element={<CourseLayout />}>
-            <Route index element={<Navigate to={"announcements"} />} />
-            <Route path={"announcements"} element={<CourseAnnouncements />} />
-            <Route path={"files"} element={<CourseFiles />} />
-            <Route path={"teachers"} element={<CourseTeachers />} />
-            <Route path={"schedule"} element={<CourseSchedule />} />
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Navigate to={"/portal"} />} />
+            <Route path="portal" element={<Portal />} />
+            <Route path="timetable" element={<Timetable />} />
+            <Route path="announcements" element={<Announcements />} />
+            <Route path="files" element={<Files />} />
+            <Route path="user" element={<User />} />
+            <Route path="*" element={<Custom404 />} />
+            <Route path="course/:courseId/mail/:mailId" element={<Mail />} />
+            <Route path="course/:courseId" element={<CourseLayout />}>
+              <Route index element={<Navigate to={"announcements"} />} />
+              <Route path={"announcements"} element={<CourseAnnouncements />} />
+              <Route path={"files"} element={<CourseFiles />} />
+              <Route path={"teachers"} element={<CourseTeachers />} />
+              <Route path={"schedule"} element={<CourseSchedule />} />
+            </Route>
           </Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
