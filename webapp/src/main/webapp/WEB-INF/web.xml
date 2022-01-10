@@ -13,8 +13,7 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             ar.edu.itba.paw.webapp.config.WebConfig,
-            ar.edu.itba.paw.webapp.security.config.WebSecurityConfig,
-            ar.edu.itba.paw.webapp.api.config.JerseyConfig
+            ar.edu.itba.paw.webapp.security.config.WebSecurityConfig
         </param-value>
     </context-param>
 
@@ -27,7 +26,9 @@
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>ar.edu.itba.paw.webapp.controller</param-value>
+            <param-value>
+                ar.edu.itba.paw.webapp.controller
+            </param-value>
         </init-param>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
@@ -40,7 +41,7 @@
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
-    <!-- Deshabilitamos spring security x ahora
+
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
@@ -48,7 +49,7 @@
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-    </filter> -->
+    </filter>
 
     <filter>
         <filter-name>CacheControlFilter</filter-name>

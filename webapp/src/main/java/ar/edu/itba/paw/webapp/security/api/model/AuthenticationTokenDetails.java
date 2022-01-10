@@ -12,8 +12,6 @@ public final class AuthenticationTokenDetails {
     private final Set<Authority> authorities;
     private final ZonedDateTime issuedDate;
     private final ZonedDateTime expirationDate;
-    private final int refreshCount;
-    private final int refreshLimit;
 
     public String getId() {
         return id;
@@ -35,27 +33,12 @@ public final class AuthenticationTokenDetails {
         return expirationDate;
     }
 
-    public int getRefreshCount() {
-        return refreshCount;
-    }
-
-    public int getRefreshLimit() {
-        return refreshLimit;
-    }
-
-
-    public boolean isEligibleForRefreshment() {
-        return refreshCount < refreshLimit;
-    }
-
-    private AuthenticationTokenDetails(String id, String username, Set<Authority> authorities, ZonedDateTime issuedDate, ZonedDateTime expirationDate, int refreshCount, int refreshLimit) {
+    private AuthenticationTokenDetails(String id, String username, Set<Authority> authorities, ZonedDateTime issuedDate, ZonedDateTime expirationDate) {
         this.id = id;
         this.username = username;
         this.authorities = authorities;
         this.issuedDate = issuedDate;
         this.expirationDate = expirationDate;
-        this.refreshCount = refreshCount;
-        this.refreshLimit = refreshLimit;
     }
 
     public static class Builder {
@@ -65,8 +48,6 @@ public final class AuthenticationTokenDetails {
         private Set<Authority> authorities;
         private ZonedDateTime issuedDate;
         private ZonedDateTime expirationDate;
-        private int refreshCount;
-        private int refreshLimit;
 
         public Builder withId(String id) {
             this.id = id;
@@ -93,18 +74,8 @@ public final class AuthenticationTokenDetails {
             return this;
         }
 
-        public Builder withRefreshCount(int refreshCount) {
-            this.refreshCount = refreshCount;
-            return this;
-        }
-
-        public Builder withRefreshLimit(int refreshLimit) {
-            this.refreshLimit = refreshLimit;
-            return this;
-        }
-
         public AuthenticationTokenDetails build() {
-            return new AuthenticationTokenDetails(id, username, authorities, issuedDate, expirationDate, refreshCount, refreshLimit);
+            return new AuthenticationTokenDetails(id, username, authorities, issuedDate, expirationDate);
         }
     }
 }
