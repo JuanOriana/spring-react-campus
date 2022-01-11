@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.api.model;
+package ar.edu.itba.paw.webapp.security.api.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

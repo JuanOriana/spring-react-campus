@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.security.api.exceptionmapper;
 
-import ar.edu.itba.paw.webapp.api.model.ApiErrorDetails;
+import ar.edu.itba.paw.webapp.security.api.model.ApiErrorDetails;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Context;

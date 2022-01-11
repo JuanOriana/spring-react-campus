@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.security.api;
 
-import ar.edu.itba.paw.webapp.api.model.ApiErrorDetails;
+import ar.edu.itba.paw.webapp.security.api.model.ApiErrorDetails;
 import ar.edu.itba.paw.webapp.security.api.exception.ExpiredAuthenticationTokenException;
 import ar.edu.itba.paw.webapp.security.api.exception.InvalidAuthenticationTokenException;
 import com.fasterxml.jackson.databind.ObjectMapper;

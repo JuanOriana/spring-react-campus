@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.security.api.exceptionmapper;
 
-import ar.edu.itba.paw.webapp.api.model.ApiErrorDetails;
+import ar.edu.itba.paw.webapp.security.api.model.ApiErrorDetails;
 import org.springframework.security.access.AccessDeniedException;
 
 import javax.ws.rs.core.Context;
