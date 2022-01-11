@@ -43,6 +43,10 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
         return token;
     }
 
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     @Override
     public Object getPrincipal() {
         return this.userDetails;

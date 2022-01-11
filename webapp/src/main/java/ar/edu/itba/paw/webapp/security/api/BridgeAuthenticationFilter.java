@@ -35,7 +35,7 @@ public class BridgeAuthenticationFilter extends AbstractAuthenticationProcessing
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException, IOException, ServletException {
+            throws AuthenticationException{
 
         String header = request.getHeader("Authorization");
         header = header != null ? header : "";

@@ -3,29 +3,38 @@ package ar.edu.itba.paw.webapp.security.api.basic;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.security.api.exception.InvalidUsernamePasswordException;
+import ar.edu.itba.paw.webapp.security.api.jwt.JwtAuthenticationToken;
+import ar.edu.itba.paw.webapp.security.api.model.AuthenticationTokenDetails;
+import ar.edu.itba.paw.webapp.security.api.model.Authority;
+import ar.edu.itba.paw.webapp.security.service.AuthenticationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class BasicAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
-    UserService userService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AuthenticationTokenService tokenService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -34,20 +43,19 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
         if(credentials.length != 2) {
             throw new InvalidUsernamePasswordException("Invalid username/password");
         }
-        Optional<User> maybeUser = userService.findByUsername(credentials[0]);
-        if(!maybeUser.isPresent() || !passwordEncoder.matches(credentials[1], maybeUser.get().getPassword())){
-            throw new InvalidUsernamePasswordException("Invalid username/password");
-        }
+        UserDetails userDetails = userDetailsService.loadUserByUsername(credentials[0]);
+        String authenticationToken = tokenService.issueToken(credentials[0],
+                mapToAuthority(userDetails.getAuthorities()));
+        AuthenticationTokenDetails tokenDetails = tokenService.parseToken(authenticationToken);
+        BasicAuthenticationToken trustedAuth = new BasicAuthenticationToken(credentials[0], credentials[1], userDetails.getAuthorities(), tokenDetails);
+        trustedAuth.setToken(authenticationToken);
+        return trustedAuth;
+    }
 
-        User user = maybeUser.get();
-        List<GrantedAuthority> authorityList = new ArrayList<>();
-        authorityList.add(new SimpleGrantedAuthority("USER"));
-        if(user.isAdmin()){
-            authorityList.add(new SimpleGrantedAuthority("ADMIN"));
-        }
-        BasicAuthenticationToken authenticationToken = new BasicAuthenticationToken(credentials[0], credentials[1], authorityList);
-        authenticationToken.setToken(auth.getToken());
-        return authenticationToken;
+    private Set<Authority> mapToAuthority(Collection<? extends GrantedAuthority> authorities) {
+        return  authorities.stream()
+                .map(grantedAuthority -> Authority.valueOf(grantedAuthority.toString()))
+                .collect(Collectors.toSet());
     }
 
     @Override
