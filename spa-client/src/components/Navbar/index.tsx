@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes, { InferProps } from "prop-types";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import type Section from "../../../types/Section";
 
 import {
@@ -11,6 +11,7 @@ import {
   NavTitle,
   UserWrapper,
 } from "./styles";
+import { useAuth } from "../../contexts/AuthContext";
 
 Navbar.propTypes = {
   currentUser: PropTypes.shape({
@@ -22,7 +23,9 @@ Navbar.propTypes = {
 };
 
 function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
-  const location = useLocation();
+  let navigate = useNavigate();
+  let location = useLocation();
+  let auth = useAuth();
   const pathname = location?.pathname;
   const sections: Section[] = [
     { path: "/portal", name: "Mis cursos" },
@@ -59,7 +62,14 @@ function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
               )}
               <h4>{currentUser?.name}</h4>
             </Link>
-            <LogoutButton> Logout</LogoutButton>
+            <LogoutButton
+              onClick={() => {
+                auth.signout(() => navigate("/"));
+              }}
+            >
+              {" "}
+              Logout
+            </LogoutButton>
           </UserWrapper>
         </>
       )}

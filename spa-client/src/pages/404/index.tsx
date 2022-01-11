@@ -5,7 +5,7 @@ function Custom404() {
     <>
       <ErrorTitle>Error 404!</ErrorTitle>
       <p>
-        <BackToPortalButton href="/portal">Volver al portal</BackToPortalButton>
+        <BackToPortalButton to="/portal">Volver al portal</BackToPortalButton>
       </p>
     </>
   );

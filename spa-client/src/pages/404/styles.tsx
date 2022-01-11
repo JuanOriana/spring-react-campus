@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const ErrorTitle = styled.h1`
   color: ${(props) => props.theme.cyanDarkest};
@@ -6,7 +7,7 @@ export const ErrorTitle = styled.h1`
   margin-top: 30px;
 `;
 
-export const BackToPortalButton = styled.a`
+export const BackToPortalButton = styled(Link)<{ to: string }>`
   background-color: ${(props) => props.theme.cyanDarkest};
   border: none;
   border-radius: 8px;
