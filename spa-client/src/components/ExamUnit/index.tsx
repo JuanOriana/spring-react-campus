@@ -84,7 +84,7 @@ function ExamUnit({
                   borderLeft: "3px solid white",
                 }}
               >
-                {examsSolved}/{userCount}
+                {` ${examsSolved}/${userCount} corregidos `}
               </FileName>
               <MediumIcon src="/images/trash.png" alt="Borrar" />
             </>

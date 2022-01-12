@@ -17,6 +17,7 @@ import CourseTeachers from "./pages/courses/CourseTeachers";
 import CourseSchedule from "./pages/courses/CourseSchedule";
 import Login from "./pages/Login";
 import RequireAuth from "./components/RequireAuth";
+import CourseExams from "./pages/courses/CourseExams";
 
 const theme = {
   cyanDarkest: "#176961",
@@ -55,6 +56,7 @@ function App() {
                   element={<CourseAnnouncements />}
                 />
                 <Route path={"files"} element={<CourseFiles />} />
+                <Route path={"exams"} element={<CourseExams />} />
                 <Route path={"teachers"} element={<CourseTeachers />} />
                 <Route path={"schedule"} element={<CourseSchedule />} />
               </Route>

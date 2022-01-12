@@ -34,12 +34,12 @@ function BasicPagination({
       )}
       Pagina {currentPage} de {maxPage}
       {currentPage < maxPage && (
-        <a href={`${baseURL}?page=${currentPage + 1}&pageSize=${pageSize}`}>
+        <Link to={`${baseURL}?page=${currentPage + 1}&pageSize=${pageSize}`}>
           <PaginationArrow
             src="/images/page-arrow.png"
             alt="Siguiente pagina"
           />
-        </a>
+        </Link>
       )}
     </PaginationWrapper>
   );
