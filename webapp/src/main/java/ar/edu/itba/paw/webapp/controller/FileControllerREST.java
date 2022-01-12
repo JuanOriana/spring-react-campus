@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.FileCategoryService;
 import ar.edu.itba.paw.interfaces.FileExtensionService;
 import ar.edu.itba.paw.interfaces.FileService;
@@ -7,18 +8,26 @@ import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileExtension;
 import ar.edu.itba.paw.models.FileModel;
+import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.models.exception.FileNotFoundException;
 import ar.edu.itba.paw.webapp.dto.FileCampusPageDto;
+
+import ar.edu.itba.paw.webapp.dto.FileModelDto;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.ws.rs.*;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.core.*;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +45,9 @@ public class FileControllerREST {
 
     @Autowired
     private FileExtensionService fileExtensionService;
+
+    @Autowired
+    private CourseService courseService;
 
     @Context
     private UriInfo uriInfo;
@@ -77,6 +89,23 @@ public class FileControllerREST {
                 FileCampusPageDto.fromCampusPage(filePage))
                 .build();
     }
+
+    @POST
+    @Path("/upload/{courseId}")
+    @Consumes(value = {MediaType.MULTIPART_FORM_DATA, })
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response uploadFile(@NotEmpty @FormDataParam("file") InputStream fileIs, @NotEmpty @FormDataParam("file") FormDataContentDisposition fileDetail, @PathParam("courseId") Long courseId, @FormDataParam("categoryId") Long categoryId) throws IOException {
+
+        byte[] bytes = StreamUtils.copyToByteArray(fileIs);
+
+        FileModel savedFile = fileService.create((long) bytes.length, fileDetail.getFileName(), bytes, courseService.findById(courseId).orElseThrow(CourseNotFoundException::new), Collections.singletonList((categoryId)));
+        LOGGER.debug("File in course {} created with id: {}", courseId, savedFile.getFileId());
+
+        return Response.ok(
+                FileModelDto.fromFile(savedFile)
+        ).build();
+    }
+
 
     @GET
     @Path("/{fileId}")
