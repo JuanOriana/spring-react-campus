@@ -23,7 +23,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
@@ -40,6 +39,7 @@ import javax.mail.*;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import javax.validation.Validator;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Properties;
@@ -185,7 +185,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public Validator validator() {
-        Validator ret = new LocalValidatorFactoryBean();
-        return ret;
+        return new LocalValidatorFactoryBean();
     }
 }
