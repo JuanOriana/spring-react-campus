@@ -18,6 +18,7 @@ import CourseSchedule from "./pages/courses/CourseSchedule";
 import Login from "./pages/Login";
 import RequireAuth from "./components/RequireAuth";
 import CourseExams from "./pages/courses/CourseExams";
+import CourseExamStandalone from "./pages/courses/CourseExams/CourseExamStandalone";
 
 const theme = {
   cyanDarkest: "#176961",
@@ -50,15 +51,16 @@ function App() {
               <Route path="*" element={<Custom404 />} />
               <Route path="course/:courseId/mail/:mailId" element={<Mail />} />
               <Route path="course/:courseId" element={<CourseLayout />}>
-                <Route index element={<Navigate to={"announcements"} />} />
+                <Route index element={<Navigate to="announcements" />} />
+                <Route path="announcements" element={<CourseAnnouncements />} />
+                <Route path="files" element={<CourseFiles />} />
+                <Route path="exams" element={<CourseExams />} />
                 <Route
-                  path={"announcements"}
-                  element={<CourseAnnouncements />}
+                  path="exams/exam/:examId"
+                  element={<CourseExamStandalone />}
                 />
-                <Route path={"files"} element={<CourseFiles />} />
-                <Route path={"exams"} element={<CourseExams />} />
-                <Route path={"teachers"} element={<CourseTeachers />} />
-                <Route path={"schedule"} element={<CourseSchedule />} />
+                <Route path="teachers" element={<CourseTeachers />} />
+                <Route path="schedule" element={<CourseSchedule />} />
               </Route>
             </Route>
             <Route path="/login" element={<Login />} />

@@ -1,0 +1,163 @@
+import {
+  BigWrapper,
+  SectionHeading,
+} from "../../../../../components/generalStyles/utils";
+import FileUnit from "../../../../../components/FileUnit";
+import { useCourseData } from "../../../../../components/layouts/CourseLayout";
+import { CommentTitle, LinkButton } from "./styles";
+import {
+  FormInput,
+  FormLabel,
+  FormButton,
+  ErrorMessage,
+} from "../../../../../components/generalStyles/form";
+import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { number } from "prop-types";
+import { useForm } from "react-hook-form";
+
+type FormData = {
+  file: FileList;
+};
+
+function StudentCourseExamStandalone() {
+  const { course } = useCourseData();
+  const navigate = useNavigate();
+  const exam = {
+    examId: 1,
+    title: "Examen",
+    examFile: {
+      fileId: 1,
+      name: "xd",
+      extension: {
+        fileExtensionName: ".doc",
+      },
+      course: {
+        courseId: 1,
+        subject: {
+          name: "PAW",
+        },
+      },
+      categories: [],
+      downloads: 2,
+    },
+    description: "hola\nxd",
+  };
+
+  const endDate = new Date("1/13/2022");
+
+  const calculateTimeLeft = () => {
+    let difference = +endDate - +new Date();
+
+    let timeLeft = {
+      days: number,
+      hours: number,
+      minutes: number,
+      seconds: number,
+    };
+
+    if (difference > 0) {
+      timeLeft = {
+        // @ts-ignore
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        // @ts-ignore
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        // @ts-ignore
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        // @ts-ignore
+        seconds: Math.floor((difference / 1000) % 60),
+      };
+
+      if (difference < 3000) {
+        navigate(`courses/${course.courseId}/exams`);
+      }
+    }
+
+    return timeLeft;
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+  });
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({ criteriaMode: "all" });
+  const onSubmit = handleSubmit((data: FormData) => {
+    reset();
+  });
+  return (
+    <>
+      <SectionHeading style={{ margin: "0 0 20px 20px" }}>
+        {exam.title}
+      </SectionHeading>
+      <BigWrapper>
+        <h3 style={{ alignSelf: "center" }}>
+          Tiempo restante:{" "}
+          {`${timeLeft.days}d:${timeLeft.hours}h:${timeLeft.minutes}m:${timeLeft.seconds}s`}
+        </h3>
+        <CommentTitle>La descripcion del examen (no la recuerdo)</CommentTitle>
+        <p style={{ margin: "10px 0 10px 10px" }}>{exam.description}</p>
+        <FileUnit file={exam.examFile} isMinimal={true} />
+
+        <form
+          encType="multipart/form-data"
+          acceptCharset="utf-8"
+          style={{
+            margin: "30px 0",
+            display: "flex",
+            padding: "10px",
+            flexDirection: "column",
+            border: "2px solid #2EC4B6",
+            borderRadius: "12px",
+          }}
+          onSubmit={onSubmit}
+        >
+          <FormLabel style={{ margin: "0 0 5px 0" }} htmlFor="exam">
+            Solucion
+          </FormLabel>
+          <FormInput
+            type="file"
+            accept="application/pdf, application/msword"
+            style={{ fontSize: "18px" }}
+            {...register("file", {
+              validate: {
+                required: (file) => file !== undefined && file[0] !== undefined,
+
+                size: (file) =>
+                  file && file[0] && file[0].size / (1024 * 1024) < 50,
+              },
+            })}
+          />
+          {errors.file?.type === "required" && (
+            <ErrorMessage>El archivo es requerido</ErrorMessage>
+          )}
+          {errors.file?.type === "size" && (
+            <ErrorMessage>El archivo debe ser mas chico que 50mb</ErrorMessage>
+          )}
+          <div
+            style={{
+              display: "flex",
+              marginTop: "5px",
+              justifyContent: "center",
+            }}
+          >
+            <LinkButton to={`/course/${course.courseId}/exams`}>
+              Cancelar envio
+            </LinkButton>
+            <FormButton>Enviar</FormButton>
+          </div>
+        </form>
+      </BigWrapper>
+    </>
+  );
+}
+
+export default StudentCourseExamStandalone;
