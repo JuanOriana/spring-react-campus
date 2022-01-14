@@ -8,17 +8,13 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.CourseFormDto;
+import ar.edu.itba.paw.webapp.dto.NextFileNumberDto;
 import ar.edu.itba.paw.webapp.dto.UserRegisterFormDto;
-import ar.edu.itba.paw.webapp.form.CourseForm;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -48,6 +44,14 @@ public class AdminControllerREST {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
 
+    //TODO: los metodos de admin de users/courses, podrian ir en el UserController/CourseController directamente, bajo algun path de admins (idea)
+
+    @GET
+    @Path("/user/new")
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response getNextFileNumber(){
+        return Response.ok(NextFileNumberDto.fromNextFileNumber(userService.getMaxFileNumber() + 1)).build();
+    }
 
     @POST
     @Path("/user/new")
