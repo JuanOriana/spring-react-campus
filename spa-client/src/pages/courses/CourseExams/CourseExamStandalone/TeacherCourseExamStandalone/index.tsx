@@ -52,7 +52,7 @@ function TeacherCourseExamStandalone() {
         name: "juan",
         surname: "doe",
       },
-      score: 10,
+      score: null,
       deliveredDate: new Date().toDateString(),
     },
   ];

@@ -50,7 +50,7 @@ function StudentExamUnit({
       </div>
       {!isCorrected && (
         <Link
-          to={`${examId}/answer/${answer.answerId}/correct`}
+          to={`answer/${answer.answerId}/correct`}
           style={{ display: "flex", alignItems: "center" }}
         >
           <MediumIcon src="/images/check.png" alt="Check" />
