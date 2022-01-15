@@ -25,9 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
+import java.net.URI;
 
 @Path("admin")
 @Component
@@ -88,17 +87,16 @@ public class AdminControllerREST {
                     , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
             LOGGER.debug("Created course in year {} in quarter {} of subjectId {} with id {}", courseForm.getYear(),
                     courseForm.getBoard(), courseForm.getSubjectId(), course.getCourseId());
-            return Response.ok(new GenericEntity<Course>(course) {
-            }).status(Response.Status.CREATED).build();
+            return Response.ok(new GenericEntity<Course>(course) {}).status(Response.Status.CREATED).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     @POST
-    @Path("/course/enroll")
+    @Path("/course/enroll/{courseId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response addUserToCourse(@Valid UserToCourseFormDto userToCourseForm, @RequestParam(name = "courseId") Long courseId) throws DtoValidationException{
+    public Response addUserToCourse(@Valid UserToCourseFormDto userToCourseForm, @PathParam("courseId") Long courseId) throws DtoValidationException{
         if (userToCourseForm != null){
             courseService.enroll(userToCourseForm.getUserId(), courseId, userToCourseForm.getRoleId());
             LOGGER.debug("User {} successfully enrolled in {}", userToCourseForm.getUserId(), courseId);
