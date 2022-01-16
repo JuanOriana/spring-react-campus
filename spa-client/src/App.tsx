@@ -20,6 +20,7 @@ import RequireAuth from "./components/RequireAuth";
 import CourseExams from "./pages/courses/CourseExams";
 import CourseExamStandalone from "./pages/courses/CourseExams/CourseExamStandalone";
 import CorrectExam from "./pages/courses/CourseExams/CourseExamStandalone/CorrectExam";
+import AdminPortal from "./pages/admin/AdminPortal";
 
 const theme = {
   cyanDarkest: "#176961",
@@ -64,6 +65,8 @@ function App() {
                 <Route path="teachers" element={<CourseTeachers />} />
                 <Route path="schedule" element={<CourseSchedule />} />
               </Route>
+
+              <Route path="admin" element={<AdminPortal />} />
             </Route>
             <Route path="/login" element={<Login />} />
           </Routes>
