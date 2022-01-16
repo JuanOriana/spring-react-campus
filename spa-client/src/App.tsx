@@ -21,6 +21,8 @@ import CourseExams from "./pages/courses/CourseExams";
 import CourseExamStandalone from "./pages/courses/CourseExams/CourseExamStandalone";
 import CorrectExam from "./pages/courses/CourseExams/CourseExamStandalone/CorrectExam";
 import AdminPortal from "./pages/admin/AdminPortal";
+import AdminAllCourses from "./pages/admin/AdminAllCourses";
+import AdminLayout from "./components/layouts/AdminLayout";
 
 const theme = {
   cyanDarkest: "#176961",
@@ -65,8 +67,10 @@ function App() {
                 <Route path="teachers" element={<CourseTeachers />} />
                 <Route path="schedule" element={<CourseSchedule />} />
               </Route>
-
               <Route path="admin" element={<AdminPortal />} />
+            </Route>
+            <Route path="admin" element={<AdminLayout />}>
+              <Route path="course/all" element={<AdminAllCourses />} />
             </Route>
             <Route path="/login" element={<Login />} />
           </Routes>
