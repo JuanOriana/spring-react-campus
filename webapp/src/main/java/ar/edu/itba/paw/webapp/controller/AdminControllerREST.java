@@ -13,9 +13,11 @@ import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.form.UserToCourseForm;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
+import ar.edu.itba.paw.webapp.security.model.CampusUser;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,12 +62,24 @@ public class AdminControllerREST {
 
     //TODO: los metodos de admin de users/courses, podrian ir en el UserController/CourseController directamente, bajo algun path de admins (idea)
 
-    //TODO: ver como ristringir todos estos endpoints a solo los usuarios admin
+    private boolean isAdminUser(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof CampusUser) {
+            return ((CampusUser)principal).isAdmin();
+        } else {
+            return false;
+        }
+    }
 
     @GET
     @Path("/user/new")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getNextFileNumber(){
+
+        if (!isAdminUser()){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
         return Response.ok(NextFileNumberDto.fromNextFileNumber(userService.getMaxFileNumber() + 1)).build();
     }
 
@@ -74,6 +88,10 @@ public class AdminControllerREST {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response newUser(@Valid UserRegisterFormDto userRegisterForm) throws DtoValidationException {
+
+        if (!isAdminUser()){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
 
         if (userRegisterForm != null) {
             DtoValidator.validate(userRegisterForm, "Failed to validate new user attributes");
@@ -91,6 +109,11 @@ public class AdminControllerREST {
     @Path("/course/new")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getSubjects(){
+
+        if (!isAdminUser()){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
         return Response.ok( new GenericEntity<List<SubjectDto>>(subjectService.list().stream().map(SubjectDto::fromSubject).collect(Collectors.toList())){}).build();
     }
 
@@ -99,6 +122,11 @@ public class AdminControllerREST {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response newCourse(@Valid CourseFormDto courseForm) throws DtoValidationException, URISyntaxException { //TODO: ver bien como seria la parte del json para startTimes y endTimes
+
+        if (!isAdminUser()){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
         if(courseForm != null) {
             Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
                     , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
@@ -114,6 +142,11 @@ public class AdminControllerREST {
     @Path("/course/select")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response selectCourse(){
+
+        if (!isAdminUser()){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
         List<Course> courses = courseService.list();
         courses.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
         return Response.ok( new GenericEntity<List<CourseDto>>(courses.stream().map(CourseDto::fromCourse).collect(Collectors.toList())){}).build(); //TODO: este CourseDto estaria bueno que tenga el link al enroll de ese curso
@@ -124,6 +157,11 @@ public class AdminControllerREST {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response addUserToCourse(@QueryParam("courseId") Long courseId) throws DtoValidationException{ //TODO: falta agregar paginacion
+
+        if (!isAdminUser()){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
         if (courseId != null){
             Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
             List<User> unenrolledUsers = courseService.listUnenrolledUsers(courseId);
@@ -141,6 +179,11 @@ public class AdminControllerREST {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response addUserToCourse(@Valid UserToCourseFormDto userToCourseForm, @QueryParam("courseId") Long courseId) throws DtoValidationException{
+
+        if (!isAdminUser()){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
         if (userToCourseForm != null){
             courseService.enroll(userToCourseForm.getUserId(), courseId, userToCourseForm.getRoleId());
             LOGGER.debug("User {} successfully enrolled in {}", userToCourseForm.getUserId(), courseId);
@@ -153,6 +196,11 @@ public class AdminControllerREST {
     @Path("/course/all")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response allCourses(@QueryParam("year") Integer year, @QueryParam("quarter") Integer quarter) { //TODO: falta agregar paginacion
+
+        if (!isAdminUser()){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
         if (year == null){
             year = Calendar.getInstance().get(Calendar.YEAR);
         }
