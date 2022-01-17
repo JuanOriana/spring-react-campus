@@ -31,6 +31,7 @@ import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("admin")
 @Component
@@ -59,6 +60,8 @@ public class AdminControllerREST {
 
     //TODO: los metodos de admin de users/courses, podrian ir en el UserController/CourseController directamente, bajo algun path de admins (idea)
 
+    //TODO: ver como ristringir todos estos endpoints a solo los usuarios admin
+
     @GET
     @Path("/user/new")
     @Produces(value = {MediaType.APPLICATION_JSON, })
@@ -84,6 +87,13 @@ public class AdminControllerREST {
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
+    @GET
+    @Path("/course/new")
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response getSubjects(){
+        return Response.ok( new GenericEntity<List<SubjectDto>>(subjectService.list().stream().map(SubjectDto::fromSubject).collect(Collectors.toList())){}).build();
+    }
+
     @POST
     @Path("/course/new")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -98,6 +108,15 @@ public class AdminControllerREST {
             return Response.seeOther(enrollUsers).status(Response.Status.CREATED).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @GET
+    @Path("/course/select")
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response selectCourse(){
+        List<Course> courses = courseService.list();
+        courses.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
+        return Response.ok( new GenericEntity<List<CourseDto>>(courses.stream().map(CourseDto::fromCourse).collect(Collectors.toList())){}).build(); //TODO: este CourseDto estaria bueno que tenga el link al enroll de ese curso
     }
 
     @GET
@@ -130,31 +149,24 @@ public class AdminControllerREST {
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-//    @GET
-//    @Path("/course/all")
-//    @Produces(value = {MediaType.APPLICATION_JSON, })
-//    public Response allCourses(@QueryParam("year") Integer year, @QueryParam("quarter") Integer quarter) { //TODO: falta agregar paginacion
-//        if (year == null){
-//            year = Calendar.getInstance().get(Calendar.YEAR);
-//        }
-//        if (quarter == null){
-//            if (Calendar.getInstance().get(Calendar.MONTH) <= 6){
-//                quarter = 1;
-//            }
-//            else{
-//                quarter = 2;
-//            }
-//        }
-//
-////        CampusPage<Course> courses = courseService.listByYearQuarter(year,quarter, page, pageSize);
-////        mav.addObject("courses", courses.getContent());
-////        mav.addObject("year",year);
-////        mav.addObject("allYears",courseService.getAvailableYears());
-////        mav.addObject("quarter",quarter);
-////        mav.addObject("currentPage", courses.getPage());
-////        mav.addObject("maxPage", courses.getTotal());
-////        mav.addObject("pageSize", courses.getSize());
-////        return mav;
-//    }
+    @GET
+    @Path("/course/all")
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response allCourses(@QueryParam("year") Integer year, @QueryParam("quarter") Integer quarter) { //TODO: falta agregar paginacion
+        if (year == null){
+            year = Calendar.getInstance().get(Calendar.YEAR);
+        }
+        if (quarter == null){
+            if (Calendar.getInstance().get(Calendar.MONTH) <= 6){
+                quarter = 1;
+            }
+            else{
+                quarter = 2;
+            }
+        }
+        List<Integer> availableYears = courseService.getAvailableYears();
+        CampusPage<Course> courses = courseService.listByYearQuarter(year,quarter, 1, 10); //TODO: falta agregar paginacion
+        return Response.ok( AllCoursesResponseDto.responseFrom(availableYears, courses.getContent())).build();
+    }
 
 }
