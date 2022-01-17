@@ -23,6 +23,7 @@ import CorrectExam from "./pages/courses/CourseExams/CourseExamStandalone/Correc
 import AdminPortal from "./pages/admin/AdminPortal";
 import AdminAllCourses from "./pages/admin/AdminAllCourses";
 import AdminLayout from "./components/layouts/AdminLayout";
+import AdminNewUser from "./pages/admin/AdminNewUser";
 
 const theme = {
   cyanDarkest: "#176961",
@@ -70,6 +71,7 @@ function App() {
               <Route path="admin" element={<AdminPortal />} />
             </Route>
             <Route path="admin" element={<AdminLayout />}>
+              <Route path="user/new" element={<AdminNewUser />} />
               <Route path="course/all" element={<AdminAllCourses />} />
             </Route>
             <Route path="/login" element={<Login />} />
