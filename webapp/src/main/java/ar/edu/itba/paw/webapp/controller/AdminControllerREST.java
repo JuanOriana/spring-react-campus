@@ -6,12 +6,11 @@ import ar.edu.itba.paw.interfaces.SubjectService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
-import ar.edu.itba.paw.webapp.dto.CourseFormDto;
-import ar.edu.itba.paw.webapp.dto.NextFileNumberDto;
-import ar.edu.itba.paw.webapp.dto.UserRegisterFormDto;
-import ar.edu.itba.paw.webapp.dto.UserToCourseFormDto;
+import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.form.UserToCourseForm;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
 import org.slf4j.LoggerFactory;
@@ -30,6 +29,8 @@ import javax.ws.rs.core.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
+import java.util.Comparator;
+import java.util.List;
 
 @Path("admin")
 @Component
@@ -95,6 +96,23 @@ public class AdminControllerREST {
                     courseForm.getBoard(), courseForm.getSubjectId(), course.getCourseId());
             URI enrollUsers = new URI(uriInfo.getBaseUri().normalize().toString() + "admin/course/enroll?courseId=" + course.getCourseId());
             return Response.seeOther(enrollUsers).status(Response.Status.CREATED).build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @GET
+    @Path("/course/enroll")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response addUserToCourse(@QueryParam("courseId") Long courseId) throws DtoValidationException{ //TODO: falta agregar paginacion
+        if (courseId != null){
+            Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
+            List<User> unenrolledUsers = courseService.listUnenrolledUsers(courseId);
+            CampusPage<User> enrolledStudents = userService.getStudentsByCourse(courseId, 1, 10); //TODO: falta agregar paginacion
+            List<User> courseTeachers = courseService.getTeachers(courseId);
+            List<User> courseHelpers = courseService.getHelpers(courseId);
+            List<Role> roles = roleService.list();
+            return Response.ok( EnrollUserToCourseResponseDto.fromUserToCourseInformation(course, unenrolledUsers, enrolledStudents.getContent(), courseTeachers, courseHelpers, roles) ).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
