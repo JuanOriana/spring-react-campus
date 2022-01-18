@@ -22,7 +22,7 @@ public class CourseDto {
         dto.quarter = course.getQuarter();
         dto.board = course.getBoard();
         dto.subject = SubjectDto.fromSubject(course.getSubject());
-        StringBuilder aux = new StringBuilder("/courses/"); //TODO: ver si el baseUrl se pasa como parametro o queda asi
+        StringBuilder aux = new StringBuilder("/course/"); //TODO: ver si el baseUrl se pasa como parametro o queda asi
         dto.courseUri = aux.append(course.getCourseId().toString()).toString();
         return dto;
     }
