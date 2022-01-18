@@ -140,19 +140,19 @@ public class AdminControllerREST {
     @GET
     @Path("/courses")
     @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response getCourses(@QueryParam("year") Integer year, @QueryParam("quarter") Integer quarter){
+    public Response getCourses(@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize, @QueryParam("year") Integer year, @QueryParam("quarter") Integer quarter){
 
         if (!isAdminUser()){
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        List<Course> courses;
+        CampusPage<Course> coursesPaginated;
         List<Integer> availableYears = courseService.getAvailableYears();
 
         if (year == null && quarter == null){
-            courses = courseService.list();
-            courses.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
-            return Response.ok( AllCoursesResponseDto.responseFrom(availableYears, courses)).build();
+            List<Course> coursesList = courseService.list();
+            coursesList.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
+            return Response.ok( AllCoursesResponseDto.responseFrom(availableYears, coursesList)).build(); //TODO: falta agregar paginacion?
         }else {
             if (year == null){
                 year = Calendar.getInstance().get(Calendar.YEAR);
@@ -165,9 +165,14 @@ public class AdminControllerREST {
                     quarter = 2;
                 }
             }
-            courses = courseService.listByYearQuarter(year,quarter, 1, 10).getContent(); //TODO: falta agregar paginacion
-            courses.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
-            return Response.ok( new GenericEntity<List<CourseDto>>(courses.stream().map(CourseDto::fromCourse).collect(Collectors.toList())){}).build(); //TODO: este CourseDto estaria bueno que tenga el link al enroll de ese curso
+            coursesPaginated = courseService.listByYearQuarter(year,quarter, page, pageSize);
+            coursesPaginated.getContent().sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
+            return Response.ok( new GenericEntity<List<CourseDto>>(coursesPaginated.getContent().stream().map(CourseDto::fromCourse).collect(Collectors.toList())){})
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getPage() + 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "next")
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", Math.max(coursesPaginated.getPage() - 1, 1)).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "prev")
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "first")
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getTotal()).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "last")
+                    .build(); //TODO: este CourseDto estaria bueno que tenga el link al enroll de ese curso
         }
     }
 
