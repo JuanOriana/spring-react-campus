@@ -30,10 +30,19 @@ function AdminNewUser() {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
-    reset();
+    console.log(data);
+    if (data.password !== data.confirmPassword) {
+      setError("confirmPassword", {
+        type: "repeated",
+        message: "La contrasenas deben concidir",
+      });
+    } else {
+      reset();
+    }
   });
   return (
     <>
@@ -183,7 +192,14 @@ function AdminNewUser() {
           <ErrorMessage> {errors.password?.message} </ErrorMessage>
         )}
         <FormLabel htmlFor="confirmPassword">Confirmar contrasena</FormLabel>
-        <FormInput type="password" style={{ fontSize: "26px" }} />
+        <FormInput
+          type="password"
+          style={{ fontSize: "26px" }}
+          {...register("confirmPassword", {})}
+        />
+        {errors.confirmPassword?.message && (
+          <ErrorMessage> {errors.confirmPassword?.message} </ErrorMessage>
+        )}
         <FormButton>Crear</FormButton>
       </FormWrapper>
     </>

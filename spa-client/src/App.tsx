@@ -24,6 +24,9 @@ import AdminPortal from "./pages/admin/AdminPortal";
 import AdminAllCourses from "./pages/admin/AdminAllCourses";
 import AdminLayout from "./components/layouts/AdminLayout";
 import AdminNewUser from "./pages/admin/AdminNewUser";
+import AdminSelectCourse from "./pages/admin/AdminSelectCourse";
+import AdminNewCourse from "./pages/admin/AdminNewCourse";
+import AdminAddUserToCourse from "./pages/admin/AdminAddUserToCourse";
 
 const theme = {
   cyanDarkest: "#176961",
@@ -73,6 +76,9 @@ function App() {
             <Route path="admin" element={<AdminLayout />}>
               <Route path="user/new" element={<AdminNewUser />} />
               <Route path="course/all" element={<AdminAllCourses />} />
+              <Route path="course/select" element={<AdminSelectCourse />} />
+              <Route path="course/new" element={<AdminNewCourse />} />
+              <Route path="course/enroll" element={<AdminAddUserToCourse />} />
             </Route>
             <Route path="/login" element={<Login />} />
           </Routes>
