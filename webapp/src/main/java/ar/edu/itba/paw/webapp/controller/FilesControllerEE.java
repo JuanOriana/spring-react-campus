@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class FilesController extends AuthController {
+public class FilesControllerEE extends AuthController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FilesController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FilesControllerEE.class);
 
     private final FileService fileService;
     private final FileCategoryService fileCategoryService;
@@ -34,9 +34,9 @@ public class FilesController extends AuthController {
     private MessageSource messageSource;
 
     @Autowired
-    public FilesController(FileService fileService, FileCategoryService fileCategoryService,
-                           FileExtensionService fileExtensionService,
-                           AuthFacade authFacade) {
+    public FilesControllerEE(FileService fileService, FileCategoryService fileCategoryService,
+                             FileExtensionService fileExtensionService,
+                             AuthFacade authFacade) {
         super(authFacade);
         this.fileService = fileService;
         this.fileCategoryService = fileCategoryService;

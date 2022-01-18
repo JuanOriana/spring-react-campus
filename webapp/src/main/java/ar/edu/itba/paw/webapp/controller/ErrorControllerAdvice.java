@@ -71,7 +71,7 @@ public class ErrorControllerAdvice {
     @ExceptionHandler(SystemUnavailableException.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ModelAndView unexpectedDatabaseError(SystemUnavailableException ex) {
-        LOGGER.error(ex.getErrorMessage());
+        LOGGER.error(ex.getMessage());
         return new ModelAndView("500");
     }
 
