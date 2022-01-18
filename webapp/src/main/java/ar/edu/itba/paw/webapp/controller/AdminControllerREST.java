@@ -99,8 +99,7 @@ public class AdminControllerREST {
                     userRegisterForm.getUsername(), userRegisterForm.getEmail(),
                     userRegisterForm.getPassword(), false);
             LOGGER.debug("User of name {} created", user.getUsername());
-            return Response.ok(new GenericEntity<User>(user) {
-            }).status(Response.Status.CREATED).build();
+            return Response.ok(UserDto.fromUser(user)).status(Response.Status.CREATED).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
