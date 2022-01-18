@@ -152,7 +152,7 @@ public class AdminControllerREST {
         if (year == null && quarter == null){
             List<Course> coursesList = courseService.list();
             coursesList.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
-            return Response.ok( AllCoursesResponseDto.responseFrom(availableYears, coursesList)).build(); //TODO: falta agregar paginacion?
+            return Response.ok( AllCoursesResponseDto.responseFrom(availableYears, coursesList)).build(); //TODO: paginacion?
         }else {
             if (year == null){
                 year = Calendar.getInstance().get(Calendar.YEAR);
@@ -216,10 +216,15 @@ public class AdminControllerREST {
     @Path("/course/{courseId}/students")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response getCourseStudents(@PathParam("courseId") Long courseId) throws DtoValidationException{
+    public Response getCourseStudents(@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize, @PathParam("courseId") Long courseId) throws DtoValidationException{
         if (courseId != null){
-            List<User> enrolledStudents = userService.getStudentsByCourse(courseId, 1, 10).getContent(); //TODO: falta agregar paginacion
-            return Response.ok( new GenericEntity<List<UserDto>>(enrolledStudents.stream().map(UserDto::fromUser).collect(Collectors.toList()) ){} ).build();
+            CampusPage<User> enrolledStudents = userService.getStudentsByCourse(courseId, page, pageSize);
+            return Response.ok( new GenericEntity<List<UserDto>>(enrolledStudents.getContent().stream().map(UserDto::fromUser).collect(Collectors.toList()) ){} )
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getPage() + 1).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "next")
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", Math.max(enrolledStudents.getPage() - 1, 1)).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "prev")
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "first")
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getTotal()).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "last")
+                    .build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
@@ -230,7 +235,7 @@ public class AdminControllerREST {
     @Path("/course/{courseId}/enroll")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response addUserToCourse(@PathParam("courseId") Long courseId) throws DtoValidationException{ //TODO: falta agregar paginacion
+    public Response addUserToCourse(@PathParam("courseId") Long courseId) throws DtoValidationException{
 
         if (!isAdminUser()){
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -258,7 +263,7 @@ public class AdminControllerREST {
             courseService.enroll(userToCourseForm.getUserId(), courseId, userToCourseForm.getRoleId());
             LOGGER.debug("User {} successfully enrolled in {}", userToCourseForm.getUserId(), courseId);
             URI courseUri = new URI(uriInfo.getBaseUri().normalize().toString() + "admin/course/" + courseId); //TODO: rev si termina quedando asi
-            return Response.seeOther(courseUri).status(Response.Status.SEE_OTHER).build(); //TODO: veri si esta bien esta redireccion
+            return Response.seeOther(courseUri).status(Response.Status.SEE_OTHER).build(); //TODO: ver si esta bien esta redireccion
 
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
