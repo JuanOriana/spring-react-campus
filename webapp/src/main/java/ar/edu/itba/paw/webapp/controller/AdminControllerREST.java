@@ -4,10 +4,7 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.RoleService;
 import ar.edu.itba.paw.interfaces.SubjectService;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.models.CampusPage;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.*;
@@ -113,14 +110,20 @@ public class AdminControllerREST {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        return Response.ok( new GenericEntity<List<SubjectDto>>(subjectService.list().stream().map(SubjectDto::fromSubject).collect(Collectors.toList())){}).build();
+        List<Subject> subjects = subjectService.list();
+
+        if (subjects.isEmpty()){
+            return Response.ok(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok( new GenericEntity<List<SubjectDto>>(subjects.stream().map(SubjectDto::fromSubject).collect(Collectors.toList())){}).build();
     }
 
     @POST
     @Path("/course/new")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response newCourse(@Valid CourseFormDto courseForm) throws DtoValidationException, URISyntaxException { //TODO: ver bien como seria la parte del json para startTimes y endTimes
+    public Response newCourse(@Valid CourseFormDto courseForm) throws DtoValidationException, URISyntaxException { //TODO: startTimes y endTimes
 
         if (!isAdminUser()){
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -151,6 +154,11 @@ public class AdminControllerREST {
 
         if (year == null && quarter == null){
             List<Course> coursesList = courseService.list();
+
+            if (coursesList.isEmpty()){
+                return Response.ok(Response.Status.NO_CONTENT).build();
+            }
+
             coursesList.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
             return Response.ok( AllCoursesResponseDto.responseFrom(availableYears, coursesList)).build(); //TODO: paginacion?
         }else {
@@ -166,6 +174,11 @@ public class AdminControllerREST {
                 }
             }
             coursesPaginated = courseService.listByYearQuarter(year,quarter, page, pageSize);
+
+            if (coursesPaginated.getContent().isEmpty()){
+                return Response.ok(Response.Status.NO_CONTENT).build();
+            }
+
             coursesPaginated.getContent().sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
             return Response.ok( new GenericEntity<List<CourseDto>>(coursesPaginated.getContent().stream().map(CourseDto::fromCourse).collect(Collectors.toList())){})
                     .link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getPage() + 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "next")
@@ -195,6 +208,11 @@ public class AdminControllerREST {
     public Response getCourseTeachers(@PathParam("courseId") Long courseId) throws DtoValidationException{
         if (courseId != null){
             List<User> courseTeachers = courseService.getTeachers(courseId);
+
+            if (courseTeachers.isEmpty()){
+                return Response.ok(Response.Status.NO_CONTENT).build();
+            }
+
             return Response.ok( new GenericEntity<List<UserDto>>(courseTeachers.stream().map(UserDto::fromUser).collect(Collectors.toList()) ){}).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
@@ -207,6 +225,11 @@ public class AdminControllerREST {
     public Response getCourseHelpers(@PathParam("courseId") Long courseId) throws DtoValidationException{
         if (courseId != null){
             List<User> courseHelpers = courseService.getHelpers(courseId);
+
+            if (courseHelpers.isEmpty()){
+                return Response.ok(Response.Status.NO_CONTENT).build();
+            }
+
             return Response.ok( new GenericEntity<List<UserDto>>(courseHelpers.stream().map(UserDto::fromUser).collect(Collectors.toList()) ){} ).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
@@ -219,8 +242,13 @@ public class AdminControllerREST {
     public Response getCourseStudents(@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize, @PathParam("courseId") Long courseId) throws DtoValidationException{
         if (courseId != null){
             CampusPage<User> enrolledStudents = userService.getStudentsByCourse(courseId, page, pageSize);
+
+            if (enrolledStudents.getContent().isEmpty()){
+                return Response.ok(Response.Status.NO_CONTENT).build();
+            }
+
             return Response.ok( new GenericEntity<List<UserDto>>(enrolledStudents.getContent().stream().map(UserDto::fromUser).collect(Collectors.toList()) ){} )
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getPage() + 1).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "next")
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getPage() + 1).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "next") //TODO: condicionar esto a si es que tiene un next
                     .link(uriInfo.getAbsolutePathBuilder().queryParam("page", Math.max(enrolledStudents.getPage() - 1, 1)).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "prev")
                     .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "first")
                     .link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getTotal()).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "last")
@@ -243,7 +271,12 @@ public class AdminControllerREST {
 
         if (courseId != null){
             List<User> unenrolledUsers = courseService.listUnenrolledUsers(courseId);
-            List<Role> roles = roleService.list();
+
+            if (unenrolledUsers.isEmpty()){
+                return Response.ok(Response.Status.NO_CONTENT).build();
+            }
+
+            List<Role> roles = roleService.list(); //TODO: hacer un endpoint separado?
             return Response.ok( EnrollUserToCourseResponseDto.fromUserToCourseInformation(unenrolledUsers, roles) ).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
