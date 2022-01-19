@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 public class AnnouncementDto {
 
+    private Long announcementId;
+
     private String title;
 
     private String content;
@@ -16,6 +18,13 @@ public class AnnouncementDto {
 
     private CourseDto course;
 
+    public Long getAnnouncementId() {
+        return announcementId;
+    }
+
+    public void setAnnouncementId(Long announcementId) {
+        this.announcementId = announcementId;
+    }
 
     public UserDto getAuthor() {
         return author;
@@ -60,6 +69,7 @@ public class AnnouncementDto {
     public static AnnouncementDto fromAnnouncement(Announcement announcement){
         AnnouncementDto dto = new AnnouncementDto();
 
+        dto.setAnnouncementId(announcement.getAnnouncementId());
         dto.setAuthor(UserDto.fromUser(announcement.getAuthor()));
         dto.setTitle(announcement.getTitle());
         dto.setContent(announcement.getContent());
