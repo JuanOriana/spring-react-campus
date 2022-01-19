@@ -10,19 +10,39 @@ import {
 import { FormText } from "../AdminAllCourses/styles";
 import { GeneralTitle } from "../../../components/generalStyles/utils";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+
+const days: string[] = [
+  "Lunes",
+  "Martes",
+  "Miercoles",
+  "Jueves",
+  "Viernes",
+  "Sabado",
+];
+
+type FormData = {
+  subjectId: number;
+  quarter: number;
+  year: number;
+  board: string;
+};
 
 function AdminNewCourse() {
   const subjects = [{ subjectId: 1, name: "PAW" }];
   const [isCourseDuplicated, setIsCourseDuplicated] = useState(false);
 
-  const days: string[] = [
-    "Lunes",
-    "Martes",
-    "Miercoles",
-    "Jueves",
-    "Viernes",
-    "Sabado",
-  ];
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors },
+  } = useForm<FormData>({ criteriaMode: "all" });
+
+  const onSubmit = handleSubmit((data: FormData) => {
+    reset();
+  });
 
   return (
     <>
@@ -32,12 +52,13 @@ function AdminNewCourse() {
         method="post"
         acceptCharset="utf-8"
         style={{ margin: "0px 40px 40px 40px" }}
+        onSubmit={onSubmit}
       >
         <GeneralTitle style={{ color: "#176961", alignSelf: "center" }}>
           Nuevo curso
         </GeneralTitle>
         <FormLabel htmlFor="subjectId">Materia</FormLabel>
-        <FormSelect style={{ fontSize: "26px" }}>
+        <FormSelect style={{ fontSize: "26px" }} {...register("subjectId", {})}>
           {subjects.map((subject) => (
             <option value={subject.subjectId}>{subject.name}</option>
           ))}
@@ -54,16 +75,36 @@ function AdminNewCourse() {
           }}
         >
           <div>
-            <input type="radio" value="1" style={{ marginRight: "5px" }} /> 1
+            <input
+              type="radio"
+              value="1"
+              style={{ marginRight: "5px" }}
+              {...register("quarter", {})}
+            />{" "}
+            1
           </div>
           <div>
-            <input type="radio" value="2" style={{ marginRight: "5px" }} /> 2
+            <input
+              type="radio"
+              value="2"
+              style={{ marginRight: "5px" }}
+              {...register("quarter", {})}
+            />{" "}
+            2
           </div>
         </div>
         <FormLabel htmlFor="year">Ano</FormLabel>
-        <FormInput type="number" style={{ fontSize: "26px" }} />
+        <FormInput
+          type="number"
+          style={{ fontSize: "26px" }}
+          {...register("year", {})}
+        />
         <FormLabel htmlFor="board">Comision</FormLabel>
-        <FormInput type="text" style={{ fontSize: "26px" }} />
+        <FormInput
+          type="text"
+          style={{ fontSize: "26px" }}
+          {...register("board", {})}
+        />
         {isCourseDuplicated && (
           <ErrorMessage>Este curso ya existe</ErrorMessage>
         )}

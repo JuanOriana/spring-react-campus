@@ -29,7 +29,6 @@ export const CourseTable = styled.table`
 `;
 
 export const CourseTableHeader = styled.tr`
-  color: #efefef;
   background: var(--cyan-darkest);
   text-transform: uppercase;
   font-size: 1em;

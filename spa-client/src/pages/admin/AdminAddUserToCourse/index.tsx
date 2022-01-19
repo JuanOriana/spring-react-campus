@@ -14,6 +14,12 @@ import {
   PaginationWrapper,
 } from "../../../components/generalStyles/pagination";
 import { UserColumn, UserContainer, BackImg } from "./styles";
+import { useForm } from "react-hook-form";
+
+type FormData = {
+  userId: number;
+  roleId: number;
+};
 
 function AdminAddUserToCourse() {
   const maxPage = 3;
@@ -37,6 +43,13 @@ function AdminAddUserToCourse() {
     { userId: 1, fileNumber: 1, name: "xd", surname: "xd" },
   ];
 
+  const { register, handleSubmit, reset, setError } = useForm<FormData>({
+    criteriaMode: "all",
+  });
+
+  const onSubmit = handleSubmit((data: FormData) => {
+    reset();
+  });
   return (
     <>
       <AdminSectionsCol />
@@ -45,6 +58,7 @@ function AdminAddUserToCourse() {
         method="post"
         acceptCharset="utf-8"
         style={{ margin: "0px 40px 40px 40px" }}
+        onSubmit={onSubmit}
       >
         <Link
           to="/admin/course/select"
@@ -57,7 +71,7 @@ function AdminAddUserToCourse() {
           Anadir usuario a {course.subject.name}[{course.board}]
         </GeneralTitle>
         <FormLabel htmlFor="userId">Usuario</FormLabel>
-        <FormSelect style={{ fontSize: "26px" }}>
+        <FormSelect style={{ fontSize: "26px" }} {...register("userId", {})}>
           {users.map((user) => (
             <option value={user.userId} key={user.userId}>
               {user.fileNumber} - {user.name} {user.surname}
@@ -65,7 +79,7 @@ function AdminAddUserToCourse() {
           ))}
         </FormSelect>
         <FormLabel htmlFor="roleId">Rol</FormLabel>
-        <FormSelect style={{ fontSize: "26px" }}>
+        <FormSelect style={{ fontSize: "26px" }} {...register("roleId", {})}>
           {roles.map((role) => (
             <option value={role.roleId} key={role.roleId}>
               {role.roleName}
