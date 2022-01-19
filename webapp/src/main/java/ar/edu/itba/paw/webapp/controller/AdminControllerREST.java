@@ -106,7 +106,7 @@ public class AdminControllerREST {
         List<Subject> subjects = subjectService.list();
 
         if (subjects.isEmpty()){
-            return Response.ok(Response.Status.NO_CONTENT).build();
+            return Response.ok().status(Response.Status.NO_CONTENT).build();
         }
 
         return Response.ok( new GenericEntity<List<SubjectDto>>(subjects.stream().map(SubjectDto::fromSubject).collect(Collectors.toList())){}).build();
@@ -149,7 +149,7 @@ public class AdminControllerREST {
             List<Course> coursesList = courseService.list();
 
             if (coursesList.isEmpty()){
-                return Response.ok(Response.Status.NO_CONTENT).build();
+                return Response.ok().status(Response.Status.NO_CONTENT).build();
             }
 
             coursesList.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
@@ -169,12 +169,12 @@ public class AdminControllerREST {
             coursesPaginated = courseService.listByYearQuarter(year,quarter, page, pageSize);
 
             if (coursesPaginated.getContent().isEmpty()){
-                return Response.ok(Response.Status.NO_CONTENT).build();
+                return Response.ok().status(Response.Status.NO_CONTENT).build();
             }
 
             coursesPaginated.getContent().sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
             return Response.ok( new GenericEntity<List<CourseDto>>(coursesPaginated.getContent().stream().map(CourseDto::fromCourse).collect(Collectors.toList())){})
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getPage() + 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "next")
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", (coursesPaginated.getPage() < (coursesPaginated.getTotal()/coursesPaginated.getSize())-1)? coursesPaginated.getPage() + 1: coursesPaginated.getPage()).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "next")
                     .link(uriInfo.getAbsolutePathBuilder().queryParam("page", Math.max(coursesPaginated.getPage() - 1, 1)).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "prev")
                     .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "first")
                     .link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getTotal()).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "last")
@@ -197,7 +197,7 @@ public class AdminControllerREST {
             List<User> unenrolledUsers = courseService.listUnenrolledUsers(courseId);
 
             if (unenrolledUsers.isEmpty()){
-                return Response.ok(Response.Status.NO_CONTENT).build();
+                return Response.ok().status(Response.Status.NO_CONTENT).build();
             }
 
             List<Role> roles = roleService.list(); //TODO: hacer un endpoint separado?
