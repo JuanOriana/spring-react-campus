@@ -3,7 +3,6 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.AnnouncementService;
 import ar.edu.itba.paw.models.Announcement;
-import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.AnnouncementDto;
 import ar.edu.itba.paw.webapp.security.model.CampusUser;
 import org.slf4j.Logger;
@@ -28,9 +27,6 @@ public class AnnouncementsControllerREST {
     private UriInfo uriInfo;
 
     @Autowired
-    private DtoConstraintValidator DtoValidator;
-
-    @Autowired
     private AnnouncementService announcementService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsControllerREST.class);
@@ -48,6 +44,7 @@ public class AnnouncementsControllerREST {
         if(list.isEmpty()){
             return Response.noContent().build();
         }
+        // TODO: PAGINAR
 
         return Response.ok(new GenericEntity<List<AnnouncementDto>>(list.stream().map(AnnouncementDto::fromAnnouncement).collect(Collectors.toList())){}).build();
     }
