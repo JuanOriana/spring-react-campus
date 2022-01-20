@@ -7,6 +7,7 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.models.exception.FileNotFoundException;
+import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.AnnouncementDto;
 import ar.edu.itba.paw.webapp.dto.AnnouncementFormDto;
@@ -54,6 +55,15 @@ public class CourseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
+
+    private Long getCurrentUserId(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof CampusUser) {
+            return ((CampusUser)principal).getUserId();
+        } else {
+            return null;
+        }
+    }
 
     @Path("/files")
     @POST
@@ -104,13 +114,25 @@ public class CourseController {
     @Path("/announcements")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getAnnouncements(@PathParam("courseId") Long courseId,@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize){
-        List<Announcement> list = announcementService.listByCourse(courseId,page,pageSize ).getContent();
-        if(list.isEmpty()){
+        CampusPage<Announcement> announcementsPaginated = announcementService.listByCourse(courseId,page,pageSize );
+        if(announcementsPaginated.getContent().isEmpty()){
             return Response.noContent().build();
         }
 
-        // TODO: PAGINACION
-        return Response.ok(new GenericEntity<List<AnnouncementDto>>(list.stream().map(AnnouncementDto::fromAnnouncement).collect(Collectors.toList())){}).build();
+        Response.ResponseBuilder response = Response.ok(new GenericEntity<List<AnnouncementDto>>(announcementsPaginated.getContent().stream().map(AnnouncementDto::fromAnnouncement).collect(Collectors.toList())){})
+                                            .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).build().toString(), "first")
+                                            .link(uriInfo.getAbsolutePathBuilder().queryParam("page", announcementsPaginated.getTotal()).queryParam("pageSize", pageSize).build().toString(), "last");
+
+        if(announcementsPaginated.getPage() != announcementsPaginated.getTotal()){
+            response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",(announcementsPaginated.getPage() < (announcementsPaginated.getTotal()/announcementsPaginated.getSize()))? announcementsPaginated.getPage() + 1: announcementsPaginated.getPage()).queryParam("pageSize", pageSize).build().toString(), "next");
+
+        }
+
+        if(announcementsPaginated.getPage() > 1){
+            response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", Math.max(announcementsPaginated.getPage() - 1, 1)).queryParam("pageSize", pageSize).build().toString(), "prev");
+
+        }
+        return response.build();
     }
 
     @POST
@@ -118,21 +140,23 @@ public class CourseController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response newAnnouncement(@PathParam("courseId") Long courseId, @Valid AnnouncementFormDto announcementFormDto) throws DtoValidationException{
-        Object userPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = getCurrentUserId();
 
-        CampusUser user = (CampusUser) userPrincipal;
+        if(userId==null){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
 
-        if(courseService.isPrivileged(user.getUserId(), courseId)){
+        if(courseService.isPrivileged(userId, courseId)){
             dtoValidator.validate(announcementFormDto, "Failed to validate new announcement attributes");
             Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
             URI location = URI.create(uriInfo.getAbsolutePath() + "/course/" + courseId);
-            Announcement announcement = announcementService.create(announcementFormDto.getTitle(),announcementFormDto.getContent(),user.toUser(),course,location.getPath());
+            Announcement announcement = announcementService.create(announcementFormDto.getTitle(),announcementFormDto.getContent(),userService.findById(userId).orElseThrow(UserNotFoundException::new),course,location.getPath());
 
-            LOGGER.debug("Announcement created by user with id:{} ", user.getUserId());
+            LOGGER.debug("Announcement created by user with id:{} ", userId);
 
             return Response.ok(AnnouncementDto.fromAnnouncement(announcement)).status(Response.Status.CREATED).build();
         }
-        return Response.status(Response.Status.FORBIDDEN).build();
+        return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
     @GET
@@ -201,6 +225,15 @@ public class CourseController {
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
+
+//    @GET
+//    @Path("/schedule")
+//    @Produces(value={MediaType.APPLICATION_JSON,})
+//    public Response getSchedule(@PathParam("courseId") Long courseId){
+//
+//
+//
+//    }
 
 
 
