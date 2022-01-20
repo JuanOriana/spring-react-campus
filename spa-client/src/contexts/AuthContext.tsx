@@ -1,9 +1,14 @@
 import React from "react";
 import { internalAuthProvider } from "../scripts/auth";
 
+interface User {
+  name: string;
+  isAdmin: boolean;
+}
+
 interface AuthContextType {
-  user: any;
-  setUser: (user: string) => void;
+  user: User | null;
+  setUser: (user: User | null) => void;
   signin: (user: string, callback: VoidFunction) => void;
   signout: (callback: VoidFunction) => void;
 }
@@ -11,12 +16,14 @@ interface AuthContextType {
 const AuthContext = React.createContext<AuthContextType>(null!);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  let [user, setUser] = React.useState<any>(null);
+  let [user, setUser] = React.useState<User | null>(null);
 
   let signin = (newUser: string, callback: VoidFunction) => {
     return internalAuthProvider.signin(() => {
-      setUser(newUser);
+      const isAdmin = true;
+      setUser({ name: newUser, isAdmin: isAdmin });
       localStorage.setItem("user", newUser);
+      localStorage.setItem("isAdmin", isAdmin ? "true" : "false");
       callback();
     });
   };
@@ -24,7 +31,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   let signout = (callback: VoidFunction) => {
     return internalAuthProvider.signout(() => {
       setUser(null);
-      localStorage.setItem("user", "");
+      localStorage.removeItem("user");
+      localStorage.removeItem("isAdmin");
       callback();
     });
   };

@@ -26,6 +26,7 @@ function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
   let navigate = useNavigate();
   let location = useLocation();
   let auth = useAuth();
+  let { user } = useAuth();
   const pathname = location?.pathname;
   const sections: Section[] = [
     { path: "/portal", name: "Mis cursos" },
@@ -36,7 +37,7 @@ function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
   return (
     <NavContainer>
       <NavTitle>
-        <Link to="/">CAMPUS</Link>
+        <Link to={user?.isAdmin ? "/admin" : "/portal"}>CAMPUS</Link>
       </NavTitle>
       {currentUser && (
         <>
