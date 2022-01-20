@@ -179,6 +179,8 @@ public class AdminControllerREST {
                     .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "first")
                     .link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getTotal()).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "last")
                     .build(); //TODO: este CourseDto estaria bueno que tenga el link al enroll de ese curso
+
+            //TODO: si hay una unica pagina de contenido, se deberia incluir los links?
         }
     }
 
