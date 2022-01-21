@@ -5,6 +5,7 @@ import {
 import { useCourseData } from "../../../components/layouts/CourseLayout";
 import { Link } from "react-router-dom";
 import { MailIcon, TeacherIcon, TeacherUnit } from "./styles";
+import React from "react";
 
 interface Teacher {
   image: FileList | null;

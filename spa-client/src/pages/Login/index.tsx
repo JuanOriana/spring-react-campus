@@ -8,6 +8,7 @@ import { LoginWrapper, LoginInput, LoginButton, LoginLabel } from "./styles";
 import { useAuth } from "../../contexts/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import React from "react";
 
 type FormData = {
   username: string;

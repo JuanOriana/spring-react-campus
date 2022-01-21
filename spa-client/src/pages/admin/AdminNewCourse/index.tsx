@@ -9,7 +9,7 @@ import {
 } from "../../../components/generalStyles/form";
 import { FormText } from "../AdminAllCourses/styles";
 import { GeneralTitle } from "../../../components/generalStyles/utils";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 const days: string[] = [

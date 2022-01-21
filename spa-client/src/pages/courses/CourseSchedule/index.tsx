@@ -2,6 +2,7 @@ import {
   BigWrapper,
   SectionHeading,
 } from "../../../components/generalStyles/utils";
+import React from "react";
 
 const times = [
   { begin: { hour: 18, minute: 30 }, end: { hour: 21, minute: 30 } },

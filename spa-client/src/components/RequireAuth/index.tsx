@@ -6,7 +6,7 @@ import {
   Location,
   To,
 } from "react-router-dom";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 function getCorrectPrivilegeRoute(isAdmin: boolean, location: Location): To {
   const startsWithAdmin = location.pathname.startsWith("/admin");

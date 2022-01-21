@@ -6,7 +6,7 @@ import {
   FormWrapper,
 } from "../../../components/generalStyles/form";
 import { GeneralTitle } from "../../../components/generalStyles/utils";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function AdminSelectCourse() {

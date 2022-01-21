@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { SectionHeading } from "../../components/generalStyles/utils";
-import {
-  PaginationArrow,
-  PaginationWrapper,
-} from "../../components/generalStyles/pagination";
 import { usePagination } from "../../hooks/usePagination";
 import { Link } from "react-router-dom";
 import AnnouncementUnit from "../../components/AnnouncementUnit";

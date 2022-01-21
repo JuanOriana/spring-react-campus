@@ -7,7 +7,7 @@ import {
   FormWrapper,
 } from "../../../components/generalStyles/form";
 import { GeneralTitle } from "../../../components/generalStyles/utils";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 type FormData = {

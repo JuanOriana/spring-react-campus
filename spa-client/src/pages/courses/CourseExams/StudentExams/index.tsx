@@ -3,6 +3,8 @@ import {
   SectionHeading,
 } from "../../../../components/generalStyles/utils";
 import ExamUnit from "../../../../components/ExamUnit";
+import React from "react";
+
 function StudentExams() {
   const unresolvedExams = [{ examId: 1, title: "Examen" }];
   const answerMarks = [

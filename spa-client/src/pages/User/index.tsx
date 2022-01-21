@@ -2,6 +2,7 @@ import { BigWrapper } from "../../components/generalStyles/utils";
 import { useForm } from "react-hook-form";
 import { ErrorMessage, FormLabel } from "../../components/generalStyles/form";
 import { UserSectionWrapper, UserSectionImg } from "./styles";
+import React from "react";
 
 type FormData = {
   image?: FileList;

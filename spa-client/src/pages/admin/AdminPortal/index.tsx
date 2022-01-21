@@ -1,4 +1,5 @@
 import { AdminTitle, LinkRedirectionButton } from "./styles";
+import React from "react";
 
 function AdminPortal() {
   return (

@@ -15,6 +15,7 @@ import {
 } from "../../../components/generalStyles/pagination";
 import { UserColumn, UserContainer, BackImg } from "./styles";
 import { useForm } from "react-hook-form";
+import React from "react";
 
 type FormData = {
   userId: number;

@@ -1,4 +1,5 @@
 import { ErrorTitle, BackToPortalButton } from "./styles";
+import React from "react";
 
 function Custom404() {
   return (

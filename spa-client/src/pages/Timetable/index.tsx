@@ -1,5 +1,6 @@
 import { TimetableLayout, Days, Time } from "./styles";
 import { SectionHeading } from "../../components/generalStyles/utils";
+import React from "react";
 
 function Timetable() {
   const days: string[] = [
