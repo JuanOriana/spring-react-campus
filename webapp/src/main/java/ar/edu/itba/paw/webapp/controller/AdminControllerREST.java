@@ -173,14 +173,21 @@ public class AdminControllerREST {
             }
 
             coursesPaginated.getContent().sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
-            return Response.ok( new GenericEntity<List<CourseDto>>(coursesPaginated.getContent().stream().map(CourseDto::fromCourse).collect(Collectors.toList())){})
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", (coursesPaginated.getPage() < (coursesPaginated.getTotal()/coursesPaginated.getSize())-1)? coursesPaginated.getPage() + 1: coursesPaginated.getPage()).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "next")
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", Math.max(coursesPaginated.getPage() - 1, 1)).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "prev")
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "first")
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getTotal()).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "last")
-                    .build(); //TODO: este CourseDto estaria bueno que tenga el link al enroll de ese curso
 
-            //TODO: si hay una unica pagina de contenido, se deberia incluir los links?
+            Response.ResponseBuilder response = Response.ok( new GenericEntity<List<CourseDto>>(coursesPaginated.getContent().stream().map(CourseDto::fromCourse).collect(Collectors.toList())){})
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "first")
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getTotal()).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "last");
+
+            if (!coursesPaginated.getPage().equals(coursesPaginated.getTotal())){
+                response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getPage() + 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "next");
+            }
+
+            if (coursesPaginated.getPage() > 1){
+                response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getPage() - 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "prev");
+            }
+
+
+            return response.build(); //TODO: este CourseDto estaria bueno que tenga el link al enroll de ese curso
         }
     }
 

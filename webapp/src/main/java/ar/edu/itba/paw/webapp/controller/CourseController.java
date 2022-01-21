@@ -216,12 +216,19 @@ public class CourseController {
                 return Response.ok(Response.Status.NO_CONTENT).build();
             }
 
-            return Response.ok( new GenericEntity<List<UserDto>>(enrolledStudents.getContent().stream().map(UserDto::fromUser).collect(Collectors.toList()) ){} )
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getPage() + 1).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "next") //TODO: condicionar esto a si es que tiene un next
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", Math.max(enrolledStudents.getPage() - 1, 1)).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "prev")
+            Response.ResponseBuilder response = Response.ok( new GenericEntity<List<UserDto>>(enrolledStudents.getContent().stream().map(UserDto::fromUser).collect(Collectors.toList()) ){} )
                     .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "first")
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getTotal()).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "last")
-                    .build();
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getTotal()).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "last");
+
+            if (!enrolledStudents.getPage().equals(enrolledStudents.getTotal())){
+                response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getPage() + 1).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "next");
+            }
+
+            if (enrolledStudents.getPage() > 1){
+                response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getPage() - 1).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "prev");
+            }
+
+            return response.build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
