@@ -10,11 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class TimetableServiceImpl implements TimetableService {
 
+    private static final String[] hours = {"08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00",
+            "17:00","18:00","19:00","20:00","21:00","22:00"};
 
     private final TimetableDao timetableDaoDao;
 
@@ -45,6 +48,32 @@ public class TimetableServiceImpl implements TimetableService {
     @Override
     public List<Timetable> findById(Long courseId) {
         return timetableDaoDao.findById(courseId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Integer> getStartTimesOf(Long courseId){
+        List<Integer> startTimes = new ArrayList<>();
+        for (String h : hours){
+            startTimes.add(null);
+        }
+        for (Timetable timetable : findById(courseId)){
+            startTimes.add(timetable.getDayOfWeek(), timetable.getBegins().getHour() * 100 + timetable.getBegins().getMinute());
+        }
+        return startTimes;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Integer> getEndTimesOf(Long courseId){
+        List<Integer> endTimes = new ArrayList<>();
+        for (String h : hours){
+            endTimes.add(null);
+        }
+        for (Timetable timetable : findById(courseId)){
+            endTimes.add(timetable.getDayOfWeek(), timetable.getEnd().getHour() * 100 + timetable.getEnd().getMinute());
+        }
+        return endTimes;
     }
 
 

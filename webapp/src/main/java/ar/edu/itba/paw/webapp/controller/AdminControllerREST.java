@@ -1,10 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.interfaces.CourseService;
-import ar.edu.itba.paw.interfaces.RoleService;
-import ar.edu.itba.paw.interfaces.SubjectService;
-import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
@@ -20,9 +18,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Path("admin")
@@ -47,6 +43,9 @@ public class AdminControllerREST {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private TimetableService timetableService;
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
 
@@ -129,6 +128,41 @@ public class AdminControllerREST {
                     courseForm.getBoard(), courseForm.getSubjectId(), course.getCourseId());
             URI enrollUsers = new URI(uriInfo.getBaseUri().normalize() + "admin/course/" + course.getCourseId() + "/enroll"); //TODO: rev si termina quedando asi
             return Response.seeOther(enrollUsers).status(Response.Status.SEE_OTHER).build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @GET
+    @Path("/course/{courseId}/edit")
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response editCourse(@PathParam("courseId") Long courseId) throws DtoValidationException {
+
+        if (!isAdminUser()){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        if (courseId != null){
+            return Response.ok(CourseFormDto.fromCourse(courseService.findById(courseId).orElseThrow(CourseNotFoundException::new), timetableService.getStartTimesOf(courseId), timetableService.getEndTimesOf(courseId))).build();
+        }
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @PUT
+    @Path("/course/{courseId}/edit")
+    @Consumes(value = {MediaType.APPLICATION_JSON})
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response editCourse(@PathParam("courseId") Long courseId, @Valid CourseFormDto courseForm) throws DtoValidationException{ //TODO: startTimes y endTimes
+        if (!isAdminUser()){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        if(courseForm != null) {
+            if (courseService.update(courseId, courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard(), courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes())){
+                LOGGER.debug("Updated course in year {} in quarter {} of subjectId {} with id {}", courseForm.getYear(),
+                        courseForm.getBoard(), courseForm.getSubjectId(), courseId);
+                return Response.ok(Response.Status.ACCEPTED).build(); //TODO: ver si retornar algo mas
+            }
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }

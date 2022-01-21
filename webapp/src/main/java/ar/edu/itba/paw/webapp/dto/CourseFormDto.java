@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Timetable;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -33,6 +35,21 @@ public class CourseFormDto {
     private List<Integer> startTimes = Arrays.asList(new Integer[7]);
 
     private List<Integer> endTimes = Arrays.asList(new Integer[7]);
+
+    public static CourseFormDto fromCourse(Course course, List<Integer> startTimes, List<Integer> endTimes){
+        if (course == null || startTimes == null || endTimes == null){
+            return null;
+        }
+
+        CourseFormDto dto = new CourseFormDto();
+        dto.board = course.getBoard();
+        dto.quarter = course.getQuarter();
+        dto.subjectId = course.getSubject().getSubjectId();
+        dto.year = course.getYear();
+        dto.startTimes = startTimes;
+        dto.endTimes = endTimes;
+        return dto;
+    }
 
     public Long getSubjectId() {
         return subjectId;

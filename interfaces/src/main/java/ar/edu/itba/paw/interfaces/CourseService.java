@@ -22,6 +22,20 @@ public interface CourseService {
     /**
      * Attempts to update a course
      * @param id of the course to be modified
+     * @param year of the course
+     * @param quarter of the course
+     * @param board code of the course
+     * @param subjectId of the subject associated to the course
+     * @param startTimes list of starting times for the course
+     * @param endTimes list of ending times for the course
+     * @return true if the course was successfully updated, false otherwise
+     */
+    boolean update(Long id, Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
+                          List<Integer> endTimes);
+
+    /**
+     * Attempts to update a course
+     * @param id of the course to be modified
      * @param course modified course
      * @return true if the course was successfully updated, false otherwise
      */

@@ -43,6 +43,22 @@ public interface TimetableService {
     List<Timetable> findById(Long courseId);
 
     /**
+     * Attempts to get the timetable start times of the given id
+     *
+     * @param courseId of the course to get the timetable from
+     * @return list of timetables start times for the given courseId
+     */
+    List<Integer> getStartTimesOf(Long courseId);
+
+    /**
+     * Attempts to get the timetable end times of the given id
+     *
+     * @param courseId of the course to get the timetable from
+     * @return list of timetables end times for the given courseId
+     */
+    List<Integer> getEndTimesOf(Long courseId);
+
+    /**
      * Attempts to get the timetable of the given id ordered in each day
      *
      * @param courseId of the course to get the timetable from
