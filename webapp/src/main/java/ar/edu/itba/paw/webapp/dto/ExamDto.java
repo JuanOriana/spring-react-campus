@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Exam;
 
+import javax.ws.rs.core.UriInfo;
 import java.time.LocalDateTime;
 
 public class ExamDto {
@@ -19,6 +20,10 @@ public class ExamDto {
     private String description;
 
     private FileModelDto examFile;
+
+    private Double average;
+
+    private String url;
 
 
     public Long getExamId() {
@@ -77,7 +82,24 @@ public class ExamDto {
         this.examFile = examFile;
     }
 
-    public static ExamDto fromExam(Exam exam){
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Double getAverage() {
+        return average;
+    }
+
+    public void setAverage(Double average) {
+        this.average = average;
+    }
+
+
+    public static ExamDto fromExam(UriInfo uriInfo, Exam exam,Double average){
         if (exam == null){
             return null;
         }
@@ -90,6 +112,9 @@ public class ExamDto {
         examDto.setEndTime(exam.getEndTime());
         examDto.setStartTime(exam.getStartTime());
         examDto.setTitle(exam.getTitle());
+        examDto.setAverage(average);
+
+        examDto.setUrl(uriInfo.getBaseUriBuilder().path("exams").path(String.valueOf(exam.getCourse().getCourseId())).path(String.valueOf(exam.getExamId())).build().toString());
 
         return examDto;
     }
