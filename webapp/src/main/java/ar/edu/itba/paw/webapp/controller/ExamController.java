@@ -42,7 +42,7 @@ public class ExamController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExamController.class);
 
     @GET
-    @Path("/unresolved/{courseId}")
+    @Path("/unsolved/{courseId}")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getUnresolvedExams(@PathParam("courseId") Long courseId){
         Long userId = authFacade.getCurrentUserId();
@@ -55,7 +55,7 @@ public class ExamController {
     }
 
     @GET
-    @Path("/resolved/{courseId}")
+    @Path("/solved/{courseId}")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getResolvedExams(@PathParam("courseId") Long courseId){
        Long userId = authFacade.getCurrentUserId();
@@ -71,26 +71,30 @@ public class ExamController {
 
 
     @GET
-    @Path("/{courseId}")
     @Produces(value={MediaType.APPLICATION_JSON,})
-    public Response getExams(@PathParam("courseId") Long courseId){
+    public Response getCourseExams(@QueryParam("courseId") Long courseId){
+        if(courseId==null){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         return  Response.ok(new GenericEntity<List<ExamDto>>(examService.listByCourse(courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
     }
 
     @GET
-    @Path("/{courseId}/{examId}")
+    @Path("/{examId}")
     @Produces(value={MediaType.APPLICATION_JSON,})
-    public Response getExams(@PathParam("courseId") Long courseId,@PathParam("examId")Long examId){
+    public Response getExams(@PathParam("examId")Long examId){
         ExamDto exam = ExamDto.fromExam(uriInfo,examService.findById(examId).orElseThrow(ExamNotFoundException::new), examService.getAverageScoreOfExam(examId));
-
         return  Response.ok(exam).build();
     }
 
     @POST
-    @Path("/{courseId}")
     @Consumes(value={MediaType.APPLICATION_JSON,})
     @Produces(value ={MediaType.APPLICATION_JSON,})
-    public Response newExam(@Valid ExamFormDto examFormDto, @PathParam("courseId")Long courseId){
+    public Response newExam(@Valid ExamFormDto examFormDto,@QueryParam("courseId") Long courseId){ //TODO: Revisar si esta forma de pasar el courseId es correcta
+
+        if(courseId==null){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         Long userId = authFacade.getCurrentUserId();
 
         if(!courseService.isPrivileged(userId,courseId)){
@@ -110,11 +114,12 @@ public class ExamController {
 
 
     @DELETE
-    @Path("/{courseId}/{examId}")
-    public Response deleteExam(@PathParam("courseId")Long courseId,@PathParam("examId") Long examId){
+    @Path("/{examId}")
+    public Response deleteExam(@PathParam("examId") Long examId){
         Long userId = authFacade.getCurrentUserId();
+        Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
 
-        if(courseService.isPrivileged(userId, courseId)){
+        if(courseService.isPrivileged(userId, exam.getCourse().getCourseId())){
             if(examService.delete(examId)){
                 LOGGER.debug("User with id {} deleted exam with id {}",userId,examId);
                 return Response.ok().build();
