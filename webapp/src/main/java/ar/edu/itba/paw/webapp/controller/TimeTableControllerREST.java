@@ -5,11 +5,10 @@ import ar.edu.itba.paw.interfaces.TimetableService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Timetable;
 import ar.edu.itba.paw.webapp.dto.CourseDto;
-import ar.edu.itba.paw.webapp.security.model.CampusUser;
+import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -38,21 +37,15 @@ public class TimeTableControllerREST {
     @Autowired
     private TimetableService timetableService;
 
-    private Long getCurrentUserId(){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof CampusUser) {
-            return ((CampusUser)principal).getUserId();
-        } else {
-            return null;
-        }
-    }
+    @Autowired
+    private AuthFacade authFacade;
 
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response timeTable() throws JsonProcessingException {
         Map<Course, List<Timetable>> courseTimetables = new HashMap<>();
 
-        List<Course> courses = courseService.listCurrent(getCurrentUserId());
+        List<Course> courses = courseService.listCurrent(authFacade.getCurrentUserId());
 
         for (Course course: courses) {
             courseTimetables.put(course, timetableService.findById(course.getCourseId()));

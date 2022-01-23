@@ -66,7 +66,7 @@ public class AdminControllerREST {
     public Response getNextFileNumber(){
 
         if (!isAdminUser()){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         return Response.ok(NextFileNumberDto.fromNextFileNumber(userService.getMaxFileNumber() + 1)).build();
@@ -79,7 +79,7 @@ public class AdminControllerREST {
     public Response newUser(@Valid UserRegisterFormDto userRegisterForm) throws DtoValidationException {
 
         if (!isAdminUser()){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         if (userRegisterForm != null) {
@@ -99,7 +99,7 @@ public class AdminControllerREST {
     public Response getSubjects(){
 
         if (!isAdminUser()){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         List<Subject> subjects = subjectService.list();
@@ -118,7 +118,7 @@ public class AdminControllerREST {
     public Response newCourse(@Valid CourseFormDto courseForm) throws DtoValidationException, URISyntaxException { //TODO: startTimes y endTimes
 
         if (!isAdminUser()){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         if(courseForm != null) {
@@ -138,7 +138,7 @@ public class AdminControllerREST {
     public Response editCourse(@PathParam("courseId") Long courseId) throws DtoValidationException {
 
         if (!isAdminUser()){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         if (courseId != null){
@@ -154,7 +154,7 @@ public class AdminControllerREST {
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response editCourse(@PathParam("courseId") Long courseId, @Valid CourseFormDto courseForm) throws DtoValidationException{ //TODO: startTimes y endTimes
         if (!isAdminUser()){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         if(courseForm != null) {
@@ -173,7 +173,7 @@ public class AdminControllerREST {
     public Response getCourses(@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize, @QueryParam("year") Integer year, @QueryParam("quarter") Integer quarter){
 
         if (!isAdminUser()){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         CampusPage<Course> coursesPaginated;
@@ -233,7 +233,7 @@ public class AdminControllerREST {
     public Response addUserToCourse(@PathParam("courseId") Long courseId) throws DtoValidationException{
 
         if (!isAdminUser()){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         if (courseId != null){
@@ -256,7 +256,7 @@ public class AdminControllerREST {
     public Response addUserToCourse(@Valid UserToCourseFormDto userToCourseForm, @PathParam("courseId") Long courseId) throws DtoValidationException, URISyntaxException {
 
         if (!isAdminUser()){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         if (userToCourseForm != null){

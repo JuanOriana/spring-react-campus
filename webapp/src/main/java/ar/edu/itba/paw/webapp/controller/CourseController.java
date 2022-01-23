@@ -14,14 +14,13 @@ import ar.edu.itba.paw.webapp.dto.AnnouncementFormDto;
 import ar.edu.itba.paw.webapp.dto.CourseDto;
 import ar.edu.itba.paw.webapp.dto.UserDto;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
-import ar.edu.itba.paw.webapp.security.model.CampusUser;
+import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import javax.validation.Valid;
@@ -53,17 +52,10 @@ public class CourseController {
     @Autowired
     private FileService fileService;
 
+    @Autowired
+    private AuthFacade authFacade;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
-
-
-    private Long getCurrentUserId(){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof CampusUser) {
-            return ((CampusUser)principal).getUserId();
-        } else {
-            return null;
-        }
-    }
 
     @Path("/files")
     @POST
@@ -123,7 +115,7 @@ public class CourseController {
                                             .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).build().toString(), "first")
                                             .link(uriInfo.getAbsolutePathBuilder().queryParam("page", announcementsPaginated.getTotal()).queryParam("pageSize", pageSize).build().toString(), "last");
 
-        if(announcementsPaginated.getPage() != announcementsPaginated.getTotal()){
+        if(!announcementsPaginated.getPage().equals(announcementsPaginated.getTotal())){
             response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",(announcementsPaginated.getPage() < (announcementsPaginated.getTotal()/announcementsPaginated.getSize()))? announcementsPaginated.getPage() + 1: announcementsPaginated.getPage()).queryParam("pageSize", pageSize).build().toString(), "next");
 
         }
@@ -140,7 +132,7 @@ public class CourseController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response newAnnouncement(@PathParam("courseId") Long courseId, @Valid AnnouncementFormDto announcementFormDto) throws DtoValidationException{
-        Long userId = getCurrentUserId();
+        Long userId = authFacade.getCurrentUserId();
 
         if(userId==null){
             return Response.status(Response.Status.FORBIDDEN).build();
@@ -156,7 +148,7 @@ public class CourseController {
 
             return Response.ok(AnnouncementDto.fromAnnouncement(announcement)).status(Response.Status.CREATED).build();
         }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+        return Response.status(Response.Status.FORBIDDEN).build();
     }
 
     @GET

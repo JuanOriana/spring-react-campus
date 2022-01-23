@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.webapp.dto.AnnouncementDto;
 import ar.edu.itba.paw.webapp.security.model.CampusUser;
+import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,21 +31,15 @@ public class AnnouncementsControllerREST {
     @Autowired
     private AnnouncementService announcementService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsControllerREST.class);
+    @Autowired
+    private AuthFacade authFacade;
 
-    private Long getCurrentUserId(){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof CampusUser) {
-            return ((CampusUser)principal).getUserId();
-        } else {
-            return null;
-        }
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsControllerREST.class);
 
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getAllAnnouncements(@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize){
-        Long userId = getCurrentUserId();
+        Long userId = authFacade.getCurrentUserId();
 
         if(userId==null){
             return Response.status(Response.Status.FORBIDDEN).build();

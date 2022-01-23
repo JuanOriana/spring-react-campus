@@ -7,11 +7,10 @@ import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.ExamDto;
 import ar.edu.itba.paw.webapp.dto.ExamFormDto;
-import ar.edu.itba.paw.webapp.security.model.CampusUser;
+import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import javax.validation.Valid;
@@ -37,46 +36,35 @@ public class ExamController {
     @Autowired
     private DtoConstraintValidator dtoValidator;
 
+    @Autowired
+    private AuthFacade authFacade;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ExamController.class);
-
-
-    private Long getCurrentUserId(){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof CampusUser) {
-            return ((CampusUser)principal).getUserId();
-        } else {
-            return null;
-        }
-    }
 
     @GET
     @Path("/unresolved/{courseId}")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getUnresolvedExams(@PathParam("courseId") Long courseId){
-        Object userPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = authFacade.getCurrentUserId();
 
-        CampusUser user = (CampusUser) userPrincipal;
-
-        if(courseService.isPrivileged(user.getUserId(), courseId) || !courseService.belongs(user.getUserId(), courseId)){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+        if(courseService.isPrivileged(userId, courseId) || !courseService.belongs(userId, courseId)){
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
-        return  Response.ok(new GenericEntity<List<ExamDto>>(examService.getUnresolvedExams(user.getUserId(), courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
+        return  Response.ok(new GenericEntity<List<ExamDto>>(examService.getUnresolvedExams(userId, courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
     }
 
     @GET
     @Path("/resolved/{courseId}")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getResolvedExams(@PathParam("courseId") Long courseId){
-        Object userPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       Long userId = authFacade.getCurrentUserId();
 
-        CampusUser user = (CampusUser) userPrincipal;
-
-        if(courseService.isPrivileged(user.getUserId(), courseId) || !courseService.belongs(user.getUserId(), courseId)){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+        if(courseService.isPrivileged(userId, courseId) || !courseService.belongs(userId, courseId)){
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
-        return  Response.ok(new GenericEntity<List<ExamDto>>(examService.getResolvedExams(user.getUserId(), courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
+        return  Response.ok(new GenericEntity<List<ExamDto>>(examService.getResolvedExams(userId, courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
     }
 
 
@@ -103,10 +91,10 @@ public class ExamController {
     @Consumes(value={MediaType.APPLICATION_JSON,})
     @Produces(value ={MediaType.APPLICATION_JSON,})
     public Response newExam(@Valid ExamFormDto examFormDto, @PathParam("courseId")Long courseId){
-        Long userId = getCurrentUserId();
+        Long userId = authFacade.getCurrentUserId();
 
         if(!courseService.isPrivileged(userId,courseId)){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         dtoValidator.validate(examFormDto, "Failed to validate new exam attributes");
@@ -124,7 +112,7 @@ public class ExamController {
     @DELETE
     @Path("/{courseId}/{examId}")
     public Response deleteExam(@PathParam("courseId")Long courseId,@PathParam("examId") Long examId){
-        Long userId = getCurrentUserId();
+        Long userId = authFacade.getCurrentUserId();
 
         if(courseService.isPrivileged(userId, courseId)){
             if(examService.delete(examId)){
@@ -135,7 +123,7 @@ public class ExamController {
             }
         }
 
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+        return Response.status(Response.Status.FORBIDDEN).build();
     }
 
 }
