@@ -53,6 +53,12 @@ public class CourseController {
     @Autowired
     private ExamService examService;
 
+    @Autowired
+    private ResponsePaging<Announcement> announcementResponsePaging;
+
+    @Autowired
+    private ResponsePaging<User> userResponsePaging;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
     @Path("/files")
@@ -109,19 +115,10 @@ public class CourseController {
             return Response.noContent().build();
         }
 
-        Response.ResponseBuilder response = Response.ok(new GenericEntity<List<AnnouncementDto>>(announcementsPaginated.getContent().stream().map(AnnouncementDto::fromAnnouncement).collect(Collectors.toList())){})
-                                            .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).build().toString(), "first")
-                                            .link(uriInfo.getAbsolutePathBuilder().queryParam("page", announcementsPaginated.getTotal()).queryParam("pageSize", pageSize).build().toString(), "last");
+        Response.ResponseBuilder response = Response.ok(new GenericEntity<List<AnnouncementDto>>(announcementsPaginated.getContent().stream().map(AnnouncementDto::fromAnnouncement).collect(Collectors.toList())){});
 
-        if(!announcementsPaginated.getPage().equals(announcementsPaginated.getTotal())){
-            response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",(announcementsPaginated.getPage() < (announcementsPaginated.getTotal()/announcementsPaginated.getSize()))? announcementsPaginated.getPage() + 1: announcementsPaginated.getPage()).queryParam("pageSize", pageSize).build().toString(), "next");
+        announcementResponsePaging.paging(announcementsPaginated, response, uriInfo, pageSize);
 
-        }
-
-        if(announcementsPaginated.getPage() > 1){
-            response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", Math.max(announcementsPaginated.getPage() - 1, 1)).queryParam("pageSize", pageSize).build().toString(), "prev");
-
-        }
         return response.build();
     }
 
@@ -206,17 +203,9 @@ public class CourseController {
                 return Response.ok(Response.Status.NO_CONTENT).build();
             }
 
-            Response.ResponseBuilder response = Response.ok( new GenericEntity<List<UserDto>>(enrolledStudents.getContent().stream().map(UserDto::fromUser).collect(Collectors.toList()) ){} )
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "first")
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getTotal()).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "last");
+            Response.ResponseBuilder response = Response.ok( new GenericEntity<List<UserDto>>(enrolledStudents.getContent().stream().map(UserDto::fromUser).collect(Collectors.toList()) ){} );
 
-            if (!enrolledStudents.getPage().equals(enrolledStudents.getTotal())){
-                response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getPage() + 1).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "next");
-            }
-
-            if (enrolledStudents.getPage() > 1){
-                response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", enrolledStudents.getPage() - 1).queryParam("pageSize", pageSize).queryParam("courseId", courseId).build().toString(), "prev");
-            }
+            userResponsePaging.paging(enrolledStudents, response, uriInfo, pageSize);
 
             return response.build();
         }

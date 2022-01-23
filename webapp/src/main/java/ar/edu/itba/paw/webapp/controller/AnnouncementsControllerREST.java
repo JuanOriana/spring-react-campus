@@ -5,13 +5,11 @@ import ar.edu.itba.paw.interfaces.AnnouncementService;
 import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.webapp.dto.AnnouncementDto;
-import ar.edu.itba.paw.webapp.security.model.CampusUser;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -34,6 +32,10 @@ public class AnnouncementsControllerREST {
     @Autowired
     private AuthFacade authFacade;
 
+    @Autowired
+    private ResponsePaging<Announcement> announcementResponsePaging;
+
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsControllerREST.class);
 
     @GET
@@ -49,19 +51,10 @@ public class AnnouncementsControllerREST {
         if(announcementsPaginated.getContent().isEmpty()){
             return Response.noContent().build();
         }
-        Response.ResponseBuilder response = Response.ok(new GenericEntity<List<AnnouncementDto>>(announcementsPaginated.getContent().stream().map(AnnouncementDto::fromAnnouncement).collect(Collectors.toList())){})
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).build().toString(), "first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", announcementsPaginated.getTotal()).queryParam("pageSize", pageSize).build().toString(), "last");
+        Response.ResponseBuilder response = Response.ok(new GenericEntity<List<AnnouncementDto>>(announcementsPaginated.getContent().stream().map(AnnouncementDto::fromAnnouncement).collect(Collectors.toList())){});
 
-        if(announcementsPaginated.getPage() != announcementsPaginated.getTotal()){
-            response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",(announcementsPaginated.getPage() < (announcementsPaginated.getTotal()/announcementsPaginated.getSize()))? announcementsPaginated.getPage() + 1: announcementsPaginated.getPage()).queryParam("pageSize", pageSize).build().toString(), "next");
+        announcementResponsePaging.paging(announcementsPaginated, response, uriInfo, pageSize);
 
-        }
-
-        if(announcementsPaginated.getPage() > 1){
-            response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", Math.max(announcementsPaginated.getPage() - 1, 1)).queryParam("pageSize", pageSize).build().toString(), "prev");
-
-        }
         return response.build();
     }
 

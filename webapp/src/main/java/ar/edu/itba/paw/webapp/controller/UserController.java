@@ -16,7 +16,7 @@ import java.util.List;
 @Component
 public class UserController {
     @Autowired
-    private UserService us;
+    private UserService userService;
 
     @Context
     private UriInfo uriInfo;
@@ -24,7 +24,7 @@ public class UserController {
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response listUsers() {
-        final List<User> allUsers = us.list();
+        final List<User> allUsers = userService.list();
         return Response.ok(new GenericEntity<List<User>>(allUsers) {}).build();
     }
 }

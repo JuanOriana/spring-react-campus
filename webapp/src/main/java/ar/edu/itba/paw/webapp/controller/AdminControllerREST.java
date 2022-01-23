@@ -47,6 +47,9 @@ public class AdminControllerREST {
     @Autowired
     private TimetableService timetableService;
 
+    @Autowired
+    private ResponsePaging<Course> courseResponsePaging;
+
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
 
     //TODO: pasar cada metodo a su controller correspondiente
@@ -208,18 +211,9 @@ public class AdminControllerREST {
 
             coursesPaginated.getContent().sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
 
-            Response.ResponseBuilder response = Response.ok( new GenericEntity<List<CourseDto>>(coursesPaginated.getContent().stream().map(CourseDto::fromCourse).collect(Collectors.toList())){})
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "first")
-                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getTotal()).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "last");
+            Response.ResponseBuilder response = Response.ok( new GenericEntity<List<CourseDto>>(coursesPaginated.getContent().stream().map(CourseDto::fromCourse).collect(Collectors.toList())){});
 
-            if (!coursesPaginated.getPage().equals(coursesPaginated.getTotal())){
-                response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getPage() + 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "next");
-            }
-
-            if (coursesPaginated.getPage() > 1){
-                response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", coursesPaginated.getPage() - 1).queryParam("pageSize", pageSize).queryParam("year", year).queryParam("quarter", quarter).build().toString(), "prev");
-            }
-
+            courseResponsePaging.paging(coursesPaginated, response, uriInfo, pageSize);
 
             return response.build(); //TODO: este CourseDto estaria bueno que tenga el link al enroll de ese curso
         }
