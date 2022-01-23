@@ -1,18 +1,12 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.interfaces.AnnouncementService;
-import ar.edu.itba.paw.interfaces.CourseService;
-import ar.edu.itba.paw.interfaces.FileService;
-import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.models.exception.FileNotFoundException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
-import ar.edu.itba.paw.webapp.dto.AnnouncementDto;
-import ar.edu.itba.paw.webapp.dto.AnnouncementFormDto;
-import ar.edu.itba.paw.webapp.dto.CourseDto;
-import ar.edu.itba.paw.webapp.dto.UserDto;
+import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import org.apache.commons.io.IOUtils;
@@ -28,6 +22,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.*;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +49,9 @@ public class CourseController {
 
     @Autowired
     private AuthFacade authFacade;
+
+    @Autowired
+    private ExamService examService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
@@ -225,7 +223,68 @@ public class CourseController {
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-//    @GET
+
+
+    @GET
+    @Path("/exams")
+    @Produces(value={MediaType.APPLICATION_JSON,})
+    public Response getCourseExams(@PathParam("courseId") Long courseId){
+        return  Response.ok(new GenericEntity<List<ExamDto>>(examService.listByCourse(courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
+    }
+
+
+
+    @POST
+    @Path("/exams")
+    @Consumes(value={MediaType.APPLICATION_JSON,})
+    @Produces(value ={MediaType.APPLICATION_JSON,})
+    public Response newExam(@Valid ExamFormDto examFormDto,@PathParam("courseId") Long courseId){
+        Long userId = authFacade.getCurrentUserId();
+
+        if(!courseService.isPrivileged(userId,courseId)){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        dtoValidator.validate(examFormDto, "Failed to validate new exam attributes");
+        Exam exam = examService.create(courseId, examFormDto.getTitle(), examFormDto.getContent(),
+                examFormDto.getFile().getOriginalFilename(), examFormDto.getFile().getBytes(),
+                examFormDto.getFile().getSize(), LocalDateTime.parse(examFormDto.getStartTime()),
+                LocalDateTime.parse(examFormDto.getEndTime()));
+
+        LOGGER.debug("User with id {} created exam with id {}",userId,exam.getExamId());
+
+        return Response.ok(ExamDto.fromExam(uriInfo,exam,examService.getAverageScoreOfExam(exam.getExamId()))).build();
+    }
+
+
+
+    @GET
+    @Path("/exams/solved")
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response getResolvedExams(@PathParam("courseId") Long courseId){
+        Long userId = authFacade.getCurrentUserId();
+
+        if(courseService.isPrivileged(userId, courseId) || !courseService.belongs(userId, courseId)){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        return  Response.ok(new GenericEntity<List<ExamDto>>(examService.getResolvedExams(userId, courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
+    }
+
+    @GET
+    @Path("/exams/unsolved")
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response getUnresolvedExams(@PathParam("courseId") Long courseId){
+        Long userId = authFacade.getCurrentUserId();
+
+        if(courseService.isPrivileged(userId, courseId) || !courseService.belongs(userId, courseId)){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        return  Response.ok(new GenericEntity<List<ExamDto>>(examService.getUnresolvedExams(userId, courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
+    }
+
+    //    @GET
 //    @Path("/schedule")
 //    @Produces(value={MediaType.APPLICATION_JSON,})
 //    public Response getSchedule(@PathParam("courseId") Long courseId){
