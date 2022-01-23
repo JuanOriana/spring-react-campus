@@ -1,22 +1,22 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.interfaces.AnswerService;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.ExamService;
+import ar.edu.itba.paw.models.Answer;
+import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.exception.ExamNotFoundException;
-import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
+import ar.edu.itba.paw.webapp.dto.AnswerDto;
 import ar.edu.itba.paw.webapp.dto.ExamDto;
-import ar.edu.itba.paw.webapp.dto.ExamFormDto;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,10 +31,16 @@ public class ExamController {
     private CourseService courseService;
 
     @Autowired
+    private AnswerService answerService;
+
+    @Autowired
     private ExamService examService;
 
     @Autowired
     private AuthFacade authFacade;
+
+    @Autowired
+    private ResponsePaging<Answer> answerResponsePaging;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExamController.class);
 
@@ -64,5 +70,27 @@ public class ExamController {
 
         return Response.status(Response.Status.FORBIDDEN).build();
     }
+
+    @GET
+    @Path("/{examId}/answers")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response getAnswers(@PathParam("examId")Long examId,@QueryParam("filterBy")@DefaultValue("corrected")String filter,@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize){
+        Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
+
+        if(courseService.isPrivileged(authFacade.getCurrentUserId(),exam.getCourse().getCourseId())){
+            CampusPage<Answer> answersPaginated = answerService.getFilteredAnswers(examId, filter, page, pageSize);
+
+            Response.ResponseBuilder response = Response.ok(new GenericEntity<List<AnswerDto>>(answersPaginated.getContent().stream().map(answer-> AnswerDto.fromAnswer(uriInfo, answer)).collect(Collectors.toList())){});
+
+            answerResponsePaging.paging(answersPaginated, response, uriInfo, pageSize);
+
+            return response.build();
+        }
+
+        List<AnswerDto> answerDtos = answerService.getMarks(authFacade.getCurrentUserId(), exam.getCourse().getCourseId()).stream().map(answer -> AnswerDto.fromAnswer(uriInfo, answer)).collect(Collectors.toList());
+
+        return Response.ok(new GenericEntity<List<AnswerDto>>(answerDtos){}).build();
+    }
+
 
 }

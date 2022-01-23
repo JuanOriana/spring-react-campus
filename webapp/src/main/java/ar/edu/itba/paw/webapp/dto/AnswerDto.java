@@ -3,13 +3,16 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Answer;
 
+import javax.ws.rs.core.UriInfo;
 import java.time.LocalDateTime;
 
 public class AnswerDto {
 
     private Long answerId;
 
-    private ExamDto exam;
+    private String examUrl;
+
+    private String answerUrl;
 
     private LocalDateTime deliveredDate;
 
@@ -31,12 +34,12 @@ public class AnswerDto {
         this.answerId = answerId;
     }
 
-    public ExamDto getExam() {
-        return exam;
+    public String getExamUrl() {
+        return examUrl;
     }
 
-    public void setExam(ExamDto exam) {
-        this.exam = exam;
+    public void setExamUrl(String exam) {
+        this.examUrl = exam;
     }
 
     public LocalDateTime getDeliveredDate() {
@@ -87,7 +90,7 @@ public class AnswerDto {
         this.corrections = corrections;
     }
 
-    public static AnswerDto fromAnswer(Answer answer){
+    public static AnswerDto fromAnswer(UriInfo uriInfo,Answer answer){
         if(answer == null){
             return null;
         }
@@ -98,10 +101,11 @@ public class AnswerDto {
         answerDto.setAnswerId(answer.getAnswerId());
         answerDto.setCorrections(answer.getCorrections());
         answerDto.setScore(answerDto.getScore());
-        answerDto.setExam(ExamDto.fromExam(answer.getExam()));
+        answerDto.setExamUrl((uriInfo.getBaseUriBuilder().path("exams").path(String.valueOf(answer.getExam().getCourse().getCourseId())).path(String.valueOf(answer.getExam().getExamId())).build().toString()));
         answerDto.setStudent(UserDto.fromUser(answer.getStudent()));
         answerDto.setTeacher(UserDto.fromUser(answer.getTeacher()));
         answerDto.setDeliveredDate(answer.getDeliveredDate());
+        // answerDto.setAnswerUrl(); TODO: Agregar answer url cuando se cree el controller de answer
 
         return answerDto;
 
