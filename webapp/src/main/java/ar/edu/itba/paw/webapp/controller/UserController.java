@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.NextFileNumberDto;
 import ar.edu.itba.paw.webapp.dto.UserDto;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.io.ByteArrayInputStream;
 import java.util.List;
+import java.util.Optional;
 
 @Path("users")
 @Component
@@ -43,6 +46,34 @@ public class UserController {
         return Response.ok(new GenericEntity<List<User>>(allUsers) {}).build();
     }
 
+    @GET
+    @Path("/{userId}")
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response getUser(@PathParam("userId")Long userId){
+        Long currentUserId = authFacade.getCurrentUserId();
+
+        if(authFacade.isAdminUser() || currentUserId.equals(userId)){
+            User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
+            return Response.ok(UserDto.fromUser(user)).build();
+        }else{
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+    }
+
+    @GET
+    @Path("/{userId}/profile-image")
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response getUserProfileImage(@PathParam("userId")Long userId){
+        Optional<byte[]> image = userService.getProfileImage(userId);
+
+        if(image.isPresent()) {
+            Response.ResponseBuilder response = Response.ok(new ByteArrayInputStream(image.get()));
+            return response.build();
+        }
+
+        return Response.noContent().build();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
@@ -51,6 +82,7 @@ public class UserController {
         if (!authFacade.isAdminUser()){
             return Response.status(Response.Status.FORBIDDEN).build();
         }
+
 
         if (userRegisterForm != null) {
             dtoValidator.validate(userRegisterForm, "Failed to validate new user attributes");
