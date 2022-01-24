@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
-@Path("courses/{courseId}")
+@Path("courses")
 public class CourseController {
     @Context
     private UriInfo uriInfo;
@@ -68,7 +68,7 @@ public class CourseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
-    @Path("/files")
+    @Path("/{courseId}/files")
     @POST
     @Consumes(value = MediaType.MULTIPART_FORM_DATA)
     public Response uploadFile(@PathParam("courseId") Long courseId,
@@ -85,7 +85,7 @@ public class CourseController {
 
 
 
-    @Path("/files/{fileId}")
+    @Path("/{courseId}/files/{fileId}")
     @GET
     @Produces(value = MediaType.APPLICATION_OCTET_STREAM)
     public Response downloadFile(@PathParam("courseId") Long courseId,
@@ -97,8 +97,8 @@ public class CourseController {
         return response.build();
     }
 
-    @Path("/files/{fileId}")
     @DELETE
+    @Path("/{courseId}/files/{fileId}")
     public Response deleteFile(@PathParam("courseId") Long courseId,
                                @PathParam("fileId") Long fileId) {
         if(!fileService.delete(fileId)) throw new FileNotFoundException();
@@ -114,7 +114,6 @@ public class CourseController {
     }
 
     @POST
-    @Path("/course/new")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response newCourse(@Valid CourseFormDto courseForm) throws DtoValidationException, URISyntaxException { //TODO: startTimes y endTimes
@@ -135,7 +134,6 @@ public class CourseController {
     }
 
     @GET
-    @Path("/courses")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getCourses(@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize, @QueryParam("year") Integer year, @QueryParam("quarter") Integer quarter) {
 
@@ -184,7 +182,7 @@ public class CourseController {
     }
 
     @GET
-    @Path("/announcements")
+    @Path("/{courseId}/announcements")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getAnnouncements(@PathParam("courseId") Long courseId,@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize){
         CampusPage<Announcement> announcementsPaginated = announcementService.listByCourse(courseId,page,pageSize );
@@ -200,15 +198,11 @@ public class CourseController {
     }
 
     @POST
-    @Path("/announcements")
+    @Path("/{courseId}/announcements")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response newAnnouncement(@PathParam("courseId") Long courseId, @Valid AnnouncementFormDto announcementFormDto) throws DtoValidationException{
         Long userId = authFacade.getCurrentUserId();
-
-        if(userId==null){
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
 
         if(courseService.isPrivileged(userId, courseId)){
             dtoValidator.validate(announcementFormDto, "Failed to validate new announcement attributes");
@@ -224,6 +218,7 @@ public class CourseController {
     }
 
     @GET
+    @Path("/{courseId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getCourse(@PathParam("courseId") Long courseId) throws DtoValidationException{
@@ -235,7 +230,7 @@ public class CourseController {
     }
 
     @GET
-    @Path("/teachers")
+    @Path("/{courseId}/teachers")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getCourseTeachers(@PathParam("courseId") Long courseId) throws DtoValidationException{
@@ -252,7 +247,7 @@ public class CourseController {
     }
 
     @GET
-    @Path("/helpers")
+    @Path("/{courseId}/helpers")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getCourseHelpers(@PathParam("courseId") Long courseId) throws DtoValidationException{
@@ -269,7 +264,7 @@ public class CourseController {
     }
 
     @GET
-    @Path("/students")
+    @Path("/{courseId}/students")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getCourseStudents(@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize, @PathParam("courseId") Long courseId) throws DtoValidationException{
@@ -292,7 +287,7 @@ public class CourseController {
 
 
     @GET
-    @Path("/exams")
+    @Path("/{courseId}/exams")
     @Produces(value={MediaType.APPLICATION_JSON,})
     public Response getCourseExams(@PathParam("courseId") Long courseId){
         return  Response.ok(new GenericEntity<List<ExamDto>>(examService.listByCourse(courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
@@ -301,7 +296,7 @@ public class CourseController {
 
 
     @POST
-    @Path("/exams")
+    @Path("/{courseId}/exams")
     @Consumes(value={MediaType.APPLICATION_JSON,})
     @Produces(value ={MediaType.APPLICATION_JSON,})
     public Response newExam(@Valid ExamFormDto examFormDto,@PathParam("courseId") Long courseId){
@@ -325,7 +320,7 @@ public class CourseController {
 
 
     @GET
-    @Path("/exams/solved")
+    @Path("/{courseId}/exams/solved")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getResolvedExams(@PathParam("courseId") Long courseId){
         Long userId = authFacade.getCurrentUserId();
@@ -344,7 +339,7 @@ public class CourseController {
     }
 
     @GET
-    @Path("/exams/unsolved")
+    @Path("/{courseId}/exams/unsolved")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getUnresolvedExams(@PathParam("courseId") Long courseId){
         Long userId = authFacade.getCurrentUserId();
@@ -357,7 +352,7 @@ public class CourseController {
     }
 
     @GET
-    @Path("/exams/answers")
+    @Path("/{courseId}/exams/answers")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response getCourseAnswers(@PathParam("courseId")Long courseId){
         Long userId = authFacade.getCurrentUserId();
@@ -372,7 +367,7 @@ public class CourseController {
     }
 
     @GET
-    @Path("/exams/average")
+    @Path("/{courseId}/exams/average")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response getCourseAverage(@PathParam("courseId") Long courseId){
         Long userId = authFacade.getCurrentUserId();
@@ -384,9 +379,4 @@ public class CourseController {
 
         return Response.ok(new GenericEntity<Double>(answerService.getAverageOfUserInCourse(userId, courseId)){}).build();
     }
-
-
-
-
-
 }
