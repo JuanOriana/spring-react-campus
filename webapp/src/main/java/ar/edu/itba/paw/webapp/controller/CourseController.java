@@ -23,7 +23,9 @@ import javax.ws.rs.core.*;
 import java.io.*;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -58,6 +60,9 @@ public class CourseController {
 
     @Autowired
     private ResponsePaging<User> userResponsePaging;
+
+    @Autowired
+    private AnswerService answerService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
@@ -254,7 +259,13 @@ public class CourseController {
         Long userId = authFacade.getCurrentUserId();
 
         if(courseService.isPrivileged(userId, courseId) || !courseService.belongs(userId, courseId)){
-            return Response.status(Response.Status.FORBIDDEN).build();
+            Map<Exam,Double> examAverage = examService.getExamsAverage(courseId);
+
+            List<ExamDto> examsAverageDtos = new ArrayList<>();
+
+            examAverage.forEach((exam,average) -> examsAverageDtos.add(ExamDto.fromExam(uriInfo, exam, average)));
+
+            return Response.ok(new GenericEntity<List<ExamDto>>(examsAverageDtos){}).build();
         }
 
         return  Response.ok(new GenericEntity<List<ExamDto>>(examService.getResolvedExams(userId, courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
@@ -273,14 +284,35 @@ public class CourseController {
         return  Response.ok(new GenericEntity<List<ExamDto>>(examService.getUnresolvedExams(userId, courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
     }
 
-    //    @GET
-//    @Path("/schedule")
-//    @Produces(value={MediaType.APPLICATION_JSON,})
-//    public Response getSchedule(@PathParam("courseId") Long courseId){
-//
-//
-//
-//    }
+    @GET
+    @Path("/exams/answers")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response getCourseAnswers(@PathParam("courseId")Long courseId){
+        Long userId = authFacade.getCurrentUserId();
+
+        if(courseService.isPrivileged(userId, courseId)){
+            return Response.status(Response.Status.FORBIDDEN).build(); // TODO: Ver si corresponse mandarle algo en este caso
+        }
+
+        List<AnswerDto> answers = answerService.getMarks(userId, courseId).stream().map(answer->AnswerDto.fromAnswer(uriInfo, answer)).collect(Collectors.toList());
+
+        return Response.ok(new GenericEntity<List<AnswerDto>>(answers){}).build();
+    }
+
+    @GET
+    @Path("/exams/average")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response getCourseAverage(@PathParam("courseId") Long courseId){
+        Long userId = authFacade.getCurrentUserId();
+
+
+        if(courseService.isPrivileged(userId, courseId)){
+           return Response.status(Response.Status.FORBIDDEN).build(); // TODO: Ver si en este caso corresponse hacer algo
+        }
+
+        return Response.ok(new GenericEntity<Double>(answerService.getAverageOfUserInCourse(userId, courseId)){}).build();
+    }
+
 
 
 

@@ -9,14 +9,17 @@ import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import ar.edu.itba.paw.webapp.dto.AnswerDto;
 import ar.edu.itba.paw.webapp.dto.ExamDto;
+import ar.edu.itba.paw.webapp.dto.SolveExamFormDto;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -92,5 +95,23 @@ public class ExamController {
         return Response.ok(new GenericEntity<List<AnswerDto>>(answerDtos){}).build();
     }
 
+
+    @POST
+    @Path("/{examId}/answers")
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    @Consumes(value = {MediaType.APPLICATION_JSON})
+    public Response newAnswer(@PathParam("examId") Long examId, @Valid SolveExamFormDto solveExamFormDto){
+
+        Long userId = authFacade.getCurrentUserId();
+        Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
+
+        if(courseService.isPrivileged(userId,exam.getCourse().getCourseId())){
+            return Response.status(Response.Status.FORBIDDEN).build(); // Un profesor/ayudante no deberia postear un answer
+        }
+
+        Answer answer = answerService.updateEmptyAnswer(examId, authFacade.getCurrentUser(), solveExamFormDto.getExam().getName(), solveExamFormDto.getExam().getBytes(), solveExamFormDto.getExam().getSize(), LocalDateTime.now());
+
+        return Response.ok(AnswerDto.fromAnswer(uriInfo, answer)).build();
+    }
 
 }
