@@ -22,10 +22,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -60,6 +59,9 @@ public class CourseController {
 
     @Autowired
     private ResponsePaging<User> userResponsePaging;
+
+    @Autowired
+    private ResponsePaging<Course> courseResponsePaging;
 
     @Autowired
     private AnswerService answerService;
@@ -109,6 +111,76 @@ public class CourseController {
         FileOutputStream out = new FileOutputStream(tmpFile);
         IOUtils.copy(in, out);
         return tmpFile;
+    }
+
+    @POST
+    @Path("/course/new")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response newCourse(@Valid CourseFormDto courseForm) throws DtoValidationException, URISyntaxException { //TODO: startTimes y endTimes
+
+        if (!authFacade.isAdminUser()){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        if(courseForm != null) {
+            Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
+                    , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
+            LOGGER.debug("Created course in year {} in quarter {} of subjectId {} with id {}", courseForm.getYear(),
+                    courseForm.getBoard(), courseForm.getSubjectId(), course.getCourseId());
+            URI enrollUsers = new URI(uriInfo.getBaseUri().normalize() + "admin/course/" + course.getCourseId() + "/enroll"); //TODO: rev si termina quedando asi
+            return Response.seeOther(enrollUsers).status(Response.Status.SEE_OTHER).build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @GET
+    @Path("/courses")
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response getCourses(@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize, @QueryParam("year") Integer year, @QueryParam("quarter") Integer quarter) {
+
+        if (!authFacade.isAdminUser()) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        CampusPage<Course> coursesPaginated;
+        List<Integer> availableYears = courseService.getAvailableYears();
+
+        if (year == null && quarter == null) {
+            List<Course> coursesList = courseService.list();
+
+            if (coursesList.isEmpty()) {
+                return Response.ok().status(Response.Status.NO_CONTENT).build();
+            }
+
+            coursesList.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
+            return Response.ok(AllCoursesResponseDto.responseFrom(availableYears, coursesList)).build(); //TODO: paginacion?
+        } else {
+            if (year == null) {
+                year = Calendar.getInstance().get(Calendar.YEAR);
+            }
+            if (quarter == null) {
+                if (Calendar.getInstance().get(Calendar.MONTH) <= 6) {
+                    quarter = 1;
+                } else {
+                    quarter = 2;
+                }
+            }
+            coursesPaginated = courseService.listByYearQuarter(year, quarter, page, pageSize);
+
+            if (coursesPaginated.getContent().isEmpty()) {
+                return Response.ok().status(Response.Status.NO_CONTENT).build();
+            }
+
+            coursesPaginated.getContent().sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
+
+            Response.ResponseBuilder response = Response.ok(new GenericEntity<List<CourseDto>>(coursesPaginated.getContent().stream().map(CourseDto::fromCourse).collect(Collectors.toList())) {
+            });
+
+            courseResponsePaging.paging(coursesPaginated, response, uriInfo, pageSize);
+
+            return response.build(); //TODO: este CourseDto estaria bueno que tenga el link al enroll de ese curso
+        }
     }
 
     @GET

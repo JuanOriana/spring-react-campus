@@ -16,4 +16,13 @@ public class AuthFacadeImpl implements AuthFacade {
     public Long getCurrentUserId() {
         return getCurrentUser().getUserId();
     }
+
+    public boolean isAdminUser(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof CampusUser) {
+            return ((CampusUser)principal).isAdmin();
+        } else {
+            return false;
+        }
+    }
 }

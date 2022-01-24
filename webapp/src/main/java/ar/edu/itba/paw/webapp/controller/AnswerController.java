@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -21,7 +22,7 @@ import javax.ws.rs.core.UriInfo;
 @ComponentScan({"ar.edu.itba.paw.webapp.constraint.validator"})
 public class AnswerController {
 
-    @Autowired
+    @Context
     private UriInfo uriInfo;
 
     @Autowired
