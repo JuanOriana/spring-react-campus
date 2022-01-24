@@ -9,6 +9,11 @@ import {
   AdminSectionsItem,
 } from "./styles";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 AdminSectionsCol.propTypes = {
   isSmall: PropTypes.bool,
 };
@@ -16,6 +21,7 @@ AdminSectionsCol.propTypes = {
 function AdminSectionsCol({
   isSmall,
 }: InferProps<typeof AdminSectionsCol.propTypes>) {
+  const { t } = useTranslation();
   const location = useLocation();
   const pathname = location?.pathname;
   const sections: Section[] = [
@@ -26,13 +32,13 @@ function AdminSectionsCol({
   ];
   return (
     <AdminSectionsColWrapper isSmall={isSmall!}>
-      <AdminSectionsColTitle>Administracion</AdminSectionsColTitle>
+      <AdminSectionsColTitle>{t('AdminSectionCol.title')}</AdminSectionsColTitle>
       {sections.map((section) => (
         <AdminSectionsItem
           isActive={pathname === section.path}
           key={section.path}
         >
-          <Link to={section.path}>{`› ${section.name}`}</Link>
+          <Link to={section.path}>{'> ' + t( 'AdminSectionCol.' + section.name )}</Link>
         </AdminSectionsItem>
       ))}
     </AdminSectionsColWrapper>

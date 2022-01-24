@@ -8,6 +8,11 @@ import {
 } from "../FileUnit/styles";
 import { Link } from "react-router-dom";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 StudentExamUnit.propTypes = {
   isCorrected: PropTypes.bool,
   answer: PropTypes.shape({
@@ -27,6 +32,7 @@ function StudentExamUnit({
   isCorrected,
   answer,
 }: InferProps<typeof StudentExamUnit.propTypes>) {
+  const { t } = useTranslation();
   return (
     <FileUnitWrapper>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -44,7 +50,7 @@ function StudentExamUnit({
           {answer.student.name} {answer.student.surname}
         </FileName>
         {!answer.deliveredDate && (
-          <FileName style={{ color: "red" }}>No se entrego</FileName>
+          <FileName style={{ color: "red" }}>{t('StudentExamUnit.notHandedIn')}</FileName>
         )}
         {answer.deliveredDate && <FileName>{answer.deliveredDate}</FileName>}
       </div>
@@ -53,14 +59,14 @@ function StudentExamUnit({
           to={`answer/${answer.answerId}/correct`}
           style={{ display: "flex", alignItems: "center" }}
         >
-          <MediumIcon src="/images/check.png" alt="Check" />
+          <MediumIcon src="/images/check.png" alt={t('StudentExamUnit.alt.check')} />
         </Link>
       )}
       {isCorrected && (
         <div style={{ display: "flex", alignItems: "center" }}>
           <FileName style={{ marginRight: "10px" }}>{answer.score}</FileName>
           <button style={{ background: "none", border: "none" }} type="button">
-            <MediumIcon src="/images/x.png" alt="check" />
+            <MediumIcon src="/images/x.png" alt={t('StudentExamUnit.alt.check')} />
           </button>
         </div>
       )}

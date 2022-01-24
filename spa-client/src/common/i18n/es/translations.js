@@ -1,5 +1,108 @@
 export const TRANSLATIONS_ES = {
 
+    "AdminSectionCol": {
+        "title": "Administracion del Campus",
+        "Nuevo usuario": "Nuevo usuario",
+        "Nuevo curso": "Nuevo curso",
+        "Agregar usuario a curso": "Agregar usuario a curso",
+        "Ver todos los cursos": "Ver todos los cursos",
+    },
+
+    "BasicPagination": {
+        "message": "Pagina {{currentPage}} de {{maxPage}}",
+        "alt": {
+            "nextPage": "Siguiente pagina",
+            "beforePage": "Pagina previa",
+        }
+    },
+
+    "CourseSectionsCol":{
+        "Anuncios":"Anuncios",
+        "Profesores":"Profesores",
+        "Archivos":"Archivos",
+        "Examenes":"Examenes",
+        "Horarios":"Horarios",
+    },
+
+    "ExamUnit":{
+        "alt":{
+            "exam":"Examen",
+            "seeCorrections":"Ver correcciones",
+            "delete":"Borrar"
+        },
+        "grade":"Nota: {{grade}}",
+        "correctedOf":"{{examsSolved}} de {{userCount}} corregidos",
+    },
+
+    "FileSearcher":{
+        "placeholder":{
+          "fileName":"Escribe el nombre del archivo",
+        },
+        "alt":{
+            "toggleFilters":"Encender filtros",
+        },
+        "search":"Buscar",
+        "searchBy":{
+            "title":"Buscar por:",
+            "date":"Fecha",
+            "name":"Nombre",
+            "downloads":"Descargas"
+        },
+        "orderBy": {
+            "title":"Ordenar de forma:",
+            "asc":"Ascendente",
+            "desc":"Descendente"
+        },
+        "fileType": {
+            "title": "Tipo de archivo",
+            "all": "Todos",
+            "other": "Otra"
+        },
+        "category":{
+            "title": "Categoria",
+            "all": "Todas",
+            "other": "Otra",
+        },
+        "clearFilters": "Limpiar Filtros",
+        "filteredBy": "Filtrado por:"
+    },
+
+    "Category":{
+        "practice": "Practica",
+        "theory": "Teor\u00EDa",
+        "exam": "Examen",
+        "final": "Final",
+        "guide": "Gu\u00EDa",
+        "bylaws": "Reglamento",
+        "schedule": "Cronograma",
+    },
+
+    "FileUnit":{
+        "alt":{
+            "file": "Archivo",
+            "delete": "Borrar",
+        }
+    },
+
+    "Footer": "Campus © {{year}} - Todos los derechos reservados",
+
+    "Navbar":{
+      "sections":{
+          "/portal":"Mis cursos",
+          "/announcements":"Mis anuncios",
+          "/files":"Mis archivos",
+          "/timetable":"Mis horarios",
+      },
+        "logout":"Cerrar sesion"
+    },
+
+    "StudentExamUnit":{
+        "alt":{
+          "check":"corregir",
+        },
+        "notHandedIn": "No se entrego",
+    },
+
     ////////////////////////////////////////////////////// ERROR MESSAGES //////////////////////////////////////////////////////
 
     ////////AnnouncementForm error messages

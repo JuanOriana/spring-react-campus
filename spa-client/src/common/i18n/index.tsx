@@ -16,7 +16,8 @@ i18n
             es: {
                 translation: TRANSLATIONS_ES
             }
-        }
+        },
+        fallbackLng: "es"
     });
 
 export default i18n;

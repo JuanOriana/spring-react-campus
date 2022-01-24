@@ -13,6 +13,11 @@ import {
 } from "./styles";
 import { useAuth } from "../../contexts/AuthContext";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 Navbar.propTypes = {
   currentUser: PropTypes.shape({
     isAdmin: PropTypes.bool,
@@ -23,6 +28,7 @@ Navbar.propTypes = {
 };
 
 function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
+  const { t } = useTranslation();
   let navigate = useNavigate();
   let location = useLocation();
   let auth = useAuth();
@@ -48,7 +54,7 @@ function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
                   active={pathname === section.path}
                   key={section.path}
                 >
-                  <Link to={section.path}>{section.name}</Link>
+                  <Link to={section.path}>{t('Navbar.sections.' + section.path)}</Link>
                 </NavSectionItem>
               ))}
             </NavSectionsContainer>
@@ -69,7 +75,7 @@ function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
               }}
             >
               {" "}
-              Logout
+              {t('Navbar.logout')}
             </LogoutButton>
           </UserWrapper>
         </>

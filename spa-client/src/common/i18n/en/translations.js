@@ -1,5 +1,107 @@
 export const TRANSLATIONS_EN = {
 
+    "AdminSectionCol": {
+        "title": "Campus Administration",
+        "Nuevo usuario": "New user",
+        "Nuevo curso": "New course",
+        "Agregar usuario a curso": "Add user to course",
+        "Ver todos los cursos": "See all courses",
+    },
+
+    "BasicPagination": {
+        "message": "Page {{currentPage}} of {{maxPage}}",
+        "alt": {
+            "nextPage": "Next page",
+            "beforePage": "Before page",
+        }
+    },
+
+    "CourseSectionsCol":{
+        "Anuncios":"Announcements",
+        "Profesores":"Teachers",
+        "Archivos":"Files",
+        "Examenes":"Exams",
+        "Horarios":"Schedule",
+    },
+
+    "ExamUnit":{
+        "alt":{
+            "exam":"Exam",
+            "seeCorrections":"View corrections",
+            "delete":"Delete"
+        },
+        "grade":"Grade: {{grade}}",
+        "correctedOf":"{{examsSolved}}/{{userCount}} corrected",
+    },
+
+    "FileSearcher":{
+        "placeholder":{
+            "fileName":"Search the name of the file you are looking for",
+        },
+        "alt":{
+            "toggleFilters":"Toggle filters",
+        },
+        "search":"Search",
+        "searchBy":{
+            "title":"Search by:",
+            "date":"Date",
+            "name":"Name",
+            "downloads":"Downloads"
+        },
+        "orderBy": {
+            "title":"Order by:",
+            "asc":"Ascending",
+            "desc":"Descending"
+        },
+        "fileType": {
+            "title": "File types",
+            "all": "All",
+            "other": "Other"
+        },
+        "category":{
+            "title": "Category",
+            "all": "All",
+            "other": "Other",
+        },
+        "clearFilters": "Clear Filters",
+        "filteredBy": "Filtered by:"
+    },
+
+    "Category":{
+        "practice": "Practice",
+        "theory": "Theory",
+        "exam": "Exam",
+        "final": "Final",
+        "guide": "Guide",
+        "bylaws": "Bylaw",
+        "schedule": "Schedule",
+    },
+
+    "FileUnit":{
+        "alt":{
+            "file": "File",
+            "delete": "Delete",
+        }
+    },
+
+    "Footer": "Campus © {{year}} - All rights reserved",
+
+    "Navbar":{
+        "sections":{
+            "/portal":"My courses",
+            "/announcements":"My announcements",
+            "/files":"My files",
+            "/timetable":"My timetable",
+        },
+        "logout":"Logout"
+    },
+
+    "StudentExamUnit":{
+        "alt":{
+            "check":"correct",
+        },
+        "notHandedIn": "Not handed in",
+    },
 
     ////////////////////////////////////////////////////// ERROR MESSAGES //////////////////////////////////////////////////////
 

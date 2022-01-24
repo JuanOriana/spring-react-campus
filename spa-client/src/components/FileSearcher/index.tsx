@@ -12,6 +12,11 @@ import {
   FileFilterPill,
 } from "./syles";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 interface codeToMessage {
   code: string;
   message: string;
@@ -45,6 +50,7 @@ function FileSearcher({
   categoryType,
   query,
 }: InferProps<typeof FileSearcher.propTypes>) {
+  const { t } = useTranslation();
   const orderings: codeToMessage[] = [
     { code: "date", message: "Fecha" },
     { code: "name", message: "Nombre" },
@@ -102,7 +108,7 @@ function FileSearcher({
             border: "none",
             margin: 0,
           }}
-          placeholder="Escribe el nombre del archivo"
+          placeholder={t('FileSearcher.placeholder.fileName')}
           defaultValue={query ? query : ""}
         />
         <FormButton
@@ -114,13 +120,13 @@ function FileSearcher({
             borderBottomLeftRadius: 0,
           }}
         >
-          Buscar
+          {t('FileSearcher.search')}
         </FormButton>
         <PaginationArrow
           src="/images/outline-arrow.png"
           style={{ transform: "rotate(90deg)", marginLeft: "10px" }}
           onClick={() => setIsAmplified((lastState) => !lastState)}
-          alt="encender filtros"
+          alt={t('FileSearcher.alt.toggleFilters')}
           id="filter-toggle"
         />
       </div>
@@ -129,7 +135,7 @@ function FileSearcher({
         <FileFilterContainer>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <FileSelectLabel>Buscar por:</FileSelectLabel>
+              <FileSelectLabel>{t('FileSearcher.searchBy.title')}</FileSelectLabel>
               <FileSelect
                 name="order-property"
                 id="order-property"
@@ -137,11 +143,11 @@ function FileSearcher({
               >
                 {orderings.map((ordering) => (
                   <option key={ordering.code} value={ordering.code}>
-                    {ordering.message}
+                    {t('FileSearcher.searchBy.' + ordering.code)}
                   </option>
                 ))}
               </FileSelect>
-              <FileSelectLabel>Ordenar de forma</FileSelectLabel>
+              <FileSelectLabel>{t('FileSearcher.orderBy.title')}</FileSelectLabel>
               <FileSelect
                 name="order-direction"
                 id="order-direction"
@@ -149,14 +155,14 @@ function FileSearcher({
               >
                 {directions.map((direction) => (
                   <option key={direction.code} value={direction.code}>
-                    {direction.message}
+                    {t('FileSearcher.orderBy.' + direction.code)}
                   </option>
                 ))}
               </FileSelect>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <FileSelectLabel>Tipo de archivo</FileSelectLabel>
+              <FileSelectLabel>{t('FileSearcher.fileType.title')}</FileSelectLabel>
               <span>
                 <FileCheckbox
                   type="checkbox"
@@ -171,7 +177,7 @@ function FileSearcher({
                     setExtCheckState(newExtCheckState);
                   }}
                 />
-                <FileCheckboxLabel>Todo</FileCheckboxLabel>
+                <FileCheckboxLabel>{t('FileSearcher.fileType.all')}</FileCheckboxLabel>
               </span>
               {extensions!.map((extension, index) => (
                 <>
@@ -215,12 +221,12 @@ function FileSearcher({
                     });
                   }}
                 />
-                <FileCheckboxLabel>Otros</FileCheckboxLabel>
+                <FileCheckboxLabel>{t('FileSearcher.fileType.other')}</FileCheckboxLabel>
               </span>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <FileSelectLabel>Categoria</FileSelectLabel>
+              <FileSelectLabel>{t('FileSearcher.category.title')}</FileSelectLabel>
               <span>
                 <FileCheckbox
                   type="checkbox"
@@ -235,7 +241,7 @@ function FileSearcher({
                     setCatCheckState(newCatCheckState);
                   }}
                 />
-                <FileCheckboxLabel>Todas</FileCheckboxLabel>
+                <FileCheckboxLabel>{t('FileSearcher.category.all')}</FileCheckboxLabel>
               </span>
               {categories!.map((category, index) => (
                 <span key={index}>
@@ -254,11 +260,14 @@ function FileSearcher({
                       });
                     }}
                   />
+                  {/*<FileCheckboxLabel>{t('Category.' + category.categoryName)}</FileCheckboxLabel>*/}
+                  {/*TODO: descomentar cuando este la API*/}
                   <FileCheckboxLabel>{category.categoryName}</FileCheckboxLabel>
                 </span>
               ))}
             </div>
           </div>
+          {/* TODO: creo que falta el checkbox "Otros" en categorias */}
           <FormButton
             type="button"
             style={{ alignSelf: "end" }}
@@ -277,7 +286,7 @@ function FileSearcher({
               });
             }}
           >
-            Limpiar Filtros
+            {t('FileSearcher.clearFilters')}
           </FormButton>
         </FileFilterContainer>
       )}
@@ -287,7 +296,7 @@ function FileSearcher({
           style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
         >
           <FileCheckboxLabel style={{ fontWeight: 700 }}>
-            Filtrado por:
+            {t('FileSearcher.filteredBy')}
           </FileCheckboxLabel>
           {categoryType!.map((category) => (
             <FileFilterPill key={category} red={false}>

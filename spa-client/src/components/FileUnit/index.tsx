@@ -10,6 +10,11 @@ import {
   MediumIcon,
 } from "./styles";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 FileUnit.propTypes = {
   isGlobal: PropTypes.bool,
   isTeacher: PropTypes.bool,
@@ -37,6 +42,7 @@ function FileUnit({
   isTeacher,
   file,
 }: InferProps<typeof FileUnit.propTypes>) {
+  const { t } = useTranslation();
   return (
     <FileUnitWrapper>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -51,20 +57,20 @@ function FileUnit({
         >
           <FileImg
             src={`/images/extensions/${file?.extension!.fileExtensionName}.png`}
-            alt={file && file.name ? file.name! : "file"}
+            alt={file && file.name ? file.name! : t('FileUnit.alt.file') }
           />
           <FileName>{file.name}</FileName>
         </Link>
         {!isMinimal &&
           file?.categories?.map((category) => (
             <FileCategoryName key={category.name}>
-              {category.name}
+              {t('Category.' + category.name)}
             </FileCategoryName>
           ))}
       </div>
       <div style={{ display: "flex", alignItems: "center" }}>
         {!isMinimal && <FileName>{file.downloads}</FileName>}
-        {isTeacher && <MediumIcon src="/images/trash.png" alt="delete" />}
+        {isTeacher && <MediumIcon src="/images/trash.png" alt={t('FileUnit.alt.delete')} />}
         {isGlobal && (
           <div
             style={{

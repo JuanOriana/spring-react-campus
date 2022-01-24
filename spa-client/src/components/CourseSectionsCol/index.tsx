@@ -9,6 +9,11 @@ import {
   CourseSectionsItem,
 } from "./styles";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 CourseSectionsCol.propTypes = {
   courseId: PropTypes.number.isRequired,
   courseName: PropTypes.string.isRequired,
@@ -26,6 +31,7 @@ function CourseSectionsCol({
   code,
   board,
 }: InferProps<typeof CourseSectionsCol.propTypes>) {
+  const { t } = useTranslation();
   const location = useLocation();
   const pathname = location?.pathname;
   const sections: Section[] = [
@@ -47,7 +53,7 @@ function CourseSectionsCol({
             isActive={pathname === completePath}
             key={section.path}
           >
-            <Link to={completePath}>{`› ${section.name}`}</Link>
+            <Link to={completePath}>{'› '+ t( 'CourseSectionsCol.' + section.name )}</Link>
           </CourseSectionsItem>
         );
       })}

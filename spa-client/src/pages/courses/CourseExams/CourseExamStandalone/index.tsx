@@ -1,6 +1,7 @@
 import TeacherCourseExamStandalone from "./TeacherCourseExamStandalone";
 import StudentCourseExamStandalone from "./StudentCourseExamStandalone";
 import { useCourseData } from "../../../../components/layouts/CourseLayout";
+import React from "react";
 
 function CourseExamStandalone() {
   const { isTeacher } = useCourseData();

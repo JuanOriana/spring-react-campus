@@ -6,6 +6,11 @@ import {
 } from "../generalStyles/pagination";
 import { Link } from "react-router-dom";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 BasicPagination.propTypes = {
   currentPage: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
@@ -21,6 +26,7 @@ function BasicPagination({
   baseURL,
   style,
 }: InferType<typeof BasicPagination.propTypes>) {
+  const { t } = useTranslation();
   return (
     <PaginationWrapper style={{ ...style }}>
       {currentPage > 1 && (
@@ -28,16 +34,16 @@ function BasicPagination({
           <PaginationArrow
             xRotated={true}
             src="/images/page-arrow.png"
-            alt="Pagina previa"
+            alt={`${t('BasicPagination.alt.beforePage')}`}
           />
         </Link>
       )}
-      Pagina {currentPage} de {maxPage}
+      {t('BasicPagination.message', { currentPage: currentPage, maxPage: maxPage})}
       {currentPage < maxPage && (
         <Link to={`${baseURL}?page=${currentPage + 1}&pageSize=${pageSize}`}>
           <PaginationArrow
             src="/images/page-arrow.png"
-            alt="Siguiente pagina"
+            alt={`${t('BasicPagination.alt.nextPage')}`}
           />
         </Link>
       )}

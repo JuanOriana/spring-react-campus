@@ -8,6 +8,11 @@ import {
   PaginationArrow,
 } from "./styles";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 ExamUnit.propTypes = {
   exam: PropTypes.shape({ examId: PropTypes.number, title: PropTypes.string })
     .isRequired,
@@ -31,6 +36,7 @@ function ExamUnit({
   userCount,
   average,
 }: InferProps<typeof ExamUnit.propTypes>) {
+  const { t } = useTranslation();
   const [showCorrections, setShowCorrections] = useState(false);
   return (
     <FileUnitWrapper
@@ -52,7 +58,7 @@ function ExamUnit({
           >
             <FileImg
               src="/images/test.png"
-              alt={exam.title ? exam.title : "Exam"}
+              alt={exam.title ? exam.title : `${t('ExamUnit.alt.exam')}`}
             />
             <FileName>{exam.title}</FileName>
           </DeliveredLink>
@@ -61,14 +67,13 @@ function ExamUnit({
           {isDelivered && !isTeacher && (
             <>
               <FileName>
-                Nota:
-                {answer!.score ? answer!.score : "--"}
+                {t('ExamUnit.grade', {grade: answer!.score ? answer!.score : "--"})}
               </FileName>
               {answer!.corrections && (
                 <PaginationArrow
                   src="/images/outline-arrow.png"
                   style={{ transform: "rotate(90deg)", marginLeft: "10px" }}
-                  alt="Ver correcciones"
+                  alt={`${t('ExamUnit.alt.seeCorrections')}`}
                   onClick={() => setShowCorrections((lastVal) => !lastVal)}
                 />
               )}
@@ -84,9 +89,9 @@ function ExamUnit({
                   borderLeft: "3px solid white",
                 }}
               >
-                {` ${examsSolved}/${userCount} corregidos `}
+                {t('ExamUnit.correctedOf', {examsSolved: examsSolved, userCount: userCount})}
               </FileName>
-              <MediumIcon src="/images/trash.png" alt="Borrar" />
+              <MediumIcon src="/images/trash.png" alt={`${t('ExamUnit.alt.delete')}`} />
             </>
           )}
         </div>
