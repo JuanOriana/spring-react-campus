@@ -18,12 +18,18 @@ import {
 } from "../../../components/generalStyles/form";
 import { useForm } from "react-hook-form";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../common/i18n/index";
+//
+
 type FormData = {
   title: string;
   content: string;
 };
 
 function CourseAnnouncements() {
+  const { t } = useTranslation();
   const { course, isTeacher } = useCourseData();
   const [announcements, setAnnouncements] = useState(new Array(0));
   const maxPage = 3;
@@ -57,9 +63,9 @@ function CourseAnnouncements() {
       <>
         <FormWrapper reduced={true} acceptCharset="utf-8" onSubmit={onSubmit}>
           <GeneralTitle style={{ color: "#176961", alignSelf: "center" }}>
-            Nuevo Anuncio
+            {t('CourseAnnouncements.teacher.form.title')}
           </GeneralTitle>
-          <FormLabel htmlFor="title">Titulo</FormLabel>
+          <FormLabel htmlFor="title">{t('CourseAnnouncements.teacher.form.announcementTitleLabel')}</FormLabel>
           <FormInput
             type="text"
             style={{ fontSize: "26px" }}
@@ -71,14 +77,14 @@ function CourseAnnouncements() {
             })}
           />
           {errors.title?.type === "required" && (
-            <ErrorMessage>El titulo es requerido</ErrorMessage>
+            <ErrorMessage>{t('CourseAnnouncements.teacher.error.title.isRequired')}</ErrorMessage>
           )}
           {errors.title?.type === "length" && (
             <ErrorMessage>
-              El titulo debe tener entre 2 y 50 caracteres de largo
+              {t('CourseAnnouncements.teacher.error.title.length')}
             </ErrorMessage>
           )}
-          <FormLabel htmlFor="content">Contenido</FormLabel>
+          <FormLabel htmlFor="content">{t('CourseAnnouncements.teacher.form.announcementContentLabel')}</FormLabel>
           <FormArea
             style={{ width: "95%", resize: "none" }}
             cols={50}
@@ -91,14 +97,14 @@ function CourseAnnouncements() {
             })}
           ></FormArea>
           {errors.content?.type === "required" && (
-            <ErrorMessage>El contentido es requerido</ErrorMessage>
+            <ErrorMessage>{t('CourseAnnouncements.teacher.error.content.isRequired')}</ErrorMessage>
           )}
           {errors.content?.type === "length" && (
             <ErrorMessage>
-              El contenido debe tener mas de 2 caracteres de largo
+              {t('CourseAnnouncements.teacher.error.content.length')}
             </ErrorMessage>
           )}
-          <FormButton>Crear anuncio</FormButton>
+          <FormButton>{t('CourseAnnouncements.teacher.form.announcementCreateButton')}</FormButton>
         </FormWrapper>
         <Separator reduced={true}>.</Separator>
       </>
@@ -108,7 +114,7 @@ function CourseAnnouncements() {
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        Anuncios
+        {t('Announcements.title')}
       </SectionHeading>
       {isTeacher && renderTeacherForm()}
       <div
@@ -120,7 +126,7 @@ function CourseAnnouncements() {
       >
         {announcements.length === 0 && (
           <GeneralTitle style={{ width: "100%", textAlign: "center" }}>
-            No hay anuncios
+            {t('Announcements.noAnnouncements')}
           </GeneralTitle>
         )}
 

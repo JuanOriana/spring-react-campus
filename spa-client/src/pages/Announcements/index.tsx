@@ -10,7 +10,13 @@ import { Link } from "react-router-dom";
 import { usePagination } from "../../hooks/usePagination";
 import BasicPagination from "../../components/BasicPagination";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 function Announcements() {
+  const { t } = useTranslation();
   const [announcements, setAnnouncements] = useState(new Array(0));
   const maxPage = 3;
   const [currentPage, pageSize] = usePagination(10);
@@ -29,10 +35,10 @@ function Announcements() {
   }, []);
   return (
     <>
-      <SectionHeading>Anuncios</SectionHeading>
+      <SectionHeading>{t('Announcements.title')}</SectionHeading>
       {announcements.length === 0 && (
         <AnnouncementTitle style={{ width: "100%", textAlign: "center" }}>
-          No hay anuncios!
+          {t('Announcements.noAnnouncements')}
         </AnnouncementTitle>
       )}
       {announcements.map((announcement) => (

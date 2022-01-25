@@ -16,11 +16,17 @@ import React, { useEffect, useState } from "react";
 import { number } from "prop-types";
 import { useForm } from "react-hook-form";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../../../common/i18n/index";
+//
+
 type FormData = {
   file: FileList;
 };
 
 function StudentCourseExamStandalone() {
+  const { t } = useTranslation();
   const { course } = useCourseData();
   const navigate = useNavigate();
   const exam = {
@@ -100,10 +106,9 @@ function StudentCourseExamStandalone() {
       </SectionHeading>
       <BigWrapper>
         <h3 style={{ alignSelf: "center" }}>
-          Tiempo restante:{" "}
-          {`${timeLeft.days}d:${timeLeft.hours}h:${timeLeft.minutes}m:${timeLeft.seconds}s`}
+          {t('StudentCourseExamStandalone.timeLeft', {days: timeLeft.days, hours: timeLeft.hours, minutes: timeLeft.minutes, seconds: timeLeft.seconds})}
         </h3>
-        <CommentTitle>La descripcion del examen (no la recuerdo)</CommentTitle>
+        <CommentTitle>{t('StudentCourseExamStandalone.examDescriptionTitle')}</CommentTitle>
         <p style={{ margin: "10px 0 10px 10px" }}>{exam.description}</p>
         <FileUnit file={exam.examFile} isMinimal={true} />
 
@@ -121,7 +126,7 @@ function StudentCourseExamStandalone() {
           onSubmit={onSubmit}
         >
           <FormLabel style={{ margin: "0 0 5px 0" }} htmlFor="exam">
-            Solucion
+            {t('StudentCourseExamStandalone.form.solutionTitle')}
           </FormLabel>
           <FormInput
             type="file"
@@ -137,10 +142,10 @@ function StudentCourseExamStandalone() {
             })}
           />
           {errors.file?.type === "required" && (
-            <ErrorMessage>El archivo es requerido</ErrorMessage>
+            <ErrorMessage>{t('StudentCourseExamStandalone.error.file.isRequired')}</ErrorMessage>
           )}
           {errors.file?.type === "size" && (
-            <ErrorMessage>El archivo debe ser mas chico que 50mb</ErrorMessage>
+            <ErrorMessage>{t('StudentCourseExamStandalone.error.file.size')}</ErrorMessage>
           )}
           <div
             style={{
@@ -150,9 +155,9 @@ function StudentCourseExamStandalone() {
             }}
           >
             <LinkButton to={`/course/${course.courseId}/exams`}>
-              Cancelar envio
+              {t('StudentCourseExamStandalone.form.cancelSend')}
             </LinkButton>
-            <FormButton>Enviar</FormButton>
+            <FormButton>{t('StudentCourseExamStandalone.form.send')}</FormButton>
           </div>
         </form>
       </BigWrapper>

@@ -17,12 +17,18 @@ import { useCourseData } from "../../../../../components/layouts/CourseLayout";
 import { useForm } from "react-hook-form";
 import React from "react";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../../../common/i18n/index";
+//
+
 type FormData = {
   mark: number;
   comments?: string;
 };
 
 function CorrectExam() {
+  const { t } = useTranslation();
   const { course } = useCourseData();
   const exam = {
     examId: 1,
@@ -87,7 +93,7 @@ function CorrectExam() {
       </SectionHeading>
       <BigWrapper>
         <CommentTitle>
-          "correct.specific.exam.description" no me acuerdo que era
+          {t('CorrectExam.descriptionTitle')}
         </CommentTitle>
         <p
           style={{
@@ -99,11 +105,11 @@ function CorrectExam() {
           {exam.description}
         </p>
         <FileUnit file={exam.examFile} isMinimal={true} />
-        <CommentTitle>"correct.specific.exam.solution"</CommentTitle>
+        <CommentTitle>{t('CorrectExam.solutionTitle')}</CommentTitle>
         {answer.deliveredDate && (
           <FileUnit file={answer.answerFile} isMinimal={true} />
         )}
-        {answer.deliveredDate && <p>El examen aun no fue realizado</p>}
+        {answer.deliveredDate && <p>{t('CorrectExam.examNotDone')}</p>}
         <form
           encType="multipart/form-data"
           acceptCharset="utf-8"
@@ -118,7 +124,7 @@ function CorrectExam() {
           onSubmit={onSubmit}
         >
           <FormLabel htmlFor="mark" style={{ margin: "0 0 5px 0" }}>
-            Corregir examen
+            {t('CorrectExam.form.title')}
           </FormLabel>
           <input
             type="number"
@@ -138,15 +144,15 @@ function CorrectExam() {
             })}
           />
           {errors.mark?.type === "required" && (
-            <ErrorMessage>La nota es requerida</ErrorMessage>
+            <ErrorMessage>{t('CorrectExam.error.grade.isRequired')}</ErrorMessage>
           )}
           {errors.mark?.type === "max" && (
-            <ErrorMessage>La nota maxima es 10</ErrorMessage>
+            <ErrorMessage>{t('CorrectExam.error.grade.minGrade')}</ErrorMessage>
           )}
           {errors.mark?.type === "min" && (
-            <ErrorMessage>La nota minima es 0</ErrorMessage>
+            <ErrorMessage>{t('CorrectExam.error.grade.maxGrade')}</ErrorMessage>
           )}
-          <FormLabel htmlFor="comments">Anadir comentarios</FormLabel>
+          <FormLabel htmlFor="comments">{t('CorrectExam.form.comments')}</FormLabel>
           <FormArea
             style={{ width: "95%", resize: "none" }}
             cols={50}
@@ -159,7 +165,7 @@ function CorrectExam() {
           ></FormArea>
           {errors.comments?.type === "length" && (
             <ErrorMessage>
-              El largo de los commentarios no puede exceder los 50 caracteres
+              {t('CorrectExam.error.comments.length')}
             </ErrorMessage>
           )}
           <div
@@ -177,9 +183,9 @@ function CorrectExam() {
               }}
               to={`/course/${course.courseId}/exam/${exam.examId}`}
             >
-              Cancelar correccion
+              {t('CorrectExam.form.cancelCorrectionButton')}
             </LinkButton>
-            <FormButton>Corregir</FormButton>
+            <FormButton>{t('CorrectExam.form.submitButton')}</FormButton>
           </div>
         </form>
       </BigWrapper>

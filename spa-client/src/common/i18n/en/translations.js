@@ -236,6 +236,71 @@ export const TRANSLATIONS_EN = {
         },
     },
 
+    "Announcements":{
+        "title":"Announcements",
+        "noAnnouncements":"You have no announcements yet!",
+    },
+
+    "CourseAnnouncements":{
+        "teacher":{
+            "form":{
+                "title":"New Announcement",
+                "announcementTitleLabel":"Title",
+                "announcementContentLabel":"Content",
+                "announcementCreateButton":"Create",
+            },
+            "error":{
+                "title":{
+                    "isRequired":"Title field is required",
+                    "length":"The title must have between 2 and 50 characters",
+                },
+                "content":{
+                    "isRequired":"The announcement content can not be empty",
+                    "length":"Content must be grater than 2 characters",
+                }
+            },
+        },
+    },
+
+    "CorrectExam":{
+        "descriptionTitle":"Description:",
+        "solutionTitle":"Solution:",
+        "examNotDone":"Exam not done",
+        "form":{
+            "title":"Correct exam",
+            "comments": "Comments",
+            "submitButton": "Correct",
+            "cancelCorrectionButton":"Cancel correction"
+
+        },
+        "error":{
+            "grade":{
+                "isRequired":"Grade can not be empty",
+                "minGrade":"Minimum grade is 0",
+                "maxGrade":"Maximum grade is 10",
+            },
+            "comments":{
+                "length":"Comments can not be longer than 50 characters",
+            },
+        },
+    },
+
+    "StudentCourseExamStandalone":{
+        "timeLeft": "Time left: {{days}}d:{{hours}}h:{{minutes}}m:{{seconds}}s",
+        "examDescriptionTitle":"Description:",
+        "form":{
+            "solutionTitle":"Solution",
+            "cancelSend":"Cancel",
+            "send":"Send",
+        },
+        "error":{
+            "file":{
+                "isRequired":"Attach a file",
+                "size":"File must be smaller than 50mb",
+            },
+        },
+    },
+
     ////////////////////////////////////////////////////// ERROR MESSAGES //////////////////////////////////////////////////////
 
     ////////AnnouncementForm error messages

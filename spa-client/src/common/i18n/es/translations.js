@@ -235,6 +235,71 @@ export const TRANSLATIONS_ES = {
         },
     },
 
+    "Announcements":{
+        "title":"Anuncios",
+        "noAnnouncements":"No tienes anuncios!",
+    },
+
+    "CourseAnnouncements":{
+        "teacher":{
+            "form":{
+                "title":"Nuevo Anuncio",
+                "announcementTitleLabel":"Titulo",
+                "announcementContentLabel":"Contenido",
+                "announcementCreateButton":"Crear anuncio",
+            },
+            "error":{
+                "title":{
+                    "isRequired":"El titulo es requerido",
+                    "length":"El titulo debe tener entre 2 y 50 caracteres de largo",
+                },
+                "content":{
+                    "isRequired":"El anuncio debe tener un contenido",
+                    "length":"El contenido debe tener mas de 2 caracteres de largo",
+                }
+            },
+        },
+    },
+
+    "CorrectExam":{
+        "descriptionTitle":"Descripción:",
+        "solutionTitle":"Solución:",
+        "examNotDone":"El examen aun no fue realizado",
+        "form":{
+            "title":"Corregir examen",
+            "comments": "Comentarios",
+            "submitButton": "Corregir",
+            "cancelCorrectionButton":"Cancelar"
+
+        },
+        "error":{
+            "grade":{
+                "isRequired":"La nota no puede ser vacía.",
+                "minGrade":"La nota minima es 0",
+                "maxGrade":"La nota minima es 10",
+            },
+            "comments":{
+                "length":"El largo de los commentarios no puede exceder los 50 caracteres",
+            },
+        },
+    },
+
+    "StudentCourseExamStandalone":{
+        "timeLeft": "Tiempo restante: {{days}}d:{{hours}}h:{{minutes}}m:{{seconds}}s",
+        "examDescriptionTitle":"Descripción:",
+        "form":{
+            "solutionTitle":"Solucion",
+            "cancelSend":"Cancelar envio",
+            "send":"Enviar",
+        },
+        "error":{
+            "file":{
+                "isRequired":"Adjuntar un archivo",
+                "size":"El archivo debe ser mas chico que 50mb",
+            },
+        },
+    },
+
 
     ////////////////////////////////////////////////////// ERROR MESSAGES //////////////////////////////////////////////////////
 
