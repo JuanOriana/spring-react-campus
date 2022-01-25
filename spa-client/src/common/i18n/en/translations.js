@@ -1,5 +1,7 @@
 export const TRANSLATIONS_EN = {
 
+    //COMPONENTS
+
     "AdminSectionCol": {
         "title": "Campus Administration",
         "Nuevo usuario": "New user",
@@ -101,6 +103,137 @@ export const TRANSLATIONS_EN = {
             "check":"correct",
         },
         "notHandedIn": "Not handed in",
+    },
+
+    ////VIEWS
+
+    "404":{
+        "title":"Error 404!",
+        "backToPortalButton": "Back to portal"
+    },
+
+    //Admin
+
+    "AdminAddUserToCourse":{
+        "alt":{
+            "backButton":"Back",
+        },
+        "backButton":"Back",
+        "addUserToCourse":"Add user to {{subjectName}}[{{courseBoard}}]",
+        "form":{
+            "user":"User",
+            "role":{
+                "title":"Role",
+                "Student":"Student",
+                "Teacher":"Teacher",
+                "Assistant":"Helper",
+            },
+            "addButton":"Add user",
+            "students":"Students",
+            "teachers":"Teachers",
+            "assistants":"Helpers",
+        }
+    },
+
+    "AdminAllCourses":{
+        "allCoursesFrom":"All courses from {{year}}/{{quarter}}",
+        "form":{
+            "year":"Year",
+            "quarter":"Quarter",
+            "searchButton":"Search",
+        },
+        "noCourses":"No courses in this quarter",
+        "table":{
+            "code":"Code",
+            "name":"Name",
+            "board":"Board",
+        },
+    },
+
+    "AdminNewCourse":{
+        "newCourse":"New course",
+        "days":{
+            "Lunes":"Monday",
+            "Martes":"Tuesday",
+            "Miercoles":"Wednesday",
+            "Jueves":"Thursday",
+            "Viernes":"Friday",
+            "Sabado":"Saturday",
+        },
+        "form":{
+            "subject":"Subject",
+            "quarter":"Quarter",
+            "year":"Year",
+            "board":"Board",
+            "createButton":"Create"
+        },
+        "error":{
+            "alreadyExist":"This course already exist",
+        },
+    },
+
+    "AdminNewUser":{
+        "error":{
+            "passwordsMustMatch":"Passwords must match",
+            "fileNumber":{
+                "isRequired":"File number is required",
+                "positiveInteger":"File number must be a positive integer",
+                "exists":"File number already exist",
+            },
+            "name":{
+                "onlyLetters":"Name must only contain letters",
+                "isRequired":"Name field is required",
+            },
+            "surname": {
+                "onlyLetters":"Surname must only contain letters",
+                "isRequired":"Surname field is required",
+            },
+            "username": {
+                "pattern":"Username must only contain letters and numbers",
+                "isRequired":"Username field is required",
+                "length":"Username must have between 6 and 50 characters",
+                "exists":"Username already exist",
+            },
+            "email":{
+                "pattern":"Please enter a valid email",
+                "isRequired":"Email field is required",
+                "exists":"This email is already in use",
+            },
+            "password":{
+                "pattern":"Password must contain a capital letter, a lower case and a number",
+                "isRequired":"Password field is required",
+                "length":"Password must have between 8 and 50 characters",
+            },
+
+        },
+        "form":{
+            "title":"Create new user",
+            "fileNumber":"File number",
+            "name":"Name",
+            "surname":"Surname",
+            "username":"Username",
+            "email":"Email",
+            "password":"Password",
+            "confirmPassword":"Confirm password",
+            "createButton":"Create"
+        },
+
+    },
+
+    "AdminPortal":{
+        "title":"Campus administration center",
+        "createNewUserButton":"Create new user",
+        "createNewCourseButton":"Create new course",
+        "addUserToCourseButton":"Add user to course",
+        "seeAllCoursesButton":"See all courses",
+    },
+
+    "AdminSelectCourse":{
+        "title":"Select a course",
+        "form":{
+            "course":"Course",
+            "selectButton":"Select",
+        },
     },
 
     ////////////////////////////////////////////////////// ERROR MESSAGES //////////////////////////////////////////////////////

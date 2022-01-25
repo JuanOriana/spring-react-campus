@@ -1,5 +1,7 @@
 export const TRANSLATIONS_ES = {
 
+    //COMPONENTS
+
     "AdminSectionCol": {
         "title": "Administracion del Campus",
         "Nuevo usuario": "Nuevo usuario",
@@ -102,6 +104,137 @@ export const TRANSLATIONS_ES = {
         },
         "notHandedIn": "No se entrego",
     },
+
+    ////VIEWS
+
+    "404":{
+      "title":"Error 404!",
+      "backToPortalButton": "Volver al portal"
+    },
+
+    //Admin
+
+    "AdminAddUserToCourse":{
+        "alt":{
+            "backButton":"Volver",
+        },
+        "backButton":"Volver",
+        "addUserToCourse":"Anadir usuario a {{subjectName}}[{{courseBoard}}]",
+        "form":{
+            "user":"Usuario",
+            "role":{
+                "title":"Rol",
+                "Student":"Alumno",
+                "Teacher":"Profesor",
+                "Assistant":"Ayudante",
+            },
+            "addButton":"Anadir usuario",
+            "students":"Alumnos",
+            "teachers":"Profesores",
+            "assistants":"Ayudantes",
+        }
+    },
+
+    "AdminAllCourses":{
+        "allCoursesFrom":"Todos los cursos del {{year}}/{{quarter}}",
+        "form":{
+            "year":"Ano",
+            "quarter":"Cuatrimestre",
+            "searchButton":"Buscar",
+        },
+        "noCourses":"No hay cursos en este cuatrimestre",
+        "table":{
+            "code":"Codigo",
+            "name":"Nombre",
+            "board":"Comision",
+        },
+    },
+
+    "AdminNewCourse":{
+        "newCourse":"Nuevo curso",
+        "days":{
+            "Lunes":"Lunes",
+            "Martes":"Martes",
+            "Miercoles":"Miercoles",
+            "Jueves":"Jueves",
+            "Viernes":"Viernes",
+            "Sabado":"Sabado",
+        },
+        "form":{
+            "subject":"Materia",
+            "quarter":"Cuatrimestre",
+            "year":"Ano",
+            "board":"Comision",
+            "createButton":"Crear"
+        },
+        "error":{
+            "alreadyExist":"Este curso ya existe",
+        },
+    },
+
+    "AdminNewUser":{
+        "error":{
+            "passwordsMustMatch":"La contrasenas deben concidir",
+            "fileNumber":{
+                "isRequired":"El legajo es requerido",
+                "positiveInteger":"El legajo debe ser un numero positivo",
+                "exists":"El legajo ya existe",
+            },
+            "name":{
+                "onlyLetters":"El nombre solo puede tener letras",
+                "isRequired":"El nombre es requerido",
+            },
+            "surname": {
+                "onlyLetters":"El apellido solo puede tener letras",
+                "isRequired":"El apellido es requerido",
+            },
+            "username": {
+                "pattern":"El nombre de usuario solo puede tener letras y numeros",
+                "isRequired":"El nombre de usuario es requerido",
+                "length":"El largo del nombre de usuario debe estar entre 6 y 50 caracteres",
+                "exists":"El nombre de usuario ya existe",
+            },
+            "email":{
+                "pattern":"El email debe tener un formato valido",
+                "isRequired":"El email es un campo requerido",
+                "exists":"El email ya esta en uso",
+            },
+            "password":{
+                "pattern":"La contrasena debe tener una mayuscula, una minsucula y un numero",
+                "isRequired":"La contrasena es requerida",
+                "length":"El largo de la contrasena debe estar entre 8 y 50 caracteres",
+            },
+
+        },
+        "form":{
+            "title":"Crear nuevo usuario",
+            "fileNumber":"Legajo",
+            "name":"Nombre",
+            "surname":"Apellido",
+            "username":"Nombre de usuario",
+            "email":"Email",
+            "password":"Contrasena",
+            "confirmPassword":"Confirmar contrasena",
+            "createButton":"Crear"
+        },
+    },
+
+    "AdminPortal":{
+        "title":"Centro de Administracion del Campus",
+        "createNewUserButton":"Crear nuevo usuario",
+        "createNewCourseButton":"Crear nuevo curso",
+        "addUserToCourseButton":"Anadir usuario a curso",
+        "seeAllCoursesButton":"Ver todos los cursos",
+    },
+
+    "AdminSelectCourse":{
+        "title":"Seleccionar un curso",
+        "form":{
+            "course":"Curso",
+            "selectButton":"Seleccionar",
+        },
+    },
+
 
     ////////////////////////////////////////////////////// ERROR MESSAGES //////////////////////////////////////////////////////
 

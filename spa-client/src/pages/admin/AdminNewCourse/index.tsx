@@ -12,6 +12,11 @@ import { GeneralTitle } from "../../../components/generalStyles/utils";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../common/i18n/index";
+//
+
 const days: string[] = [
   "Lunes",
   "Martes",
@@ -29,6 +34,7 @@ type FormData = {
 };
 
 function AdminNewCourse() {
+  const { t } = useTranslation();
   const subjects = [{ subjectId: 1, name: "PAW" }];
   const [isCourseDuplicated, setIsCourseDuplicated] = useState(false);
 
@@ -55,15 +61,15 @@ function AdminNewCourse() {
         onSubmit={onSubmit}
       >
         <GeneralTitle style={{ color: "#176961", alignSelf: "center" }}>
-          Nuevo curso
+          {t('AdminNewCourse.newCourse')}
         </GeneralTitle>
-        <FormLabel htmlFor="subjectId">Materia</FormLabel>
+        <FormLabel htmlFor="subjectId">{t('AdminNewCourse.form.subject')}</FormLabel>
         <FormSelect style={{ fontSize: "26px" }} {...register("subjectId", {})}>
           {subjects.map((subject) => (
             <option value={subject.subjectId}>{subject.name}</option>
           ))}
         </FormSelect>
-        <FormLabel htmlFor="quarter">Cuatrimestre</FormLabel>
+        <FormLabel htmlFor="quarter">{t('AdminNewCourse.form.quarter')}</FormLabel>
         <div
           style={{
             display: "flex",
@@ -93,20 +99,20 @@ function AdminNewCourse() {
             2
           </div>
         </div>
-        <FormLabel htmlFor="year">Ano</FormLabel>
+        <FormLabel htmlFor="year">{t('AdminNewCourse.form.year')}</FormLabel>
         <FormInput
           type="number"
           style={{ fontSize: "26px" }}
           {...register("year", {})}
         />
-        <FormLabel htmlFor="board">Comision</FormLabel>
+        <FormLabel htmlFor="board">{t('AdminNewCourse.form.board')}</FormLabel>
         <FormInput
           type="text"
           style={{ fontSize: "26px" }}
           {...register("board", {})}
         />
         {isCourseDuplicated && (
-          <ErrorMessage>Este curso ya existe</ErrorMessage>
+          <ErrorMessage>{t('AdminNewCourse.error.alreadyExist')}</ErrorMessage>
         )}
         <div
           style={{
@@ -117,7 +123,7 @@ function AdminNewCourse() {
         >
           {days.map((day) => (
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <FormText>{day}</FormText>
+              <FormText>{t('AdminNewCourse.days.' + day)}</FormText>
               <div style={{ display: "flex" }}>
                 <input
                   style={{ width: "3em" }}
@@ -137,7 +143,7 @@ function AdminNewCourse() {
             </div>
           ))}
         </div>
-        <FormButton>Crear</FormButton>
+        <FormButton>{t('AdminNewCourse.form.createButton')}</FormButton>
       </FormWrapper>
     </>
   );

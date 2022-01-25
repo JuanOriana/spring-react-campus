@@ -17,12 +17,18 @@ import { UserColumn, UserContainer, BackImg } from "./styles";
 import { useForm } from "react-hook-form";
 import React from "react";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../common/i18n/index";
+//
+
 type FormData = {
   userId: number;
   roleId: number;
 };
 
 function AdminAddUserToCourse() {
+  const { t } = useTranslation();
   const maxPage = 3;
   const [currentPage, pageSize] = usePagination(10);
   const course = {
@@ -65,13 +71,13 @@ function AdminAddUserToCourse() {
           to="/admin/course/select"
           style={{ display: "flex", alignItems: "center" }}
         >
-          <BackImg src="/images/page-arrow.png" alt="Volver" />
-          <p style={{ fontSize: "22px", fontWeight: "700" }}>Volver</p>
+          <BackImg src="/images/page-arrow.png" alt={t('AdminAddUserToCourse.alt.backButton')} />
+          <p style={{ fontSize: "22px", fontWeight: "700" }}>{t('AdminAddUserToCourse.backButton')}</p>
         </Link>
         <GeneralTitle style={{ color: "#176961", alignSelf: "center" }}>
-          Anadir usuario a {course.subject.name}[{course.board}]
+          {t('AdminAddUserToCourse.addUserToCourse', {subjectName: course.subject.name, courseBoard: course.board})}
         </GeneralTitle>
-        <FormLabel htmlFor="userId">Usuario</FormLabel>
+        <FormLabel htmlFor="userId">{t('AdminAddUserToCourse.form.user')}</FormLabel>
         <FormSelect style={{ fontSize: "26px" }} {...register("userId", {})}>
           {users.map((user) => (
             <option value={user.userId} key={user.userId}>
@@ -79,21 +85,21 @@ function AdminAddUserToCourse() {
             </option>
           ))}
         </FormSelect>
-        <FormLabel htmlFor="roleId">Rol</FormLabel>
+        <FormLabel htmlFor="roleId">{t('AdminAddUserToCourse.form.role.title')}</FormLabel>
         <FormSelect style={{ fontSize: "26px" }} {...register("roleId", {})}>
           {roles.map((role) => (
             <option value={role.roleId} key={role.roleId}>
-              {role.roleName}
+              {t('AdminAddUserToCourse.form.role' + role.roleName)}
             </option>
           ))}
         </FormSelect>
-        <FormButton>Anadir usuario</FormButton>
+        <FormButton>{t('AdminAddUserToCourse.form.addButton')}</FormButton>
         {(courseTeachers.length > 0 ||
           courseStudents.length > 0 ||
           courseHelpers.length > 0) && (
           <UserContainer>
             <UserColumn>
-              <FormText style={{ margin: 0 }}>Alumnos</FormText>
+              <FormText style={{ margin: 0 }}>{t('AdminAddUserToCourse.form.students')}</FormText>
               <ul>
                 {courseStudents.map((student) => (
                   <li key={student.userId}>{student.name}</li>
@@ -117,11 +123,11 @@ function AdminAddUserToCourse() {
                       <PaginationArrow
                         xRotated={true}
                         src="/images/page-arrow.png"
-                        alt="Pagina anterior"
+                        alt={t('BasicPagination.alt.beforePage')}
                       />
                     </Link>
                   )}
-                  Pagina {currentPage} de {maxPage}
+                  {t('BasicPagination.message', {currentPage: currentPage,maxPage: maxPage})}
                   {currentPage < maxPage && (
                     <Link
                       to={`/admin/course/enroll?courseId=${
@@ -130,7 +136,7 @@ function AdminAddUserToCourse() {
                     >
                       <PaginationArrow
                         src="/images/page-arrow.png"
-                        alt="Pagina siguiente"
+                        alt={t('BasicPagination.alt.nextPage')}
                       />
                     </Link>
                   )}
@@ -140,7 +146,7 @@ function AdminAddUserToCourse() {
             <UserColumn>
               {courseTeachers.length > 0 && (
                 <>
-                  <FormText style={{ margin: 0 }}>Profesores</FormText>
+                  <FormText style={{ margin: 0 }}>{t('AdminAddUserToCourse.form.teachers')}</FormText>
                   <ul>
                     {courseTeachers.map((teacher) => (
                       <li key={teacher.userId}>{teacher.name}</li>
@@ -150,7 +156,7 @@ function AdminAddUserToCourse() {
               )}
               {courseHelpers.length > 0 && (
                 <>
-                  <FormText style={{ margin: 0 }}>Ayudantes</FormText>
+                  <FormText style={{ margin: 0 }}>{t('AdminAddUserToCourse.form.assistants')}</FormText>
                   <ul>
                     {courseHelpers.map((helper) => (
                       <li key={helper.userId}>{helper.name}</li>

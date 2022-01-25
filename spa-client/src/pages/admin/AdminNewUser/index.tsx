@@ -10,6 +10,11 @@ import { GeneralTitle } from "../../../components/generalStyles/utils";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../common/i18n/index";
+//
+
 type FormData = {
   fileNumber: number;
   name: string;
@@ -21,6 +26,7 @@ type FormData = {
 };
 
 function AdminNewUser() {
+  const { t } = useTranslation();
   const [isFileNumberDuplicated, setIsFileNumberDuplicated] = useState(false);
   const [isUsernameDuplicated, setIsUsernameDuplicated] = useState(false);
   const [isEmailDuplicated, setIsEmailDuplicated] = useState(false);
@@ -38,7 +44,7 @@ function AdminNewUser() {
     if (data.password !== data.confirmPassword) {
       setError("confirmPassword", {
         type: "repeated",
-        message: "La contrasenas deben concidir",
+        message: t('AdminNewUser.error.passwordsMustMatch'),
       });
     } else {
       reset();
@@ -58,9 +64,9 @@ function AdminNewUser() {
           className="announcement-title"
           style={{ color: "#176961", alignSelf: "center" }}
         >
-          Crear nuevo usuario
+          {t('AdminNewUser.form.title')}
         </GeneralTitle>
-        <FormLabel htmlFor="fileNumber">Legajo</FormLabel>
+        <FormLabel htmlFor="fileNumber">{t('AdminNewUser.form.fileNumber')}</FormLabel>
         <FormInput
           type="number"
           min="0"
@@ -72,15 +78,15 @@ function AdminNewUser() {
           })}
         />
         {errors.fileNumber?.type === "required" && (
-          <ErrorMessage>El legajo es requeriod</ErrorMessage>
+          <ErrorMessage>{t('AdminNewUser.error.fileNumber.isRequired')}</ErrorMessage>
         )}
         {errors.fileNumber?.type === "min" && (
-          <ErrorMessage>El legajo debe ser un numero positivo</ErrorMessage>
+          <ErrorMessage>{t('AdminNewUser.error.fileNumber.positiveInteger')}</ErrorMessage>
         )}
         {isFileNumberDuplicated && (
-          <ErrorMessage>El legajo ya existe</ErrorMessage>
+          <ErrorMessage>{t('AdminNewUser.error.fileNumber.exists')}</ErrorMessage>
         )}
-        <FormLabel htmlFor="name">Nombre</FormLabel>
+        <FormLabel htmlFor="name">{t('AdminNewUser.form.name')}</FormLabel>
         <FormInput
           type="text"
           style={{ fontSize: "26px" }}
@@ -88,17 +94,17 @@ function AdminNewUser() {
             required: true,
             pattern: {
               value: /[a-zA-Z ']+/,
-              message: "El nombre solo puede tener letras",
+              message: t('AdminNewUser.error.name.onlyLetters'),
             },
           })}
         />
         {errors.name?.type === "required" && (
-          <ErrorMessage>El nombre es requerido</ErrorMessage>
+          <ErrorMessage>{t('AdminNewUser.error.name.isRequired')}</ErrorMessage>
         )}
         {errors.name?.message && (
           <ErrorMessage> {errors.name?.message} </ErrorMessage>
         )}
-        <FormLabel htmlFor="surname">Apellido</FormLabel>
+        <FormLabel htmlFor="surname">{t('AdminNewUser.form.surname')}</FormLabel>
         <FormInput
           type="text"
           style={{ fontSize: "26px" }}
@@ -106,17 +112,17 @@ function AdminNewUser() {
             required: true,
             pattern: {
               value: /[a-zA-Z ']+/,
-              message: "El apellido solo puede tener letras",
+              message: t('AdminNewUser.error.surname.onlyLetters'),
             },
           })}
         />
         {errors.surname?.type === "required" && (
-          <ErrorMessage>El apellido es requerido</ErrorMessage>
+          <ErrorMessage>{t('AdminNewUser.error.surname.isRequired')}</ErrorMessage>
         )}
         {errors.surname?.message && (
           <ErrorMessage> {errors.surname?.message} </ErrorMessage>
         )}
-        <FormLabel htmlFor="username">Nombre de usuario</FormLabel>
+        <FormLabel htmlFor="username">{t('AdminNewUser.form.username')}</FormLabel>
         <FormInput
           type="text"
           style={{ fontSize: "26px" }}
@@ -128,25 +134,25 @@ function AdminNewUser() {
             },
             pattern: {
               value: /[a-zA-Z0-9]+/,
-              message: "El nombre de usuario solo puede tener letras y numeros",
+              message: t('AdminNewUser.error.username.pattern'),
             },
           })}
         />
         {errors.username?.type === "required" && (
-          <ErrorMessage>El nombre de usuario es requerido</ErrorMessage>
+          <ErrorMessage>{t('AdminNewUser.error.username.isRequired')}</ErrorMessage>
         )}
         {errors.username?.type === "length" && (
           <ErrorMessage>
-            El largo del nombre de usuario debe estar entre 6 y 50 caracteres
+            {t('AdminNewUser.error.username.length')}
           </ErrorMessage>
         )}
         {errors.username?.message && (
           <ErrorMessage> {errors.username?.message} </ErrorMessage>
         )}
         {isUsernameDuplicated && (
-          <ErrorMessage>El nombre de usuario ya existe</ErrorMessage>
+          <ErrorMessage>{t('AdminNewUser.error.username.exists')}</ErrorMessage>
         )}
-        <FormLabel htmlFor="email">Email</FormLabel>
+        <FormLabel htmlFor="email">{t('AdminNewUser.form.email')}</FormLabel>
         <FormInput
           type="email"
           style={{ fontSize: "26px" }}
@@ -155,15 +161,18 @@ function AdminNewUser() {
             pattern: {
               value:
                 /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-              message: "El email debe tener un formato valido",
+              message: t('AdminNewUser.error.email.pattern'),
             },
           })}
         />
         {errors.email?.message && (
           <ErrorMessage> {errors.email?.message} </ErrorMessage>
         )}
-        {isEmailDuplicated && <ErrorMessage>El email ya existe</ErrorMessage>}
-        <FormLabel htmlFor="password">Contrasena</FormLabel>
+        {errors.email?.type === "required" && (
+            <ErrorMessage>{t('AdminNewUser.error.email.isRequired')}</ErrorMessage>
+        )}
+        {isEmailDuplicated && <ErrorMessage>{t('AdminNewUser.error.email.exists')}</ErrorMessage>}
+        <FormLabel htmlFor="password">{t('AdminNewUser.form.password')}</FormLabel>
         <FormInput
           type="password"
           style={{ fontSize: "26px" }}
@@ -176,22 +185,22 @@ function AdminNewUser() {
             pattern: {
               value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
               message:
-                "La contrasena debe tener una mayuscula, una minsucula y un numero",
+                  t('AdminNewUser.error.password.pattern'),
             },
           })}
         />
         {errors.password?.type === "required" && (
-          <ErrorMessage>La contrasena es requerida</ErrorMessage>
+          <ErrorMessage>{t('AdminNewUser.error.password.isRequired')}</ErrorMessage>
         )}
         {errors.password?.type === "length" && (
           <ErrorMessage>
-            El largo de la contrasena debe estar entre 8 y 50 caracteres
+            {t('AdminNewUser.error.password.length')}
           </ErrorMessage>
         )}
         {errors.password?.message && (
           <ErrorMessage> {errors.password?.message} </ErrorMessage>
         )}
-        <FormLabel htmlFor="confirmPassword">Confirmar contrasena</FormLabel>
+        <FormLabel htmlFor="confirmPassword">{t('AdminNewUser.form.confirmPassword')}</FormLabel>
         <FormInput
           type="password"
           style={{ fontSize: "26px" }}
@@ -200,7 +209,7 @@ function AdminNewUser() {
         {errors.confirmPassword?.message && (
           <ErrorMessage> {errors.confirmPassword?.message} </ErrorMessage>
         )}
-        <FormButton>Crear</FormButton>
+        <FormButton>{t('AdminNewUser.form.createButton')}</FormButton>
       </FormWrapper>
     </>
   );

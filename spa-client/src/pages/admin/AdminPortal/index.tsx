@@ -1,10 +1,16 @@
 import { AdminTitle, LinkRedirectionButton } from "./styles";
 import React from "react";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../common/i18n/index";
+//
+
 function AdminPortal() {
+    const { t } = useTranslation();
   return (
     <>
-      <AdminTitle>Centro de Administracion de Campus</AdminTitle>
+      <AdminTitle>{t('AdminPortal.title')}</AdminTitle>
       <div
         style={{
           display: "flex",
@@ -15,16 +21,16 @@ function AdminPortal() {
         }}
       >
         <LinkRedirectionButton to="/admin/user/new">
-          Crear nuevo usuario
+            {t('AdminPortal.createNewUserButton')}
         </LinkRedirectionButton>
         <LinkRedirectionButton to="/admin/course/new">
-          Crear nuevo curso
+            {t('AdminPortal.createNewCourseButton')}
         </LinkRedirectionButton>
         <LinkRedirectionButton to="/admin/course/select">
-          Anadir usuario a curso
+            {t('AdminPortal.addUserToCourseButton')}
         </LinkRedirectionButton>
         <LinkRedirectionButton to="/admin/course/all">
-          Ver todos los cursos
+            {t('AdminPortal.seeAllCoursesButton')}
         </LinkRedirectionButton>
       </div>
     </>

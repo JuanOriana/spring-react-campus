@@ -20,7 +20,13 @@ import {
 } from "./styles";
 import { getQueryOrDefault, useQuery } from "../../../hooks/useQuery";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../common/i18n/index";
+//
+
 function AdminAllCourses() {
+  const { t } = useTranslation();
   const [currentPage, pageSize] = usePagination(10);
   const maxPage = 3;
   const query = useQuery();
@@ -55,12 +61,12 @@ function AdminAllCourses() {
         }}
       >
         <SectionHeading>
-          Todos los cursos de {year}/{quarter}
+          {t('AdminAllCourses.allCoursesFrom', {year:year,quarter:quarter})}
         </SectionHeading>
         <CourseTableForm method="get">
           <div style={{ display: "flex" }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <FormLabel htmlFor="year">Ano</FormLabel>
+              <FormLabel htmlFor="year">{t('AdminAllCourses.form.year')}</FormLabel>
               <FormSelect name="year" id="year" defaultValue={year}>
                 {allYears.map((optionYear) => (
                   <option value={optionYear}>{optionYear}</option>
@@ -74,7 +80,7 @@ function AdminAllCourses() {
                 alignItems: "center",
               }}
             >
-              <FormText>Cuatrimestre</FormText>
+              <FormText>{t('AdminAllCourses.form.quarter')}</FormText>
               <div
                 style={{
                   display: "flex",
@@ -103,20 +109,20 @@ function AdminAllCourses() {
               </div>
             </div>
           </div>
-          <FormButton>Buscar</FormButton>
+          <FormButton>{t('AdminAllCourses.form.searchButton')}</FormButton>
         </CourseTableForm>
         {courses.length === 0 && (
           <h2 style={{ marginTop: "20px" }}>
-            No hay cursos en este cuatrimestre
+            {t('AdminAllCourses.noCourses')}
           </h2>
         )}
         {courses.length !== 0 && (
           <>
             <CourseTable>
               <CourseTableHeader>
-                <th>Codigo</th>
-                <th style={{ width: "300px" }}>Nombre</th>
-                <th>Comision</th>
+                <th>{t('AdminAllCourses.table.code')}</th>
+                <th style={{ width: "300px" }}>{t('AdminAllCourses.table.name')}</th>
+                <th>{t('AdminAllCourses.table.board')}</th>
               </CourseTableHeader>
               {courses.map((course) => (
                 <tr>
@@ -142,11 +148,11 @@ function AdminAllCourses() {
                   <PaginationArrow
                     xRotated={true}
                     src="/images/page-arrow.png"
-                    alt="Pagina previa"
+                    alt={t('BasicPagination.alt.beforePage')}
                   />
                 </Link>
               )}
-              Pagina {currentPage} de {maxPage}
+              {t('BasicPagination.message', {currentPage: currentPage,maxPage: maxPage})}
               {currentPage < maxPage && (
                 <Link
                   to={`/admin/course/all?year=${year}&quarter=${quarter}&page=${
@@ -155,7 +161,7 @@ function AdminAllCourses() {
                 >
                   <PaginationArrow
                     src="/images/page-arrow.png"
-                    alt="Siguiente pagina"
+                    alt={t('BasicPagination.alt.nextPage')}
                   />
                 </Link>
               )}
