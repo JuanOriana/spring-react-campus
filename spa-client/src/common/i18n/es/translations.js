@@ -1,5 +1,14 @@
 export const TRANSLATIONS_ES = {
 
+    "DaysOfTheWeek":{
+        "Lunes":"Lunes",
+        "Martes":"Martes",
+        "Miercoles":"Miercoles",
+        "Jueves":"Jueves",
+        "Viernes":"Viernes",
+        "Sabado":"Sabado",
+    },
+
     //COMPONENTS
 
     "AdminSectionCol": {
@@ -152,14 +161,6 @@ export const TRANSLATIONS_ES = {
 
     "AdminNewCourse":{
         "newCourse":"Nuevo curso",
-        "days":{
-            "Lunes":"Lunes",
-            "Martes":"Martes",
-            "Miercoles":"Miercoles",
-            "Jueves":"Jueves",
-            "Viernes":"Viernes",
-            "Sabado":"Sabado",
-        },
         "form":{
             "subject":"Materia",
             "quarter":"Cuatrimestre",
@@ -296,6 +297,109 @@ export const TRANSLATIONS_ES = {
             "file":{
                 "isRequired":"Adjuntar un archivo",
                 "size":"El archivo debe ser mas chico que 50mb",
+            },
+        },
+    },
+
+    "TeacherCourseExamStandalone":{
+        "filteredBy":"Filtrar por",
+        "filters":{
+            "all":"Todos",
+            "corrected":"Corregidos",
+            "notCorrected":"No corregidos",
+        },
+        "filterButton":"Filtrar",
+        "noExams":"No hay examenes que cumplan el criterio"
+    },
+
+    "StudentExams":{
+        "title":"Examenes",
+        "toDo": "Examenes a disponibles:",
+        "noExams": "No hay examenes",
+        "sentExames": "Examenes enviados",
+    },
+
+    "TeacherExams":{
+        "title":"Examenes",
+        "createExam":"Crear examen",
+        "form":{
+            "examTitle":"Titulo",
+            "examInstructions":"Instrucciones",
+            "examFile":"Archivo",
+            "examStart": "Inicio",
+            "examEnd": "Fin",
+            "createButton":"Crear"
+        },
+        "error":{
+            "examTitle":{
+                "isRequired":"El titulo es requerido",
+                "length":"El titulo debe tener entre 2 y 50 caracteres de largo",
+            },
+            "examInstructions":{
+                "isRequired":"El contenido es requerido",
+                "length":"El contenido debe tener entre 2 y 50 caracteres de largo",
+            },
+            "examFile":{
+                "isRequired":"El archivo es requerido",
+                "size":"El archivo debe ser mas pequeño que 50mb",
+            },
+            "examStart":{
+                "isRequired":"La fecha de inicio es requerida",
+                "badDate":"La fecha de inicio debe ser previa la final",
+            },
+            "examEnd":{
+                "isRequired":"La fecha de final es requerida",
+            },
+        },
+        "recentExams":"Examenes recientes",
+        "noExams": "No hay examenes",
+    },
+
+    "CourseFiles":{
+        "teacher":{
+            "form":{
+                "title":"Nuevo archivo",
+                "file":"Archivo",
+                "category":"Categoria",
+                "uploadFileButton":"Subir Archivo",
+            },
+            "error":{
+                "file":{
+                    "isRequired":"El archivo es requerido",
+                    "size":"El archivo debe ser mas pequeño que 50mb",
+                },
+            },
+        },
+        "title": "Archivos",
+        "noResults":"No hay resultados!",
+    },
+
+    "CourseSchedule":{
+        "title":"Horarios",
+        "subTitle":"Estos son tus horarios de clase, ante cualquier cambio consultar con un profesor autorizado.",
+    },
+
+    "CourseTeachers":{
+        "title":"Profesores",
+        "alt":{
+            "mail":"Correo",
+            "title":"Enviar correo"
+        },
+    },
+
+    "Mail":{
+        "form":{
+            "title": "Enviar mail a {{name}} {{surname}}",
+            "subject":"Asunto",
+            "message":"Contenido",
+            "sendMailButton":"Enviar"
+        },
+        "error":{
+            "subject":{
+                "isRequired":"El asunto es requerido",
+            },
+            "message":{
+                "isRequired":"El contenido es requerido",
             },
         },
     },

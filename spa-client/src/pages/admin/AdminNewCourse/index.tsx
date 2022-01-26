@@ -123,7 +123,7 @@ function AdminNewCourse() {
         >
           {days.map((day) => (
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <FormText>{t('AdminNewCourse.days.' + day)}</FormText>
+              <FormText>{t('DaysOfTheWeek.' + day)}</FormText>
               <div style={{ display: "flex" }}>
                 <input
                   style={{ width: "3em" }}

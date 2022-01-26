@@ -26,6 +26,11 @@ import {
   FormWrapper,
 } from "../../../components/generalStyles/form";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../common/i18n/index";
+//
+
 type FormData = {
   file: FileList;
   //DEBERIA SER UN ENUM
@@ -33,6 +38,7 @@ type FormData = {
 };
 
 function CourseFiles() {
+  const { t } = useTranslation();
   const { course, isTeacher } = useCourseData();
   const query = useQuery();
   const navigate = useNavigate();
@@ -42,8 +48,8 @@ function CourseFiles() {
   const orderProperty = getQueryOrDefault(query, "order-property", "date");
   const maxPage = 3;
   const categories = [
-    { categoryName: "Hola", categoryId: 1 },
-    { categoryName: "Dos", categoryId: 2 },
+    { categoryName: "practice", categoryId: 1 },
+    { categoryName: "exam", categoryId: 2 },
   ];
 
   const {
@@ -65,9 +71,9 @@ function CourseFiles() {
           onSubmit={onSubmit}
         >
           <GeneralTitle style={{ color: "#176961", alignSelf: "center" }}>
-            Nuevo archivo
+            {t('CourseFiles.teacher.form.title')}
           </GeneralTitle>
-          <FormLabel htmlFor="file">Archivo</FormLabel>
+          <FormLabel htmlFor="file">{t('CourseFiles.teacher.form.file')}</FormLabel>
           <FormInput
             type="file"
             style={{ fontSize: "26px" }}
@@ -80,20 +86,20 @@ function CourseFiles() {
             })}
           />
           {errors.file?.type === "required" && (
-            <ErrorMessage>El archivo es requerido</ErrorMessage>
+            <ErrorMessage>{t('CourseFiles.teacher.error.file.isRequired')}</ErrorMessage>
           )}
           {errors.file?.type === "size" && (
-            <ErrorMessage>El archivo debe ser mas chico que 50mb</ErrorMessage>
+            <ErrorMessage>{t('CourseFiles.teacher.error.file.size')}</ErrorMessage>
           )}
-          <FormLabel htmlFor="categoryId">Categoria</FormLabel>
+          <FormLabel htmlFor="categoryId">{t('CourseFiles.teacher.form.category')}</FormLabel>
           <FormSelect style={{ fontSize: "26px" }}>
             {categories.map((category) => (
               <option value={category.categoryId}>
-                {category.categoryName}
+                {t('Category.' + category.categoryName)}
               </option>
             ))}
           </FormSelect>
-          <FormButton>Crear Archivo</FormButton>
+          <FormButton>{t('CourseFiles.teacher.form.uploadFileButton')}</FormButton>
         </FormWrapper>
         <Separator reduced={true}>.</Separator>
       </>
@@ -103,7 +109,7 @@ function CourseFiles() {
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        Archivos
+        {t('CourseFiles.title')}
       </SectionHeading>
       {isTeacher && renderTeacherForm()}
       <BigWrapper style={{ display: "flex", flexDirection: "column" }}>
@@ -122,7 +128,7 @@ function CourseFiles() {
         <FileGrid>
           {files.length === 0 && (
             <GeneralTitle style={{ width: "100%", textAlign: "center" }}>
-              No hay resultados!
+              {t('CourseFiles.noResults')}
             </GeneralTitle>
           )}
           {files.map((file) => (
@@ -142,11 +148,11 @@ function CourseFiles() {
             <PaginationArrow
               xRotated={true}
               src="/images/page-arrow.png"
-              alt="Pagina previa"
+              alt={t('BasicPagination.alt.beforePage')}
             />
           </button>
         )}
-        Pagina {currentPage} de {maxPage}
+        {t('BasicPagination.message', {currentPage: currentPage, maxPage: maxPage})}
         {currentPage < maxPage && (
           <button
             onClick={() => {
@@ -157,7 +163,7 @@ function CourseFiles() {
           >
             <PaginationArrow
               src="/images/page-arrow.png"
-              alt="Pagina siguiente"
+              alt={t('BasicPagination.alt.nextPage')}
             />
           </button>
         )}

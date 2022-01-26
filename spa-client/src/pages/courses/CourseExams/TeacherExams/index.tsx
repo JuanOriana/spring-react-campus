@@ -17,6 +17,11 @@ import ExamUnit from "../../../../components/ExamUnit";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../../common/i18n/index";
+//
+
 type FormData = {
   title: string;
   content: string;
@@ -25,6 +30,7 @@ type FormData = {
   endTime: Date;
 };
 function TeacherExams() {
+  const { t } = useTranslation();
   const exams = [{ examId: 1, title: "Examen" }];
   const [isBefore, setIsBefore] = useState(false);
 
@@ -52,9 +58,9 @@ function TeacherExams() {
         onSubmit={onSubmit}
       >
         <GeneralTitle style={{ color: "#176961", alignSelf: "center" }}>
-          Crear examen
+          {t('TeacherExams.title')}
         </GeneralTitle>
-        <FormLabel htmlFor="title">Titulo</FormLabel>
+        <FormLabel htmlFor="title">{t('TeacherExams.form.examTitle')}</FormLabel>
         <FormInput
           type="text"
           style={{ fontSize: "26px" }}
@@ -66,14 +72,14 @@ function TeacherExams() {
           })}
         />
         {errors.title?.type === "required" && (
-          <ErrorMessage>El titulo es requerido</ErrorMessage>
+          <ErrorMessage>{t('TeacherExams.error.examTitle.isRequired')}</ErrorMessage>
         )}
         {errors.title?.type === "length" && (
           <ErrorMessage>
-            El titulo debe tener entre 2 y 50 caracteres de largo
+            {t('TeacherExams.error.examTitle.length')}
           </ErrorMessage>
         )}
-        <FormLabel htmlFor="content">Instrucciones</FormLabel>
+        <FormLabel htmlFor="content">{t('TeacherExams.form.examInstructions')}</FormLabel>
         <FormArea
           style={{ width: "95%", resize: "none" }}
           cols={50}
@@ -86,14 +92,14 @@ function TeacherExams() {
           })}
         ></FormArea>
         {errors.content?.type === "required" && (
-          <ErrorMessage>El contenido es requerido</ErrorMessage>
+          <ErrorMessage>{t('TeacherExams.error.examInstructions.isRequired')}</ErrorMessage>
         )}
         {errors.content?.type === "length" && (
           <ErrorMessage>
-            El contenido debe tener entre 2 y 50 caracteres de largo
+            {t('TeacherExams.error.examInstructions.length')}
           </ErrorMessage>
         )}
-        <FormLabel htmlFor="file">Archivo</FormLabel>
+        <FormLabel htmlFor="file">{t('TeacherExams.form.examFile')}</FormLabel>
         <FormInput
           type="file"
           style={{ fontSize: "26px" }}
@@ -107,12 +113,12 @@ function TeacherExams() {
           })}
         />
         {errors.file?.type === "required" && (
-          <ErrorMessage>El archivo es requerido</ErrorMessage>
+          <ErrorMessage>{t('TeacherExams.error.examFile.isRequired')}</ErrorMessage>
         )}
         {errors.file?.type === "size" && (
-          <ErrorMessage>El archivo debe ser mas pequeño que 50mb</ErrorMessage>
+          <ErrorMessage>{t('TeacherExams.error.examFile.size')}</ErrorMessage>
         )}
-        <FormLabel htmlFor="startTime">Inicio</FormLabel>
+        <FormLabel htmlFor="startTime">{t('TeacherExams.form.examStart')}</FormLabel>
         <FormInput
           type="datetime-local"
           style={{ fontSize: "26px" }}
@@ -122,9 +128,9 @@ function TeacherExams() {
           })}
         />
         {errors.startTime?.type === "required" && (
-          <ErrorMessage>La fecha de inicio es requerida</ErrorMessage>
+          <ErrorMessage>{t('TeacherExams.error.examStart.isRequired')}</ErrorMessage>
         )}
-        <FormLabel htmlFor="endTime">Final</FormLabel>
+        <FormLabel htmlFor="endTime">{t('TeacherExams.form.examEnd')}</FormLabel>
         <FormInput
           type="datetime-local"
           style={{ fontSize: "26px" }}
@@ -134,20 +140,20 @@ function TeacherExams() {
           })}
         />
         {errors.endTime?.type === "required" && (
-          <ErrorMessage>La fecha de final es requerida</ErrorMessage>
+          <ErrorMessage>{t('TeacherExams.error.examEnd.isRequired')}</ErrorMessage>
         )}
         {isBefore && (
           <ErrorMessage>
-            La fecha de inicio debe ser previa la final
+            {t('TeacherExams.error.examStart.badDate')}
           </ErrorMessage>
         )}
-        <FormButton>Crear</FormButton>
+        <FormButton>{t('TeacherExams.form.createButton')}</FormButton>
       </FormWrapper>
       <Separator reduced={true}>.</Separator>
 
       <BigWrapper>
-        <h3 style={{ margin: "10px 0" }}>Examenes recientes</h3>
-        {exams.length === 0 && <p>No hay examenes</p>}
+        <h3 style={{ margin: "10px 0" }}>{t('TeacherExams.recentExams')}</h3>
+        {exams.length === 0 && <p>{t('TeacherExams.noExams')}</p>}
         {exams.map((exam) => (
           //EXAMS SOLVED Y USERCOUNT SALE DE QUE EXAMS EN VERDAD ES UN MAPA
           <ExamUnit

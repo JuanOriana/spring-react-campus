@@ -5,7 +5,13 @@ import {
 import ExamUnit from "../../../../components/ExamUnit";
 import React from "react";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../../common/i18n/index";
+//
+
 function StudentExams() {
+  const { t } = useTranslation();
   const unresolvedExams = [{ examId: 1, title: "Examen" }];
   const answerMarks = [
     {
@@ -18,13 +24,13 @@ function StudentExams() {
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        Examenes
+        {t('StudentExams.title')}
       </SectionHeading>
       <BigWrapper>
         <h3 style={{ margin: "10px 0" }}>
-          "course-exams.comment" no me acuerdo que era
+          {t('StudentExams.toDo')}
         </h3>
-        {unresolvedExams.length === 0 && <p>No hay examenes</p>}
+        {unresolvedExams.length === 0 && <p>{t('StudentExams.noExams')}</p>}
         {unresolvedExams.map((exam) => (
           <ExamUnit exam={exam} />
         ))}
@@ -37,7 +43,7 @@ function StudentExams() {
                 justifyContent: "space-between",
               }}
             >
-              <h3 style={{ margin: "10px 0" }}>Examenes enviados</h3>
+              <h3 style={{ margin: "10px 0" }}>{t('StudentExams.sentExams')}</h3>
               <SectionHeading style={{ fontSize: "20px", marginRight: "10px" }}>
                 {average}
               </SectionHeading>

@@ -4,6 +4,11 @@ import {
 } from "../../../components/generalStyles/utils";
 import React from "react";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../common/i18n/index";
+//
+
 const times = [
   { begin: { hour: 18, minute: 30 }, end: { hour: 21, minute: 30 } },
   null,
@@ -14,6 +19,7 @@ const times = [
 ];
 
 function CourseSchedule() {
+  const { t } = useTranslation();
   const days: string[] = [
     "Lunes",
     "Martes",
@@ -26,17 +32,17 @@ function CourseSchedule() {
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        Horarios
+        {t('CourseSchedule.title')}
       </SectionHeading>
       <BigWrapper>
         <h3 style={{ margin: "10px 0" }}>
-          "course-schedule.comment", no recuerdo que era
+          {t('CourseSchedule.subTitle')}
         </h3>
         {days.map((day, index) => (
           <>
             {times[index] && (
               <>
-                <h3 style={{ margin: "3px 0 0 10px" }}>{day}</h3>
+                <h3 style={{ margin: "3px 0 0 10px" }}>{t('DaysOfTheWeek.' + day)}</h3>
                 <p style={{ marginLeft: "15px" }}>
                   {`› ${times[index]!.begin.hour}:${
                     times[index]!.begin.minute

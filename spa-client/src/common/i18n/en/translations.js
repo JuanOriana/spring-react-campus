@@ -1,5 +1,14 @@
 export const TRANSLATIONS_EN = {
 
+    "DaysOfTheWeek":{
+        "Lunes":"Monday",
+        "Martes":"Tuesday",
+        "Miercoles":"Wednesday",
+        "Jueves":"Thursday",
+        "Viernes":"Friday",
+        "Sabado":"Saturday",
+    },
+
     //COMPONENTS
 
     "AdminSectionCol": {
@@ -152,14 +161,6 @@ export const TRANSLATIONS_EN = {
 
     "AdminNewCourse":{
         "newCourse":"New course",
-        "days":{
-            "Lunes":"Monday",
-            "Martes":"Tuesday",
-            "Miercoles":"Wednesday",
-            "Jueves":"Thursday",
-            "Viernes":"Friday",
-            "Sabado":"Saturday",
-        },
         "form":{
             "subject":"Subject",
             "quarter":"Quarter",
@@ -297,6 +298,109 @@ export const TRANSLATIONS_EN = {
             "file":{
                 "isRequired":"Attach a file",
                 "size":"File must be smaller than 50mb",
+            },
+        },
+    },
+
+    "TeacherCourseExamStandalone":{
+        "filteredBy":"Filter by",
+        "filters":{
+            "all":"All",
+            "corrected":"Corrected",
+            "notCorrected":"Not corrected",
+        },
+        "filterButton":"Filter",
+        "noExams":"No exams that satisfy criteria"
+    },
+
+    "StudentExams":{
+        "title":"Exams",
+        "toDo": "Available exams:",
+        "noExams": "No exams available",
+        "sentExames": "Exams done",
+    },
+
+    "TeacherExams":{
+        "title":"Exams",
+        "createExam":"Create exam",
+        "form":{
+            "examTitle":"Title",
+            "examInstructions":"Instructions",
+            "examFile":"File",
+            "examStart": "Beginning",
+            "examEnd": "End",
+            "createButton":"Create"
+        },
+        "error":{
+            "examTitle":{
+                "isRequired":"The title of the exam is required",
+                "length":"The title must have between 2 and 50 characters",
+            },
+            "examInstructions":{
+                "isRequired":"The instructions are required",
+                "length":"The instructions must have between 2 and 50 characters",
+            },
+            "examFile":{
+                "isRequired":"A file must be attached",
+                "size":"File must be smaller than 50mb",
+            },
+            "examStart":{
+                "isRequired":"The start time is required",
+                "badDate":"Start time must be before end time",
+            },
+            "examEnd":{
+                "isRequired":"The end time is required",
+            },
+        },
+        "recentExams":"Recent exams",
+        "noExams": "No exams",
+    },
+
+    "CourseFiles":{
+        "teacher":{
+            "form":{
+                "title":"New File",
+                "file":"File",
+                "category":"Category",
+                "uploadFileButton":"Upload File",
+            },
+            "error":{
+                "file":{
+                    "isRequired":"A file must be attached",
+                    "size":"File must be smaller than 50mb",
+                },
+            },
+        },
+        "title": "Files",
+        "noResults":"No results!",
+    },
+
+    "CourseSchedule":{
+        "title":"Schedule",
+        "subTitle":"This is the timetable of the course.",
+    },
+
+    "CourseTeachers":{
+        "title":"Teachers",
+        "alt":{
+            "mail":"Mail",
+            "title":"Send email"
+        },
+    },
+
+    "Mail":{
+        "form":{
+            "title": "Send email to {{name}} {{surname}}",
+            "subject":"Subject",
+            "message":"Message",
+            "sendMailButton":"Send"
+        },
+        "error":{
+            "subject":{
+                "isRequired":"A subject is required",
+            },
+            "message":{
+                "isRequired":"A content is required",
             },
         },
     },

@@ -18,7 +18,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import StudentExamUnit from "../../../../../components/StudentExamUnit";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../../../common/i18n/index";
+//
+
 function TeacherCourseExamStandalone() {
+  const { t } = useTranslation();
   const { course } = useCourseData();
   const maxPage = 3;
   const [currentPage, pageSize] = usePagination(10);
@@ -69,29 +75,29 @@ function TeacherCourseExamStandalone() {
               htmlFor="filter-by"
               style={{ marginBottom: "4px" }}
             >
-              Filtrar por
+              {t('TeacherCourseExamStandalone.filteredBy')}
             </FileSelectLabel>
             <FileSelect name="filter-by" id="filter-by">
               <option value="all" selected={filterBy === "all"}>
-                Todos
+                {t('TeacherCourseExamStandalone.filters.all')}
               </option>
               <option value="corrected" selected={filterBy === "corrected"}>
-                Corregidos
+                {t('TeacherCourseExamStandalone.filters.corrected')}
               </option>
               <option
                 value="not corrected"
                 selected={filterBy === "not-corrected"}
               >
-                No corregidos
+                {t('TeacherCourseExamStandalone.filters.notCorrected')}
               </option>
             </FileSelect>
-            <FormButton style={{ alignSelf: "end" }}>Filtrar</FormButton>
+            <FormButton style={{ alignSelf: "end" }}>{t('TeacherCourseExamStandalone.filterButton')}</FormButton>
           </FileQueryContainer>
         </FileQueryContainer>
         <SectionHeading style={{ marginLeft: "10px" }}>
           {average}
         </SectionHeading>
-        {answers.length === 0 && <>No hay examenes que cumplan el criterio</>}
+        {answers.length === 0 && <>{t('TeacherCourseExamStandalone.noExams')}</>}
         {answers.map((answer) => (
           <StudentExamUnit
             answer={answer}
@@ -110,11 +116,11 @@ function TeacherCourseExamStandalone() {
             <PaginationArrow
               xRotated={true}
               src="/images/page-arrow.png"
-              alt="Pagina previa"
+              alt={t('BasicPagination.alt.beforePage')}
             />
           </Link>
         )}
-        Pagina {currentPage} de {maxPage}
+        {t('BasicPagination.message', {currentPage: currentPage, maxPage: maxPage})}
         {currentPage < maxPage && (
           <Link
             to={`/course/${course.courseId}/exam/${exam.examId}?page=${
@@ -123,7 +129,7 @@ function TeacherCourseExamStandalone() {
           >
             <PaginationArrow
               src="/images/page-arrow.png"
-              alt="Siguiente pagina"
+              alt={t('BasicPagination.alt.nextPage')}
             />
           </Link>
         )}

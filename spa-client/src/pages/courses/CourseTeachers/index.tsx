@@ -7,6 +7,11 @@ import { Link } from "react-router-dom";
 import { MailIcon, TeacherIcon, TeacherUnit } from "./styles";
 import React from "react";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../common/i18n/index";
+//
+
 interface Teacher {
   image: FileList | null;
   userId: number;
@@ -15,6 +20,7 @@ interface Teacher {
   email: string;
 }
 function CourseTeachers() {
+    const { t } = useTranslation();
   const teachers: Map<Teacher, number> = new Map();
   teachers.set(
     {
@@ -31,7 +37,7 @@ function CourseTeachers() {
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        Profesores
+          {t('CourseTeachers.title')}
       </SectionHeading>
       <BigWrapper>
         {Array.from(teachers.keys(), (teacher: Teacher) => (
@@ -62,8 +68,8 @@ function CourseTeachers() {
             </div>
             <Link to={`/course/${course.courseId}/mail/${teacher.userId}`}>
               <MailIcon
-                alt="Correo"
-                title="Enviar corre"
+                alt={t('CourseTeachers.alt.mail')}
+                title={t('CourseTeachers.alt.title')}
                 src="https://i.pinimg.com/originals/3a/4e/95/3a4e95aa862636d6f22c95fded897f94.jpg"
               />
             </Link>
