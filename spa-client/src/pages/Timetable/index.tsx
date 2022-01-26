@@ -2,7 +2,13 @@ import { TimetableLayout, Days, Time } from "./styles";
 import { SectionHeading } from "../../components/generalStyles/utils";
 import React from "react";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 function Timetable() {
+  const { t } = useTranslation();
   const days: string[] = [
     "Lunes",
     "Martes",
@@ -38,13 +44,13 @@ function Timetable() {
 
   return (
     <>
-      <SectionHeading>Horarios</SectionHeading>
+      <SectionHeading>{t('Timetable.title')}</SectionHeading>
       <div>
         <TimetableLayout>
           <Days>
             <th></th>
             {days.map((day) => (
-              <th key={day}>{day}</th>
+              <th key={day}>{t('DaysOfTheWeek.' + day)}</th>
             ))}
           </Days>
           {hours.map((hour) => (

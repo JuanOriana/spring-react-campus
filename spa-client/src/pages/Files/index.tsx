@@ -12,7 +12,13 @@ import { FileGrid } from "./styles";
 import { getQueryOrDefault, useQuery } from "../../hooks/useQuery";
 import { useNavigate } from "react-router-dom";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 function Files() {
+  const { t } = useTranslation();
   const query = useQuery();
   const navigate = useNavigate();
   const [currentPage] = usePagination(10);
@@ -36,7 +42,7 @@ function Files() {
 
   return (
     <>
-      <SectionHeading>Archivos</SectionHeading>
+      <SectionHeading>{t('Files.title')}</SectionHeading>
       <BigWrapper>
         <FileSearcher
           orderDirection={orderDirection}
@@ -56,7 +62,7 @@ function Files() {
         <FileGrid>
           {files.length === 0 && (
             <GeneralTitle style={{ width: "100%", textAlign: "center" }}>
-              No hay resultados!
+              {t('Files.noResults')}
             </GeneralTitle>
           )}
           {files.map((file) => (
@@ -76,11 +82,11 @@ function Files() {
             <PaginationArrow
               xRotated={true}
               src="/images/page-arrow.png"
-              alt="Pagina previa"
+              alt={t('BasicPagination.alt.beforePage')}
             />
           </button>
         )}
-        Pagina {currentPage} de {maxPage}
+        {t('BasicPagination.message', {currentPage: currentPage, maxPage: maxPage})}
         {currentPage < maxPage && (
           <button
             onClick={() => {
@@ -91,7 +97,7 @@ function Files() {
           >
             <PaginationArrow
               src="/images/page-arrow.png"
-              alt="Pagina siguiente"
+              alt={t('BasicPagination.alt.nextPage')}
             />
           </button>
         )}

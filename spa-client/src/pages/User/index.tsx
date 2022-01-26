@@ -4,6 +4,11 @@ import { ErrorMessage, FormLabel } from "../../components/generalStyles/form";
 import { UserSectionWrapper, UserSectionImg } from "./styles";
 import React from "react";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 type FormData = {
   image?: FileList;
   lastName: string;
@@ -19,6 +24,7 @@ const currentUser = {
 };
 
 function User() {
+    const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -56,7 +62,7 @@ function User() {
             }}
             onSubmit={onSubmit}
           >
-            <FormLabel style={{ margin: 0 }}>Insertar imagen</FormLabel>
+            <FormLabel style={{ margin: 0 }}>{t('User.form.title')}</FormLabel>
             <input
               type="file"
               accept="image/png, image/jpeg"
@@ -71,10 +77,10 @@ function User() {
               })}
             />
             {errors.image?.type === "required" && (
-              <ErrorMessage>La imagen es requerida</ErrorMessage>
+              <ErrorMessage>{t('User.error.file.isRequired')}</ErrorMessage>
             )}
             {errors.image?.type === "size" && (
-              <ErrorMessage>La imagen debe ser mas chica que 5 mb</ErrorMessage>
+              <ErrorMessage>{t('User.error.file.size')}</ErrorMessage>
             )}
 
             <button
@@ -85,21 +91,21 @@ function User() {
                 marginTop: "5px",
               }}
             >
-              Actualizar
+                {t('User.form.confirmButton')}
             </button>
           </form>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <p>
-            <span style={{ fontWeight: "700" }}>Nombre de usuario: </span>
+            <span style={{ fontWeight: "700" }}>{t('User.usernameTitle')}</span>
             {currentUser.username}
           </p>
           <p>
-            <span style={{ fontWeight: "700" }}>Email: </span>
+            <span style={{ fontWeight: "700" }}>{t('User.emailTitle')}</span>
             {currentUser.email}
           </p>
           <p>
-            <span style={{ fontWeight: "700" }}>Legajo: </span>
+            <span style={{ fontWeight: "700" }}>{t('User.fileNumberTitle')}</span>
             {currentUser.fileNumber}
           </p>
         </div>

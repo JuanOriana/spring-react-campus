@@ -11,7 +11,13 @@ import {
 } from "./styles";
 import BasicPagination from "../../components/BasicPagination";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 function Portal() {
+  const { t } = useTranslation();
   const [courses, setCourses] = useState(new Array(0));
   const [announcements, setAnnouncements] = useState(new Array(0));
   const maxPage = 3;
@@ -41,7 +47,7 @@ function Portal() {
 
   return (
     <>
-      <SectionHeading>Cursos</SectionHeading>
+      <SectionHeading>{t('Portal.title')}</SectionHeading>
       <CoursesContainer>
         {courses.map((course) => (
           // AGREGAR CHEQUEO DE SI ES CONTENIDO POR CURRENT COURESE O NO Y SI ES ESTUDIANTE O NO
@@ -74,7 +80,7 @@ function Portal() {
       <PortalAnnouncements>
         {announcements.length > 0 && (
           <>
-            <SectionHeading>Ultimos anuncios</SectionHeading>
+            <SectionHeading>{t('Portal.lastAnnouncements')}</SectionHeading>
             {announcements.map((announcement) => (
               <AnnouncementUnit
                 key={announcement.announcementId}

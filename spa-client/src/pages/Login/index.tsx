@@ -10,6 +10,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import React from "react";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 type FormData = {
   username: string;
   password: string;
@@ -17,6 +22,7 @@ type FormData = {
 };
 
 function Login() {
+  const { t } = useTranslation();
   let navigate = useNavigate();
   let location = useLocation();
   let auth = useAuth();
@@ -36,10 +42,10 @@ function Login() {
     <PageOrganizer>
       <PageContainer style={{ justifyContent: "center" }}>
         <LoginWrapper onSubmit={onSubmit}>
-          <SectionHeading>Ingresar</SectionHeading>
-          <LoginLabel htmlFor="username">Usuario</LoginLabel>
+          <SectionHeading>{t('Login.title')}</SectionHeading>
+          <LoginLabel htmlFor="username">{t('Login.form.user')}</LoginLabel>
           <LoginInput type="text" {...register("username", {})} />
-          <LoginLabel htmlFor="password">Contrasena</LoginLabel>
+          <LoginLabel htmlFor="password">{t('Login.form.password')}</LoginLabel>
           <LoginInput type="password" {...register("password", {})} />
           <div
             style={{ display: "flex", alignItems: "center", margin: "10px 0" }}
@@ -49,11 +55,11 @@ function Login() {
               htmlFor="remember-me"
               style={{ color: "#176961", marginLeft: "5px" }}
             >
-              Recuerdame
+              {t('Login.form.rememberMe')}
             </label>
           </div>
-          {/*MANEJAR ERROR DEL LOGIN ACA! SET ERROR*/}
-          <LoginButton>Ingresar</LoginButton>
+          {/*MANEJAR ERROR DEL LOGIN ACA! SET ERROR (ver string en internasionalizacion)*/}
+          <LoginButton>{t('Login.form.loginButton')}</LoginButton>
         </LoginWrapper>
       </PageContainer>
       <Footer />
