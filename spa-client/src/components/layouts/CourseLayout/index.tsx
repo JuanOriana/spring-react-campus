@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, useOutletContext } from "react-router-dom";
-import type CourseData from "../../../../types/CourseData";
+import type Course from "../../../../types/Course";
 import CourseSectionsCol from "../../CourseSectionsCol";
 import {
   CourseSectionName,
@@ -48,7 +48,7 @@ function CourseLayout() {
 }
 
 export function useCourseData() {
-  return useOutletContext<CourseData>();
+  return useOutletContext<Course>();
 }
 
 export default CourseLayout;
