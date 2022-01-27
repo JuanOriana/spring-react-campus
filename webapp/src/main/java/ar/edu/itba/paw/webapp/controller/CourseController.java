@@ -134,6 +134,19 @@ public class CourseController {
     }
 
     @GET
+    @Path("/available-years")
+    @Produces(value={MediaType.APPLICATION_JSON})
+    public Response availableYears(){
+        if(!authFacade.isAdminUser()){
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        List<Integer> availableYears = courseService.getAvailableYears();
+
+        return Response.ok(new GenericEntity<List<AvailableYearsDto>>(availableYears.stream().map(AvailableYearsDto::fromYear).collect(Collectors.toList())){}).build();
+    }
+
+    @GET
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getCourses(@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize, @QueryParam("year") Integer year, @QueryParam("quarter") Integer quarter) {
 
@@ -142,8 +155,6 @@ public class CourseController {
         }
 
         CampusPage<Course> coursesPaginated;
-        List<Integer> availableYears = courseService.getAvailableYears();
-
         if (year == null && quarter == null) {
             List<Course> coursesList = courseService.list();
 
@@ -152,7 +163,7 @@ public class CourseController {
             }
 
             coursesList.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
-            return Response.ok(AllCoursesResponseDto.responseFrom(availableYears, coursesList)).build(); //TODO: paginacion?
+            return Response.ok(new GenericEntity<List<CourseDto>>(coursesList.stream().map(course->CourseDto.fromCourse(course)).collect(Collectors.toList())){}).build(); //TODO: paginacion?
         } else {
             if (year == null) {
                 year = Calendar.getInstance().get(Calendar.YEAR);
@@ -169,8 +180,6 @@ public class CourseController {
             if (coursesPaginated.getContent().isEmpty()) {
                 return Response.ok().status(Response.Status.NO_CONTENT).build();
             }
-
-            coursesPaginated.getContent().sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
 
             Response.ResponseBuilder response = Response.ok(new GenericEntity<List<CourseDto>>(coursesPaginated.getContent().stream().map(CourseDto::fromCourse).collect(Collectors.toList())) {
             });
