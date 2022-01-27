@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   let signin = (newUser: string, callback: VoidFunction) => {
     return internalAuthProvider.signin(() => {
-      const isAdmin = true;
+      const isAdmin = false;
       setUser({ name: newUser, isAdmin: isAdmin });
       localStorage.setItem("user", newUser);
       localStorage.setItem("isAdmin", isAdmin ? "true" : "false");
