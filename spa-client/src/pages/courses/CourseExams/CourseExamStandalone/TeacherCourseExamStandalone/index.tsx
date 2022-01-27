@@ -25,7 +25,7 @@ import "../../../../../common/i18n/index";
 
 function TeacherCourseExamStandalone() {
   const { t } = useTranslation();
-  const { course } = useCourseData();
+  const Course = useCourseData();
   const maxPage = 3;
   const [currentPage, pageSize] = usePagination(10);
   const exam = {
@@ -109,7 +109,7 @@ function TeacherCourseExamStandalone() {
       <PaginationWrapper style={{ alignSelf: "center" }}>
         {currentPage > 1 && (
           <Link
-            to={`/course/${course.courseId}/exam/${exam.examId}?page=${
+            to={`/course/${Course.courseId}/exam/${exam.examId}?page=${
               currentPage - 1
             }&pageSize=${pageSize}&filter-by=${filterBy}`}
           >
@@ -123,7 +123,7 @@ function TeacherCourseExamStandalone() {
         {t('BasicPagination.message', {currentPage: currentPage, maxPage: maxPage})}
         {currentPage < maxPage && (
           <Link
-            to={`/course/${course.courseId}/exam/${exam.examId}?page=${
+            to={`/course/${Course.courseId}/exam/${exam.examId}?page=${
               currentPage + 1
             }&pageSize=${pageSize}&filter-by=${filterBy}`}
           >

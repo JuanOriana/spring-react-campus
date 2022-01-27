@@ -29,7 +29,7 @@ type FormData = {
 
 function CorrectExam() {
   const { t } = useTranslation();
-  const { course } = useCourseData();
+  const Course = useCourseData();
   const exam = {
     examId: 1,
     title: "Examen",
@@ -181,7 +181,7 @@ function CorrectExam() {
                 background: "#a80011",
                 textAlign: "center",
               }}
-              to={`/course/${course.courseId}/exam/${exam.examId}`}
+              to={`/course/${Course.courseId}/exam/${exam.examId}`}
             >
               {t('CorrectExam.form.cancelCorrectionButton')}
             </LinkButton>

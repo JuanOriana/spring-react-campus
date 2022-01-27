@@ -32,7 +32,7 @@ function CourseTeachers() {
     },
     1
   );
-  const { course } = useCourseData();
+  const Course = useCourseData();
 
   return (
     <>
@@ -66,7 +66,7 @@ function CourseTeachers() {
               </p>
               <p>{teacher.email}</p>
             </div>
-            <Link to={`/course/${course.courseId}/mail/${teacher.userId}`}>
+            <Link to={`/course/${Course.courseId}/mail/${teacher.userId}`}>
               <MailIcon
                 alt={t('CourseTeachers.alt.mail')}
                 title={t('CourseTeachers.alt.title')}

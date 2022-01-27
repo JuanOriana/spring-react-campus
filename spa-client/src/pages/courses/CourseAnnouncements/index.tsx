@@ -30,7 +30,7 @@ type FormData = {
 
 function CourseAnnouncements() {
   const { t } = useTranslation();
-  const { course, isTeacher } = useCourseData();
+  const Course = useCourseData();
   const [announcements, setAnnouncements] = useState(new Array(0));
   const maxPage = 3;
   const [currentPage, pageSize] = usePagination(10);
@@ -116,7 +116,7 @@ function CourseAnnouncements() {
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
         {t('Announcements.title')}
       </SectionHeading>
-      {isTeacher && renderTeacherForm()}
+      {Course.isTeacher && renderTeacherForm()}
       <div
         style={{
           display: "flex",
@@ -132,9 +132,9 @@ function CourseAnnouncements() {
 
         {announcements.map((announcement) => (
           <AnnouncementUnit
-            course={course}
+            course={Course}
             announcement={announcement}
-            isTeacher={isTeacher}
+            isTeacher={Course.isTeacher}
           />
         ))}
 
@@ -142,7 +142,7 @@ function CourseAnnouncements() {
           currentPage={currentPage}
           pageSize={pageSize}
           maxPage={maxPage}
-          baseURL={`/course/${course.courseId}/announcements`}
+          baseURL={`/course/${Course.courseId}/announcements`}
         />
       </div>
     </>

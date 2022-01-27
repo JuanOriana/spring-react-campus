@@ -39,7 +39,7 @@ type FormData = {
 
 function CourseFiles() {
   const { t } = useTranslation();
-  const { course, isTeacher } = useCourseData();
+  const Course = useCourseData();
   const query = useQuery();
   const navigate = useNavigate();
   const [currentPage] = usePagination(10);
@@ -111,7 +111,7 @@ function CourseFiles() {
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
         {t('CourseFiles.title')}
       </SectionHeading>
-      {isTeacher && renderTeacherForm()}
+      {Course.isTeacher && renderTeacherForm()}
       <BigWrapper style={{ display: "flex", flexDirection: "column" }}>
         <FileSearcher
           orderDirection={orderDirection}
@@ -132,7 +132,7 @@ function CourseFiles() {
             </GeneralTitle>
           )}
           {files.map((file) => (
-            <FileUnit key={file.fileId} isTeacher={isTeacher} file={file} />
+            <FileUnit key={file.fileId} isTeacher={Course.isTeacher} file={file} />
           ))}
         </FileGrid>
       </BigWrapper>
@@ -141,7 +141,7 @@ function CourseFiles() {
           <button
             onClick={() => {
               query.set("page", String(currentPage - 1));
-              navigate(`/course/${course.courseId}/files?${query.toString()}`);
+              navigate(`/course/${Course.courseId}/files?${query.toString()}`);
             }}
             style={{ background: "none", border: "none" }}
           >
@@ -157,7 +157,7 @@ function CourseFiles() {
           <button
             onClick={() => {
               query.set("page", String(currentPage + 1));
-              navigate(`/course/${course.courseId}/files?${query.toString()}`);
+              navigate(`/course/${Course.courseId}/files?${query.toString()}`);
             }}
             style={{ background: "none", border: "none" }}
           >

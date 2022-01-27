@@ -27,7 +27,7 @@ type FormData = {
 
 function StudentCourseExamStandalone() {
   const { t } = useTranslation();
-  const { course } = useCourseData();
+  const Course = useCourseData();
   const navigate = useNavigate();
   const exam = {
     examId: 1,
@@ -75,7 +75,7 @@ function StudentCourseExamStandalone() {
       };
 
       if (difference < 3000) {
-        navigate(`courses/${course.courseId}/exams`);
+        navigate(`courses/${Course.courseId}/exams`);
       }
     }
 
@@ -154,7 +154,7 @@ function StudentCourseExamStandalone() {
               justifyContent: "center",
             }}
           >
-            <LinkButton to={`/course/${course.courseId}/exams`}>
+            <LinkButton to={`/course/${Course.courseId}/exams`}>
               {t('StudentCourseExamStandalone.form.cancelSend')}
             </LinkButton>
             <FormButton>{t('StudentCourseExamStandalone.form.send')}</FormButton>
