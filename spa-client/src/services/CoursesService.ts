@@ -6,6 +6,7 @@ import { checkError } from "../scripts/ErrorChecker";
 import { authedFetch } from "../scripts/authedFetch";
 import User from "../types/User";
 import Exam from "../types/Exam";
+import Announcement from "../types/Announcement";
 
 export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
@@ -186,6 +187,26 @@ export class CourseService {
       const parsedResponse = await checkError<number>(response);
 
       return Result.ok(parsedResponse as number);
+    } catch (error: any) {
+      return Result.failed(
+        new ErrorResponse(parseInt(error.message), error.message)
+      );
+    }
+  }
+
+  public async getAnnouncemets(
+    courseId: number
+  ): Promise<Result<Announcement>> {
+    try {
+      const response = await authedFetch(
+        this.basePath + "/" + courseId + "/announcements",
+        {
+          method: "GET",
+        }
+      );
+      const parsedResponse = await checkError<Announcement>(response);
+
+      return Result.ok(parsedResponse as Announcement);
     } catch (error: any) {
       return Result.failed(
         new ErrorResponse(parseInt(error.message), error.message)
