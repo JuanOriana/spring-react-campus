@@ -10,13 +10,13 @@ import {
   CourseName,
 } from "./styles";
 import BasicPagination from "../../components/BasicPagination";
-import CourseModel from "../../../types/Course"
+import CourseModel from "../../types/Course"
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
-import { CourseService } from "../../services/CoursesService";
-import { Result } from "../../../types/Results";
+import { courseService } from "../../services";
+import { Result } from "../../types/Results";
 //
 
 function Portal() {
@@ -26,11 +26,12 @@ function Portal() {
   const maxPage = 3;
   const [currentPage, pageSize] = usePagination(10);
 
-  var cs = new CourseService();
-  var course = cs.getCourseById(12);
+
+ 
   useEffect(() => {
+    const course = courseService.getCourses(12,1);
     setCourses([
-      course.then(exito)
+      course
     ]);
     setAnnouncements([
       {
@@ -97,9 +98,3 @@ function Portal() {
 
 export default Portal;
 
-function exito(res:Result<CourseModel>):CourseModel{
-  res.getData();
-
-  console.log("GOLA rey");
-  return res.getData();
-}

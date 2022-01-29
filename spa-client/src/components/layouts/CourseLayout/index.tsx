@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, useOutletContext } from "react-router-dom";
-import type Course from "../../../../types/Course";
+import type Course from "../../../types/Course";
 import CourseSectionsCol from "../../CourseSectionsCol";
 import {
   CourseSectionName,
