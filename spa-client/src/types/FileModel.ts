@@ -1,5 +1,5 @@
 import CourseModel from "./CourseModel";
-import FileExtension from "./FileExtension";
+import FileExtension from "./FileExtensionModel";
 
 export default interface FileModel {
   fileId: number;
