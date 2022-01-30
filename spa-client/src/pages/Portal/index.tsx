@@ -10,29 +10,32 @@ import {
   CourseName,
 } from "./styles";
 import BasicPagination from "../../components/BasicPagination";
-import CourseModel from "../../types/Course"
+import CourseModel from "../../types/CourseModel";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import "../../common/i18n/index";
 import { courseService } from "../../services";
-import { Result } from "../../types/Results";
 //
 
 function Portal() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [courses, setCourses] = useState(new Array(0));
   const [announcements, setAnnouncements] = useState(new Array(0));
   const maxPage = 3;
   const [currentPage, pageSize] = usePagination(10);
 
-
- 
   useEffect(() => {
-    const course = courseService.getCourses(12,1);
-    setCourses([
-      course
-    ]);
+    courseService
+      .getCourses(currentPage, pageSize)
+      .then((courses) =>
+        courses.hasFailed()
+          ? navigate(`/error?code=${courses.getError().getCode()}`)
+          : setCourses(courses.getData)
+      )
+      .catch(() => navigate("/error?code=500"));
     setAnnouncements([
       {
         announcementId: 1,
@@ -47,7 +50,7 @@ function Portal() {
 
   return (
     <>
-      <SectionHeading>{t('Portal.title')}</SectionHeading>
+      <SectionHeading>{t("Portal.title")}</SectionHeading>
       <CoursesContainer>
         {courses.map((course) => (
           // AGREGAR CHEQUEO DE SI ES CONTENIDO POR CURRENT COURESE O NO Y SI ES ESTUDIANTE O NO
@@ -80,7 +83,7 @@ function Portal() {
       <PortalAnnouncements>
         {announcements.length > 0 && (
           <>
-            <SectionHeading>{t('Portal.lastAnnouncements')}</SectionHeading>
+            <SectionHeading>{t("Portal.lastAnnouncements")}</SectionHeading>
             {announcements.map((announcement) => (
               <AnnouncementUnit
                 key={announcement.announcementId}
@@ -97,4 +100,3 @@ function Portal() {
 }
 
 export default Portal;
-

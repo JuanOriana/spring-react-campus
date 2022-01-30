@@ -1,4 +1,4 @@
-import Course from "./Course";
+import CourseModel from "./CourseModel";
 import FileExtension from "./FileExtension";
 
 export default interface FileModel {
@@ -7,7 +7,7 @@ export default interface FileModel {
   extension: FileExtension;
   fileName: string;
   fileDate: Date;
-  course: Course;
+  course: CourseModel;
   downoalds: number;
   hidden: boolean;
   fileUri: string;

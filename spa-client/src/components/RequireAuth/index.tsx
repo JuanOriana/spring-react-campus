@@ -30,7 +30,7 @@ function RequireAuth({ children }: { children: JSX.Element }) {
   useEffect(() => {
     if (readUser && readUser !== "")
       signin(readUser, () => navigate(correctRoute));
-  }, [correctRoute, navigate, readUser, signin]);
+  }, []);
 
   if (!user && !readUser) {
     // Redirect them to the /login page, but save the current location they were

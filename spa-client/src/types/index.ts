@@ -1,0 +1,12 @@
+export type { default as Announcement } from "./AnnouncementModel";
+export type { default as Course } from "./CourseModel";
+export { default as ErrorResponse } from "./ErrorResponse";
+export type { default as Exam } from "./ExamModel";
+export type { default as FileCategory } from "./FileCategoryModel";
+export type { default as FileExtension } from "./FileExtensionModel";
+export type { default as FileModel } from "./FileModel";
+export { default as Result } from "./Result";
+export type { default as Role } from "./RoleModel";
+export type { default as Section } from "./Section";
+export type { default as Subject } from "./SubjectModel";
+export type { default as User } from "./UserModel";

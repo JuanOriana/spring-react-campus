@@ -1,12 +1,14 @@
-import { Result } from "../types/Results";
-import Course from "../types/Course";
 import { paths } from "../common/constants";
-import { ErrorResponse } from "../types/ErrorResponse";
 import { checkError } from "../scripts/ErrorChecker";
 import { authedFetch } from "../scripts/authedFetch";
-import User from "../types/User";
-import Exam from "../types/Exam";
-import Announcement from "../types/Announcement";
+import {
+  Result,
+  Course,
+  ErrorResponse,
+  Announcement,
+  User,
+  Exam,
+} from "../types";
 
 export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
