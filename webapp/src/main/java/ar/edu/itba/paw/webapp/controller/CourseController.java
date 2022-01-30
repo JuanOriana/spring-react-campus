@@ -60,8 +60,6 @@ public class CourseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
-
-
     @Path("/{courseId}/files")
     @POST
     @Consumes(value = MediaType.MULTIPART_FORM_DATA)
@@ -76,8 +74,6 @@ public class CourseController {
         URI location = URI.create(uriInfo.getAbsolutePath() + "/" + fileModel.getFileId());
         return Response.created(location).build();
     }
-
-
 
     @Path("/{courseId}/files/{fileId}")
     @GET
@@ -102,27 +98,32 @@ public class CourseController {
     private File getFileFromStream(InputStream in) throws IOException {
         File tmpFile = File.createTempFile("tmp", "file");
         tmpFile.deleteOnExit();
-        FileOutputStream out = new FileOutputStream(tmpFile);
-        IOUtils.copy(in, out);
+        try(FileOutputStream stream = new FileOutputStream(tmpFile)){
+            IOUtils.copy(in, stream);
+        } catch (IOException e) {
+            LOGGER.error("There was an error copying the file from the server");
+        }
         return tmpFile;
     }
 
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response postCourse(@Valid CourseFormDto courseForm) throws DtoValidationException, URISyntaxException { //TODO: startTimes y endTimes
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response postCourse(@Valid CourseFormDto courseForm)
+            throws DtoValidationException, URISyntaxException {
 
-        if (!authFacade.isAdminUser()){
-            return Response.status(Response.Status.FORBIDDEN).build();
+        if (!authFacade.isAdminUser()) {
+            throw new ForbiddenException();
         }
+
+        
 
         if(courseForm != null) {
             Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
                     , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
             LOGGER.debug("Created course in year {} in quarter {} of subjectId {} with id {}", courseForm.getYear(),
                     courseForm.getBoard(), courseForm.getSubjectId(), course.getCourseId());
-            URI enrollUsers = new URI(uriInfo.getBaseUri().normalize() + "admin/course/" + course.getCourseId() + "/enroll"); //TODO: rev si termina quedando asi
+            URI enrollUsers = new URI(uriInfo.getBaseUri().normalize() + "admin/course/" + course.getCourseId() + "/enroll");
             return Response.seeOther(enrollUsers).status(Response.Status.SEE_OTHER).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
@@ -143,7 +144,14 @@ public class CourseController {
 
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response getCourses(@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize, @QueryParam("year") Integer year, @QueryParam("quarter") Integer quarter) {
+    public Response getCourses(@QueryParam("page") @DefaultValue("1")
+                                       Integer page,
+                               @QueryParam("pageSize") @DefaultValue("10")
+                                       Integer pageSize,
+                               @QueryParam("year")
+                                       Integer year,
+                               @QueryParam("quarter")
+                                       Integer quarter) {
 
         if (!authFacade.isAdminUser()) {
             return Response.status(Response.Status.FORBIDDEN).build();
@@ -368,7 +376,7 @@ public class CourseController {
 
 
         if(courseService.isPrivileged(userId, courseId)){
-           return Response.status(Response.Status.FORBIDDEN).build(); // TODO: Ver si en este caso corresponse hacer algo
+            return Response.status(Response.Status.FORBIDDEN).build(); // TODO: Ver si en este caso corresponse hacer algo
         }
 
         return Response.ok(new GenericEntity<Double>(answerService.getAverageOfUserInCourse(userId, courseId)){}).build();
