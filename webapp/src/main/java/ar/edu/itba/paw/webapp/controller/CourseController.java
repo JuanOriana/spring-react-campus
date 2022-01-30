@@ -47,9 +47,6 @@ public class CourseController {
     private UserService userService;
 
     @Autowired
-    private FileService fileService;
-
-    @Autowired
     private AuthFacade authFacade;
 
     @Autowired
@@ -58,7 +55,12 @@ public class CourseController {
     @Autowired
     private AnswerService answerService;
 
+    @Autowired
+    private FileService fileService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
+
+
 
     @Path("/{courseId}/files")
     @POST
@@ -105,10 +107,11 @@ public class CourseController {
         return tmpFile;
     }
 
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response newCourse(@Valid CourseFormDto courseForm) throws DtoValidationException, URISyntaxException { //TODO: startTimes y endTimes
+    public Response postCourse(@Valid CourseFormDto courseForm) throws DtoValidationException, URISyntaxException { //TODO: startTimes y endTimes
 
         if (!authFacade.isAdminUser()){
             return Response.status(Response.Status.FORBIDDEN).build();
@@ -187,21 +190,22 @@ public class CourseController {
     @POST
     @Path("/{courseId}/announcements")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response newAnnouncement(@PathParam("courseId") Long courseId, @Valid AnnouncementFormDto announcementFormDto) throws DtoValidationException {
+    public Response newAnnouncement(@PathParam("courseId") Long courseId,
+                                    @Valid AnnouncementFormDto announcementDto) throws DtoValidationException {
         Long userId = authFacade.getCurrentUserId();
-
-        if(courseService.isPrivileged(userId, courseId)){
-            dtoValidator.validate(announcementFormDto, "Failed to validate new announcement attributes");
-            Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
-            URI location = URI.create(uriInfo.getAbsolutePath() + "/course/" + courseId);
-            Announcement announcement = announcementService.create(announcementFormDto.getTitle(),announcementFormDto.getContent(),userService.findById(userId).orElseThrow(UserNotFoundException::new),course,location.getPath());
-
-            LOGGER.debug("Announcement created by user with id:{} ", userId);
-
-            return Response.ok(AnnouncementDto.fromAnnouncement(announcement)).status(Response.Status.CREATED).build();
+        if(!courseService.isPrivileged(userId, courseId)) {
+            throw new ForbiddenException();
         }
-        return Response.status(Response.Status.FORBIDDEN).build();
+        dtoValidator.validate(announcementDto, "Invalid body request");
+        Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
+        Announcement announcement = announcementService.create(announcementDto.getTitle(),
+                announcementDto.getContent(),
+                userService.findById(authFacade.getCurrentUserId()).orElseThrow(UserNotFoundException::new),
+                course,
+                uriInfo.getAbsolutePath().getPath());
+        URI location = URI.create(uriInfo.getAbsolutePath() + "/" + announcement.getAnnouncementId());
+        LOGGER.debug("Announcement created on: {}", location.getPath());
+        return Response.created(location).build();
     }
 
     @GET
