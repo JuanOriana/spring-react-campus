@@ -23,7 +23,7 @@ public class ExamDto {
 
     private Double average;
 
-    private String url;
+    private String uri;
 
 
     public Long getExamId() {
@@ -82,12 +82,12 @@ public class ExamDto {
         this.examFile = examFile;
     }
 
-    public String getUrl() {
-        return url;
+    public String getUri() {
+        return uri;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     public Double getAverage() {
@@ -114,7 +114,7 @@ public class ExamDto {
         examDto.setTitle(exam.getTitle());
         examDto.setAverage(average);
 
-        examDto.setUrl(uriInfo.getBaseUriBuilder().path("exams").path(String.valueOf(exam.getCourse().getCourseId())).path(String.valueOf(exam.getExamId())).build().toString());
+        examDto.setUri(uriInfo.getBaseUriBuilder().path("exams").path(String.valueOf(exam.getCourse().getCourseId())).path(String.valueOf(exam.getExamId())).build().toString());
 
         return examDto;
     }

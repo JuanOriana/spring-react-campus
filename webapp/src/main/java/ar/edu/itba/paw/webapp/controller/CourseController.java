@@ -23,7 +23,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.*;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,7 +62,7 @@ public class CourseController {
     @Path("/{courseId}/files")
     @POST
     @Consumes(value = MediaType.MULTIPART_FORM_DATA)
-    public Response uploadFile(@PathParam("courseId") Long courseId,
+    public Response postFile(@PathParam("courseId") Long courseId,
                                @FormDataParam("file") InputStream fileStream,
                                @FormDataParam("file") FormDataContentDisposition fileMetadata) throws IOException {
         File file = getFileFromStream(fileStream);
@@ -78,7 +77,7 @@ public class CourseController {
     @Path("/{courseId}/files/{fileId}")
     @GET
     @Produces(value = MediaType.APPLICATION_OCTET_STREAM)
-    public Response downloadFile(@PathParam("courseId") Long courseId,
+    public Response getFile(@PathParam("courseId") Long courseId,
                                  @PathParam("fileId") Long fileId) {
         FileModel file = fileService.findById(fileId).orElseThrow(FileNotFoundException::new);
         fileService.incrementDownloads(fileId);
@@ -108,42 +107,33 @@ public class CourseController {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(value = MediaType.APPLICATION_JSON)
     public Response postCourse(@Valid CourseFormDto courseForm)
-            throws DtoValidationException, URISyntaxException {
-
-        if (!authFacade.isAdminUser()) {
-            throw new ForbiddenException();
+            throws DtoValidationException {
+        if(courseForm == null) {
+            throw new BadRequestException();
         }
-
-        
-
-        if(courseForm != null) {
-            Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard()
-                    , courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
-            LOGGER.debug("Created course in year {} in quarter {} of subjectId {} with id {}", courseForm.getYear(),
-                    courseForm.getBoard(), courseForm.getSubjectId(), course.getCourseId());
-            URI enrollUsers = new URI(uriInfo.getBaseUri().normalize() + "admin/course/" + course.getCourseId() + "/enroll");
-            return Response.seeOther(enrollUsers).status(Response.Status.SEE_OTHER).build();
-        }
-        return Response.status(Response.Status.BAD_REQUEST).build();
+        dtoValidator.validate(courseForm, "Invalid body request");
+        Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard(),
+                courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
+        LOGGER.debug("Created course in year {} in quarter {} of subjectId {} with id {}", courseForm.getYear(),
+                courseForm.getBoard(), courseForm.getSubjectId(), course.getCourseId());
+        URI location = URI.create(uriInfo.getAbsolutePath() + "/" + course.getCourseId());
+        return Response.created(location).build();
     }
 
     @GET
     @Path("/available-years")
-    @Produces(value={MediaType.APPLICATION_JSON})
-    public Response availableYears(){
-        if(!authFacade.isAdminUser()){
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getAvailableYears() {
         List<Integer> availableYears = courseService.getAvailableYears();
-
-        return Response.ok(new GenericEntity<List<AvailableYearsDto>>(availableYears.stream().map(AvailableYearsDto::fromYear).collect(Collectors.toList())){}).build();
+        List<AvailableYearsDto> availableYearsDtoList = availableYears.stream()
+                .map(AvailableYearsDto::fromYear)
+                .collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<AvailableYearsDto>>(availableYearsDtoList){}).build();
     }
 
     @GET
-    @Produces(value = {MediaType.APPLICATION_JSON, })
+    @Produces(value = MediaType.APPLICATION_JSON)
     public Response getCourses(@QueryParam("page") @DefaultValue("1")
                                        Integer page,
                                @QueryParam("pageSize") @DefaultValue("10")
@@ -152,47 +142,18 @@ public class CourseController {
                                        Integer year,
                                @QueryParam("quarter")
                                        Integer quarter) {
-
-        if (!authFacade.isAdminUser()) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+        year = year == null ? Calendar.getInstance().get(Calendar.YEAR) : year;
+        if (quarter == null) {
+            quarter = Calendar.getInstance().get(Calendar.MONTH) <= 6 ? 1 : 2;
         }
-
-        CampusPage<Course> paginatedCourses;
-        if (year == null && quarter == null) {
-            List<Course> coursesList = courseService.list();
-
-            if (coursesList.isEmpty()) {
-                return Response.ok().status(Response.Status.NO_CONTENT).build();
-            }
-
-            coursesList.sort(Comparator.comparing(Course::getYear).thenComparing(Course::getQuarter).reversed());
-            return Response.ok(new GenericEntity<List<CourseDto>>(coursesList.stream().map(course->CourseDto.fromCourse(course)).collect(Collectors.toList())){}).build(); //TODO: paginacion?
-        } else {
-            if (year == null) {
-                year = Calendar.getInstance().get(Calendar.YEAR);
-            }
-            if (quarter == null) {
-                if (Calendar.getInstance().get(Calendar.MONTH) <= 6) {
-                    quarter = 1;
-                } else {
-                    quarter = 2;
-                }
-            }
-            paginatedCourses = courseService.listByYearQuarter(year, quarter, page, pageSize);
-
-            if (paginatedCourses.getContent().isEmpty()) {
-                return Response.ok().status(Response.Status.NO_CONTENT).build();
-            }
-
-            Response.ResponseBuilder builder = Response.ok(
-                    new GenericEntity<List<CourseDto>>(
-                            paginatedCourses.getContent()
-                                    .stream()
-                                    .map(CourseDto::fromCourse)
-                                    .collect(Collectors.toList())) {});
-
-            return PaginationBuilder.build(paginatedCourses, builder, uriInfo, pageSize);
-        }
+        CampusPage<Course> courses = courseService.listByYearQuarter(year, quarter, page, pageSize);
+        Response.ResponseBuilder builder = Response.ok(
+                new GenericEntity<List<CourseDto>>(
+                        courses.getContent()
+                                .stream()
+                                .map(CourseDto::fromCourse)
+                                .collect(Collectors.toList())) {});
+        return PaginationBuilder.build(courses, builder, uriInfo, pageSize);
     }
 
     @POST
@@ -208,7 +169,7 @@ public class CourseController {
         Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
         Announcement announcement = announcementService.create(announcementDto.getTitle(),
                 announcementDto.getContent(),
-                userService.findById(authFacade.getCurrentUserId()).orElseThrow(UserNotFoundException::new),
+                userService.findById(userId).orElseThrow(UserNotFoundException::new),
                 course,
                 uriInfo.getAbsolutePath().getPath());
         URI location = URI.create(uriInfo.getAbsolutePath() + "/" + announcement.getAnnouncementId());
@@ -218,167 +179,173 @@ public class CourseController {
 
     @GET
     @Path("/{courseId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response getCourse(@PathParam("courseId") Long courseId) throws DtoValidationException{
-        if (courseId != null){
-            Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
-            return Response.ok( CourseDto.fromCourse(course) ).build();
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getCourseById(@PathParam("courseId") Long courseId) {
+        if (courseId == null) {
+            throw new BadRequestException();
         }
-        return Response.status(Response.Status.BAD_REQUEST).build();
+        Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
+        return Response.ok(CourseDto.fromCourse(course)).build();
     }
 
     @GET
     @Path("/{courseId}/teachers")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response getCourseTeachers(@PathParam("courseId") Long courseId) throws DtoValidationException{
-        if (courseId != null){
-            List<User> courseTeachers = courseService.getTeachers(courseId);
-
-            if (courseTeachers.isEmpty()){
-                return Response.ok(Response.Status.NO_CONTENT).build();
-            }
-
-            return Response.ok( new GenericEntity<List<UserDto>>(courseTeachers.stream().map(UserDto::fromUser).collect(Collectors.toList()) ){}).build();
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getCourseTeachers(@PathParam("courseId") Long courseId) {
+        if(courseId == null) {
+            throw new BadRequestException();
         }
-        return Response.status(Response.Status.BAD_REQUEST).build();
+        List<User> courseTeachers = courseService.getTeachers(courseId);
+        if (courseTeachers.isEmpty()) {
+            return Response.noContent().build();
+        }
+        List<UserDto> teachers = courseTeachers.stream().map(UserDto::fromUser).collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<UserDto>>(teachers){}).build();
     }
 
     @GET
     @Path("/{courseId}/helpers")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response getCourseHelpers(@PathParam("courseId") Long courseId) throws DtoValidationException{
-        if (courseId != null){
-            List<User> courseHelpers = courseService.getHelpers(courseId);
-
-            if (courseHelpers.isEmpty()){
-                return Response.ok(Response.Status.NO_CONTENT).build();
-            }
-
-            return Response.ok( new GenericEntity<List<UserDto>>(courseHelpers.stream().map(UserDto::fromUser).collect(Collectors.toList()) ){} ).build();
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getCourseHelpers(@PathParam("courseId") Long courseId) {
+        if(courseId == null) {
+            throw new BadRequestException();
         }
-        return Response.status(Response.Status.BAD_REQUEST).build();
+        List<User> courseHelpers = courseService.getHelpers(courseId);
+        if (courseHelpers.isEmpty()) {
+            return Response.noContent().build();
+        }
+        List<UserDto> helpers = courseHelpers.stream().map(UserDto::fromUser).collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<UserDto>>(helpers){}).build();
     }
 
     @GET
     @Path("/{courseId}/students")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response getCourseStudents(@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize, @PathParam("courseId") Long courseId) throws DtoValidationException{
-        if (courseId != null){
-            CampusPage<User> enrolledStudents = userService.getStudentsByCourse(courseId, page, pageSize);
-
-            if (enrolledStudents.getContent().isEmpty()){
-                return Response.ok(Response.Status.NO_CONTENT).build();
-            }
-
-            Response.ResponseBuilder builder = Response.ok(
-                    new GenericEntity<List<UserDto>>(
-                            enrolledStudents.getContent()
-                                    .stream()
-                                    .map(UserDto::fromUser)
-                                    .collect(Collectors.toList()) ){});
-
-            return PaginationBuilder.build(enrolledStudents, builder, uriInfo, pageSize);
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getCourseStudents(@QueryParam("page") @DefaultValue("1")
+                                                  Integer page,
+                                      @QueryParam("pageSize") @DefaultValue("10")
+                                              Integer pageSize,
+                                      @PathParam("courseId")
+                                                  Long courseId) {
+        if(courseId == null) {
+            throw new BadRequestException();
         }
-        return Response.status(Response.Status.BAD_REQUEST).build();
+        CampusPage<User> enrolledStudents = userService.getStudentsByCourse(courseId, page, pageSize);
+        if (enrolledStudents.isEmpty()) {
+            return Response.noContent().build();
+        }
+        Response.ResponseBuilder builder = Response.ok(
+                new GenericEntity<List<UserDto>>(
+                        enrolledStudents.getContent()
+                                .stream()
+                                .map(UserDto::fromUser)
+                                .collect(Collectors.toList())){});
+        return PaginationBuilder.build(enrolledStudents, builder, uriInfo, pageSize);
     }
-
-
 
     @GET
     @Path("/{courseId}/exams")
-    @Produces(value={MediaType.APPLICATION_JSON,})
-    public Response getCourseExams(@PathParam("courseId") Long courseId){
-        return  Response.ok(new GenericEntity<List<ExamDto>>(examService.listByCourse(courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getCourseExams(@PathParam("courseId") Long courseId) {
+        List<Exam> exams = examService.listByCourse(courseId);
+        if(exams.isEmpty()) {
+            return Response.noContent().build();
+        }
+        List<ExamDto> examDtoList = exams.stream()
+                .map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId())))
+                .collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList){}).build();
     }
-
-
 
     @POST
     @Path("/{courseId}/exams")
-    @Consumes(value={MediaType.APPLICATION_JSON,})
-    @Produces(value ={MediaType.APPLICATION_JSON,})
-    public Response newExam(@Valid ExamFormDto examFormDto,@PathParam("courseId") Long courseId){
+    @Consumes(value = MediaType.APPLICATION_JSON)
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response newExam(@PathParam("courseId") Long courseId,
+                            @Valid ExamFormDto examFormDto) throws DtoValidationException {
         Long userId = authFacade.getCurrentUserId();
-
-        if(!courseService.isPrivileged(userId,courseId)){
-            return Response.status(Response.Status.FORBIDDEN).build();
+        if(!courseService.isPrivileged(userId, courseId)){
+            throw new ForbiddenException();
         }
-
-        dtoValidator.validate(examFormDto, "Failed to validate new exam attributes");
+        dtoValidator.validate(examFormDto, "Invalid body request");
         Exam exam = examService.create(courseId, examFormDto.getTitle(), examFormDto.getContent(),
                 examFormDto.getFile().getOriginalFilename(), examFormDto.getFile().getBytes(),
                 examFormDto.getFile().getSize(), LocalDateTime.parse(examFormDto.getStartTime()),
                 LocalDateTime.parse(examFormDto.getEndTime()));
-
-        LOGGER.debug("User with id {} created exam with id {}",userId,exam.getExamId());
-
-        return Response.ok(ExamDto.fromExam(uriInfo,exam,examService.getAverageScoreOfExam(exam.getExamId()))).build();
+        LOGGER.debug("User with id {} created exam with id {}", userId, exam.getExamId());
+        URI location = URI.create(uriInfo.getBaseUri() + "/exams/" + exam.getExamId());
+        return Response.created(location).build();
     }
-
-
 
     @GET
     @Path("/{courseId}/exams/solved")
-    @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response getResolvedExams(@PathParam("courseId") Long courseId){
-        Long userId = authFacade.getCurrentUserId();
-
-        if(courseService.isPrivileged(userId, courseId) || !courseService.belongs(userId, courseId)){
-            Map<Exam,Double> examAverage = examService.getExamsAverage(courseId);
-
-            List<ExamDto> examsAverageDtos = new ArrayList<>();
-
-            examAverage.forEach((exam,average) -> examsAverageDtos.add(ExamDto.fromExam(uriInfo, exam, average)));
-
-            return Response.ok(new GenericEntity<List<ExamDto>>(examsAverageDtos){}).build();
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getResolvedExams(@PathParam("courseId") Long courseId) {
+        if(courseId == null) {
+            throw new BadRequestException();
         }
-
-        return  Response.ok(new GenericEntity<List<ExamDto>>(examService.getResolvedExams(userId, courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
+        Long userId = authFacade.getCurrentUserId();
+        if(courseService.isPrivileged(userId, courseId) || !courseService.belongs(userId, courseId)) {
+            Map<Exam,Double> examAverage = examService.getExamsAverage(courseId);
+            List<ExamDto> examDtoList = new ArrayList<>();
+            examAverage.forEach((exam,average) -> examDtoList.add(ExamDto.fromExam(uriInfo, exam, average)));
+            return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList){}).build();
+        }
+        List<ExamDto> exams = examService.getResolvedExams(userId, courseId)
+                .stream()
+                .map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId())))
+                .collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<ExamDto>>(exams){}).build();
     }
 
     @GET
     @Path("/{courseId}/exams/unsolved")
-    @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response getUnresolvedExams(@PathParam("courseId") Long courseId){
-        Long userId = authFacade.getCurrentUserId();
-
-        if(courseService.isPrivileged(userId, courseId) || !courseService.belongs(userId, courseId)){
-            return Response.status(Response.Status.FORBIDDEN).build();
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getUnresolvedExams(@PathParam("courseId") Long courseId) {
+        if(courseId == null) {
+            throw new BadRequestException();
         }
-
-        return  Response.ok(new GenericEntity<List<ExamDto>>(examService.getUnresolvedExams(userId, courseId).stream().map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId()))).collect(Collectors.toList())){}).build();
+        Long userId = authFacade.getCurrentUserId();
+        if(!courseService.isPrivileged(userId, courseId)) {
+            throw new ForbiddenException();
+        }
+        List<ExamDto> exams = examService.getUnresolvedExams(userId, courseId)
+                .stream()
+                .map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId())))
+                .collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<ExamDto>>(exams){}).build();
     }
 
     @GET
     @Path("/{courseId}/exams/answers")
-    @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response getCourseAnswers(@PathParam("courseId")Long courseId){
-        Long userId = authFacade.getCurrentUserId();
-
-        if(courseService.isPrivileged(userId, courseId)){
-            return Response.status(Response.Status.FORBIDDEN).build(); // TODO: Ver si corresponse mandarle algo en este caso
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getCourseAnswers(@PathParam("courseId") Long courseId) {
+        if(courseId == null) {
+            throw new BadRequestException();
         }
-
-        List<AnswerDto> answers = answerService.getMarks(userId, courseId).stream().map(answer->AnswerDto.fromAnswer(uriInfo, answer)).collect(Collectors.toList());
-
+        Long userId = authFacade.getCurrentUserId();
+        if(!courseService.isPrivileged(userId, courseId)){
+            throw new ForbiddenException();
+        }
+        List<AnswerDto> answers = answerService.getMarks(userId, courseId)
+                .stream()
+                .map(answer->AnswerDto.fromAnswer(uriInfo, answer))
+                .collect(Collectors.toList());
         return Response.ok(new GenericEntity<List<AnswerDto>>(answers){}).build();
     }
 
     @GET
     @Path("/{courseId}/exams/average")
-    @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response getCourseAverage(@PathParam("courseId") Long courseId){
-        Long userId = authFacade.getCurrentUserId();
-
-
-        if(courseService.isPrivileged(userId, courseId)){
-            return Response.status(Response.Status.FORBIDDEN).build(); // TODO: Ver si en este caso corresponse hacer algo
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getCourseAverage(@PathParam("courseId") Long courseId) {
+        if(courseId == null) {
+            throw new BadRequestException();
         }
-
-        return Response.ok(new GenericEntity<Double>(answerService.getAverageOfUserInCourse(userId, courseId)){}).build();
+        Long userId = authFacade.getCurrentUserId();
+        if(!courseService.isPrivileged(userId, courseId)) {
+            throw new ForbiddenException();
+        }
+        Double average = answerService.getAverageOfUserInCourse(userId, courseId);
+        return Response.ok(new GenericEntity<Double>(average){}).build();
     }
 }
