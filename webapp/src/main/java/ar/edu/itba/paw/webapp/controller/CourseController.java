@@ -9,6 +9,7 @@ import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
+import ar.edu.itba.paw.webapp.util.PaginationBuilder;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -53,15 +54,6 @@ public class CourseController {
 
     @Autowired
     private ExamService examService;
-
-    @Autowired
-    private ResponsePaging<Announcement> announcementResponsePaging;
-
-    @Autowired
-    private ResponsePaging<User> userResponsePaging;
-
-    @Autowired
-    private ResponsePaging<Course> courseResponsePaging;
 
     @Autowired
     private AnswerService answerService;
@@ -154,7 +146,7 @@ public class CourseController {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
-        CampusPage<Course> coursesPaginated;
+        CampusPage<Course> paginatedCourses;
         if (year == null && quarter == null) {
             List<Course> coursesList = courseService.list();
 
@@ -175,42 +167,28 @@ public class CourseController {
                     quarter = 2;
                 }
             }
-            coursesPaginated = courseService.listByYearQuarter(year, quarter, page, pageSize);
+            paginatedCourses = courseService.listByYearQuarter(year, quarter, page, pageSize);
 
-            if (coursesPaginated.getContent().isEmpty()) {
+            if (paginatedCourses.getContent().isEmpty()) {
                 return Response.ok().status(Response.Status.NO_CONTENT).build();
             }
 
-            Response.ResponseBuilder response = Response.ok(new GenericEntity<List<CourseDto>>(coursesPaginated.getContent().stream().map(CourseDto::fromCourse).collect(Collectors.toList())) {
-            });
+            Response.ResponseBuilder builder = Response.ok(
+                    new GenericEntity<List<CourseDto>>(
+                            paginatedCourses.getContent()
+                                    .stream()
+                                    .map(CourseDto::fromCourse)
+                                    .collect(Collectors.toList())) {});
 
-            courseResponsePaging.paging(coursesPaginated, response, uriInfo, pageSize);
-
-            return response.build(); //TODO: este CourseDto estaria bueno que tenga el link al enroll de ese curso
+            return PaginationBuilder.build(paginatedCourses, builder, uriInfo, pageSize);
         }
-    }
-
-    @GET
-    @Path("/{courseId}/announcements")
-    @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response getAnnouncements(@PathParam("courseId") Long courseId,@QueryParam("page") @DefaultValue("1") Integer page, @QueryParam("pageSize") @DefaultValue("10") Integer pageSize){
-        CampusPage<Announcement> announcementsPaginated = announcementService.listByCourse(courseId,page,pageSize );
-        if(announcementsPaginated.getContent().isEmpty()){
-            return Response.noContent().build();
-        }
-
-        Response.ResponseBuilder response = Response.ok(new GenericEntity<List<AnnouncementDto>>(announcementsPaginated.getContent().stream().map(AnnouncementDto::fromAnnouncement).collect(Collectors.toList())){});
-
-        announcementResponsePaging.paging(announcementsPaginated, response, uriInfo, pageSize);
-
-        return response.build();
     }
 
     @POST
     @Path("/{courseId}/announcements")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response newAnnouncement(@PathParam("courseId") Long courseId, @Valid AnnouncementFormDto announcementFormDto) throws DtoValidationException{
+    public Response newAnnouncement(@PathParam("courseId") Long courseId, @Valid AnnouncementFormDto announcementFormDto) throws DtoValidationException {
         Long userId = authFacade.getCurrentUserId();
 
         if(courseService.isPrivileged(userId, courseId)){
@@ -284,11 +262,14 @@ public class CourseController {
                 return Response.ok(Response.Status.NO_CONTENT).build();
             }
 
-            Response.ResponseBuilder response = Response.ok( new GenericEntity<List<UserDto>>(enrolledStudents.getContent().stream().map(UserDto::fromUser).collect(Collectors.toList()) ){} );
+            Response.ResponseBuilder builder = Response.ok(
+                    new GenericEntity<List<UserDto>>(
+                            enrolledStudents.getContent()
+                                    .stream()
+                                    .map(UserDto::fromUser)
+                                    .collect(Collectors.toList()) ){});
 
-            userResponsePaging.paging(enrolledStudents, response, uriInfo, pageSize);
-
-            return response.build();
+            return PaginationBuilder.build(enrolledStudents, builder, uriInfo, pageSize);
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
     }

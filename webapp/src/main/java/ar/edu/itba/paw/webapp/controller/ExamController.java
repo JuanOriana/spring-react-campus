@@ -11,6 +11,7 @@ import ar.edu.itba.paw.webapp.dto.AnswerDto;
 import ar.edu.itba.paw.webapp.dto.ExamDto;
 import ar.edu.itba.paw.webapp.dto.SolveExamFormDto;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
+import ar.edu.itba.paw.webapp.util.PaginationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,6 @@ public class ExamController {
     @Autowired
     private AuthFacade authFacade;
 
-    @Autowired
-    private ResponsePaging<Answer> answerResponsePaging;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ExamController.class);
 
     @GET
@@ -64,7 +62,7 @@ public class ExamController {
 
         if(courseService.isPrivileged(userId, exam.getCourse().getCourseId())){
             if(examService.delete(examId)){
-                LOGGER.debug("User with id {} deleted exam with id {}",userId,examId);
+                LOGGER.debug("User with id {} deleted exam with id {}", userId, examId);
                 return Response.ok().build();
             }else{
                 return Response.noContent().build();
@@ -81,13 +79,14 @@ public class ExamController {
         Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
 
         if(courseService.isPrivileged(authFacade.getCurrentUserId(),exam.getCourse().getCourseId())){
-            CampusPage<Answer> answersPaginated = answerService.getFilteredAnswers(examId, filter, page, pageSize);
-
-            Response.ResponseBuilder response = Response.ok(new GenericEntity<List<AnswerDto>>(answersPaginated.getContent().stream().map(answer-> AnswerDto.fromAnswer(uriInfo, answer)).collect(Collectors.toList())){});
-
-            answerResponsePaging.paging(answersPaginated, response, uriInfo, pageSize);
-
-            return response.build();
+            CampusPage<Answer> paginatedAnswers = answerService.getFilteredAnswers(examId, filter, page, pageSize);
+            Response.ResponseBuilder builder = Response.ok(
+                    new GenericEntity<List<AnswerDto>>(
+                            paginatedAnswers.getContent()
+                                    .stream()
+                                    .map(answer-> AnswerDto.fromAnswer(uriInfo, answer))
+                                    .collect(Collectors.toList())){});
+            return PaginationBuilder.build(paginatedAnswers, builder, uriInfo, pageSize);
         }
 
         List<AnswerDto> answerDtos = answerService.getMarks(authFacade.getCurrentUserId(), exam.getCourse().getCourseId()).stream().map(answer -> AnswerDto.fromAnswer(uriInfo, answer)).collect(Collectors.toList());
