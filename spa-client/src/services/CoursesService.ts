@@ -3,23 +3,23 @@ import { checkError } from "../scripts/ErrorChecker";
 import { authedFetch } from "../scripts/authedFetch";
 import {
   Result,
-  Course,
+  CourseModel,
   ErrorResponse,
-  Announcement,
-  User,
-  Exam,
+  AnnouncementModel,
+  UserModel,
+  ExamModel,
 } from "../types";
 
 export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
 
-  public async getCourseById(courseId: number): Promise<Result<Course>> {
+  public async getCourseById(courseId: number): Promise<Result<CourseModel>> {
     try {
       const response = await authedFetch(this.basePath + "/" + courseId, {
         method: "GET",
       });
-      const parsedResponse = await checkError<Course>(response);
-      return Result.ok(parsedResponse as Course);
+      const parsedResponse = await checkError<CourseModel>(response);
+      return Result.ok(parsedResponse as CourseModel);
     } catch (err: any) {
       return Result.failed(
         new ErrorResponse(parseInt(err.message), err.message)
@@ -30,7 +30,7 @@ export class CourseService {
   public async getCourses(
     page?: number,
     pageSize?: number
-  ): Promise<Result<Course[]>> {
+  ): Promise<Result<CourseModel[]>> {
     let url = new URL(this.basePath);
 
     if (typeof page !== "undefined" && typeof pageSize !== "undefined") {
@@ -42,8 +42,8 @@ export class CourseService {
       const response = await authedFetch(url.toString(), {
         method: "GET",
       });
-      const parsedResponse = await checkError<Course[]>(response);
-      return Result.ok(parsedResponse as Course[]);
+      const parsedResponse = await checkError<CourseModel[]>(response);
+      return Result.ok(parsedResponse as CourseModel[]);
     } catch (err: any) {
       return Result.failed(
         new ErrorResponse(parseInt(err.message), err.message)
@@ -51,7 +51,7 @@ export class CourseService {
     }
   }
 
-  public async getHelpers(courseId: number): Promise<Result<User>> {
+  public async getHelpers(courseId: number): Promise<Result<UserModel>> {
     try {
       const response = await authedFetch(
         this.basePath + "/" + courseId + "/helpers",
@@ -59,9 +59,9 @@ export class CourseService {
           method: "GET",
         }
       );
-      const parsedResponse = await checkError<User>(response);
+      const parsedResponse = await checkError<UserModel>(response);
 
-      return Result.ok(parsedResponse as User);
+      return Result.ok(parsedResponse as UserModel);
     } catch (error: any) {
       return Result.failed(
         new ErrorResponse(parseInt(error.message), error.message)
@@ -69,7 +69,7 @@ export class CourseService {
     }
   }
 
-  public async getTeachers(courseId: number): Promise<Result<User>> {
+  public async getTeachers(courseId: number): Promise<Result<UserModel>> {
     try {
       const response = await authedFetch(
         this.basePath + "/" + courseId + "/teachers",
@@ -77,9 +77,9 @@ export class CourseService {
           method: "GET",
         }
       );
-      const parsedResponse = await checkError<User>(response);
+      const parsedResponse = await checkError<UserModel>(response);
 
-      return Result.ok(parsedResponse as User);
+      return Result.ok(parsedResponse as UserModel);
     } catch (error: any) {
       return Result.failed(
         new ErrorResponse(parseInt(error.message), error.message)
@@ -87,7 +87,7 @@ export class CourseService {
     }
   }
 
-  public async getStudents(courseId: number): Promise<Result<User>> {
+  public async getStudents(courseId: number): Promise<Result<UserModel>> {
     try {
       const response = await authedFetch(
         this.basePath + "/" + courseId + "/students",
@@ -95,9 +95,9 @@ export class CourseService {
           method: "GET",
         }
       );
-      const parsedResponse = await checkError<User>(response);
+      const parsedResponse = await checkError<UserModel>(response);
 
-      return Result.ok(parsedResponse as User);
+      return Result.ok(parsedResponse as UserModel);
     } catch (error: any) {
       return Result.failed(
         new ErrorResponse(parseInt(error.message), error.message)
@@ -105,7 +105,7 @@ export class CourseService {
     }
   }
 
-  public async getExams(courseId: number): Promise<Result<Exam>> {
+  public async getExams(courseId: number): Promise<Result<ExamModel>> {
     try {
       const response = await authedFetch(
         this.basePath + "/" + courseId + "/exams",
@@ -113,9 +113,9 @@ export class CourseService {
           method: "GET",
         }
       );
-      const parsedResponse = await checkError<Exam>(response);
+      const parsedResponse = await checkError<ExamModel>(response);
 
-      return Result.ok(parsedResponse as Exam);
+      return Result.ok(parsedResponse as ExamModel);
     } catch (error: any) {
       return Result.failed(
         new ErrorResponse(parseInt(error.message), error.message)
@@ -123,7 +123,7 @@ export class CourseService {
     }
   }
 
-  public async getSolvedExams(courseId: number): Promise<Result<Exam>> {
+  public async getSolvedExams(courseId: number): Promise<Result<ExamModel>> {
     try {
       const response = await authedFetch(
         this.basePath + "/" + courseId + "/exams/solved",
@@ -131,9 +131,9 @@ export class CourseService {
           method: "GET",
         }
       );
-      const parsedResponse = await checkError<Exam>(response);
+      const parsedResponse = await checkError<ExamModel>(response);
 
-      return Result.ok(parsedResponse as Exam);
+      return Result.ok(parsedResponse as ExamModel);
     } catch (error: any) {
       return Result.failed(
         new ErrorResponse(parseInt(error.message), error.message)
@@ -141,7 +141,7 @@ export class CourseService {
     }
   }
 
-  public async getUnsolvedExams(courseId: number): Promise<Result<Exam>> {
+  public async getUnsolvedExams(courseId: number): Promise<Result<ExamModel>> {
     try {
       const response = await authedFetch(
         this.basePath + "/" + courseId + "/exams/unsolved",
@@ -149,9 +149,9 @@ export class CourseService {
           method: "GET",
         }
       );
-      const parsedResponse = await checkError<Exam>(response);
+      const parsedResponse = await checkError<ExamModel>(response);
 
-      return Result.ok(parsedResponse as Exam);
+      return Result.ok(parsedResponse as ExamModel);
     } catch (error: any) {
       return Result.failed(
         new ErrorResponse(parseInt(error.message), error.message)
@@ -198,7 +198,7 @@ export class CourseService {
 
   public async getAnnouncemets(
     courseId: number
-  ): Promise<Result<Announcement>> {
+  ): Promise<Result<AnnouncementModel>> {
     try {
       const response = await authedFetch(
         this.basePath + "/" + courseId + "/announcements",
@@ -206,9 +206,9 @@ export class CourseService {
           method: "GET",
         }
       );
-      const parsedResponse = await checkError<Announcement>(response);
+      const parsedResponse = await checkError<AnnouncementModel>(response);
 
-      return Result.ok(parsedResponse as Announcement);
+      return Result.ok(parsedResponse as AnnouncementModel);
     } catch (error: any) {
       return Result.failed(
         new ErrorResponse(parseInt(error.message), error.message)

@@ -1,4 +1,4 @@
-import { ErrorResponse } from "./ErrorResponse";
+import ErrorResponse from "./ErrorResponse";
 export default class Result<T> {
   private readonly data: T;
   private readonly error: ErrorResponse;

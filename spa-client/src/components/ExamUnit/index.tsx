@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes, { InferProps } from "prop-types";
 import { FileImg, FileName, FileUnitWrapper } from "../FileUnit/styles";
 import {
   DeliveredLink,
@@ -11,21 +10,21 @@ import {
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
+import { ExamModel } from "../../types";
 //
 
-ExamUnit.propTypes = {
-  exam: PropTypes.shape({ examId: PropTypes.number, title: PropTypes.string })
-    .isRequired,
-  average: PropTypes.number,
-  examsSolved: PropTypes.number,
-  userCount: PropTypes.number,
-  isDelivered: PropTypes.bool,
-  isTeacher: PropTypes.bool,
-  answer: PropTypes.shape({
-    score: PropTypes.number,
-    corrections: PropTypes.string,
-  }),
-};
+interface ExamUnitProps {
+  exam: ExamModel;
+  average?: number;
+  examsSolved?: number;
+  userCount?: number;
+  isDelivered?: boolean;
+  isTeacher?: boolean;
+  answer: {
+    score: number;
+    corrections: string;
+  };
+}
 
 function ExamUnit({
   exam,
@@ -35,7 +34,7 @@ function ExamUnit({
   examsSolved,
   userCount,
   average,
-}: InferProps<typeof ExamUnit.propTypes>) {
+}: ExamUnitProps) {
   const { t } = useTranslation();
   const [showCorrections, setShowCorrections] = useState(false);
   return (
@@ -58,7 +57,7 @@ function ExamUnit({
           >
             <FileImg
               src="/images/test.png"
-              alt={exam.title ? exam.title : `${t('ExamUnit.alt.exam')}`}
+              alt={exam.title ? exam.title : `${t("ExamUnit.alt.exam")}`}
             />
             <FileName>{exam.title}</FileName>
           </DeliveredLink>
@@ -67,13 +66,15 @@ function ExamUnit({
           {isDelivered && !isTeacher && (
             <>
               <FileName>
-                {t('ExamUnit.grade', {grade: answer!.score ? answer!.score : "--"})}
+                {t("ExamUnit.grade", {
+                  grade: answer!.score ? answer!.score : "--",
+                })}
               </FileName>
               {answer!.corrections && (
                 <PaginationArrow
                   src="/images/outline-arrow.png"
                   style={{ transform: "rotate(90deg)", marginLeft: "10px" }}
-                  alt={`${t('ExamUnit.alt.seeCorrections')}`}
+                  alt={`${t("ExamUnit.alt.seeCorrections")}`}
                   onClick={() => setShowCorrections((lastVal) => !lastVal)}
                 />
               )}
@@ -89,9 +90,15 @@ function ExamUnit({
                   borderLeft: "3px solid white",
                 }}
               >
-                {t('ExamUnit.correctedOf', {examsSolved: examsSolved, userCount: userCount})}
+                {t("ExamUnit.correctedOf", {
+                  examsSolved: examsSolved,
+                  userCount: userCount,
+                })}
               </FileName>
-              <MediumIcon src="/images/trash.png" alt={`${t('ExamUnit.alt.delete')}`} />
+              <MediumIcon
+                src="/images/trash.png"
+                alt={`${t("ExamUnit.alt.delete")}`}
+              />
             </>
           )}
         </div>
