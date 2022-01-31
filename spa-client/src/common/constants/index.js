@@ -4,11 +4,12 @@ export const paths = {
     ANNOUNCEMENTS:  "announcements/",
     EXAMS :  "exams/",
     SUBJECTS :  "subjects/",
-    USERS : "/users",
+    USERS : "users",
+    ANSWERS : "answers",
     COURSES_QUERY_PARAMS :  "courses",
     ANNOUNCEMENTS_QUERY_PARAMS:  "announcements",
     EXAMS_QUERY_PARAMS :  "exams",
     SUBJECTS_QUERY_PARAMS :  "subjects",
-    USERS_QUERY_PARAMS = "users"
+    USERS_QUERY_PARAMS : "users"
 
 }
