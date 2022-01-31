@@ -30,6 +30,7 @@ function AdminSelectCourse() {
       },
     ]);
   }, []);
+
   return (
     <>
       <AdminSectionsCol />
@@ -39,9 +40,11 @@ function AdminSelectCourse() {
         style={{ margin: "0px 40px 40px 40px", alignSelf: "start" }}
       >
         <GeneralTitle style={{ color: "#176961", alignSelf: "center" }}>
-          {t('AdminSelectCourse.title')}
+          {t("AdminSelectCourse.title")}
         </GeneralTitle>
-        <FormLabel htmlFor="courseId">{t('AdminSelectCourse.form.course')}</FormLabel>
+        <FormLabel htmlFor="courseId">
+          {t("AdminSelectCourse.form.course")}
+        </FormLabel>
         <FormSelect name="courseId" id="courseId" style={{ fontSize: "26px" }}>
           {courses.map((course) => (
             <option value={course.courseId}>
@@ -49,7 +52,7 @@ function AdminSelectCourse() {
             </option>
           ))}
         </FormSelect>
-        <FormButton>{t('AdminSelectCourse.form.selectButton')}</FormButton>
+        <FormButton>{t("AdminSelectCourse.form.selectButton")}</FormButton>
       </FormWrapper>
     </>
   );

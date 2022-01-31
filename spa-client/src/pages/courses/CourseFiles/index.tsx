@@ -7,7 +7,7 @@ import {
 import { getQueryOrDefault, useQuery } from "../../../hooks/useQuery";
 import { useNavigate } from "react-router-dom";
 import { usePagination } from "../../../hooks/usePagination";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCourseData } from "../../../components/layouts/CourseLayout";
 import FileSearcher from "../../../components/FileSearcher";
 import { FileGrid } from "../../Files/styles";
@@ -52,6 +52,19 @@ function CourseFiles() {
     { categoryName: "exam", categoryId: 2 },
   ];
 
+  useEffect(() => {
+    setFiles([
+      {
+        fileId: 1,
+        name: "archivoprueba",
+        downloads: 10,
+        categories: [{ name: "hola" }],
+        extension: { fileExtensionName: "csv" },
+        course: { courseId: 1, subject: { name: "paw" } },
+      },
+    ]);
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -71,9 +84,11 @@ function CourseFiles() {
           onSubmit={onSubmit}
         >
           <GeneralTitle style={{ color: "#176961", alignSelf: "center" }}>
-            {t('CourseFiles.teacher.form.title')}
+            {t("CourseFiles.teacher.form.title")}
           </GeneralTitle>
-          <FormLabel htmlFor="file">{t('CourseFiles.teacher.form.file')}</FormLabel>
+          <FormLabel htmlFor="file">
+            {t("CourseFiles.teacher.form.file")}
+          </FormLabel>
           <FormInput
             type="file"
             style={{ fontSize: "26px" }}
@@ -86,20 +101,28 @@ function CourseFiles() {
             })}
           />
           {errors.file?.type === "required" && (
-            <ErrorMessage>{t('CourseFiles.teacher.error.file.isRequired')}</ErrorMessage>
+            <ErrorMessage>
+              {t("CourseFiles.teacher.error.file.isRequired")}
+            </ErrorMessage>
           )}
           {errors.file?.type === "size" && (
-            <ErrorMessage>{t('CourseFiles.teacher.error.file.size')}</ErrorMessage>
+            <ErrorMessage>
+              {t("CourseFiles.teacher.error.file.size")}
+            </ErrorMessage>
           )}
-          <FormLabel htmlFor="categoryId">{t('CourseFiles.teacher.form.category')}</FormLabel>
+          <FormLabel htmlFor="categoryId">
+            {t("CourseFiles.teacher.form.category")}
+          </FormLabel>
           <FormSelect style={{ fontSize: "26px" }}>
             {categories.map((category) => (
               <option value={category.categoryId}>
-                {t('Category.' + category.categoryName)}
+                {t("Category." + category.categoryName)}
               </option>
             ))}
           </FormSelect>
-          <FormButton>{t('CourseFiles.teacher.form.uploadFileButton')}</FormButton>
+          <FormButton>
+            {t("CourseFiles.teacher.form.uploadFileButton")}
+          </FormButton>
         </FormWrapper>
         <Separator reduced={true}>.</Separator>
       </>
@@ -109,7 +132,7 @@ function CourseFiles() {
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        {t('CourseFiles.title')}
+        {t("CourseFiles.title")}
       </SectionHeading>
       {Course.isTeacher && renderTeacherForm()}
       <BigWrapper style={{ display: "flex", flexDirection: "column" }}>
@@ -128,11 +151,15 @@ function CourseFiles() {
         <FileGrid>
           {files.length === 0 && (
             <GeneralTitle style={{ width: "100%", textAlign: "center" }}>
-              {t('CourseFiles.noResults')}
+              {t("CourseFiles.noResults")}
             </GeneralTitle>
           )}
           {files.map((file) => (
-            <FileUnit key={file.fileId} isTeacher={Course.isTeacher} file={file} />
+            <FileUnit
+              key={file.fileId}
+              isTeacher={Course.isTeacher}
+              file={file}
+            />
           ))}
         </FileGrid>
       </BigWrapper>
@@ -148,11 +175,14 @@ function CourseFiles() {
             <PaginationArrow
               xRotated={true}
               src="/images/page-arrow.png"
-              alt={t('BasicPagination.alt.beforePage')}
+              alt={t("BasicPagination.alt.beforePage")}
             />
           </button>
         )}
-        {t('BasicPagination.message', {currentPage: currentPage, maxPage: maxPage})}
+        {t("BasicPagination.message", {
+          currentPage: currentPage,
+          maxPage: maxPage,
+        })}
         {currentPage < maxPage && (
           <button
             onClick={() => {
@@ -163,7 +193,7 @@ function CourseFiles() {
           >
             <PaginationArrow
               src="/images/page-arrow.png"
-              alt={t('BasicPagination.alt.nextPage')}
+              alt={t("BasicPagination.alt.nextPage")}
             />
           </button>
         )}

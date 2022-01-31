@@ -15,12 +15,11 @@ import {
 
 import ExamUnit from "../../../../components/ExamUnit";
 import { useForm } from "react-hook-form";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../../common/i18n/index";
-import { ExamModel } from "../../../../types";
 //
 
 type FormData = {
@@ -32,27 +31,32 @@ type FormData = {
 };
 function TeacherExams() {
   const { t } = useTranslation();
-  const exams: ExamModel[] = [
-    {
-      examId: 1,
-      title: "Examen",
-      description: "adssada",
-      endTime: new Date(),
-      startTime: new Date(),
-      examFile: undefined,
-      average: 9,
-      course: {
-        courseId: 1,
-        courseUrl: "asdad",
-        board: "asdasd",
-        quarter: 1,
-        year: 2022,
-        isTeacher: true,
-        subject: { subjectId: 1, code: "F", name: "PAW" },
+  const [exams, setExams] = useState(new Array(0));
+
+  useEffect(() => {
+    setExams([
+      {
+        examId: 1,
+        title: "Examen",
+        description: "adssada",
+        endTime: new Date(),
+        startTime: new Date(),
+        examFile: undefined,
+        average: 9,
+        course: {
+          courseId: 1,
+          courseUrl: "asdad",
+          board: "asdasd",
+          quarter: 1,
+          year: 2022,
+          isTeacher: true,
+          subject: { subjectId: 1, code: "F", name: "PAW" },
+        },
+        url: "xd",
       },
-      url: "xd",
-    },
-  ];
+    ]);
+  }, []);
+
   const [isBefore, setIsBefore] = useState(false);
 
   const {
