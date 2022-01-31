@@ -35,20 +35,31 @@ function CorrectExam() {
     title: "Examen",
     examFile: {
       fileId: 1,
-      name: "xd",
+      size:10,
+      fileName: "xd",
       extension: {
-        fileExtensionName: ".doc",
+        fileExtension: ".doc",
+        fileExtensionId:12
       },
       course: {
         courseId: 1,
+        year: 2021,
+        quarter:2,
+        board: 'A',
         subject: {
+          subjectId:1,
+          code:'a',
           name: "PAW",
         },
+        courseUrl:"urlcurso",
+        isTeacher:true,
       },
       categories: [],
       downloads: 2,
     },
     description: "hola\nxd",
+    average:2,
+    url:"hola"
   };
 
   const answer = {
@@ -59,17 +70,26 @@ function CorrectExam() {
     },
     score: 10,
     deliveredDate: new Date().toDateString(),
-    answerFile: {
+    answerFile:  {
       fileId: 1,
-      name: "xd",
+      size:10,
+      fileName: "xd",
       extension: {
-        fileExtensionName: ".doc",
+        fileExtension: ".doc",
+        fileExtensionId:12
       },
       course: {
         courseId: 1,
+        year: 2021,
+        quarter:2,
+        board: 'A',
         subject: {
+          subjectId:1,
+          code:'a',
           name: "PAW",
         },
+        courseUrl:"urlcurso",
+        isTeacher:true,
       },
       categories: [],
       downloads: 2,

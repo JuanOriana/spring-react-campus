@@ -31,17 +31,26 @@ function TeacherCourseExamStandalone() {
   const exam = {
     examId: 1,
     title: "Examen",
-    examFile: {
+    examFile:  {
       fileId: 1,
-      name: "xd",
+      size:10,
+      fileName: "xd",
       extension: {
-        fileExtensionName: ".doc",
+        fileExtension: ".doc",
+        fileExtensionId:12
       },
       course: {
         courseId: 1,
+        year: 2021,
+        quarter:2,
+        board: 'A',
         subject: {
+          subjectId:1,
+          code:'a',
           name: "PAW",
         },
+        courseUrl:"urlcurso",
+        isTeacher:true,
       },
       categories: [],
       downloads: 2,
@@ -59,9 +68,33 @@ function TeacherCourseExamStandalone() {
         name: "juan",
         surname: "doe",
       },
-      score: null,
+      score: 10,
       deliveredDate: new Date().toDateString(),
-    },
+      answerFile:  {
+        fileId: 1,
+        size:10,
+        fileName: "xd",
+        extension: {
+          fileExtension: ".doc",
+          fileExtensionId:12
+        },
+        course: {
+          courseId: 1,
+          year: 2021,
+          quarter:2,
+          board: 'A',
+          subject: {
+            subjectId:1,
+            code:'a',
+            name: "PAW",
+          },
+          courseUrl:"urlcurso",
+          isTeacher:true,
+        },
+        categories: [],
+        downloads: 2,
+      },
+    }
   ];
   return (
     <>
@@ -98,13 +131,13 @@ function TeacherCourseExamStandalone() {
           {average}
         </SectionHeading>
         {answers.length === 0 && <>{t('TeacherCourseExamStandalone.noExams')}</>}
-        {answers.map((answer) => (
+        {/* {answers.map((answer) => (
           <StudentExamUnit
             answer={answer}
             isCorrected={answer.score !== null}
             examId={exam.examId}
           />
-        ))}
+        ))} */}
       </BigWrapper>
       <PaginationWrapper style={{ alignSelf: "center" }}>
         {currentPage > 1 && (
