@@ -285,7 +285,7 @@ public class CourseController {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
-        if(courseService.isPrivileged(userId, courseId) || !courseService.belongs(userId, courseId)) {
+        if(courseService.isPrivileged(userId, courseId)) {
             Map<Exam,Double> examAverage = examService.getExamsAverage(courseId);
             List<ExamDto> examDtoList = new ArrayList<>();
             examAverage.forEach((exam,average) -> examDtoList.add(ExamDto.fromExam(uriInfo, exam, average)));
