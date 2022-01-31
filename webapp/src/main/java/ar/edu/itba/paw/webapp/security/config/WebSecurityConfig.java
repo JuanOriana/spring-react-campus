@@ -14,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.AuthenticatedVoter;
@@ -121,14 +122,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
                 .authorizeRequests()
-                    .antMatchers("/admin/**").hasAuthority("ADMIN")
-                    .antMatchers("/portal").hasAuthority("USER")
-                    .antMatchers("/announcements").hasAuthority("USER")
-                    .antMatchers("/timetable").hasAuthority("USER")
-                    .antMatchers("/files").hasAuthority("USER")
+                    .antMatchers(HttpMethod.GET,"/announcements").hasAuthority("USER")
+                    .antMatchers(HttpMethod.GET,"/timetable").hasAuthority("USER")
+                    .antMatchers(HttpMethod.GET,"/files").hasAuthority("USER")
                     .antMatchers("/users").hasAuthority("ADMIN")
+                    .antMatchers( "/courses").hasAuthority("ADMIN")
                     .antMatchers("/**").permitAll()
-                //.accessDecisionManager(accessDecisionManager())
+                .accessDecisionManager(accessDecisionManager())
             .and()
                 .addFilterBefore(bridgeAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }

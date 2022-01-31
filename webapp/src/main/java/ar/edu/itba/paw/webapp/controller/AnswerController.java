@@ -36,10 +36,6 @@ public class AnswerController {
     @Produces(value = MediaType.APPLICATION_JSON)
     public Response getAnswer(@PathParam("answerId") Long answerId) {
         Answer answer = answerService.findById(answerId).orElseThrow(AnswerNotFoundException::new);
-        Long userId = authFacade.getCurrentUserId();
-        if(!answer.getStudent().getUserId().equals(userId) && !courseService.isPrivileged(userId, answer.getExam().getCourse().getCourseId())) {
-            throw new ForbiddenException();
-        }
         return Response.ok(AnswerDto.fromAnswer(uriInfo,answer)).build();
     }
 
@@ -48,11 +44,6 @@ public class AnswerController {
     @Path("/{answerId}")
     @Produces(value= MediaType.APPLICATION_JSON)
     public Response deleteAnswer(@PathParam("answerId") Long answerId) {
-        Answer answer = answerService.findById(answerId).orElseThrow(AnswerNotFoundException::new);
-        Long userId = authFacade.getCurrentUserId();
-        if(!answer.getStudent().getUserId().equals(userId) && !courseService.isPrivileged(userId, answer.getExam().getCourse().getCourseId())) {
-            throw new ForbiddenException();
-        }
         if(!answerService.delete(answerId)) {
             throw new NotFoundException();
         }

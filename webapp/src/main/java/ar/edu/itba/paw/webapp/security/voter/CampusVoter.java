@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.security.voter;
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionVoter;
@@ -13,7 +14,6 @@ import org.springframework.security.web.FilterInvocation;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,10 +35,10 @@ public class CampusVoter implements AccessDecisionVoter<FilterInvocation> {
     @Autowired
     private AnswerService answerService;
 
-    static final Pattern GET_FILE_PATTERN = Pattern.compile("/files/(\\d+)");
+    static final Pattern FILE_PATTERN = Pattern.compile("/courses/(\\d+)/files/(\\d+)");
     static final Pattern UPLOAD_FILE_PATTERN = Pattern.compile("/courses/(\\d+)/files");
     static final Pattern UPLOAD_ANNOUNCEMENT_PATTERN = Pattern.compile("/courses/(\\d+)/announcements");
-    static final Pattern GET_COURSE_EXAM_PATTERN = Pattern.compile("/courses/(\\d+)/exam/(\\d+)");
+    static final Pattern EXAM_PATTERN = Pattern.compile("/exams/(\\d+)");
     static final Pattern GET_COURSE_PATTERN = Pattern.compile("/courses/(\\d+)");
 
     @Override
@@ -56,22 +56,23 @@ public class CampusVoter implements AccessDecisionVoter<FilterInvocation> {
         final String url = fi.getRequestUrl();
         final String method = fi.getHttpRequest().getMethod();
         Matcher getCourseMatcher = GET_COURSE_PATTERN.matcher(url);
-        Matcher getCourseExamMatcher = GET_COURSE_EXAM_PATTERN.matcher(url);
-        Matcher getFileMatcher = GET_FILE_PATTERN.matcher(url);
+        Matcher getCourseExamMatcher = EXAM_PATTERN.matcher(url);
+        Matcher fileMatcher = FILE_PATTERN.matcher(url);
         Matcher uploadFileMatcher = UPLOAD_FILE_PATTERN.matcher(url);
         Matcher uploadAnnouncementMatcher = UPLOAD_ANNOUNCEMENT_PATTERN.matcher(url);
         if(getCourseExamMatcher.find()) return voteExamAccess(authentication, getCourseExamMatcher);
-        if(getFileMatcher.find()) return voteFileAccess(authentication, getMappingValue(getFileMatcher));
-        if(method.equals("POST") && uploadAnnouncementMatcher.find()) return voteCoursePrivileges(authentication, getMappingValue(uploadAnnouncementMatcher));
-        if(method.equals("POST") && uploadFileMatcher.find()) return voteCoursePrivileges(authentication, getMappingValue(uploadFileMatcher));
-        if(getCourseMatcher.find()) return voteCourseAccess(authentication, getMappingValue(getCourseMatcher));
+        if(fileMatcher.find()) return voteFileAccess(authentication, getMappingValue(fileMatcher, 2));
+        if(method.equals("DELETE") && fileMatcher.find()) return voteCoursePrivileges(authentication, getMappingValue(fileMatcher, 1));
+        if(method.equals("POST") && uploadAnnouncementMatcher.find()) return voteCoursePrivileges(authentication, getMappingValue(uploadAnnouncementMatcher, 1));
+        if(method.equals("POST") && uploadFileMatcher.find()) return voteCoursePrivileges(authentication, getMappingValue(uploadFileMatcher, 1));
+        if(getCourseMatcher.find()) return voteCourseAccess(authentication, getMappingValue(getCourseMatcher, 1));
         return ACCESS_ABSTAIN;
     }
 
 
 
-    private Long getMappingValue(Matcher m) {
-        return Long.valueOf(m.group(1));
+    private Long getMappingValue(Matcher m, int group) {
+        return Long.valueOf(m.group(group));
     }
 
     private boolean isAdminOrAnonymous(Authentication authentication) {
@@ -81,17 +82,17 @@ public class CampusVoter implements AccessDecisionVoter<FilterInvocation> {
     }
 
     private int voteExamAccess(Authentication authentication, Matcher getCourseExamMatcher) {
-        Long courseId = Long.valueOf(getCourseExamMatcher.group(1));
-        Long examId = Long.valueOf(getCourseExamMatcher.group(2));
+        Long examId = Long.valueOf(getCourseExamMatcher.group(1));
+        Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
+        Long courseId = exam.getCourse().getCourseId();
         boolean isPrivileged = courseService.isPrivileged(authFacade.getCurrentUserId(), courseId);
         if(isAdminOrAnonymous(authentication)) return ACCESS_DENIED;
         if(!courseService.belongs(authFacade.getCurrentUserId(), courseId)) return ACCESS_DENIED;
         if(!examService.belongs(examId, courseId)) return ACCESS_DENIED;
         if(!isPrivileged && answerService.didUserDeliver(examId, authFacade.getCurrentUserId())) return ACCESS_DENIED;
         if(isPrivileged) return ACCESS_GRANTED;
-        Optional<Exam> exam = examService.findById(examId);
-        if(!exam.isPresent() || LocalDateTime.now().isBefore(exam.get().getStartTime())
-           || LocalDateTime.now().isAfter(exam.get().getEndTime())) return ACCESS_DENIED;
+        if(LocalDateTime.now().isBefore(exam.getStartTime())
+           || LocalDateTime.now().isAfter(exam.getEndTime())) return ACCESS_DENIED;
         return ACCESS_GRANTED;
     }
 

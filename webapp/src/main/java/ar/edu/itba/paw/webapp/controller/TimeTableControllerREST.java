@@ -46,6 +46,10 @@ public class TimeTableControllerREST {
 
         List<Course> courses = courseService.listCurrent(authFacade.getCurrentUserId());
 
+        if(courses.isEmpty()) {
+            return Response.noContent().build();
+        }
+
         for (Course course: courses) {
             courseTimetables.put(course, timetableService.findById(course.getCourseId()));
         }
@@ -55,7 +59,7 @@ public class TimeTableControllerREST {
         return Response.ok(new ObjectMapper().writeValueAsString(timeTableMatrix)).build();
     }
 
-    private HashMap<Integer, List<CourseDto>> createTimeTableMatrix(Map<Course,List<Timetable>> timeMap){
+    private HashMap<Integer, List<CourseDto>> createTimeTableMatrix(Map<Course, List<Timetable>> timeMap) {
         HashMap<Integer,List<CourseDto>> timeTableMatrix = new HashMap<>();
         for (int i = 0; i < days.length; i++){
             timeTableMatrix.put(i,new ArrayList<>());

@@ -107,8 +107,7 @@ public class CourseController {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response postCourse(@Valid CourseFormDto courseForm)
-            throws DtoValidationException {
+    public Response postCourse(@Valid CourseFormDto courseForm) {
         if(courseForm == null) {
             throw new BadRequestException();
         }
@@ -161,15 +160,11 @@ public class CourseController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response newAnnouncement(@PathParam("courseId") Long courseId,
                                     @Valid AnnouncementFormDto announcementDto) throws DtoValidationException {
-        Long userId = authFacade.getCurrentUserId();
-        if(!courseService.isPrivileged(userId, courseId)) {
-            throw new ForbiddenException();
-        }
         dtoValidator.validate(announcementDto, "Invalid body request");
         Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
         Announcement announcement = announcementService.create(announcementDto.getTitle(),
                 announcementDto.getContent(),
-                userService.findById(userId).orElseThrow(UserNotFoundException::new),
+                userService.findById(authFacade.getCurrentUserId()).orElseThrow(UserNotFoundException::new),
                 course,
                 uriInfo.getAbsolutePath().getPath());
         URI location = URI.create(uriInfo.getBaseUri() + "/announcements/" + announcement.getAnnouncementId());
@@ -252,7 +247,7 @@ public class CourseController {
             return Response.noContent().build();
         }
         List<ExamDto> examDtoList = exams.stream()
-                .map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId())))
+                .map(exam -> ExamDto.fromExam(uriInfo, exam, examService.getAverageScoreOfExam(exam.getExamId())))
                 .collect(Collectors.toList());
         return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList){}).build();
     }
@@ -263,17 +258,13 @@ public class CourseController {
     @Produces(value = MediaType.APPLICATION_JSON)
     public Response newExam(@PathParam("courseId") Long courseId,
                             @Valid ExamFormDto examFormDto) throws DtoValidationException {
-        Long userId = authFacade.getCurrentUserId();
-        if(!courseService.isPrivileged(userId, courseId)){
-            throw new ForbiddenException();
-        }
         dtoValidator.validate(examFormDto, "Invalid body request");
         Exam exam = examService.create(courseId, examFormDto.getTitle(), examFormDto.getContent(),
                 examFormDto.getFile().getOriginalFilename(), examFormDto.getFile().getBytes(),
                 examFormDto.getFile().getSize(), LocalDateTime.parse(examFormDto.getStartTime()),
                 LocalDateTime.parse(examFormDto.getEndTime()));
-        LOGGER.debug("User with id {} created exam with id {}", userId, exam.getExamId());
         URI location = URI.create(uriInfo.getBaseUri() + "/exams/" + exam.getExamId());
+        LOGGER.debug("Created new exam on {}", location);
         return Response.created(location).build();
     }
 
@@ -306,9 +297,6 @@ public class CourseController {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
-        if(!courseService.isPrivileged(userId, courseId)) {
-            throw new ForbiddenException();
-        }
         List<ExamDto> exams = examService.getUnresolvedExams(userId, courseId)
                 .stream()
                 .map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId())))
@@ -324,9 +312,6 @@ public class CourseController {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
-        if(!courseService.isPrivileged(userId, courseId)){
-            throw new ForbiddenException();
-        }
         List<AnswerDto> answers = answerService.getMarks(userId, courseId)
                 .stream()
                 .map(answer->AnswerDto.fromAnswer(uriInfo, answer))
@@ -342,9 +327,6 @@ public class CourseController {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
-        if(!courseService.isPrivileged(userId, courseId)) {
-            throw new ForbiddenException();
-        }
         Double average = answerService.getAverageOfUserInCourse(userId, courseId);
         return Response.ok(new GenericEntity<Double>(average){}).build();
     }
