@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.SubjectDao;
-import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Subject;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -24,6 +23,11 @@ public class SubjectDaoJpa implements SubjectDao {
         final Subject subject = new Subject(code, name);
         em.persist(subject);
         return subject;
+    }
+
+    @Override
+    public Optional<Subject> findById(Long subjectId) {
+        return Optional.ofNullable(em.find(Subject.class, subjectId));
     }
 
     @Override

@@ -32,7 +32,7 @@ public class AnswerController {
     private AuthFacade authFacade;
 
     @GET
-    @Path("{answerId}")
+    @Path("/{answerId}")
     @Produces(value = MediaType.APPLICATION_JSON)
     public Response getAnswer(@PathParam("answerId") Long answerId) {
         Answer answer = answerService.findById(answerId).orElseThrow(AnswerNotFoundException::new);
@@ -45,7 +45,7 @@ public class AnswerController {
 
 
     @DELETE
-    @Path("{answerId}")
+    @Path("/{answerId}")
     @Produces(value= MediaType.APPLICATION_JSON)
     public Response deleteAnswer(@PathParam("answerId") Long answerId) {
         Answer answer = answerService.findById(answerId).orElseThrow(AnswerNotFoundException::new);

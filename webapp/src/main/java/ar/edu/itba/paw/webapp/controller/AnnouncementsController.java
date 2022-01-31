@@ -4,6 +4,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.AnnouncementService;
 import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.models.CampusPage;
+import ar.edu.itba.paw.models.exception.AnnouncementNotFoundException;
 import ar.edu.itba.paw.webapp.dto.AnnouncementDto;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.util.PaginationBuilder;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.List;
@@ -50,6 +52,14 @@ public class AnnouncementsController {
                                 .map(AnnouncementDto::fromAnnouncement)
                                 .collect(Collectors.toList())){});
         return PaginationBuilder.build(announcements, builder, uriInfo, pageSize);
+    }
+
+    @GET
+    @Path("/{announcementId}")
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getAnnouncement(@PathParam("announcementId") Long announcementId) {
+        Announcement announcement = announcementService.findById(announcementId).orElseThrow(AnnouncementNotFoundException::new);
+        return Response.ok(AnnouncementDto.fromAnnouncement(announcement)).build();
     }
 
     @DELETE
