@@ -8,7 +8,7 @@ export default interface ExamModel {
   endTime: Date;
   title: string;
   description: string;
-  examFile: FileModel;
+  examFile?: FileModel;
   average: number;
   url: string;
 }

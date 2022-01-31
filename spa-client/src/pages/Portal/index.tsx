@@ -10,7 +10,6 @@ import {
   CourseName,
 } from "./styles";
 import BasicPagination from "../../components/BasicPagination";
-import CourseModel from "../../types/CourseModel";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
@@ -87,7 +86,15 @@ function Portal() {
             {announcements.map((announcement) => (
               <AnnouncementUnit
                 key={announcement.announcementId}
-                course={{ courseId: 1 }}
+                course={{
+                  courseId: 1,
+                  courseUrl: "asdad",
+                  board: "asdasd",
+                  quarter: 1,
+                  year: 2022,
+                  isTeacher: true,
+                  subject: { subjectId: 1, code: "F", name: "PAW" },
+                }}
                 announcement={announcement}
                 isGlobal={true}
               />

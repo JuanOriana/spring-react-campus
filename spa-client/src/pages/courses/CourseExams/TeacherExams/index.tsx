@@ -20,6 +20,7 @@ import React, { useState } from "react";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../../common/i18n/index";
+import { ExamModel } from "../../../../types";
 //
 
 type FormData = {
@@ -31,7 +32,27 @@ type FormData = {
 };
 function TeacherExams() {
   const { t } = useTranslation();
-  const exams = [{ examId: 1, title: "Examen" }];
+  const exams: ExamModel[] = [
+    {
+      examId: 1,
+      title: "Examen",
+      description: "adssada",
+      endTime: new Date(),
+      startTime: new Date(),
+      examFile: undefined,
+      average: 9,
+      course: {
+        courseId: 1,
+        courseUrl: "asdad",
+        board: "asdasd",
+        quarter: 1,
+        year: 2022,
+        isTeacher: true,
+        subject: { subjectId: 1, code: "F", name: "PAW" },
+      },
+      url: "xd",
+    },
+  ];
   const [isBefore, setIsBefore] = useState(false);
 
   const {
@@ -58,9 +79,11 @@ function TeacherExams() {
         onSubmit={onSubmit}
       >
         <GeneralTitle style={{ color: "#176961", alignSelf: "center" }}>
-          {t('TeacherExams.title')}
+          {t("TeacherExams.title")}
         </GeneralTitle>
-        <FormLabel htmlFor="title">{t('TeacherExams.form.examTitle')}</FormLabel>
+        <FormLabel htmlFor="title">
+          {t("TeacherExams.form.examTitle")}
+        </FormLabel>
         <FormInput
           type="text"
           style={{ fontSize: "26px" }}
@@ -72,14 +95,18 @@ function TeacherExams() {
           })}
         />
         {errors.title?.type === "required" && (
-          <ErrorMessage>{t('TeacherExams.error.examTitle.isRequired')}</ErrorMessage>
+          <ErrorMessage>
+            {t("TeacherExams.error.examTitle.isRequired")}
+          </ErrorMessage>
         )}
         {errors.title?.type === "length" && (
           <ErrorMessage>
-            {t('TeacherExams.error.examTitle.length')}
+            {t("TeacherExams.error.examTitle.length")}
           </ErrorMessage>
         )}
-        <FormLabel htmlFor="content">{t('TeacherExams.form.examInstructions')}</FormLabel>
+        <FormLabel htmlFor="content">
+          {t("TeacherExams.form.examInstructions")}
+        </FormLabel>
         <FormArea
           style={{ width: "95%", resize: "none" }}
           cols={50}
@@ -92,14 +119,16 @@ function TeacherExams() {
           })}
         ></FormArea>
         {errors.content?.type === "required" && (
-          <ErrorMessage>{t('TeacherExams.error.examInstructions.isRequired')}</ErrorMessage>
+          <ErrorMessage>
+            {t("TeacherExams.error.examInstructions.isRequired")}
+          </ErrorMessage>
         )}
         {errors.content?.type === "length" && (
           <ErrorMessage>
-            {t('TeacherExams.error.examInstructions.length')}
+            {t("TeacherExams.error.examInstructions.length")}
           </ErrorMessage>
         )}
-        <FormLabel htmlFor="file">{t('TeacherExams.form.examFile')}</FormLabel>
+        <FormLabel htmlFor="file">{t("TeacherExams.form.examFile")}</FormLabel>
         <FormInput
           type="file"
           style={{ fontSize: "26px" }}
@@ -113,12 +142,16 @@ function TeacherExams() {
           })}
         />
         {errors.file?.type === "required" && (
-          <ErrorMessage>{t('TeacherExams.error.examFile.isRequired')}</ErrorMessage>
+          <ErrorMessage>
+            {t("TeacherExams.error.examFile.isRequired")}
+          </ErrorMessage>
         )}
         {errors.file?.type === "size" && (
-          <ErrorMessage>{t('TeacherExams.error.examFile.size')}</ErrorMessage>
+          <ErrorMessage>{t("TeacherExams.error.examFile.size")}</ErrorMessage>
         )}
-        <FormLabel htmlFor="startTime">{t('TeacherExams.form.examStart')}</FormLabel>
+        <FormLabel htmlFor="startTime">
+          {t("TeacherExams.form.examStart")}
+        </FormLabel>
         <FormInput
           type="datetime-local"
           style={{ fontSize: "26px" }}
@@ -128,9 +161,13 @@ function TeacherExams() {
           })}
         />
         {errors.startTime?.type === "required" && (
-          <ErrorMessage>{t('TeacherExams.error.examStart.isRequired')}</ErrorMessage>
+          <ErrorMessage>
+            {t("TeacherExams.error.examStart.isRequired")}
+          </ErrorMessage>
         )}
-        <FormLabel htmlFor="endTime">{t('TeacherExams.form.examEnd')}</FormLabel>
+        <FormLabel htmlFor="endTime">
+          {t("TeacherExams.form.examEnd")}
+        </FormLabel>
         <FormInput
           type="datetime-local"
           style={{ fontSize: "26px" }}
@@ -140,20 +177,22 @@ function TeacherExams() {
           })}
         />
         {errors.endTime?.type === "required" && (
-          <ErrorMessage>{t('TeacherExams.error.examEnd.isRequired')}</ErrorMessage>
+          <ErrorMessage>
+            {t("TeacherExams.error.examEnd.isRequired")}
+          </ErrorMessage>
         )}
         {isBefore && (
           <ErrorMessage>
-            {t('TeacherExams.error.examStart.badDate')}
+            {t("TeacherExams.error.examStart.badDate")}
           </ErrorMessage>
         )}
-        <FormButton>{t('TeacherExams.form.createButton')}</FormButton>
+        <FormButton>{t("TeacherExams.form.createButton")}</FormButton>
       </FormWrapper>
       <Separator reduced={true}>.</Separator>
 
       <BigWrapper>
-        <h3 style={{ margin: "10px 0" }}>{t('TeacherExams.recentExams')}</h3>
-        {exams.length === 0 && <p>{t('TeacherExams.noExams')}</p>}
+        <h3 style={{ margin: "10px 0" }}>{t("TeacherExams.recentExams")}</h3>
+        {exams.length === 0 && <p>{t("TeacherExams.noExams")}</p>}
         {exams.map((exam) => (
           //EXAMS SOLVED Y USERCOUNT SALE DE QUE EXAMS EN VERDAD ES UN MAPA
           <ExamUnit

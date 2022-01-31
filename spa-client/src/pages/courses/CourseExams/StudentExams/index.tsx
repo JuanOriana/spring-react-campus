@@ -9,28 +9,45 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import "../../../../common/i18n/index";
 //
+const exampleExam = {
+  examId: 1,
+  title: "Examen",
+  description: "adssada",
+  endTime: new Date(),
+  startTime: new Date(),
+  examFile: undefined,
+  average: 9,
+  course: {
+    courseId: 1,
+    courseUrl: "asdad",
+    board: "asdasd",
+    quarter: 1,
+    year: 2022,
+    isTeacher: true,
+    subject: { subjectId: 1, code: "F", name: "PAW" },
+  },
+  url: "xd",
+};
 
 function StudentExams() {
   const { t } = useTranslation();
-  const unresolvedExams = [{ examId: 1, title: "Examen" }];
+  const unresolvedExams = [exampleExam];
   const answerMarks = [
     {
       score: 8,
       corrections: "Muy bueno!",
-      exam: { examId: 1, title: "Examen" },
+      exam: exampleExam,
     },
   ];
   const average = 9.2;
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        {t('StudentExams.title')}
+        {t("StudentExams.title")}
       </SectionHeading>
       <BigWrapper>
-        <h3 style={{ margin: "10px 0" }}>
-          {t('StudentExams.toDo')}
-        </h3>
-        {unresolvedExams.length === 0 && <p>{t('StudentExams.noExams')}</p>}
+        <h3 style={{ margin: "10px 0" }}>{t("StudentExams.toDo")}</h3>
+        {unresolvedExams.length === 0 && <p>{t("StudentExams.noExams")}</p>}
         {unresolvedExams.map((exam) => (
           <ExamUnit exam={exam} />
         ))}
@@ -43,7 +60,9 @@ function StudentExams() {
                 justifyContent: "space-between",
               }}
             >
-              <h3 style={{ margin: "10px 0" }}>{t('StudentExams.sentExams')}</h3>
+              <h3 style={{ margin: "10px 0" }}>
+                {t("StudentExams.sentExams")}
+              </h3>
               <SectionHeading style={{ fontSize: "20px", marginRight: "10px" }}>
                 {average}
               </SectionHeading>

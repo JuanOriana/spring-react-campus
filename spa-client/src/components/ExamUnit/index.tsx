@@ -20,7 +20,7 @@ interface ExamUnitProps {
   userCount?: number;
   isDelivered?: boolean;
   isTeacher?: boolean;
-  answer: {
+  answer?: {
     score: number;
     corrections: string;
   };
