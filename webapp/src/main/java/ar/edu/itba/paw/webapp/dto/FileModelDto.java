@@ -14,9 +14,8 @@ public class FileModelDto {
     private CourseDto course;
     private long downloads;
     private Boolean hidden;
-    private String fileUri; //TODO: ver si el tipo "String" esta bien o va "URI"
-
-    //TODO: ver si hace falta poner el FileCategory tmbn
+    private String uri;
+    private FileCategoryDto fileCategory;
 
     public static FileModelDto fromFile(FileModel file) {
         if (file == null) {
@@ -26,15 +25,24 @@ public class FileModelDto {
         final FileModelDto dto = new FileModelDto();
         dto.fileId = file.getFileId();
         dto.size = file.getSize();
+        dto.fileCategory = FileCategoryDto.fromFileCategory(file.getCategories().get(0));
         dto.extension = FileExtensionDto.fromFileExtension(file.getExtension());
         dto.fileName = file.getName();
         dto.fileDate = file.getDate();
         dto.course = CourseDto.fromCourse(file.getCourse());
         dto.downloads = file.getDownloads();
         dto.hidden = file.isHidden();
-        StringBuilder aux = new StringBuilder("/files/"); //TODO: ver si el baseURI se pasa como parametro o no hace falta
-        dto.fileUri = aux.append(file.getFileId().toString()).toString();
+        StringBuilder aux = new StringBuilder("/files/");
+        dto.uri = aux.append(file.getFileId().toString()).toString();
         return dto;
+    }
+
+    public FileCategoryDto getFileCategory() {
+        return fileCategory;
+    }
+
+    public void setFileCategory(FileCategoryDto fileCategory) {
+        this.fileCategory = fileCategory;
     }
 
     public long getFileId() {
@@ -101,11 +109,11 @@ public class FileModelDto {
         this.hidden = hidden;
     }
 
-    public String getFileUri() {
-        return fileUri;
+    public String getUri() {
+        return uri;
     }
 
-    public void setFileUri(String fileUri) {
-        this.fileUri = fileUri;
+    public void setUri(String fileUri) {
+        this.uri = fileUri;
     }
 }

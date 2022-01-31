@@ -19,7 +19,7 @@ public class ExceptionDto {
 
     public ExceptionDto(final String message, final Set<? extends ConstraintViolation<?>> constraintViolations) {
         this.setMessage(message);
-        errors = new ArrayList<FieldViolationDto>(constraintViolations.size());
+        errors = new ArrayList<>(constraintViolations.size());
 
         constraintViolations.forEach((constraintViolation) -> {
             if (!constraintViolation.getPropertyPath().toString().isEmpty())

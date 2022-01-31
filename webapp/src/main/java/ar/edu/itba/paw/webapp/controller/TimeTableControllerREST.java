@@ -29,7 +29,6 @@ public class TimeTableControllerREST {
     private static final String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
     private static final String[] hours = {"08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00",
             "17:00","18:00","19:00","20:00","21:00","22:00"};
-    //TODO: ver si estas variables siguen teniendo sentido que sean asi o las pasamos a ints
 
     @Autowired
     private CourseService courseService;
@@ -41,8 +40,8 @@ public class TimeTableControllerREST {
     private AuthFacade authFacade;
 
     @GET
-    @Produces(value = {MediaType.APPLICATION_JSON, })
-    public Response timeTable() throws JsonProcessingException {
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getTimeTable() throws JsonProcessingException {
         Map<Course, List<Timetable>> courseTimetables = new HashMap<>();
 
         List<Course> courses = courseService.listCurrent(authFacade.getCurrentUserId());
@@ -56,7 +55,7 @@ public class TimeTableControllerREST {
         return Response.ok(new ObjectMapper().writeValueAsString(timeTableMatrix)).build();
     }
 
-    private HashMap<Integer,List<CourseDto>> createTimeTableMatrix(Map<Course,List<Timetable>> timeMap){
+    private HashMap<Integer, List<CourseDto>> createTimeTableMatrix(Map<Course,List<Timetable>> timeMap){
         HashMap<Integer,List<CourseDto>> timeTableMatrix = new HashMap<>();
         for (int i = 0; i < days.length; i++){
             timeTableMatrix.put(i,new ArrayList<>());

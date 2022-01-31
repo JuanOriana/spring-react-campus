@@ -266,6 +266,7 @@ public class CourseControllerEE extends AuthController {
     }
 
 
+    /*
     @RequestMapping(method = RequestMethod.GET, value = "/files")
     public ModelAndView files(@PathVariable Long courseId, final FileForm fileForm,
                               @RequestParam(value = "category-type", required = false, defaultValue = "")
@@ -316,8 +317,9 @@ public class CourseControllerEE extends AuthController {
         mav.addObject("filteredCategories", listOfAppliedCategoryFilters);
         mav.addObject("filteredExtensions", listOfAppliedExtensionFilters);
         return FilesControllerEE.loadFileParamsIntoModel(categoryType, extensionType, query, orderProperty, orderDirection, filePage, mav);
-    }
+    }*/
 
+    /*
     @RequestMapping(method = RequestMethod.POST, value = "/files")
     public ModelAndView uploadFile(@PathVariable Long courseId, @Valid FileForm fileForm, final BindingResult errors,
                                    RedirectAttributes redirectAttributes) {
@@ -333,7 +335,7 @@ public class CourseControllerEE extends AuthController {
         }
         return files(courseId, fileForm, new ArrayList<>(),
                 new ArrayList<>(), "", "date", "desc", DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
-    }
+    }*/
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/mail/{userId}")

@@ -1,11 +1,7 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
-
-import javax.ws.rs.core.GenericEntity;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

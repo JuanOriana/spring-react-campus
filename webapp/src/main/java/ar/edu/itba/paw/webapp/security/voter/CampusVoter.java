@@ -35,11 +35,11 @@ public class CampusVoter implements AccessDecisionVoter<FilterInvocation> {
     @Autowired
     private AnswerService answerService;
 
-    static final Pattern GET_FILE_PATTERN = Pattern.compile("/file/(\\d+)");
-    static final Pattern UPLOAD_FILE_PATTERN = Pattern.compile("/course/(\\d+)/files");
-    static final Pattern UPLOAD_ANNOUNCEMENT_PATTERN = Pattern.compile("/course/(\\d+)/announcements");
-    static final Pattern GET_COURSE_EXAM_PATTERN = Pattern.compile("/course/(\\d+)/exam/(\\d+)");
-    static final Pattern GET_COURSE_PATTERN = Pattern.compile("/course/(\\d+)");
+    static final Pattern GET_FILE_PATTERN = Pattern.compile("/files/(\\d+)");
+    static final Pattern UPLOAD_FILE_PATTERN = Pattern.compile("/courses/(\\d+)/files");
+    static final Pattern UPLOAD_ANNOUNCEMENT_PATTERN = Pattern.compile("/courses/(\\d+)/announcements");
+    static final Pattern GET_COURSE_EXAM_PATTERN = Pattern.compile("/courses/(\\d+)/exam/(\\d+)");
+    static final Pattern GET_COURSE_PATTERN = Pattern.compile("/courses/(\\d+)");
 
     @Override
     public boolean supports(ConfigAttribute attribute) {
