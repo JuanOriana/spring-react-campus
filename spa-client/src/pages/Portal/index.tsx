@@ -10,12 +10,12 @@ import {
   CourseName,
 } from "./styles";
 import BasicPagination from "../../components/BasicPagination";
+import { courseService, announcementsService } from "../../services";
+import { useNavigate } from "react-router-dom";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import "../../common/i18n/index";
-import { courseService } from "../../services";
 //
 
 function Portal() {
@@ -35,16 +35,14 @@ function Portal() {
           : setCourses(courses.getData)
       )
       .catch(() => navigate("/error?code=500"));
-    setAnnouncements([
-      {
-        announcementId: 1,
-        title: "Hola",
-        content:
-          "xAAdddxAAdddxAAdddxAAdddxAAdddxAAdddxAdvxAAdddxAAdddxAAdddxAAdddAdddxAAdddxAAddd",
-        author: { name: "juan", surname: "oriana" },
-        date: "hoy",
-      },
-    ]);
+    announcementsService
+        .getAnnouncements(1,3)
+        .then(announcements =>
+        announcements.hasFailed()
+        ? navigate(`/error?code=${announcements.getError().getCode()}`)
+        : setAnnouncements(announcements.getData))
+        .catch(() => navigate("/error?code=500"));
+
   }, []);
 
   return (
