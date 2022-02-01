@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.security.config;
 
-import ar.edu.itba.paw.webapp.security.api.AuthenticationEntryPoint;
-import ar.edu.itba.paw.webapp.security.api.AuthenticationFailureHandler;
-import ar.edu.itba.paw.webapp.security.api.AuthenticationSuccessHandler;
-import ar.edu.itba.paw.webapp.security.api.BridgeAuthenticationFilter;
+import ar.edu.itba.paw.webapp.security.api.*;
 import ar.edu.itba.paw.webapp.security.api.basic.BasicAuthenticationProvider;
 import ar.edu.itba.paw.webapp.security.api.jwt.JwtAuthenticationProvider;
 import ar.edu.itba.paw.webapp.security.voter.CampusVoter;
@@ -32,9 +29,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.security.web.session.SessionManagementFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -106,15 +108,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CampusVoter courseVoter() { return new CampusVoter(); }
 
+    @Bean
+    public CORSFilter corsFilter() {
+        return new CORSFilter();
+    }
+
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         CharacterEncodingFilter filter = new CharacterEncodingFilter();
         filter.setEncoding("UTF-8");
         filter.setForceEncoding(true);
-
         http
             .csrf()
                 .disable()
+            .addFilterBefore(corsFilter(), SessionManagementFilter.class)
             .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
             .and()
