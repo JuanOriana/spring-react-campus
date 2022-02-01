@@ -1,30 +1,31 @@
 package ar.edu.itba.paw.webapp.security.api;
 
-import javax.servlet.*;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
-public class CORSFilter implements Filter {
+@Provider
+public class CORSFilter extends OncePerRequestFilter {
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // Unused
-    }
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        response.addHeader("Access-Control-Allow-Origin", "*");
 
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "*");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Max-Age", "180");
-        response.setHeader("Access-Control-Expose-Headers", "*, Authorization");
-        filterChain.doFilter(servletRequest, servletResponse);
-    }
+        if (request.getHeader("Access-Control-Request-Method") != null && "OPTIONS".equals(request.getMethod())) {
+            // CORS "pre-flight" request
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            response.addHeader("Access-Control-Allow-Headers", "Authorization");
+            response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+            response.addHeader("Access-Control-Allow-Headers", "Origin");
+            response.addHeader("Access-Control-Allow-Headers", "X-Auth-Token");
+            response.addHeader("Access-Control-Max-Age", "1");
+        }
 
-    @Override
-    public void destroy() {
-        // Unused
+        filterChain.doFilter(request, response);
     }
 }

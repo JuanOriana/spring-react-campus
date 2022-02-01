@@ -108,10 +108,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CampusVoter courseVoter() { return new CampusVoter(); }
 
-    @Bean
-    public CORSFilter corsFilter() {
-        return new CORSFilter();
-    }
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
@@ -119,11 +115,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         filter.setEncoding("UTF-8");
         filter.setForceEncoding(true);
         http
-            .cors()
-                .and()
             .csrf()
                 .disable()
-            .addFilterBefore(corsFilter(), SessionManagementFilter.class)
             .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
             .and()
