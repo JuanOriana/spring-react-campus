@@ -8,8 +8,8 @@
     <packaging>pom</packaging>
     <name>paw-2021b-4</name>
     <properties>
-        <org.springframework.version>4.2.5.RELEASE</org.springframework.version>
-        <spring-security.version>4.0.4.RELEASE</spring-security.version>
+        <org.springframework.version>4.3.22.RELEASE</org.springframework.version>
+        <spring-security.version>4.2.11.RELEASE</spring-security.version>
         <servlet-api.version>2.5</servlet-api.version>
         <jstl.version>1.2</jstl.version>
         <junit.version>4.11</junit.version>

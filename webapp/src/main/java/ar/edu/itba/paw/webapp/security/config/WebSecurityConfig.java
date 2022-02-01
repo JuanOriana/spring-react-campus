@@ -119,6 +119,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         filter.setEncoding("UTF-8");
         filter.setForceEncoding(true);
         http
+            .cors()
+                .and()
             .csrf()
                 .disable()
             .addFilterBefore(corsFilter(), SessionManagementFilter.class)
