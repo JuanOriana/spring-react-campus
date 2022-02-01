@@ -4,71 +4,70 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
     <display-name>Campus</display-name>
-    <!-- Configure ContextLoaderListener to use AnnotationConfigWebApplicationContext
-    instead of the default XmlWebApplicationContext -->
     <context-param>
         <param-name>contextClass</param-name>
         <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
     </context-param>
-    <!-- Configuration locations must consist of one or more comma- or space-delimited
-    fully-qualified @Configuration classes. Fully-qualified packages may also
-    be specified for component-scanning -->
+
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
             ar.edu.itba.paw.webapp.config.WebConfig,
-            ar.edu.itba.paw.webapp.config.WebAuthConfig,
+            ar.edu.itba.paw.webapp.security.config.WebSecurityConfig
         </param-value>
     </context-param>
-    <!-- Bootstrap the root application context as usual using ContextLoaderListener -->
+
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+
     <servlet>
-        <servlet-name>dispatcher</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <servlet-name>jersey-servlet</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
-            <param-name>contextClass</param-name>
+            <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>
-                org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+                ar.edu.itba.paw.webapp.controller,
+                ar.edu.itba.paw.webapp.security.api.exceptionmapper
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.server.provider.classnames</param-name>
+            <param-value>
+                org.glassfish.jersey.media.multipart.MultiPartFeature,
+                ar.edu.itba.paw.webapp.security.api.CORSFilter
             </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
-    <jsp-config>
-        <jsp-property-group>
-            <url-pattern>*.jsp</url-pattern>
-            <page-encoding>UTF-8</page-encoding>
-        </jsp-property-group>
-    </jsp-config>
-
     <servlet-mapping>
-        <servlet-name>dispatcher</servlet-name>
-        <url-pattern>/</url-pattern>
+        <servlet-name>jersey-servlet</servlet-name>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
+
 
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
 
-    <error-page>
-        <error-code>404</error-code>
-        <location>/404</location>
-    </error-page>
-    <error-page>
-        <error-code>500</error-code>
-        <location>/500</location>
-    </error-page>
-    <error-page>
-        <error-code>400</error-code>
-        <location>/400</location>
-    </error-page>
+    <filter>
+        <filter-name>CacheControlFilter</filter-name>
+        <filter-class>ar.edu.itba.paw.webapp.security.api.CacheControlFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CacheControlFilter</filter-name>
+        <url-pattern>*.jpg</url-pattern>
+        <url-pattern>*.js</url-pattern>
+        <url-pattern>*.png</url-pattern>
+        <url-pattern>*.html</url-pattern>
+        <url-pattern>*.css</url-pattern>
+        <url-pattern>*.ico</url-pattern>
+        <url-pattern>*.gif</url-pattern>
+    </filter-mapping>
 
 </web-app>

@@ -1,73 +1,87 @@
 package ar.edu.itba.paw.webapp.controller;
+
+
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.webapp.auth.AuthFacade;
-import ar.edu.itba.paw.webapp.form.UserProfileForm;
-import org.apache.commons.io.IOUtils;
+import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.exception.UserNotFoundException;
+import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
+import ar.edu.itba.paw.webapp.dto.NextFileNumberDto;
+import ar.edu.itba.paw.webapp.dto.UserDto;
+import ar.edu.itba.paw.webapp.dto.UserRegisterFormDto;
+import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.ResourceUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.*;
-import java.util.Objects;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.io.ByteArrayInputStream;
+import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
-@Controller
-public class UserController extends AuthController {
+@Path("users")
+@Component
+public class UserController {
+    @Autowired
+    private UserService userService;
 
-    private final UserService userService;
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    @Context
+    private UriInfo uriInfo;
 
     @Autowired
-    public UserController(AuthFacade authFacade, UserService userService) {
-        super(authFacade);
-        this.userService = userService;
+    private DtoConstraintValidator dtoValidator;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
+    @GET
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response listUsers() {
+        final List<User> users = userService.list();
+        return Response.ok(new GenericEntity<List<User>>(users){}).build();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/user")
-    public ModelAndView user(final UserProfileForm userProfileForm) {
-        ModelAndView mav = new ModelAndView("user");
-        mav.addObject("userProfileForm", userProfileForm);
-        return mav;
+    @GET
+    @Path("/{userId}")
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getUser(@PathParam("userId") Long userId) {
+        User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
+        return Response.ok(UserDto.fromUser(user)).build();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/user")
-    public ModelAndView user(@Valid UserProfileForm userProfileForm, final BindingResult errors) {
-        if (!errors.hasErrors()){
-            userService.updateProfileImage(authFacade.getCurrentUser().getUserId(),
-                    userProfileForm.getImage().getBytes());
-            return new ModelAndView("redirect:/user");
-        }
-        LOGGER.debug("Could not update image");
-        return user(userProfileForm);
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/user/profile-image/{userId}")
-    public void profileImage(@PathVariable(value = "userId") Long userId,
-                             HttpServletResponse response) throws IOException {
+    @GET
+    @Path("/{userId}/profile-image")
+    @Produces(value = {MediaType.APPLICATION_JSON, })
+    public Response getUserProfileImage(@PathParam("userId") Long userId) {
         Optional<byte[]> image = userService.getProfileImage(userId);
-        response.setContentType("image/*");
-        response.setHeader("Content-Disposition", "filename=\"" + "profile-img-" + userId +"\"");
-        InputStream is = null;
-        if (!image.isPresent()) {
-            File file = ResourceUtils.getFile("classpath:default-user-image.png");
-            InputStream fileStream = new FileInputStream(file);
-            byte[] data = IOUtils.toByteArray(Objects.requireNonNull(fileStream));
-            is = new ByteArrayInputStream(data);
-            LOGGER.debug("User {} does not have an image", userId);
-        } else {
-            is = new ByteArrayInputStream(image.get());
+        if(image.isPresent()) {
+            Response.ResponseBuilder response = Response.ok(new ByteArrayInputStream(image.get()));
+            return response.build();
         }
-
-
-        IOUtils.copy(is,response.getOutputStream());
+        return Response.noContent().build();
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response postUser(@Valid UserRegisterFormDto userRegisterForm) throws DtoValidationException {
+        if(userRegisterForm == null) {
+            throw new BadRequestException();
+        }
+        dtoValidator.validate(userRegisterForm, "Invalid Body Request");
+        User user = userService.create(userRegisterForm.getFileNumber(), userRegisterForm.getName(), userRegisterForm.getSurname(),
+                userRegisterForm.getUsername(), userRegisterForm.getEmail(),
+                userRegisterForm.getPassword(), false);
+        LOGGER.debug("User of name {} created", user.getUsername());
+        URI location = URI.create(uriInfo.getAbsolutePath() + "/" + user.getUserId());
+        return Response.created(location).build();
+    }
 
+    @GET
+    @Path("/last/file-number")
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getNextFileNumber(){
+        return Response.ok(NextFileNumberDto.fromNextFileNumber(userService.getMaxFileNumber() + 1)).build();
+    }
 }

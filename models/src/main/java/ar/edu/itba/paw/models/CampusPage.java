@@ -23,6 +23,10 @@ public class CampusPage<T> {
         this.total = total;
     }
 
+    public boolean isEmpty() {
+        return content == null || content.isEmpty();
+    }
+
     public Integer getTotal() {
         return total;
     }
