@@ -2,11 +2,6 @@ import React, { useState, useEffect } from "react";
 import { SectionHeading } from "../../components/generalStyles/utils";
 import { AnnouncementTitle } from "../../components/AnnouncementUnit/styles";
 import AnnouncementUnit from "../../components/AnnouncementUnit";
-import {
-  PaginationArrow,
-  PaginationWrapper,
-} from "../../components/generalStyles/pagination";
-import { Link } from "react-router-dom";
 import { usePagination } from "../../hooks/usePagination";
 import BasicPagination from "../../components/BasicPagination";
 
@@ -35,16 +30,24 @@ function Announcements() {
   }, []);
   return (
     <>
-      <SectionHeading>{t('Announcements.title')}</SectionHeading>
+      <SectionHeading>{t("Announcements.title")}</SectionHeading>
       {announcements.length === 0 && (
         <AnnouncementTitle style={{ width: "100%", textAlign: "center" }}>
-          {t('Announcements.noAnnouncements')}
+          {t("Announcements.noAnnouncements")}
         </AnnouncementTitle>
       )}
       {announcements.map((announcement) => (
         <AnnouncementUnit
           key={announcement.announcementId}
-          course={{ courseId: 1 }}
+          course={{
+            courseId: 1,
+            courseUrl: "asdad",
+            board: "asdasd",
+            quarter: 1,
+            year: 2022,
+            isTeacher: true,
+            subject: { subjectId: 1, code: "F", name: "PAW" },
+          }}
           announcement={announcement}
           isGlobal={true}
         />

@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes, { InferProps } from "prop-types";
 import {
   AnnouncementDate,
   AnnouncementHeader,
@@ -8,31 +7,21 @@ import {
   SmallIcon,
 } from "./styles";
 import { Link } from "react-router-dom";
+import { AnnouncementModel, CourseModel } from "../../types";
 
-AnnouncementUnit.propTypes = {
-  isGlobal: PropTypes.bool,
-  isTeacher: PropTypes.bool,
-  //Fix typing
-  course: PropTypes.shape({
-    courseId: PropTypes.number,
-  }).isRequired,
-  announcement: PropTypes.shape({
-    title: PropTypes.string,
-    author: PropTypes.shape({
-      name: PropTypes.string,
-      surname: PropTypes.string,
-    }),
-    content: PropTypes.string,
-    date: PropTypes.string,
-  }).isRequired,
-};
+interface AnnouncementUnitProps {
+  isGlobal?: boolean;
+  isTeacher?: boolean;
+  course: CourseModel;
+  announcement: AnnouncementModel;
+}
 
 function AnnouncementUnit({
   isGlobal,
   course,
   isTeacher,
   announcement,
-}: InferProps<typeof AnnouncementUnit.propTypes>) {
+}: AnnouncementUnitProps) {
   return (
     <AnnouncementWrapper>
       <AnnouncementHeader>

@@ -13,25 +13,25 @@ import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
 //
 
-StudentExamUnit.propTypes = {
-  isCorrected: PropTypes.bool,
-  answer: PropTypes.shape({
-    answerId: PropTypes.number,
-    student: PropTypes.shape({
-      name: PropTypes.string,
-      surname: PropTypes.string,
-    }).isRequired,
-    score: PropTypes.number,
-    deliveredDate: PropTypes.string,
-  }).isRequired,
-  examId: PropTypes.number,
-};
+interface StudentExamUnitProps {
+  isCorrected?: boolean;
+  answer: {
+    answerId: number;
+    student: {
+      name: string;
+      surname: string;
+    };
+    score: number;
+    deliveredDate: Date;
+  };
+  examId: number;
+}
 
 function StudentExamUnit({
   examId,
   isCorrected,
   answer,
-}: InferProps<typeof StudentExamUnit.propTypes>) {
+}: StudentExamUnitProps) {
   const { t } = useTranslation();
   return (
     <FileUnitWrapper>
@@ -50,7 +50,9 @@ function StudentExamUnit({
           {answer.student.name} {answer.student.surname}
         </FileName>
         {!answer.deliveredDate && (
-          <FileName style={{ color: "red" }}>{t('StudentExamUnit.notHandedIn')}</FileName>
+          <FileName style={{ color: "red" }}>
+            {t("StudentExamUnit.notHandedIn")}
+          </FileName>
         )}
         {answer.deliveredDate && <FileName>{answer.deliveredDate}</FileName>}
       </div>
@@ -59,14 +61,20 @@ function StudentExamUnit({
           to={`answer/${answer.answerId}/correct`}
           style={{ display: "flex", alignItems: "center" }}
         >
-          <MediumIcon src="/images/check.png" alt={t('StudentExamUnit.alt.check')} />
+          <MediumIcon
+            src="/images/check.png"
+            alt={t("StudentExamUnit.alt.check")}
+          />
         </Link>
       )}
       {isCorrected && (
         <div style={{ display: "flex", alignItems: "center" }}>
           <FileName style={{ marginRight: "10px" }}>{answer.score}</FileName>
           <button style={{ background: "none", border: "none" }} type="button">
-            <MediumIcon src="/images/x.png" alt={t('StudentExamUnit.alt.check')} />
+            <MediumIcon
+              src="/images/x.png"
+              alt={t("StudentExamUnit.alt.check")}
+            />
           </button>
         </div>
       )}

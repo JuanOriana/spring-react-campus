@@ -1,29 +1,27 @@
 import React from "react";
 import { internalAuthProvider } from "../scripts/auth";
-
-interface User {
-  name: string;
-  isAdmin: boolean;
-}
+import {UserModel} from "../types";
 
 interface AuthContextType {
-  user: User | null;
-  setUser: (user: User | null) => void;
-  signin: (user: string, callback: VoidFunction) => void;
+  user: UserModel | null;
+  setUser: (user: UserModel | null) => void;
+  signin: (user: UserModel, callback: VoidFunction) => void;
   signout: (callback: VoidFunction) => void;
 }
 
 const AuthContext = React.createContext<AuthContextType>(null!);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  let [user, setUser] = React.useState<User | null>(null);
+  let [user, setUser] = React.useState<UserModel | null>(null);
 
-  let signin = (newUser: string, callback: VoidFunction) => {
+  let signin = (newUser: UserModel, callback: VoidFunction) => {
     return internalAuthProvider.signin(() => {
-      const isAdmin = true;
-      setUser({ name: newUser, isAdmin: isAdmin });
-      localStorage.setItem("user", newUser);
-      localStorage.setItem("isAdmin", isAdmin ? "true" : "false");
+      const isAdmin = false;
+      setUser(newUser);
+      if (!localStorage.getItem("user"))
+        localStorage.setItem("user",JSON.stringify(newUser));
+      localStorage.setItem("token", newUser.token!);
+      localStorage.setItem("isAdmin","false");
       callback();
     });
   };
@@ -32,6 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return internalAuthProvider.signout(() => {
       setUser(null);
       localStorage.removeItem("user");
+      localStorage.removeItem("token");
       localStorage.removeItem("isAdmin");
       callback();
     });

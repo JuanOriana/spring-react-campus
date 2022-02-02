@@ -32,17 +32,26 @@ function StudentCourseExamStandalone() {
   const exam = {
     examId: 1,
     title: "Examen",
-    examFile: {
+    examFile:  {
       fileId: 1,
-      name: "xd",
+      size:10,
+      fileName: "xd",
       extension: {
-        fileExtensionName: ".doc",
+        fileExtension: ".doc",
+        fileExtensionId:12
       },
       course: {
         courseId: 1,
+        year: 2021,
+        quarter:2,
+        board: 'A',
         subject: {
+          subjectId:1,
+          code:'a',
           name: "PAW",
         },
+        courseUrl:"urlcurso",
+        isTeacher:true,
       },
       categories: [],
       downloads: 2,

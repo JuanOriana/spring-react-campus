@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes, { InferProps } from "prop-types";
 import { Link } from "react-router-dom";
 
 import {
@@ -13,35 +12,17 @@ import {
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
+import { FileModel } from "../../types";
 //
 
-FileUnit.propTypes = {
-  isGlobal: PropTypes.bool,
-  isTeacher: PropTypes.bool,
-  isMinimal: PropTypes.bool,
-  file: PropTypes.shape({
-    fileId: PropTypes.number,
-    name: PropTypes.string,
-    extension: PropTypes.shape({
-      fileExtensionName: PropTypes.string,
-    }).isRequired,
-    course: PropTypes.shape({
-      courseId: PropTypes.number,
-      subject: PropTypes.shape({
-        name: PropTypes.string,
-      }).isRequired,
-    }).isRequired,
-    categories: PropTypes.array,
-    downloads: PropTypes.number,
-  }).isRequired,
-};
+interface FileUnitProps {
+  isGlobal?: boolean;
+  isTeacher?: boolean;
+  isMinimal?: boolean;
+  file: FileModel;
+}
 
-function FileUnit({
-  isGlobal,
-  isMinimal,
-  isTeacher,
-  file,
-}: InferProps<typeof FileUnit.propTypes>) {
+function FileUnit({ isGlobal, isMinimal, isTeacher, file }: FileUnitProps) {
   const { t } = useTranslation();
   return (
     <FileUnitWrapper>
@@ -56,21 +37,25 @@ function FileUnit({
           }}
         >
           <FileImg
-            src={`/images/extensions/${file?.extension!.fileExtensionName}.png`}
-            alt={file && file.name ? file.name! : t('FileUnit.alt.file') }
+            src={`/images/extensions/${file?.extension!.fileExtension}.png`}
+            alt={
+              file && file.fileName ? file.fileName! : t("FileUnit.alt.file")
+            }
           />
-          <FileName>{file.name}</FileName>
+          <FileName>{file.fileName}</FileName>
         </Link>
         {!isMinimal &&
           file?.categories?.map((category) => (
-            <FileCategoryName key={category.name}>
-              {t('Category.' + category.name)}
+            <FileCategoryName key={category.categoryId}>
+              {t("Category." + category.categoryName)}
             </FileCategoryName>
           ))}
       </div>
       <div style={{ display: "flex", alignItems: "center" }}>
         {!isMinimal && <FileName>{file.downloads}</FileName>}
-        {isTeacher && <MediumIcon src="/images/trash.png" alt={t('FileUnit.alt.delete')} />}
+        {isTeacher && (
+          <MediumIcon src="/images/trash.png" alt={t("FileUnit.alt.delete")} />
+        )}
         {isGlobal && (
           <div
             style={{
