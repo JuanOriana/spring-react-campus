@@ -1,8 +1,9 @@
 function updateOptions(options: any) {
   const update = { ...options };
-  if (localStorage.jwt) {
+  const token = localStorage.getItem("token");
+  if (token) {
     const headers = update.headers as Headers;
-    headers.append("Authorization", `Bearer ${localStorage.jwt}`);
+    headers.append("Authorization", `Bearer ${token}`);
   }
   return update;
 }

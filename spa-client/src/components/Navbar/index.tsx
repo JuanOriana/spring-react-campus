@@ -65,9 +65,9 @@ function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
                 <img src="/images/default-user-image.png" />
               )}
               {currentUser?.image && (
-                <img src={`/user/profile-image/${currentUser.userId}`} />
+                <img src={`/user/profile-image/${user?.userId}`} />
               )}
-              <h4>{currentUser?.name}</h4>
+              <h4>{user?.name} {user?.surname}</h4>
             </Link>
             <LogoutButton
               onClick={() => {
@@ -80,7 +80,7 @@ function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
           </UserWrapper>
         </>
       )}
-      {!currentUser && <div style={{ width: "120 px" }}></div>}
+      {!user && <div style={{ width: "120 px" }}></div>}
     </NavContainer>
   );
 }

@@ -8,11 +8,13 @@ import { LoginWrapper, LoginInput, LoginButton, LoginLabel } from "./styles";
 import { useAuth } from "../../contexts/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import React from "react";
+import React, {useState} from "react";
+import {loginService} from "../../services";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
+import {ErrorMessage} from "../../components/generalStyles/form";
 //
 
 type FormData = {
@@ -28,14 +30,22 @@ function Login() {
   let auth = useAuth();
   // @ts-ignore
   let from = location.state?.from?.pathname || "/";
+  const [invalidCred,setInvalidCred] = useState(false);
 
   const { register, handleSubmit, reset } = useForm<FormData>({
     criteriaMode: "all",
   });
   const onSubmit = handleSubmit(({ username, password }: FormData) => {
-    auth.signin(username, () => {
-      navigate(from, { replace: true });
-    });
+    setInvalidCred(false);
+    loginService.login(username,password)
+        .then((user)=>
+            user.hasFailed()
+                ? setInvalidCred(true)
+                :  auth.signin(user.getData(), () => {
+                  navigate(from, { replace: true });
+                })
+        )
+        .catch(() => navigate("/error?code=500"));
   });
 
   return (
@@ -58,7 +68,8 @@ function Login() {
               {t('Login.form.rememberMe')}
             </label>
           </div>
-          {/*MANEJAR ERROR DEL LOGIN ACA! SET ERROR (ver string en internasionalizacion)*/}
+          {/*TODO: MANEJAR ERROR DEL LOGIN ACA! SET ERROR (ver string en internasionalizacion)*/}
+          {invalidCred && <ErrorMessage>Credenciales invalidas</ErrorMessage>}
           <LoginButton>{t('Login.form.loginButton')}</LoginButton>
         </LoginWrapper>
       </PageContainer>

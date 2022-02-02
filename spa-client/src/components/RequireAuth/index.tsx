@@ -29,7 +29,7 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 
   useEffect(() => {
     if (readUser && readUser !== "")
-      signin(readUser, () => navigate(correctRoute));
+      signin(JSON.parse(readUser), () => navigate(correctRoute));
   }, []);
 
   if (!user && !readUser) {

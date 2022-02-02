@@ -4,7 +4,7 @@ import { checkError } from "../scripts/ErrorChecker";
 import { ErrorResponse, Result, UserModel } from "../types";
 
 export class LoginService {
-  public async login(username: string, password: string) {
+  public async login(username: string, password: string):Promise<Result<UserModel>> {
     const credentials = username + ":" + password;
 
     const hash = btoa(credentials);
@@ -23,8 +23,6 @@ export class LoginService {
         ?.toString()
         .split(" ")[1];
 
-      localStorage.jwt = parsedResponse.token; // TOdo: Borrar este comportamiento cuando desde el front se agarre el token.
-      console.log(localStorage.jwt);
       return Result.ok(parsedResponse as UserModel);
     } catch (error: any) {
       return Result.failed(new ErrorResponse(parseInt(error), error));
