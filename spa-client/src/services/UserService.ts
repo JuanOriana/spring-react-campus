@@ -1,4 +1,5 @@
 import { paths } from "../common/constants";
+import { authedFetch } from "../scripts/authedFetch";
 import { getFetch } from "../scripts/getFetch";
 import { Result, UserModel } from "../types";
 
@@ -21,7 +22,32 @@ export class UserService {
     return getFetch<File>(this.basePath + userId + "/profile-image");
   }
 
-  // public async newUSer(fileNumber:number,name:string,surname:string,username:string,email:string,password:string,confirmPassword:string){
+  public async newUSer(
+    fileNumber: number,
+    name: string,
+    surname: string,
+    username: string,
+    email: string,
+    password: string,
+    confirmPassword: string
+  ) {
+    const newUser = JSON.stringify({
+      fileNumber: fileNumber,
+      name: name,
+      surname: surname,
+      username: username,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+    });
 
-  // }
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+
+    authedFetch(this.basePath, {
+      method: "POST",
+      headers: headers,
+      body: newUser,
+    });
+  }
 }
