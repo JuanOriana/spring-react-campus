@@ -6,8 +6,6 @@ export async function getFetch<RetType>(url: string): Promise<Result<RetType>> {
   try {
     const response = await authedFetch(url, {
       method: "GET",
-      mode: "no-cors",
-      credentials: "include",
     });
     const parsedResponse = await checkError<RetType>(response);
     return Result.ok(parsedResponse as RetType);

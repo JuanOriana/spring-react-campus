@@ -5,4 +5,5 @@ export default interface UserModel {
   username: string;
   email: string;
   fileNumber: number;
+  token?: string;
 }

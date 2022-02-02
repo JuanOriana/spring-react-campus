@@ -20,4 +20,8 @@ export class UserService {
   public async getUserProfileImage(userId: number): Promise<Result<File>> {
     return getFetch<File>(this.basePath + userId + "/profile-image");
   }
+
+  // public async newUSer(fileNumber:number,name:string,surname:string,username:string,email:string,password:string,confirmPassword:string){
+
+  // }
 }
