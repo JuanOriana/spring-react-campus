@@ -1,24 +1,19 @@
 package ar.edu.itba.paw.webapp.security.api.basic;
 
-import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.security.api.exception.InvalidUsernamePasswordException;
-import ar.edu.itba.paw.webapp.security.api.jwt.JwtAuthenticationToken;
 import ar.edu.itba.paw.webapp.security.api.model.AuthenticationTokenDetails;
 import ar.edu.itba.paw.webapp.security.api.model.Authority;
 import ar.edu.itba.paw.webapp.security.service.AuthenticationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Set;
@@ -39,7 +34,12 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         BasicAuthenticationToken auth = (BasicAuthenticationToken) authentication;
-        String[] credentials = new String(Base64.getDecoder().decode(auth.getToken())).split(":");
+        String[] credentials;
+        try {
+            credentials = new String(Base64.getDecoder().decode(auth.getToken())).split(":");
+        } catch (IllegalArgumentException iae) {
+            throw new BadCredentialsException("Invalid basic header");
+        }
         if(credentials.length != 2) {
             throw new InvalidUsernamePasswordException("Invalid username/password");
         }

@@ -11,7 +11,7 @@ public class UserDto {
     private String email;
     private Integer fileNumber;
 
-    public static UserDto fromUser(User user){
+    public static UserDto fromUser(User user) {
         if (user == null){
             return null;
         }
