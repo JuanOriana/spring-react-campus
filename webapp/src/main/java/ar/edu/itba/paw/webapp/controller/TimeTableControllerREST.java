@@ -40,7 +40,7 @@ public class TimeTableControllerREST {
     private AuthFacade authFacade;
 
     @GET
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getTimeTable() throws JsonProcessingException {
         Map<Course, List<Timetable>> courseTimetables = new HashMap<>();
 

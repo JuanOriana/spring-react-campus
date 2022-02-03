@@ -28,7 +28,7 @@ public class FileController {
     private AuthFacade authFacade;
 
     @GET
-    @Consumes(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getFiles(@QueryParam("category-type") List<Long> categoryType,
                              @QueryParam("extension-type") List<Long> extensionType,
                              @QueryParam("query") @DefaultValue("") String query,

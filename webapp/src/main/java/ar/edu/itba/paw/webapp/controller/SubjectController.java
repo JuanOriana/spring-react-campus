@@ -32,7 +32,7 @@ public class SubjectController {
     private DtoConstraintValidator dtoValidator;
 
     @GET
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getSubjects() {
         List<Subject> subjectList = subjectService.list();
         if (subjectList.isEmpty()){
@@ -43,8 +43,8 @@ public class SubjectController {
     }
 
     @POST
-    @Consumes(value = MediaType.APPLICATION_JSON)
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Consumes("application/vnd.campus.api.v1+json")
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getSubject(@Valid SubjectFormDto subjectFormDto){
         dtoValidator.validate(subjectFormDto, "Invalid Body Request");
         Subject subject = subjectService.create(subjectFormDto.getCode(),subjectFormDto.getName());
@@ -54,7 +54,7 @@ public class SubjectController {
 
     @GET
     @Path("/{subjectId}")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getSubject(@PathParam("subjectId") Long subjectId) {
         Subject subject = subjectService.findById(subjectId).orElseThrow(SubjectNotFoundException::new);
         return Response.ok(SubjectDto.fromSubject(subject)).build();

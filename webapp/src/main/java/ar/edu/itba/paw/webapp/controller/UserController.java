@@ -52,14 +52,14 @@ public class UserController {
 
 
     @GET
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response listUsers() {
         final List<User> users = userService.list();
         return Response.ok(new GenericEntity<List<UserDto>>(assembler.toResources(users)){}).build();
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes("application/vnd.campus.api.v1+json")
     public Response postUser(@Valid UserRegisterFormDto userRegisterForm) throws DtoValidationException {
         if(userRegisterForm == null) {
             throw new BadRequestException();
@@ -75,7 +75,7 @@ public class UserController {
 
     @GET
     @Path("/{userId}")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getUser(@PathParam("userId") Long userId) {
         User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
         return Response.ok(UserDto.fromUser(user)).build();
@@ -83,7 +83,7 @@ public class UserController {
 
     @GET
     @Path("/{userId}/courses")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getUserCourses(@PathParam("userId") Long userId,
                                    @QueryParam("page") @DefaultValue("1") Integer page,
                                    @QueryParam("pageSize") @DefaultValue("10") Integer pageSize) {
@@ -102,7 +102,7 @@ public class UserController {
 
     @GET
     @Path("/{userId}/image")
-    @Produces(value = {MediaType.APPLICATION_JSON, })
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getUserProfileImage(@PathParam("userId") Long userId) {
         Optional<byte[]> image = userService.getProfileImage(userId);
         if(image.isPresent()) {
@@ -114,7 +114,7 @@ public class UserController {
 
     @GET
     @Path("/last/file-number")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getNextFileNumber(){
         return Response.ok(NextFileNumberDto.fromNextFileNumber(userService.getMaxFileNumber() + 1)).build();
     }

@@ -53,13 +53,14 @@ public class ExamController {
 
     @GET
     @Path("/{examId}")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getExams(@PathParam("examId") Long examId) {
         ExamDto exam = ExamDto.fromExam(uriInfo, examService.findById(examId).orElseThrow(ExamNotFoundException::new), examService.getAverageScoreOfExam(examId));
         return Response.ok(exam).build();
     }
 
     @DELETE
+    @Produces("application/vnd.campus.api.v1+json")
     @Path("/{examId}")
     public Response deleteExam(@PathParam("examId") Long examId) {
         Long userId = authFacade.getCurrentUserId();
@@ -72,7 +73,7 @@ public class ExamController {
 
     @GET
     @Path("/{examId}/answers")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getAnswers(@PathParam("examId") Long examId,
                                @QueryParam("filter-by") @DefaultValue("corrected") String filter,
                                @QueryParam("page") @DefaultValue("1") Integer page,
@@ -98,8 +99,8 @@ public class ExamController {
 
     @POST
     @Path("/{examId}/answers")
-    @Produces(value = MediaType.APPLICATION_JSON)
-    @Consumes(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
+    @Consumes("application/vnd.campus.api.v1+json")
     public Response newAnswer(@PathParam("examId") Long examId,
                               @Valid SolveExamFormDto solveExamFormDto)
             throws DtoValidationException {

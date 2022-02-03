@@ -35,7 +35,7 @@ public class AnnouncementsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
 
     @GET
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getAnnouncements(@QueryParam("page") @DefaultValue("1") Integer page,
                                      @QueryParam("pageSize") @DefaultValue("10") Integer pageSize) {
 
@@ -56,7 +56,7 @@ public class AnnouncementsController {
 
     @GET
     @Path("/{announcementId}")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getAnnouncement(@PathParam("announcementId") Long announcementId) {
         Announcement announcement = announcementService.findById(announcementId).orElseThrow(AnnouncementNotFoundException::new);
         return Response.ok(AnnouncementDto.fromAnnouncement(announcement)).build();
@@ -64,7 +64,7 @@ public class AnnouncementsController {
 
     @DELETE
     @Path("/{announcementId}")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response removeAnnouncement(@PathParam("announcementId") Long announcementId) {
         LOGGER.debug("Deleting announcement {}", announcementId);
         if(!announcementService.delete(announcementId)) {

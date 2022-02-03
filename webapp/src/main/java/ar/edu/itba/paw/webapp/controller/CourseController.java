@@ -61,7 +61,8 @@ public class CourseController {
 
     @Path("/{courseId}/files")
     @POST
-    @Consumes(value = MediaType.MULTIPART_FORM_DATA)
+    @Consumes("application/vnd.campus.api.v1+json")
+    @Produces("application/vnd.campus.api.v1+json")
     public Response postFile(@PathParam("courseId") Long courseId,
                                @FormDataParam("file") InputStream fileStream,
                                @FormDataParam("file") FormDataContentDisposition fileMetadata) throws IOException {
@@ -76,7 +77,7 @@ public class CourseController {
 
     @Path("/{courseId}/files/{fileId}")
     @GET
-    @Produces(value = MediaType.APPLICATION_OCTET_STREAM)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getFile(@PathParam("courseId") Long courseId,
                                  @PathParam("fileId") Long fileId) {
         FileModel file = fileService.findById(fileId).orElseThrow(FileNotFoundException::new);
@@ -88,6 +89,7 @@ public class CourseController {
 
     @DELETE
     @Path("/{courseId}/files/{fileId}")
+    @Produces("application/vnd.campus.api.v1+json")
     public Response deleteFile(@PathParam("courseId") Long courseId,
                                @PathParam("fileId") Long fileId) {
         if(!fileService.delete(fileId)) throw new FileNotFoundException();
@@ -106,7 +108,7 @@ public class CourseController {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes("application/vnd.campus.api.v1+json")
     public Response postCourse(@Valid CourseFormDto courseForm) {
         if(courseForm == null) {
             throw new BadRequestException();
@@ -122,7 +124,7 @@ public class CourseController {
 
     @GET
     @Path("/available-years")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getAvailableYears() {
         List<Integer> availableYears = courseService.getAvailableYears();
         List<AvailableYearsDto> availableYearsDtoList = availableYears.stream()
@@ -132,7 +134,7 @@ public class CourseController {
     }
 
     @GET
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getCourses(@QueryParam("page") @DefaultValue("1")
                                        Integer page,
                                @QueryParam("pageSize") @DefaultValue("10")
@@ -155,11 +157,9 @@ public class CourseController {
         return PaginationBuilder.build(courses, builder, uriInfo, pageSize);
     }
 
-
-
     @POST
     @Path("/{courseId}/announcements")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes("application/vnd.campus.api.v1+json")
     public Response newAnnouncement(@PathParam("courseId") Long courseId,
                                     @Valid AnnouncementFormDto announcementDto) throws DtoValidationException {
         dtoValidator.validate(announcementDto, "Invalid body request");
@@ -176,7 +176,7 @@ public class CourseController {
 
     @GET
     @Path("/{courseId}")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseById(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
             throw new BadRequestException();
@@ -187,7 +187,7 @@ public class CourseController {
 
     @GET
     @Path("/{courseId}/teachers")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseTeachers(@PathParam("courseId") Long courseId) {
         if(courseId == null) {
             throw new BadRequestException();
@@ -202,7 +202,7 @@ public class CourseController {
 
     @GET
     @Path("/{courseId}/helpers")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseHelpers(@PathParam("courseId") Long courseId) {
         if(courseId == null) {
             throw new BadRequestException();
@@ -217,7 +217,7 @@ public class CourseController {
 
     @GET
     @Path("/{courseId}/students")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseStudents(@QueryParam("page") @DefaultValue("1")
                                                   Integer page,
                                       @QueryParam("pageSize") @DefaultValue("10")
@@ -242,7 +242,7 @@ public class CourseController {
 
     @GET
     @Path("/{courseId}/exams")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseExams(@PathParam("courseId") Long courseId) {
         List<Exam> exams = examService.listByCourse(courseId);
         if(exams.isEmpty()) {
@@ -256,8 +256,8 @@ public class CourseController {
 
     @POST
     @Path("/{courseId}/exams")
-    @Consumes(value = MediaType.APPLICATION_JSON)
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Consumes("application/vnd.campus.api.v1+json")
+    @Produces("application/vnd.campus.api.v1+json")
     public Response newExam(@PathParam("courseId") Long courseId,
                             @Valid ExamFormDto examFormDto) throws DtoValidationException {
         dtoValidator.validate(examFormDto, "Invalid body request");
@@ -272,7 +272,7 @@ public class CourseController {
 
     @GET
     @Path("/{courseId}/exams/solved")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getResolvedExams(@PathParam("courseId") Long courseId) {
         if(courseId == null) {
             throw new BadRequestException();
@@ -293,7 +293,7 @@ public class CourseController {
 
     @GET
     @Path("/{courseId}/exams/unsolved")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getUnresolvedExams(@PathParam("courseId") Long courseId) {
         if(courseId == null) {
             throw new BadRequestException();
@@ -308,7 +308,7 @@ public class CourseController {
 
     @GET
     @Path("/{courseId}/exams/answers")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseAnswers(@PathParam("courseId") Long courseId) {
         if(courseId == null) {
             throw new BadRequestException();
@@ -323,7 +323,7 @@ public class CourseController {
 
     @GET
     @Path("/{courseId}/exams/average")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseAverage(@PathParam("courseId") Long courseId) {
         if(courseId == null) {
             throw new BadRequestException();

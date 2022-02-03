@@ -33,7 +33,7 @@ public class AnswerController {
 
     @GET
     @Path("/{answerId}")
-    @Produces(value = MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response getAnswer(@PathParam("answerId") Long answerId) {
         Answer answer = answerService.findById(answerId).orElseThrow(AnswerNotFoundException::new);
         return Response.ok(AnswerDto.fromAnswer(uriInfo,answer)).build();
@@ -42,7 +42,7 @@ public class AnswerController {
 
     @DELETE
     @Path("/{answerId}")
-    @Produces(value= MediaType.APPLICATION_JSON)
+    @Produces("application/vnd.campus.api.v1+json")
     public Response deleteAnswer(@PathParam("answerId") Long answerId) {
         if(!answerService.delete(answerId)) {
             throw new NotFoundException();
