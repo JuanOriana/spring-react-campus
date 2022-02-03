@@ -1,4 +1,7 @@
 package ar.edu.itba.paw.webapp.config;
+import ar.edu.itba.paw.webapp.assembler.AnnouncementAssembler;
+import ar.edu.itba.paw.webapp.assembler.CourseAssembler;
+import ar.edu.itba.paw.webapp.assembler.SubjectAssembler;
 import ar.edu.itba.paw.webapp.assembler.UserAssembler;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.security.service.implementation.AuthFacadeImpl;
@@ -191,4 +194,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public UserAssembler userAssembler() { return new UserAssembler(); }
+
+    @Bean
+    public AnnouncementAssembler announcementAssembler() { return new AnnouncementAssembler(); }
+
+    @Bean
+    public CourseAssembler courseAssembler() { return new CourseAssembler(); }
+
+    @Bean
+    public SubjectAssembler subjectAssembler() { return new SubjectAssembler();}
 }

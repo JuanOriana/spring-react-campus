@@ -4,6 +4,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.SubjectService;
 import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.models.exception.SubjectNotFoundException;
+import ar.edu.itba.paw.webapp.assembler.SubjectAssembler;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.SubjectDto;
 import ar.edu.itba.paw.webapp.dto.SubjectFormDto;
@@ -31,6 +32,9 @@ public class SubjectController {
     @Autowired
     private DtoConstraintValidator dtoValidator;
 
+    @Autowired
+    private SubjectAssembler assembler;
+
     @GET
     @Produces("application/vnd.campus.api.v1+json")
     public Response getSubjects() {
@@ -38,7 +42,7 @@ public class SubjectController {
         if (subjectList.isEmpty()){
             return Response.noContent().build();
         }
-        List<SubjectDto> subjects = subjectList.stream().map(SubjectDto::fromSubject).collect(Collectors.toList());
+        List<SubjectDto> subjects = assembler.toResources(subjectList);
         return Response.ok(new GenericEntity<List<SubjectDto>>(subjects){}).build();
     }
 
@@ -57,6 +61,6 @@ public class SubjectController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getSubject(@PathParam("subjectId") Long subjectId) {
         Subject subject = subjectService.findById(subjectId).orElseThrow(SubjectNotFoundException::new);
-        return Response.ok(SubjectDto.fromSubject(subject)).build();
+        return Response.ok(assembler.toResource(subject)).build();
     }
 }

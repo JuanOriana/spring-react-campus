@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.AnnouncementService;
 import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.exception.AnnouncementNotFoundException;
+import ar.edu.itba.paw.webapp.assembler.AnnouncementAssembler;
 import ar.edu.itba.paw.webapp.dto.AnnouncementDto;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.util.PaginationBuilder;
@@ -32,25 +33,21 @@ public class AnnouncementsController {
     @Autowired
     private AuthFacade authFacade;
 
+    @Autowired
+    private AnnouncementAssembler assembler;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementsController.class);
 
     @GET
     @Produces("application/vnd.campus.api.v1+json")
     public Response getAnnouncements(@QueryParam("page") @DefaultValue("1") Integer page,
                                      @QueryParam("pageSize") @DefaultValue("10") Integer pageSize) {
-
         CampusPage<Announcement> announcements = announcementService.listByUser(authFacade.getCurrentUserId(), page, pageSize);
-
         if(announcements.isEmpty()) {
             return Response.noContent().build();
         }
-
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<AnnouncementDto>>(
-                        announcements.getContent()
-                                .stream()
-                                .map(AnnouncementDto::fromAnnouncement)
-                                .collect(Collectors.toList())){});
+                new GenericEntity<List<AnnouncementDto>>(assembler.toResources(announcements.getContent())){});
         return PaginationBuilder.build(announcements, builder, uriInfo, pageSize);
     }
 
@@ -59,7 +56,7 @@ public class AnnouncementsController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getAnnouncement(@PathParam("announcementId") Long announcementId) {
         Announcement announcement = announcementService.findById(announcementId).orElseThrow(AnnouncementNotFoundException::new);
-        return Response.ok(AnnouncementDto.fromAnnouncement(announcement)).build();
+        return Response.ok(new GenericEntity<AnnouncementDto>(assembler.toResource(announcement)){}).build();
     }
 
     @DELETE

@@ -1,10 +1,11 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Announcement;
+import org.springframework.hateoas.ResourceSupport;
 
 import java.time.LocalDateTime;
 
-public class AnnouncementDto {
+public class AnnouncementDto extends ResourceSupport {
 
     private Long announcementId;
 

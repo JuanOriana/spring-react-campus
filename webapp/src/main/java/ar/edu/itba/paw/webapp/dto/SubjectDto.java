@@ -1,8 +1,9 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Subject;
+import org.springframework.hateoas.ResourceSupport;
 
-public class SubjectDto {
+public class SubjectDto extends ResourceSupport {
 
     private long subjectId;
     private String code;

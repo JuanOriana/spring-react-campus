@@ -5,6 +5,8 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.models.exception.FileNotFoundException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
+import ar.edu.itba.paw.webapp.assembler.CourseAssembler;
+import ar.edu.itba.paw.webapp.assembler.UserAssembler;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
@@ -56,6 +58,12 @@ public class CourseController {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private CourseAssembler courseAssembler;
+
+    @Autowired
+    private UserAssembler userAssembler;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
@@ -149,11 +157,7 @@ public class CourseController {
         }
         CampusPage<Course> courses = courseService.listByYearQuarter(year, quarter, page, pageSize);
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<CourseDto>>(
-                        courses.getContent()
-                                .stream()
-                                .map(CourseDto::fromCourse)
-                                .collect(Collectors.toList())) {});
+                new GenericEntity<List<CourseDto>>(courseAssembler.toResources(courses.getContent())){});
         return PaginationBuilder.build(courses, builder, uriInfo, pageSize);
     }
 
@@ -182,7 +186,7 @@ public class CourseController {
             throw new BadRequestException();
         }
         Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
-        return Response.ok(CourseDto.fromCourse(course)).build();
+        return Response.ok(courseAssembler.toResource(course)).build();
     }
 
     @GET
@@ -196,7 +200,7 @@ public class CourseController {
         if (courseTeachers.isEmpty()) {
             return Response.noContent().build();
         }
-        List<UserDto> teachers = courseTeachers.stream().map(UserDto::fromUser).collect(Collectors.toList());
+        List<UserDto> teachers = userAssembler.toResources(courseTeachers);
         return Response.ok(new GenericEntity<List<UserDto>>(teachers){}).build();
     }
 
@@ -211,7 +215,7 @@ public class CourseController {
         if (courseHelpers.isEmpty()) {
             return Response.noContent().build();
         }
-        List<UserDto> helpers = courseHelpers.stream().map(UserDto::fromUser).collect(Collectors.toList());
+        List<UserDto> helpers = userAssembler.toResources(courseHelpers);
         return Response.ok(new GenericEntity<List<UserDto>>(helpers){}).build();
     }
 
@@ -232,11 +236,7 @@ public class CourseController {
             return Response.noContent().build();
         }
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<UserDto>>(
-                        enrolledStudents.getContent()
-                                .stream()
-                                .map(UserDto::fromUser)
-                                .collect(Collectors.toList())){});
+                new GenericEntity<List<UserDto>>(userAssembler.toResources(enrolledStudents.getContent())){});
         return PaginationBuilder.build(enrolledStudents, builder, uriInfo, pageSize);
     }
 

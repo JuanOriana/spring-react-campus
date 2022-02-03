@@ -1,8 +1,9 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Course;
+import org.springframework.hateoas.ResourceSupport;
 
-public class CourseDto {
+public class CourseDto extends ResourceSupport {
 
     private long courseId;
     private int year;

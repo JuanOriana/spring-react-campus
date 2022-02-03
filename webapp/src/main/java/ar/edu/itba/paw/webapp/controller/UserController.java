@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
+import ar.edu.itba.paw.webapp.assembler.CourseAssembler;
 import ar.edu.itba.paw.webapp.assembler.UserAssembler;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.CourseDto;
@@ -46,7 +47,10 @@ public class UserController {
     private DtoConstraintValidator dtoValidator;
 
     @Autowired
-    private UserAssembler assembler;
+    private UserAssembler userAssembler;
+
+    @Autowired
+    private CourseAssembler courseAssembler;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -55,7 +59,7 @@ public class UserController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response listUsers() {
         final List<User> users = userService.list();
-        return Response.ok(new GenericEntity<List<UserDto>>(assembler.toResources(users)){}).build();
+        return Response.ok(new GenericEntity<List<UserDto>>(userAssembler.toResources(users)){}).build();
     }
 
     @POST
@@ -78,7 +82,7 @@ public class UserController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getUser(@PathParam("userId") Long userId) {
         User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
-        return Response.ok(UserDto.fromUser(user)).build();
+        return Response.ok(userAssembler.toResource(user)).build();
     }
 
     @GET
@@ -92,11 +96,7 @@ public class UserController {
             return Response.noContent().build();
         }
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<CourseDto>>(
-                        courseCampusPage.getContent()
-                                .stream()
-                                .map(CourseDto::fromCourse)
-                                .collect(Collectors.toList())) {});
+                new GenericEntity<List<CourseDto>>(courseAssembler.toResources(courseCampusPage.getContent())){});
         return PaginationBuilder.build(courseCampusPage, builder, uriInfo, pageSize);
     }
 
