@@ -9,7 +9,6 @@ import ar.edu.itba.paw.webapp.dto.NextFileNumberDto;
 import ar.edu.itba.paw.webapp.dto.UserDto;
 import ar.edu.itba.paw.webapp.dto.UserRegisterFormDto;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
-import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+@Path("users")
 @Component
 public class UserController {
 
@@ -33,23 +33,12 @@ public class UserController {
     private UriInfo uriInfo;
 
     @Autowired
-    private AuthFacade authFacade;
-
-    @Autowired
     private DtoConstraintValidator dtoValidator;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-    @GET
-    @Path("user")
-    @Produces(value = MediaType.APPLICATION_JSON)
-    public Response getUser() {
-        User currentUser = authFacade.getCurrentUser();
-        return Response.ok(UserDto.fromUser(currentUser)).build();
-    }
 
     @GET
-    @Path("users")
     @Produces(value = MediaType.APPLICATION_JSON)
     public Response listUsers() {
         final List<User> users = userService.list();
@@ -57,7 +46,6 @@ public class UserController {
     }
 
     @POST
-    @Path("users")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postUser(@Valid UserRegisterFormDto userRegisterForm) throws DtoValidationException {
         if(userRegisterForm == null) {
@@ -73,7 +61,7 @@ public class UserController {
     }
 
     @GET
-    @Path("users/{userId}")
+    @Path("/{userId}")
     @Produces(value = MediaType.APPLICATION_JSON)
     public Response getUser(@PathParam("userId") Long userId) {
         User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -81,7 +69,7 @@ public class UserController {
     }
 
     @GET
-    @Path("users/{userId}/profile-image")
+    @Path("/{userId}/profile-image")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getUserProfileImage(@PathParam("userId") Long userId) {
         Optional<byte[]> image = userService.getProfileImage(userId);
@@ -93,7 +81,7 @@ public class UserController {
     }
 
     @GET
-    @Path("users/last/file-number")
+    @Path("/last/file-number")
     @Produces(value = MediaType.APPLICATION_JSON)
     public Response getNextFileNumber(){
         return Response.ok(NextFileNumberDto.fromNextFileNumber(userService.getMaxFileNumber() + 1)).build();

@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.webapp.security.api.basic;
 
+import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.security.api.exception.InvalidUsernamePasswordException;
+import ar.edu.itba.paw.webapp.security.api.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.security.api.model.AuthenticationTokenDetails;
 import ar.edu.itba.paw.webapp.security.api.model.Authority;
 import ar.edu.itba.paw.webapp.security.service.AuthenticationTokenService;
@@ -29,6 +32,9 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private AuthenticationTokenService tokenService;
 
     @Override
@@ -42,6 +48,10 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
         }
         if(credentials.length != 2) {
             throw new InvalidUsernamePasswordException("Invalid username/password");
+        }
+        User maybeUser = userService.findByUsername(credentials[0]).orElseThrow(UserNotFoundException::new);
+        if(!maybeUser.getPassword().equals(passwordEncoder.encode(credentials[1]))) {
+            throw new BadCredentialsException("Bad username/password combination");
         }
         UserDetails userDetails = userDetailsService.loadUserByUsername(credentials[0]);
         String authenticationToken = tokenService.issueToken(credentials[0],

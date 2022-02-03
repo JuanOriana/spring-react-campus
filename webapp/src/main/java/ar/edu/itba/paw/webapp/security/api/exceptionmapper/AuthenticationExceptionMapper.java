@@ -16,6 +16,6 @@ public class AuthenticationExceptionMapper implements ExceptionMapper<Authentica
 
     @Override
     public Response toResponse(AuthenticationException exception) {
-        return ResponseExceptionMapperUtil.toResponse(Response.Status.FORBIDDEN, exception.getMessage(), uriInfo);
+        return ResponseExceptionMapperUtil.toResponse(Response.Status.UNAUTHORIZED, exception.getMessage(), uriInfo);
     }
 }
