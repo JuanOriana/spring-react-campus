@@ -1,10 +1,12 @@
 import { paths } from "../common/constants";
-import { authedFetch } from "../scripts/authedFetch";
 import { checkError } from "../scripts/ErrorChecker";
 import { ErrorResponse, Result, UserModel } from "../types";
 
 export class LoginService {
-  public async login(username: string, password: string):Promise<Result<UserModel>> {
+  public async login(
+    username: string,
+    password: string
+  ): Promise<Result<UserModel>> {
     const credentials = username + ":" + password;
 
     const hash = btoa(credentials);
@@ -13,7 +15,7 @@ export class LoginService {
         // TODO: Remplazar este id hardcodeado por el endpoint /user cuando este disponible
         method: "GET",
         headers: {
-          Authorization: "Basic as" + hash,
+          Authorization: "Basic " + hash,
         },
       });
 

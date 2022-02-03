@@ -40,7 +40,6 @@ function AdminNewUser() {
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
-    console.log(data);
     if (data.password !== data.confirmPassword) {
       setError("confirmPassword", {
         type: "repeated",

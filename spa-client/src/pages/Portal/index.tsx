@@ -32,18 +32,21 @@ function Portal() {
       .then((courses) =>
         courses.hasFailed()
           ? navigate(`/error?code=${courses.getError().getCode()}`)
-          : setCourses(courses.getData)
+          : setCourses(courses.getData())
       )
       .catch(() => navigate("/error?code=500"));
-    announcementsService
-        .getAnnouncements(1,3)
-        .then(announcements =>
-        announcements.hasFailed()
-        ? navigate(`/error?code=${announcements.getError().getCode()}`)
-        : setAnnouncements(announcements.getData))
-        .catch(() => navigate("/error?code=500"));
 
-  }, []);
+  }, [currentPage,pageSize]);
+
+  useEffect(()=>{
+      announcementsService
+          .getAnnouncements(1,3)
+          .then(announcements =>
+              announcements.hasFailed()
+                  ? navigate(`/error?code=${announcements.getError().getCode()}`)
+                  : setAnnouncements(announcements.getData()))
+          .catch(() => navigate("/error?code=500"));
+  },[]);
 
   return (
     <>
