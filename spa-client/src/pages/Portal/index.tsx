@@ -17,6 +17,7 @@ import LoadableData from "../../components/LoadableData";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
+import Spinner from "../../components/Spinner";
 //
 
 function Portal() {
@@ -30,7 +31,7 @@ function Portal() {
   const [currentPage, pageSize] = usePagination(10);
 
   useEffect(() => {
-    setIsCourseLoading(false);
+    setIsCourseLoading(true);
     courseService
       .getCourses(currentPage, pageSize)
       .then((courses) =>
@@ -59,7 +60,7 @@ function Portal() {
     <>
       <SectionHeading>{t("Portal.title")}</SectionHeading>
       <CoursesContainer>
-        <LoadableData isLoading={isCourseLoading} spinnerMultiplier={2}>
+        <LoadableData isLoading={isCourseLoading} spinnerMultiplier={1}>
           {courses.map((course) => (
             // TODO: AGREGAR CHEQUEO DE SI ES CONTENIDO POR CURRENT COURESE O NO Y SI ES ESTUDIANTE O NO
             <Course isOld={false} key={course.courseId}>
@@ -89,23 +90,18 @@ function Portal() {
       </CoursesContainer>
 
       <PortalAnnouncements>
-        {announcements.length > 0 && (
-          <>
-            <SectionHeading>{t("Portal.lastAnnouncements")}</SectionHeading>
-            <LoadableData
-              isLoading={isAnnouncementLoading}
-              spinnerMultiplier={3}
-            >
-              {announcements.map((announcement) => (
-                <AnnouncementUnit
-                  key={announcement.announcementId}
-                  announcement={announcement}
-                  isGlobal={true}
-                />
-              ))}
-            </LoadableData>
-          </>
-        )}
+        <SectionHeading>{t("Portal.lastAnnouncements")}</SectionHeading>
+        <LoadableData isLoading={isAnnouncementLoading} spinnerMultiplier={2}>
+          {announcements.length == 0 && <p>No hay anuncios!</p>}
+
+          {announcements.map((announcement) => (
+            <AnnouncementUnit
+              key={announcement.announcementId}
+              announcement={announcement}
+              isGlobal={true}
+            />
+          ))}
+        </LoadableData>
       </PortalAnnouncements>
     </>
   );
