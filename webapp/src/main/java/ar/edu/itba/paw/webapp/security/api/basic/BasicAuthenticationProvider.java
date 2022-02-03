@@ -15,7 +15,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.util.Base64;
@@ -51,7 +50,7 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
             throw new InvalidUsernamePasswordException("Invalid username/password");
         }
         User maybeUser = userService.findByUsername(credentials[0]).orElseThrow(() -> new BadCredentialsException("Bad credentials"));
-        if(!maybeUser.getPassword().equals(passwordEncoder.encode(credentials[1]))) {
+        if(!passwordEncoder.matches(credentials[1], maybeUser.getPassword())) {
             throw new BadCredentialsException("Bad username/password combination");
         }
         UserDetails userDetails = userDetailsService.loadUserByUsername(credentials[0]);
