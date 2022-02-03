@@ -2,8 +2,8 @@ package ar.edu.itba.paw.webapp.security.api.basic;
 
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.security.api.exception.InvalidUsernamePasswordException;
-import ar.edu.itba.paw.webapp.security.api.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.security.api.model.AuthenticationTokenDetails;
 import ar.edu.itba.paw.webapp.security.api.model.Authority;
 import ar.edu.itba.paw.webapp.security.service.AuthenticationTokenService;
@@ -15,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.util.Base64;
@@ -49,7 +50,7 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
         if(credentials.length != 2) {
             throw new InvalidUsernamePasswordException("Invalid username/password");
         }
-        User maybeUser = userService.findByUsername(credentials[0]).orElseThrow(UserNotFoundException::new);
+        User maybeUser = userService.findByUsername(credentials[0]).orElseThrow(() -> new BadCredentialsException("Bad credentials"));
         if(!maybeUser.getPassword().equals(passwordEncoder.encode(credentials[1]))) {
             throw new BadCredentialsException("Bad username/password combination");
         }
