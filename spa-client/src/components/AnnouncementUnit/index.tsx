@@ -7,18 +7,16 @@ import {
   SmallIcon,
 } from "./styles";
 import { Link } from "react-router-dom";
-import { AnnouncementModel, CourseModel } from "../../types";
+import { AnnouncementModel } from "../../types";
 
 interface AnnouncementUnitProps {
   isGlobal?: boolean;
   isTeacher?: boolean;
-  course: CourseModel;
   announcement: AnnouncementModel;
 }
 
 function AnnouncementUnit({
   isGlobal,
-  course,
   isTeacher,
   announcement,
 }: AnnouncementUnitProps) {
@@ -32,14 +30,17 @@ function AnnouncementUnit({
               display: "flex",
               flexDirection: "column",
               fontSize: "14px",
+              textAlign: "right",
             }}
           >
             <p>
               {announcement.author?.name} {announcement.author?.surname}
             </p>
             {isGlobal && (
-              <p>
-                <Link to={`/course/${course.courseId}`}>SUBJECT NAME</Link>
+              <p style={{ fontWeight: 700 }}>
+                <Link to={`/course/${announcement.course.courseId}`}>
+                  {announcement.course.subject.name}
+                </Link>
               </p>
             )}
           </div>

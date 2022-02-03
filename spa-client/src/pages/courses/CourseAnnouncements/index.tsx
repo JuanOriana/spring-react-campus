@@ -30,7 +30,7 @@ type FormData = {
 
 function CourseAnnouncements() {
   const { t } = useTranslation();
-  const Course = useCourseData();
+  const course = useCourseData();
   const [announcements, setAnnouncements] = useState(new Array(0));
   const maxPage = 3;
   const [currentPage, pageSize] = usePagination(10);
@@ -63,9 +63,11 @@ function CourseAnnouncements() {
       <>
         <FormWrapper reduced={true} acceptCharset="utf-8" onSubmit={onSubmit}>
           <GeneralTitle style={{ color: "#176961", alignSelf: "center" }}>
-            {t('CourseAnnouncements.teacher.form.title')}
+            {t("CourseAnnouncements.teacher.form.title")}
           </GeneralTitle>
-          <FormLabel htmlFor="title">{t('CourseAnnouncements.teacher.form.announcementTitleLabel')}</FormLabel>
+          <FormLabel htmlFor="title">
+            {t("CourseAnnouncements.teacher.form.announcementTitleLabel")}
+          </FormLabel>
           <FormInput
             type="text"
             style={{ fontSize: "26px" }}
@@ -77,14 +79,18 @@ function CourseAnnouncements() {
             })}
           />
           {errors.title?.type === "required" && (
-            <ErrorMessage>{t('CourseAnnouncements.teacher.error.title.isRequired')}</ErrorMessage>
+            <ErrorMessage>
+              {t("CourseAnnouncements.teacher.error.title.isRequired")}
+            </ErrorMessage>
           )}
           {errors.title?.type === "length" && (
             <ErrorMessage>
-              {t('CourseAnnouncements.teacher.error.title.length')}
+              {t("CourseAnnouncements.teacher.error.title.length")}
             </ErrorMessage>
           )}
-          <FormLabel htmlFor="content">{t('CourseAnnouncements.teacher.form.announcementContentLabel')}</FormLabel>
+          <FormLabel htmlFor="content">
+            {t("CourseAnnouncements.teacher.form.announcementContentLabel")}
+          </FormLabel>
           <FormArea
             style={{ width: "95%", resize: "none" }}
             cols={50}
@@ -97,14 +103,18 @@ function CourseAnnouncements() {
             })}
           ></FormArea>
           {errors.content?.type === "required" && (
-            <ErrorMessage>{t('CourseAnnouncements.teacher.error.content.isRequired')}</ErrorMessage>
+            <ErrorMessage>
+              {t("CourseAnnouncements.teacher.error.content.isRequired")}
+            </ErrorMessage>
           )}
           {errors.content?.type === "length" && (
             <ErrorMessage>
-              {t('CourseAnnouncements.teacher.error.content.length')}
+              {t("CourseAnnouncements.teacher.error.content.length")}
             </ErrorMessage>
           )}
-          <FormButton>{t('CourseAnnouncements.teacher.form.announcementCreateButton')}</FormButton>
+          <FormButton>
+            {t("CourseAnnouncements.teacher.form.announcementCreateButton")}
+          </FormButton>
         </FormWrapper>
         <Separator reduced={true}>.</Separator>
       </>
@@ -114,9 +124,9 @@ function CourseAnnouncements() {
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        {t('Announcements.title')}
+        {t("Announcements.title")}
       </SectionHeading>
-      {Course.isTeacher && renderTeacherForm()}
+      {course.isTeacher && renderTeacherForm()}
       <div
         style={{
           display: "flex",
@@ -126,15 +136,14 @@ function CourseAnnouncements() {
       >
         {announcements.length === 0 && (
           <GeneralTitle style={{ width: "100%", textAlign: "center" }}>
-            {t('Announcements.noAnnouncements')}
+            {t("Announcements.noAnnouncements")}
           </GeneralTitle>
         )}
 
         {announcements.map((announcement) => (
           <AnnouncementUnit
-            course={Course}
             announcement={announcement}
-            isTeacher={Course.isTeacher}
+            isTeacher={course.isTeacher}
           />
         ))}
 
@@ -142,7 +151,7 @@ function CourseAnnouncements() {
           currentPage={currentPage}
           pageSize={pageSize}
           maxPage={maxPage}
-          baseURL={`/course/${Course.courseId}/announcements`}
+          baseURL={`/course/${course.courseId}/announcements`}
         />
       </div>
     </>

@@ -45,15 +45,6 @@ function Announcements() {
         {announcements.map((announcement) => (
           <AnnouncementUnit
             key={announcement.announcementId}
-            course={{
-              courseId: 1,
-              courseUrl: "asdad",
-              board: "asdasd",
-              quarter: 1,
-              year: 2022,
-              isTeacher: true,
-              subject: { subjectId: 1, code: "F", name: "PAW" },
-            }}
             announcement={announcement}
             isGlobal={true}
           />
