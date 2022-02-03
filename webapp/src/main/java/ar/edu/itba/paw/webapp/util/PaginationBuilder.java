@@ -26,6 +26,7 @@ public class PaginationBuilder {
             builder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", content.getPage() - 1).queryParam("pageSize", pageSize).build().toString(), "prev");
         }
 
+        builder.header("X-Total-Pages", content.getTotal());
         return builder.build();
     }
 }
