@@ -10,6 +10,8 @@
     <properties>
         <org.springframework.version>4.3.22.RELEASE</org.springframework.version>
         <spring-security.version>4.2.11.RELEASE</spring-security.version>
+        <org.springframework.hateoas.version>0.25.1.RELEASE</org.springframework.hateoas.version>
+        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
         <servlet-api.version>2.5</servlet-api.version>
         <jstl.version>1.2</jstl.version>
         <junit.version>4.11</junit.version>
@@ -48,6 +50,16 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${org.mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.hateoas</groupId>
+                <artifactId>spring-hateoas</artifactId>
+                <version>${org.springframework.hateoas.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>
                 <artifactId>jackson-module-parameter-names</artifactId>
@@ -315,6 +327,23 @@
                 <version>${maven-war-plugin.version}</version>
                 <configuration>
                     <packagingExcludes>**/logback-test.xml</packagingExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source> <!-- depending on your project -->
+                    <target>1.8</target> <!-- depending on your project -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                        <!-- other annotation processors -->
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>

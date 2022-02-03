@@ -129,6 +129,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/users").hasAuthority("ADMIN")
                     .antMatchers( HttpMethod.GET, "/courses").hasAuthority("USER")
                     .antMatchers( HttpMethod.POST, "/courses").hasAuthority("ADMIN")
+                    .antMatchers("/user").hasAuthority("USER")
                     .antMatchers("/**").permitAll()
                 //.accessDecisionManager(accessDecisionManager())
             .and()

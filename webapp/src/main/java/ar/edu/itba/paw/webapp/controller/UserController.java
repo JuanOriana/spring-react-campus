@@ -1,14 +1,20 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
+import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.models.CampusPage;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
+import ar.edu.itba.paw.webapp.assembler.UserAssembler;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
+import ar.edu.itba.paw.webapp.dto.CourseDto;
 import ar.edu.itba.paw.webapp.dto.NextFileNumberDto;
 import ar.edu.itba.paw.webapp.dto.UserDto;
 import ar.edu.itba.paw.webapp.dto.UserRegisterFormDto;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
+import ar.edu.itba.paw.webapp.util.PaginationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Path("users")
 @Component
@@ -33,7 +40,13 @@ public class UserController {
     private UriInfo uriInfo;
 
     @Autowired
+    private CourseService courseService;
+
+    @Autowired
     private DtoConstraintValidator dtoValidator;
+
+    @Autowired
+    private UserAssembler assembler;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -42,7 +55,7 @@ public class UserController {
     @Produces(value = MediaType.APPLICATION_JSON)
     public Response listUsers() {
         final List<User> users = userService.list();
-        return Response.ok(new GenericEntity<List<User>>(users){}).build();
+        return Response.ok(new GenericEntity<List<UserDto>>(assembler.toResources(users)){}).build();
     }
 
     @POST
@@ -69,7 +82,26 @@ public class UserController {
     }
 
     @GET
-    @Path("/{userId}/profile-image")
+    @Path("/{userId}/courses")
+    @Produces(value = MediaType.APPLICATION_JSON)
+    public Response getUserCourses(@PathParam("userId") Long userId,
+                                   @QueryParam("page") @DefaultValue("1") Integer page,
+                                   @QueryParam("pageSize") @DefaultValue("10") Integer pageSize) {
+        CampusPage<Course> courseCampusPage = courseService.list(userId, page, pageSize);
+        if(courseCampusPage.isEmpty()) {
+            return Response.noContent().build();
+        }
+        Response.ResponseBuilder builder = Response.ok(
+                new GenericEntity<List<CourseDto>>(
+                        courseCampusPage.getContent()
+                                .stream()
+                                .map(CourseDto::fromCourse)
+                                .collect(Collectors.toList())) {});
+        return PaginationBuilder.build(courseCampusPage, builder, uriInfo, pageSize);
+    }
+
+    @GET
+    @Path("/{userId}/image")
     @Produces(value = {MediaType.APPLICATION_JSON, })
     public Response getUserProfileImage(@PathParam("userId") Long userId) {
         Optional<byte[]> image = userService.getProfileImage(userId);

@@ -1,8 +1,9 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.User;
+import org.springframework.hateoas.ResourceSupport;
 
-public class UserDto {
+public class UserDto extends ResourceSupport {
 
     private Long userId;
     private String name;
@@ -10,6 +11,7 @@ public class UserDto {
     private String username;
     private String email;
     private Integer fileNumber;
+    private Boolean isAdmin;
 
     public static UserDto fromUser(User user) {
         if (user == null){
@@ -26,6 +28,13 @@ public class UserDto {
         return dto;
     }
 
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
+    }
     public Long getUserId() {
         return userId;
     }

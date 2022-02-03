@@ -1,4 +1,5 @@
 package ar.edu.itba.paw.webapp.config;
+import ar.edu.itba.paw.webapp.assembler.UserAssembler;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.security.service.implementation.AuthFacadeImpl;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -47,7 +48,6 @@ import java.util.concurrent.TimeUnit;
 @ComponentScan({"ar.edu.itba.paw.webapp.controller", "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
-
 
     // Change this to a config/profile in the future
     private static final boolean DEV_BUILD = true;
@@ -188,4 +188,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public Validator validator() {
         return new LocalValidatorFactoryBean();
     }
+
+    @Bean
+    public UserAssembler userAssembler() { return new UserAssembler(); }
 }
