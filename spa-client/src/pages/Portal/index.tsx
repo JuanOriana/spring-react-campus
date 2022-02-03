@@ -17,7 +17,6 @@ import LoadableData from "../../components/LoadableData";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
-import Spinner from "../../components/Spinner";
 //
 
 function Portal() {
