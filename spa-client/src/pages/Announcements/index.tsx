@@ -18,7 +18,7 @@ function Announcements() {
   const navigate = useNavigate();
   const [announcements, setAnnouncements] = useState(new Array(0));
   const [isLoading, setIsLoading] = useState(false);
-  const maxPage = 3;
+  const [maxPage, setMaxPage] = useState(1);
   const [currentPage, pageSize] = usePagination(10);
 
   useEffect(() => {
@@ -26,9 +26,12 @@ function Announcements() {
     announcementsService
       .getAnnouncements(currentPage, pageSize)
       .then((announcements) => {
-        announcements.hasFailed()
-          ? navigate(`/error?code=${announcements.getError().getCode()}`)
-          : setAnnouncements(announcements.getData().getContent());
+        if (announcements.hasFailed()) {
+          navigate(`/error?code=${announcements.getError().getCode()}`);
+        } else {
+          setAnnouncements(announcements.getData().getContent());
+          setMaxPage(announcements.getData().getMaxPage());
+        }
       })
       .catch(() => navigate("/error?code=500"))
       .finally(() => setIsLoading(false));

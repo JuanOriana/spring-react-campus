@@ -10,12 +10,7 @@ export async function getPagedFetch<RetType>(
       method: "GET",
     });
     const parsedResponse = await checkError<RetType>(response);
-    response.headers.forEach((header) => console.log(header));
-    const maxPage = response.headers
-      .get("X-Total-Pages")
-      ?.toString()
-      .split(" ")[1];
-    console.log(maxPage);
+    const maxPage = response.headers.get("x-total-pages");
     return Result.ok(
       new PagedContent(parsedResponse, maxPage ? parseInt(maxPage) : 1)
     );

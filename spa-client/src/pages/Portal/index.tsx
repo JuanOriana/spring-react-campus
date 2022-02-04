@@ -26,18 +26,21 @@ function Portal() {
   const [isCourseLoading, setIsCourseLoading] = useState(false);
   const [announcements, setAnnouncements] = useState(new Array(0));
   const [isAnnouncementLoading, setIsAnnouncementLoading] = useState(false);
-  const maxPage = 3;
+  const [maxPage, setMaxPage] = useState(1);
   const [currentPage, pageSize] = usePagination(10);
 
   useEffect(() => {
     setIsCourseLoading(true);
     courseService
       .getCourses(currentPage, pageSize)
-      .then((courses) =>
-        courses.hasFailed()
-          ? navigate(`/error?code=${courses.getError().getCode()}`)
-          : setCourses(courses.getData().getContent())
-      )
+      .then((courses) => {
+        if (courses.hasFailed())
+          navigate(`/error?code=${courses.getError().getCode()}`);
+        else {
+          setCourses(courses.getData().getContent());
+          setMaxPage(courses.getData().getMaxPage());
+        }
+      })
       .catch(() => navigate("/error?code=500"))
       .finally(() => setIsCourseLoading(false));
   }, [currentPage, pageSize]);

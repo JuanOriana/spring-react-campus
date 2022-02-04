@@ -30,20 +30,29 @@ function BasicPagination({
   return (
     <PaginationWrapper style={{ ...style }}>
       {currentPage > 1 && (
-        <Link to={`${baseURL}?page=${currentPage - 1}&pageSize=${pageSize}`}>
+        <Link
+          to={`${baseURL}?page=${currentPage - 1}&pageSize=${pageSize}`}
+          style={{ alignItems: "center", display: "flex" }}
+        >
           <PaginationArrow
             xRotated={true}
             src="/images/page-arrow.png"
-            alt={`${t('BasicPagination.alt.beforePage')}`}
+            alt={`${t("BasicPagination.alt.beforePage")}`}
           />
         </Link>
       )}
-      {t('BasicPagination.message', { currentPage: currentPage, maxPage: maxPage})}
+      {t("BasicPagination.message", {
+        currentPage: currentPage,
+        maxPage: maxPage,
+      })}
       {currentPage < maxPage && (
-        <Link to={`${baseURL}?page=${currentPage + 1}&pageSize=${pageSize}`}>
+        <Link
+          to={`${baseURL}?page=${currentPage + 1}&pageSize=${pageSize}`}
+          style={{ alignItems: "center", display: "flex" }}
+        >
           <PaginationArrow
             src="/images/page-arrow.png"
-            alt={`${t('BasicPagination.alt.nextPage')}`}
+            alt={`${t("BasicPagination.alt.nextPage")}`}
           />
         </Link>
       )}
