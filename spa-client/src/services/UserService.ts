@@ -1,28 +1,29 @@
 import { paths } from "../common/constants";
 import { authedFetch } from "../scripts/authedFetch";
 import { getFetch } from "../scripts/getFetch";
-import { Result, UserModel } from "../types";
+import { PagedContent, Result, UserModel } from "../types";
+import { getPagedFetch } from "../scripts/getPagedFetch";
 
 export class UserService {
   private readonly basePath = paths.BASE_URL + paths.USERS;
 
-  public async getUsers(): Promise<Result<UserModel[]>> {
-    return getFetch<UserModel[]>(this.basePath);
+  public async getUsers(): Promise<Result<PagedContent<UserModel[]>>> {
+    return getPagedFetch<UserModel[]>(this.basePath);
   }
 
   public async getUserById(userId: number): Promise<Result<UserModel>> {
-    return getFetch<UserModel>(this.basePath + userId);
+    return getFetch<UserModel>(this.basePath + "/" + userId);
   }
 
   public async getLastFileNumber(): Promise<Result<number>> {
-    return getFetch<number>(this.basePath + "last/file-number");
+    return getFetch<number>(this.basePath + "/last/file-number");
   }
 
   public async getUserProfileImage(userId: number): Promise<Result<File>> {
-    return getFetch<File>(this.basePath + userId + "/profile-image");
+    return getFetch<File>(this.basePath + "/" + userId + "/profile-image");
   }
 
-  public async newUSer(
+  public async newUser(
     fileNumber: number,
     name: string,
     surname: string,

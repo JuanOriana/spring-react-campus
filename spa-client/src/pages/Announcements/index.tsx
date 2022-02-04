@@ -28,7 +28,7 @@ function Announcements() {
       .then((announcements) => {
         announcements.hasFailed()
           ? navigate(`/error?code=${announcements.getError().getCode()}`)
-          : setAnnouncements(announcements.getData());
+          : setAnnouncements(announcements.getData().getContent());
       })
       .catch(() => navigate("/error?code=500"))
       .finally(() => setIsLoading(false));

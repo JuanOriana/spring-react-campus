@@ -1,16 +1,15 @@
 import { paths } from "../common/constants";
-import { checkError } from "../scripts/ErrorChecker";
-import { authedFetch } from "../scripts/authedFetch";
 import {
   Result,
   CourseModel,
-  ErrorResponse,
   AnnouncementModel,
   UserModel,
   ExamModel,
+  PagedContent,
 } from "../types";
 import AnswerModel from "../types/AnswerModel";
 import { getFetch } from "../scripts/getFetch";
+import { getPagedFetch } from "../scripts/getPagedFetch";
 
 export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
@@ -22,7 +21,7 @@ export class CourseService {
   public async getCourses(
     page?: number,
     pageSize?: number
-  ): Promise<Result<CourseModel[]>> {
+  ): Promise<Result<PagedContent<CourseModel[]>>> {
     let url = new URL(this.basePath);
     let params = new URLSearchParams();
     if (typeof page !== "undefined") {
@@ -35,37 +34,55 @@ export class CourseService {
       params.append("pageSize", pageSize.toString());
       url.search = params.toString();
     }
-    return getFetch<CourseModel[]>(url.toString());
+    return getPagedFetch<CourseModel[]>(url.toString());
   }
 
-  public async getHelpers(courseId: number): Promise<Result<UserModel>> {
-    return getFetch<UserModel>(this.basePath + courseId + "/helpers");
+  public async getHelpers(
+    courseId: number
+  ): Promise<Result<PagedContent<UserModel[]>>> {
+    return getPagedFetch<UserModel[]>(this.basePath + courseId + "/helpers");
   }
 
-  public async getTeachers(courseId: number): Promise<Result<UserModel>> {
-    return getFetch<UserModel>(this.basePath + courseId + "/teachers");
+  public async getTeachers(
+    courseId: number
+  ): Promise<Result<PagedContent<UserModel[]>>> {
+    return getPagedFetch<UserModel[]>(this.basePath + courseId + "/teachers");
   }
 
-  public async getStudents(courseId: number): Promise<Result<UserModel>> {
-    return getFetch<UserModel>(this.basePath + courseId + "/students");
+  public async getStudents(
+    courseId: number
+  ): Promise<Result<PagedContent<UserModel[]>>> {
+    return getPagedFetch<UserModel[]>(this.basePath + courseId + "/students");
   }
-  public async getExams(courseId: number): Promise<Result<ExamModel>> {
-    return getFetch<ExamModel>(this.basePath + courseId + "/exams");
+  public async getExams(
+    courseId: number
+  ): Promise<Result<PagedContent<ExamModel[]>>> {
+    return getPagedFetch<ExamModel[]>(this.basePath + courseId + "/exams");
   }
 
-  public async getSolvedExams(courseId: number): Promise<Result<ExamModel>> {
-    return getFetch<ExamModel>(this.basePath + courseId + "/exams/solved");
+  public async getSolvedExams(
+    courseId: number
+  ): Promise<Result<PagedContent<ExamModel[]>>> {
+    return getPagedFetch<ExamModel[]>(
+      this.basePath + courseId + "/exams/solved"
+    );
   }
 
-  public async getUnsolvedExams(courseId: number): Promise<Result<ExamModel>> {
-    return getFetch<ExamModel>(this.basePath + courseId + "/exams/unsolved");
+  public async getUnsolvedExams(
+    courseId: number
+  ): Promise<Result<PagedContent<ExamModel[]>>> {
+    return getPagedFetch<ExamModel[]>(
+      this.basePath + courseId + "/exams/unsolved"
+    );
   }
 
   public async getCourseAnswers(
     courseId: number
-  ): Promise<Result<AnswerModel[]>> {
+  ): Promise<Result<PagedContent<AnswerModel[]>>> {
     // TODO: Esperar respuesta mail para ver que hacer con los links en este caso
-    return getFetch<AnswerModel[]>(this.basePath + courseId + "/exams/answers");
+    return getPagedFetch<AnswerModel[]>(
+      this.basePath + courseId + "/exams/answers"
+    );
   }
 
   //TODO: Ver si este service puede mapear el json sin el type! (cuando podamos correr la api)
@@ -73,10 +90,10 @@ export class CourseService {
     return getFetch<number>(this.basePath + "available-years");
   }
 
-  public async getAnnouncemets(
+  public async getAnnouncements(
     courseId: number
-  ): Promise<Result<AnnouncementModel[]>> {
-    return getFetch<AnnouncementModel[]>(
+  ): Promise<Result<PagedContent<AnnouncementModel[]>>> {
+    return getPagedFetch<AnnouncementModel[]>(
       this.basePath + courseId + "/announcements"
     );
   }

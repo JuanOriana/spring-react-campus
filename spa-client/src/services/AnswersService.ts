@@ -7,6 +7,6 @@ export class AnswersService {
   private readonly basePath = paths.BASE_URL + paths.ANSWERS;
 
   public async getAnswerById(answerId: number): Promise<Result<AnswerModel>> {
-    return getFetch<AnswerModel>(this.basePath + answerId);
+    return getFetch<AnswerModel>(this.basePath + "/" + answerId);
   }
 }
