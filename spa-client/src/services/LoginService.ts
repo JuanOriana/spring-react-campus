@@ -11,8 +11,7 @@ export class LoginService {
 
     const hash = btoa(credentials);
     try {
-      const response = await fetch(paths.BASE_URL + "/users/3", {
-        // TODO: Remplazar este id hardcodeado por el endpoint /user cuando este disponible
+      const response = await fetch(paths.BASE_URL + "/user", {
         method: "GET",
         headers: {
           Authorization: "Basic " + hash,

@@ -10,6 +10,10 @@ import {
 import AnswerModel from "../types/AnswerModel";
 import { getFetch } from "../scripts/getFetch";
 import { getPagedFetch } from "../scripts/getPagedFetch";
+import { pageUrlMaker } from "../scripts/pageUrlMaker";
+import { authedFetch } from "../scripts/authedFetch";
+import { postFetch } from "../scripts/postFetch";
+import { string } from "prop-types";
 
 export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
@@ -22,18 +26,7 @@ export class CourseService {
     page?: number,
     pageSize?: number
   ): Promise<Result<PagedContent<CourseModel[]>>> {
-    let url = new URL(this.basePath);
-    let params = new URLSearchParams();
-    if (typeof page !== "undefined") {
-      url = new URL(paths.BASE_URL + paths.COURSES_QUERY_PARAMS);
-      params.append("page", page.toString());
-    }
-
-    if (typeof pageSize !== "undefined") {
-      url = new URL(paths.BASE_URL + paths.COURSES_QUERY_PARAMS);
-      params.append("pageSize", pageSize.toString());
-      url.search = params.toString();
-    }
+    let url = pageUrlMaker(this.basePath, page, pageSize);
     return getPagedFetch<CourseModel[]>(url.toString());
   }
 
@@ -50,9 +43,16 @@ export class CourseService {
   }
 
   public async getStudents(
-    courseId: number
+    courseId: number,
+    page?: number,
+    pageSize?: number
   ): Promise<Result<PagedContent<UserModel[]>>> {
-    return getPagedFetch<UserModel[]>(this.basePath + courseId + "/students");
+    let url = pageUrlMaker(
+      this.basePath + "/" + courseId + "/students",
+      page,
+      pageSize
+    );
+    return getPagedFetch<UserModel[]>(url.toString());
   }
   public async getExams(
     courseId: number
@@ -95,6 +95,77 @@ export class CourseService {
   ): Promise<Result<PagedContent<AnnouncementModel[]>>> {
     return getPagedFetch<AnnouncementModel[]>(
       this.basePath + courseId + "/announcements"
+    );
+  }
+
+  public async newCourse(
+    subjectId: number,
+    quarter: number,
+    board: string,
+    year: number,
+    startTimes: number[],
+    endTimes: number[]
+  ) {
+    const newCourse = JSON.stringify({
+      subjectId: subjectId,
+      quarter: quarter,
+      board: board,
+      year: year,
+      startTimes: startTimes,
+      endTimes: endTimes,
+    });
+
+    return postFetch(this.basePath, "application/json", newCourse);
+  }
+
+  public async newAnnouncement(
+    courseId: number,
+    title: string,
+    content: string
+  ) {
+    const newAnnouncement = JSON.stringify({
+      title: title,
+      content: content,
+    });
+
+    return postFetch(
+      this.basePath + "/" + courseId + "/announcements",
+      "application/json",
+      newAnnouncement
+    );
+  }
+
+  public async newExam(
+    courseId: number,
+    title: string,
+    content: string,
+    file: File,
+    startTime: string,
+    endTime: string
+  ) {
+    const newExam = JSON.stringify({
+      title: string,
+      content: string,
+      file: file, // TODO ver si esto es correcto
+      startTime: startTime,
+      endTime: endTime,
+    });
+    return postFetch(
+      this.basePath + "/" + courseId + "/exams",
+      "application/json",
+      newExam
+    );
+  }
+
+  public async newAnswer(courseId: number, answerFile: File) {
+    const newAnswer = JSON.stringify({
+      exam: answerFile,
+    });
+
+    return postFetch(
+      this.basePath + "/" + courseId + "/exams",
+      "application/json",
+      newAnswer
     );
   }
 }

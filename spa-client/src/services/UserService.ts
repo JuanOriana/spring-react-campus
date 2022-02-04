@@ -3,6 +3,8 @@ import { authedFetch } from "../scripts/authedFetch";
 import { getFetch } from "../scripts/getFetch";
 import { PagedContent, Result, UserModel } from "../types";
 import { getPagedFetch } from "../scripts/getPagedFetch";
+import { pageUrlMaker } from "../scripts/pageUrlMaker";
+import { postFetch } from "../scripts/postFetch";
 
 export class UserService {
   private readonly basePath = paths.BASE_URL + paths.USERS;
@@ -21,6 +23,15 @@ export class UserService {
 
   public async getUserProfileImage(userId: number): Promise<Result<File>> {
     return getFetch<File>(this.basePath + "/" + userId + "/profile-image");
+  }
+
+  public async getUsersCourses(
+    userId: number,
+    page?: number,
+    pageSize?: number
+  ) {
+    let url = pageUrlMaker(this.basePath, page, pageSize);
+    return getPagedFetch(url.toString());
   }
 
   public async newUser(
@@ -42,13 +53,6 @@ export class UserService {
       confirmPassword: confirmPassword,
     });
 
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-
-    authedFetch(this.basePath, {
-      method: "POST",
-      headers: headers,
-      body: newUser,
-    });
+    return postFetch(this.basePath, "application/json", newUser);
   }
 }
