@@ -59,4 +59,17 @@ export class UserService {
       newUser
     );
   }
+
+  public async sendEmail(userId: number, title: string, content: string) {
+    const email = JSON.stringify({
+      title: title,
+      content: content,
+    });
+
+    return postFetch(
+      this.basePath + "/" + userId + "email",
+      "application/vnd.campus.api.v1+json",
+      email
+    );
+  }
 }
