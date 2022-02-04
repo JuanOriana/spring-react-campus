@@ -3,6 +3,7 @@ import { AnnouncementModel, PagedContent, Result } from "../types";
 import { getFetch } from "../scripts/getFetch";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
+import { authedFetch } from "../scripts/authedFetch";
 
 export class AnnouncementsService {
   private readonly basePath = paths.BASE_URL + paths.ANNOUNCEMENTS;
@@ -18,5 +19,11 @@ export class AnnouncementsService {
     announcementId: number
   ): Promise<Result<AnnouncementModel>> {
     return getFetch<AnnouncementModel>(this.basePath + "/" + announcementId);
+  }
+
+  public async deleteAnnouncement(announcementId: number) {
+    return authedFetch(this.basePath + "/" + announcementId, {
+      method: "DELETE",
+    });
   }
 }

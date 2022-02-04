@@ -172,4 +172,10 @@ export class CourseService {
       newAnswer
     );
   }
+
+  public async deleteFile(courseId: number, fileId: number) {
+    return authedFetch(this.basePath + "/" + courseId + "/files/" + fileId, {
+      method: "DELETE",
+    });
+  }
 }
