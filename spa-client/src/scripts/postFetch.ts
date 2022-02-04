@@ -5,12 +5,9 @@ export async function postFetch(
   contentType: string,
   body: string
 ) {
-  const headers = new Headers();
-  headers.append("Content-Type", contentType);
-
   return authedFetch(path, {
     method: "POST",
-    headers: headers,
+    headers: { "Content-Type": contentType },
     body: body,
   });
 }

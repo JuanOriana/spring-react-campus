@@ -53,6 +53,10 @@ export class UserService {
       confirmPassword: confirmPassword,
     });
 
-    return postFetch(this.basePath, "application/json", newUser);
+    return postFetch(
+      this.basePath,
+      "application/vnd.campus.api.v1+json",
+      newUser
+    );
   }
 }

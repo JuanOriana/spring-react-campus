@@ -115,7 +115,11 @@ export class CourseService {
       endTimes: endTimes,
     });
 
-    return postFetch(this.basePath, "application/json", newCourse);
+    return postFetch(
+      this.basePath,
+      "application/vnd.campus.api.v1+json",
+      newCourse
+    );
   }
 
   public async newAnnouncement(
@@ -130,7 +134,7 @@ export class CourseService {
 
     return postFetch(
       this.basePath + "/" + courseId + "/announcements",
-      "application/json",
+      "application/vnd.campus.api.v1+json",
       newAnnouncement
     );
   }
@@ -152,7 +156,7 @@ export class CourseService {
     });
     return postFetch(
       this.basePath + "/" + courseId + "/exams",
-      "application/json",
+      "application/vnd.campus.api.v1+json",
       newExam
     );
   }
@@ -164,7 +168,7 @@ export class CourseService {
 
     return postFetch(
       this.basePath + "/" + courseId + "/exams",
-      "application/json",
+      "application/vnd.campus.api.v1+json",
       newAnswer
     );
   }

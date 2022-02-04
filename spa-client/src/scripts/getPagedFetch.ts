@@ -9,12 +9,15 @@ export async function getPagedFetch<RetType>(
     const response = await authedFetch(url, {
       method: "GET",
     });
+    console.log("OK: FETCH");
+
     const parsedResponse = await checkError<RetType>(response);
     const maxPage = response.headers.get("x-total-pages");
     return Result.ok(
       new PagedContent(parsedResponse, maxPage ? parseInt(maxPage) : 1)
     );
   } catch (err: any) {
+    console.log("ERR: FETCH" + err.message);
     return Result.failed(new ErrorResponse(parseInt(err.message), err.message));
   }
 }

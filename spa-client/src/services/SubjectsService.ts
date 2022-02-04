@@ -21,6 +21,10 @@ export class SubjectsService {
       name: name,
     });
 
-    return postFetch(this.basePath, "application/json", newSubject);
+    return postFetch(
+      this.basePath,
+      "application/vnd.campus.api.v1+json",
+      newSubject
+    );
   }
 }

@@ -1,6 +1,6 @@
 function updateOptions(options: any) {
-  let newOptions = {...options};
-  newOptions.headers = {...options.headers};
+  let newOptions = { ...options };
+  newOptions.headers = { ...options.headers };
   const token = localStorage.getItem("token");
   if (token) {
     newOptions.headers["Authorization"] = `Bearer ${token}`;
