@@ -3,7 +3,6 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
-import ar.edu.itba.paw.models.exception.FileNotFoundException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.assembler.CourseAssembler;
 import ar.edu.itba.paw.webapp.assembler.UserAssembler;
@@ -22,8 +21,14 @@ import org.springframework.stereotype.Controller;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import java.io.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -72,10 +77,10 @@ public class CourseController {
     @Consumes("application/vnd.campus.api.v1+json")
     @Produces("application/vnd.campus.api.v1+json")
     public Response postFile(@PathParam("courseId") Long courseId,
-                               @FormDataParam("file") InputStream fileStream,
-                               @FormDataParam("file") FormDataContentDisposition fileMetadata) throws IOException {
+                             @FormDataParam("file") InputStream fileStream,
+                             @FormDataParam("file") FormDataContentDisposition fileMetadata) throws IOException {
         File file = getFileFromStream(fileStream);
-        if(file.length() == 0) throw new BadRequestException("No file was provided");
+        if (file.length() == 0) throw new BadRequestException("No file was provided");
         Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
         FileModel fileModel = fileService.create(file.length(), fileMetadata.getFileName(), IOUtils.toByteArray(fileStream),
                 course);
@@ -83,31 +88,40 @@ public class CourseController {
         return Response.created(location).build();
     }
 
-    @Path("/{courseId}/files/{fileId}")
+
     @GET
+    @Path("/{courseId}/files")
     @Produces("application/vnd.campus.api.v1+json")
-    public Response getFile(@PathParam("courseId") Long courseId,
-                                 @PathParam("fileId") Long fileId) {
-        FileModel file = fileService.findById(fileId).orElseThrow(FileNotFoundException::new);
-        fileService.incrementDownloads(fileId);
-        Response.ResponseBuilder response = Response.ok(new ByteArrayInputStream(file.getFile()));
-        response.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"" );
-        return response.build();
+    public Response getFiles(@PathParam("courseId") Long courseId,
+                             @QueryParam("category-type") List<Long> categoryType,
+                             @QueryParam("extension-type") List<Long> extensionType,
+                             @QueryParam("query") @DefaultValue("") String query,
+                             @QueryParam("order-property") @DefaultValue("date") String orderProperty,
+                             @QueryParam("order-direction") @DefaultValue("desc") String orderDirection,
+                             @QueryParam("page") @DefaultValue("1") Integer page,
+                             @QueryParam("pageSize") @DefaultValue("10") Integer pageSize) {
+        categoryType = categoryType == null ? Collections.emptyList() : categoryType;
+        extensionType = extensionType == null ? Collections.emptyList() : extensionType;
+        CampusPage<FileModel> filePage = fileService.listByCourse(query, extensionType, categoryType,authFacade.getCurrentUserId(),courseId,
+                page, pageSize, orderDirection, orderProperty);
+        if (filePage.isEmpty()) {
+            return Response.noContent().build();
+        }
+        Response.ResponseBuilder builder = Response.ok(
+                new GenericEntity<List<FileModelDto>>(
+                        filePage.getContent()
+                                .stream()
+                                .map(FileModelDto::fromFile)
+                                .collect(Collectors.toList())) {
+                });
+        return PaginationBuilder.build(filePage, builder, uriInfo, pageSize);
     }
 
-    @DELETE
-    @Path("/{courseId}/files/{fileId}")
-    @Produces("application/vnd.campus.api.v1+json")
-    public Response deleteFile(@PathParam("courseId") Long courseId,
-                               @PathParam("fileId") Long fileId) {
-        if(!fileService.delete(fileId)) throw new FileNotFoundException();
-        return Response.status(Response.Status.NO_CONTENT).build();
-    }
 
     private File getFileFromStream(InputStream in) throws IOException {
         File tmpFile = File.createTempFile("tmp", "file");
         tmpFile.deleteOnExit();
-        try(FileOutputStream stream = new FileOutputStream(tmpFile)){
+        try (FileOutputStream stream = new FileOutputStream(tmpFile)) {
             IOUtils.copy(in, stream);
         } catch (IOException e) {
             LOGGER.error("There was an error copying the file from the server");
@@ -118,7 +132,7 @@ public class CourseController {
     @POST
     @Consumes("application/vnd.campus.api.v1+json")
     public Response postCourse(@Valid CourseFormDto courseForm) {
-        if(courseForm == null) {
+        if (courseForm == null) {
             throw new BadRequestException();
         }
         dtoValidator.validate(courseForm, "Invalid body request");
@@ -138,7 +152,8 @@ public class CourseController {
         List<AvailableYearsDto> availableYearsDtoList = availableYears.stream()
                 .map(AvailableYearsDto::fromYear)
                 .collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<AvailableYearsDto>>(availableYearsDtoList){}).build();
+        return Response.ok(new GenericEntity<List<AvailableYearsDto>>(availableYearsDtoList) {
+        }).build();
     }
 
     @GET
@@ -157,7 +172,8 @@ public class CourseController {
         }
         CampusPage<Course> courses = courseService.listByYearQuarter(year, quarter, page, pageSize);
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<CourseDto>>(courseAssembler.toResources(courses.getContent())){});
+                new GenericEntity<List<CourseDto>>(courseAssembler.toResources(courses.getContent())) {
+                });
         return PaginationBuilder.build(courses, builder, uriInfo, pageSize);
     }
 
@@ -193,7 +209,7 @@ public class CourseController {
     @Path("/{courseId}/teachers")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseTeachers(@PathParam("courseId") Long courseId) {
-        if(courseId == null) {
+        if (courseId == null) {
             throw new BadRequestException();
         }
         List<User> courseTeachers = courseService.getTeachers(courseId);
@@ -201,14 +217,15 @@ public class CourseController {
             return Response.noContent().build();
         }
         List<UserDto> teachers = userAssembler.toResources(courseTeachers);
-        return Response.ok(new GenericEntity<List<UserDto>>(teachers){}).build();
+        return Response.ok(new GenericEntity<List<UserDto>>(teachers) {
+        }).build();
     }
 
     @GET
     @Path("/{courseId}/helpers")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseHelpers(@PathParam("courseId") Long courseId) {
-        if(courseId == null) {
+        if (courseId == null) {
             throw new BadRequestException();
         }
         List<User> courseHelpers = courseService.getHelpers(courseId);
@@ -216,19 +233,20 @@ public class CourseController {
             return Response.noContent().build();
         }
         List<UserDto> helpers = userAssembler.toResources(courseHelpers);
-        return Response.ok(new GenericEntity<List<UserDto>>(helpers){}).build();
+        return Response.ok(new GenericEntity<List<UserDto>>(helpers) {
+        }).build();
     }
 
     @GET
     @Path("/{courseId}/students")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseStudents(@QueryParam("page") @DefaultValue("1")
-                                                  Integer page,
+                                              Integer page,
                                       @QueryParam("pageSize") @DefaultValue("10")
                                               Integer pageSize,
                                       @PathParam("courseId")
-                                                  Long courseId) {
-        if(courseId == null) {
+                                              Long courseId) {
+        if (courseId == null) {
             throw new BadRequestException();
         }
         CampusPage<User> enrolledStudents = userService.getStudentsByCourse(courseId, page, pageSize);
@@ -236,7 +254,8 @@ public class CourseController {
             return Response.noContent().build();
         }
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<UserDto>>(userAssembler.toResources(enrolledStudents.getContent())){});
+                new GenericEntity<List<UserDto>>(userAssembler.toResources(enrolledStudents.getContent())) {
+                });
         return PaginationBuilder.build(enrolledStudents, builder, uriInfo, pageSize);
     }
 
@@ -245,13 +264,14 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseExams(@PathParam("courseId") Long courseId) {
         List<Exam> exams = examService.listByCourse(courseId);
-        if(exams.isEmpty()) {
+        if (exams.isEmpty()) {
             return Response.noContent().build();
         }
         List<ExamDto> examDtoList = exams.stream()
                 .map(exam -> ExamDto.fromExam(uriInfo, exam, examService.getAverageScoreOfExam(exam.getExamId())))
                 .collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList){}).build();
+        return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
+        }).build();
     }
 
     @POST
@@ -274,62 +294,67 @@ public class CourseController {
     @Path("/{courseId}/exams/solved")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getResolvedExams(@PathParam("courseId") Long courseId) {
-        if(courseId == null) {
+        if (courseId == null) {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
-        if(courseService.isPrivileged(userId, courseId)) {
-            Map<Exam,Double> examAverage = examService.getExamsAverage(courseId);
+        if (courseService.isPrivileged(userId, courseId)) {
+            Map<Exam, Double> examAverage = examService.getExamsAverage(courseId);
             List<ExamDto> examDtoList = new ArrayList<>();
-            examAverage.forEach((exam,average) -> examDtoList.add(ExamDto.fromExam(uriInfo, exam, average)));
-            return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList){}).build();
+            examAverage.forEach((exam, average) -> examDtoList.add(ExamDto.fromExam(uriInfo, exam, average)));
+            return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
+            }).build();
         }
         List<ExamDto> exams = examService.getResolvedExams(userId, courseId)
                 .stream()
-                .map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId())))
+                .map(exam -> ExamDto.fromExam(uriInfo, exam, examService.getAverageScoreOfExam(exam.getExamId())))
                 .collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<ExamDto>>(exams){}).build();
+        return Response.ok(new GenericEntity<List<ExamDto>>(exams) {
+        }).build();
     }
 
     @GET
     @Path("/{courseId}/exams/unsolved")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getUnresolvedExams(@PathParam("courseId") Long courseId) {
-        if(courseId == null) {
+        if (courseId == null) {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
         List<ExamDto> exams = examService.getUnresolvedExams(userId, courseId)
                 .stream()
-                .map(exam -> ExamDto.fromExam(uriInfo, exam,examService.getAverageScoreOfExam(exam.getExamId())))
+                .map(exam -> ExamDto.fromExam(uriInfo, exam, examService.getAverageScoreOfExam(exam.getExamId())))
                 .collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<ExamDto>>(exams){}).build();
+        return Response.ok(new GenericEntity<List<ExamDto>>(exams) {
+        }).build();
     }
 
     @GET
     @Path("/{courseId}/exams/answers")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseAnswers(@PathParam("courseId") Long courseId) {
-        if(courseId == null) {
+        if (courseId == null) {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
         List<AnswerDto> answers = answerService.getMarks(userId, courseId)
                 .stream()
-                .map(answer->AnswerDto.fromAnswer(uriInfo, answer))
+                .map(answer -> AnswerDto.fromAnswer(uriInfo, answer))
                 .collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<AnswerDto>>(answers){}).build();
+        return Response.ok(new GenericEntity<List<AnswerDto>>(answers) {
+        }).build();
     }
 
     @GET
     @Path("/{courseId}/exams/average")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseAverage(@PathParam("courseId") Long courseId) {
-        if(courseId == null) {
+        if (courseId == null) {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
         Double average = answerService.getAverageOfUserInCourse(userId, courseId);
-        return Response.ok(new GenericEntity<Double>(average){}).build();
+        return Response.ok(new GenericEntity<Double>(average) {
+        }).build();
     }
 }
