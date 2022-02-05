@@ -30,7 +30,11 @@ export class UserService {
     page?: number,
     pageSize?: number
   ) {
-    let url = pageUrlMaker(this.basePath, page, pageSize);
+    let url = pageUrlMaker(
+      this.basePath + "/" + userId + "/courses",
+      page,
+      pageSize
+    );
     return getPagedFetch(url.toString());
   }
 
