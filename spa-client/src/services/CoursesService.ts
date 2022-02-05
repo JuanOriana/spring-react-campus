@@ -106,7 +106,7 @@ export class CourseService {
     orderDirection?: string,
     page?: number,
     pageSize?: number
-  ) {
+  ): Promise<Result<PagedContent<FileModel[]>>> {
     let url = fileUrlMaker(
       this.basePath + "/" + courseId + "/files",
       categoryType,
@@ -118,7 +118,7 @@ export class CourseService {
       pageSize
     );
 
-    return getPagedFetch<FileModel>(url.toString());
+    return getPagedFetch<FileModel[]>(url.toString());
   }
 
   public async newCourse(

@@ -1,32 +1,36 @@
-import { readFile, readFileSync } from "fs";
 import { paths } from "../common/constants";
 import { authedFetch } from "../scripts/authedFetch";
 import { fileUrlMaker } from "../scripts/fileUrlMaker";
-import { getFetch } from "../scripts/getFetch";
 import { getPagedFetch } from "../scripts/getPagedFetch";
-import { FileModel } from "../types";
+import { ErrorResponse, FileModel, PagedContent, Result } from "../types";
 
 export class FileService {
   private readonly basePath = paths.BASE_URL + paths.FILES;
 
-  public async getFileById(fileId: number) {
-    let response = await authedFetch(this.basePath + "/" + fileId, {
-      method: "GET",
-    });
+  public async getFileById(fileId: number): Promise<Result<File>> {
+    try {
+      let response = await authedFetch(this.basePath + "/" + fileId, {
+        method: "GET",
+      });
 
-    let dispositionHeader = response.headers.get("Content-Disposition");
+      let dispositionHeader = response.headers.get("Content-Disposition");
 
-    if (dispositionHeader == null) {
-      dispositionHeader = "";
+      if (dispositionHeader == null) {
+        dispositionHeader = "";
+      }
+      let fileName = "";
+      let fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      let matches = fileNameRegex.exec(dispositionHeader);
+      if (matches != null && matches[1]) {
+        fileName = matches[1].replace(/['"]/g, "");
+      }
+
+      return Result.ok(new File([await response.blob()], fileName));
+    } catch (err: any) {
+      return Result.failed(
+        new ErrorResponse(parseInt(err.message), err.message)
+      );
     }
-    let fileName = "";
-    let fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-    let matches = fileNameRegex.exec(dispositionHeader);
-    if (matches != null && matches[1]) {
-      fileName = matches[1].replace(/['"]/g, "");
-    }
-
-    return new File([await response.blob()], fileName);
   }
 
   public async getFiles(
@@ -37,7 +41,7 @@ export class FileService {
     orderDirection?: string,
     page?: number,
     pageSize?: number
-  ) {
+  ): Promise<Result<PagedContent<FileModel[]>>> {
     let url = fileUrlMaker(
       this.basePath,
       categoryType,
@@ -48,7 +52,7 @@ export class FileService {
       page,
       pageSize
     );
-    return getPagedFetch<FileModel>(url.toString());
+    return getPagedFetch<FileModel[]>(url.toString());
   }
 
   public async deleteFile(fileId: number) {
