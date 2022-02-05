@@ -18,6 +18,7 @@ import LoadableData from "../../components/LoadableData";
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
 import { useAuth } from "../../contexts/AuthContext";
+import { handleService } from "../../scripts/handleService";
 //
 
 function Portal() {
@@ -33,31 +34,27 @@ function Portal() {
 
   useEffect(() => {
     setIsCourseLoading(true);
-    userService
-      .getUsersCourses(user!.userId, currentPage, pageSize)
-      .then((courses) => {
-        if (courses.hasFailed())
-          navigate(`/error?code=${courses.getError().getCode()}`);
-        else {
-          setCourses(courses.getData().getContent());
-          setMaxPage(courses.getData().getMaxPage());
-        }
-      })
-      .catch(() => navigate("/error?code=500"))
-      .finally(() => setIsCourseLoading(false));
+    handleService(
+      userService.getUsersCourses(user!.userId, currentPage, pageSize),
+      navigate,
+      (coursesData) => {
+        setCourses(coursesData.getContent());
+        setMaxPage(coursesData.getMaxPage());
+      },
+      () => setIsCourseLoading(false)
+    );
   }, [currentPage, pageSize]);
 
   useEffect(() => {
     setIsAnnouncementLoading(true);
-    announcementsService
-      .getAnnouncements(1, 3)
-      .then((announcements) =>
-        announcements.hasFailed()
-          ? navigate(`/error?code=${announcements.getError().getCode()}`)
-          : setAnnouncements(announcements.getData().getContent())
-      )
-      .catch(() => navigate("/error?code=500"))
-      .finally(() => setIsAnnouncementLoading(false));
+    handleService(
+      announcementsService.getAnnouncements(1, 3),
+      navigate,
+      (announcementsData) => {
+        setAnnouncements(announcementsData.getContent());
+      },
+      () => setIsAnnouncementLoading(false)
+    );
   }, []);
 
   return (

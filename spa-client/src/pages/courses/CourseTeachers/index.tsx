@@ -20,7 +20,7 @@ interface Teacher {
   email: string;
 }
 function CourseTeachers() {
-    const { t } = useTranslation();
+  const { t } = useTranslation();
   const teachers: Map<Teacher, number> = new Map();
   teachers.set(
     {
@@ -32,12 +32,12 @@ function CourseTeachers() {
     },
     1
   );
-  const Course = useCourseData();
+  const course = useCourseData();
 
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-          {t('CourseTeachers.title')}
+        {t("CourseTeachers.title")}
       </SectionHeading>
       <BigWrapper>
         {Array.from(teachers.keys(), (teacher: Teacher) => (
@@ -66,10 +66,10 @@ function CourseTeachers() {
               </p>
               <p>{teacher.email}</p>
             </div>
-            <Link to={`/course/${Course.courseId}/mail/${teacher.userId}`}>
+            <Link to={`/course/${course.courseId}/mail/${teacher.userId}`}>
               <MailIcon
-                alt={t('CourseTeachers.alt.mail')}
-                title={t('CourseTeachers.alt.title')}
+                alt={t("CourseTeachers.alt.mail")}
+                title={t("CourseTeachers.alt.title")}
                 src="https://i.pinimg.com/originals/3a/4e/95/3a4e95aa862636d6f22c95fded897f94.jpg"
               />
             </Link>

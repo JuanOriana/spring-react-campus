@@ -11,6 +11,7 @@ import LoadableData from "../../components/LoadableData";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
+import { handleService } from "../../scripts/handleService";
 //
 
 function Announcements() {
@@ -23,18 +24,15 @@ function Announcements() {
 
   useEffect(() => {
     setIsLoading(true);
-    announcementsService
-      .getAnnouncements(currentPage, pageSize)
-      .then((announcements) => {
-        if (announcements.hasFailed()) {
-          navigate(`/error?code=${announcements.getError().getCode()}`);
-        } else {
-          setAnnouncements(announcements.getData().getContent());
-          setMaxPage(announcements.getData().getMaxPage());
-        }
-      })
-      .catch(() => navigate("/error?code=500"))
-      .finally(() => setIsLoading(false));
+    handleService(
+      announcementsService.getAnnouncements(currentPage, pageSize),
+      navigate,
+      (announcementsData) => {
+        setAnnouncements(announcementsData.getContent());
+        setMaxPage(announcementsData.getMaxPage());
+      },
+      () => setIsLoading(false)
+    );
   }, [currentPage, pageSize]);
   return (
     <>

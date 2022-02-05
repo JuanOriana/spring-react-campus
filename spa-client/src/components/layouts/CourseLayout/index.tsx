@@ -7,9 +7,9 @@ import {
   CoursePageWrapper,
   CourseDataContainer,
 } from "./styles";
-import { courseService } from "../../../services";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadableData from "../../LoadableData";
+import { handleService } from "../../../scripts/handleService";
 
 function CourseLayout() {
   const [course, setCourse] = useState<CourseModel | undefined>(undefined);
@@ -18,17 +18,14 @@ function CourseLayout() {
   const { courseId } = useParams();
   useEffect(() => {
     setIsLoading(true);
-    courseService
-      .getCourseById(parseInt(courseId ? courseId : "-1"))
-      .then((course) => {
-        if (course.hasFailed()) {
-          navigate(`/error?code=${course.getError().getCode()}`);
-        } else {
-          setCourse(course.getData());
-        }
-      })
-      .catch(() => navigate("/error?code=500"))
-      .finally(() => setIsLoading(false));
+    handleService(
+      courseService.getCourseById(parseInt(courseId ? courseId : "-1")),
+      navigate,
+      (courseData) => {
+        setCourse(courseData);
+      },
+      () => setIsLoading(false)
+    );
   }, []);
   return (
     <>
@@ -46,9 +43,7 @@ function CourseLayout() {
                 board={course!.board}
               />
               <CourseDataContainer>
-                <Outlet
-                  context={{ course: course!, isTeacher: course!.isTeacher }}
-                />
+                <Outlet context={course} />
               </CourseDataContainer>
             </CoursePageWrapper>
           </>

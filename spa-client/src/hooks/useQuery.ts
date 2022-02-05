@@ -17,3 +17,14 @@ export function getQueryOrDefault(
   }
   return fetcher;
 }
+
+export function getQueryOrDefaultMultiple(
+  query: URLSearchParams,
+  queryParam: string
+) {
+  const fetcher = query.getAll(queryParam);
+  if (fetcher === null) {
+    return [];
+  }
+  return fetcher;
+}

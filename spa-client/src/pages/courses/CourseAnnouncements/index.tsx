@@ -21,6 +21,10 @@ import { useForm } from "react-hook-form";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
+import { handleService } from "../../../scripts/handleService";
+import { courseService } from "../../../services";
+import { useNavigate } from "react-router-dom";
+import LoadableData from "../../../components/LoadableData";
 //
 
 type FormData = {
@@ -31,8 +35,10 @@ type FormData = {
 function CourseAnnouncements() {
   const { t } = useTranslation();
   const course = useCourseData();
+  const navigate = useNavigate();
   const [announcements, setAnnouncements] = useState(new Array(0));
-  const maxPage = 3;
+  const [isLoading, setIsLoading] = useState(false);
+  const [maxPage, setMaxPage] = useState(1);
   const [currentPage, pageSize] = usePagination(10);
 
   const {
@@ -46,16 +52,16 @@ function CourseAnnouncements() {
   });
 
   useEffect(() => {
-    setAnnouncements([
-      {
-        announcementId: 1,
-        title: "Hola",
-        content:
-          "xAAdddxAAdddxAAdddxAAdddxAAdddxAAdddxAdvxAAdddxAAdddxAAdddxAAdddAdddxAAdddxAAddd",
-        author: { name: "juan", surname: "oriana" },
-        date: "hoy",
+    setIsLoading(true);
+    handleService(
+      courseService.getAnnouncements(course.courseId),
+      navigate,
+      (announcementsData) => {
+        setAnnouncements(announcementsData.getContent());
+        setMaxPage(announcementsData.getMaxPage());
       },
-    ]);
+      () => setIsLoading(false)
+    );
   }, []);
 
   function renderTeacherForm() {
@@ -134,25 +140,27 @@ function CourseAnnouncements() {
           alignItems: "center",
         }}
       >
-        {announcements.length === 0 && (
-          <GeneralTitle style={{ width: "100%", textAlign: "center" }}>
-            {t("Announcements.noAnnouncements")}
-          </GeneralTitle>
-        )}
+        <LoadableData isLoading={isLoading}>
+          {announcements.length === 0 && (
+            <GeneralTitle style={{ width: "100%", textAlign: "center" }}>
+              {t("Announcements.noAnnouncements")}
+            </GeneralTitle>
+          )}
 
-        {announcements.map((announcement) => (
-          <AnnouncementUnit
-            announcement={announcement}
-            isTeacher={course.isTeacher}
+          {announcements.map((announcement) => (
+            <AnnouncementUnit
+              announcement={announcement}
+              isTeacher={course.isTeacher}
+            />
+          ))}
+
+          <BasicPagination
+            currentPage={currentPage}
+            pageSize={pageSize}
+            maxPage={maxPage}
+            baseURL={`/course/${course.courseId}/announcements`}
           />
-        ))}
-
-        <BasicPagination
-          currentPage={currentPage}
-          pageSize={pageSize}
-          maxPage={maxPage}
-          baseURL={`/course/${course.courseId}/announcements`}
-        />
+        </LoadableData>
       </div>
     </>
   );
