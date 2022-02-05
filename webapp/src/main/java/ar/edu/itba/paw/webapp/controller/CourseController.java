@@ -73,12 +73,30 @@ public class CourseController {
     private AnswerAssembler answerAssembler;
 
     @Autowired
+    private AnnouncementAssembler announcementAssembler;
+
+    @Autowired
     private ExamAssembler examAssembler;
 
     @Autowired
     private FileModelAssembler fileAssembler;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
+
+    @Path("/{courseId}/announcements")
+    @Produces("application/vnd.campus.api.v1+json")
+    @GET
+    public Response getAnnouncements(@PathParam("courseId") Long courseId,
+                                     @QueryParam("page") Integer page,
+                                     @QueryParam("pageSize") Integer pageSize) {
+        CampusPage<Announcement> announcements = announcementService.listByCourse(courseId, page, pageSize);
+        if(announcements.isEmpty()) {
+            return Response.noContent().build();
+        }
+        Response.ResponseBuilder builder = Response.ok(
+                new GenericEntity<List<AnnouncementDto>>(announcementAssembler.toResources(announcements.getContent())){});
+        return PaginationBuilder.build(announcements, builder, uriInfo, pageSize);
+    }
 
     @Path("/{courseId}/files")
     @POST
