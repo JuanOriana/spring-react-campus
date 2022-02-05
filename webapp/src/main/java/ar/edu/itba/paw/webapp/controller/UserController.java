@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -28,7 +27,6 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Path("users")
 @Component
@@ -113,9 +111,9 @@ public class UserController {
     }
 
     @GET
-    @Path("/last/file-number")
+    @Path("/file-number/last")
     @Produces("application/vnd.campus.api.v1+json")
-    public Response getNextFileNumber(){
+    public Response getNextFileNumber() {
         return Response.ok(NextFileNumberDto.fromNextFileNumber(userService.getMaxFileNumber() + 1)).build();
     }
 }

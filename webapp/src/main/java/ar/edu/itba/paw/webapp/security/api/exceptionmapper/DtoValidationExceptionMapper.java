@@ -8,7 +8,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class DtoValidationMapper implements ExceptionMapper<DtoValidationException> {
+public class DtoValidationExceptionMapper implements ExceptionMapper<DtoValidationException> {
 
     @Override
     public Response toResponse(final DtoValidationException exception) {
