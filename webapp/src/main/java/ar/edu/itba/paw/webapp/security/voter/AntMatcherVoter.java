@@ -10,6 +10,8 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class AntMatcherVoter {
 
@@ -27,6 +29,9 @@ public class AntMatcherVoter {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ExamService examService;
 
     private Long getUserId(Authentication authentication) {
         if(authentication instanceof BasicAuthenticationToken) {
@@ -48,7 +53,6 @@ public class AntMatcherVoter {
         return courseService.isPrivileged(getUserId(authentication), announcement.getCourse().getCourseId());
     }
 
-    // TODO: Add time and delivery checks
     public boolean canAccessAnswerById(Authentication authentication, Long id) {
         if(authentication instanceof AnonymousAuthenticationToken) return false;
         Answer answer = answerService.findById(id).orElseThrow(AnswerNotFoundException::new);
@@ -99,5 +103,25 @@ public class AntMatcherVoter {
         if(authentication instanceof AnonymousAuthenticationToken) return false;
         FileModel fileModel = fileService.findById(id).orElseThrow(FileNotFoundException::new);
         return courseService.isPrivileged(getUserId(authentication), fileModel.getCourse().getCourseId());
+    }
+
+    public boolean canAccessExamById(Authentication authentication, Long id) {
+        if(authentication instanceof AnonymousAuthenticationToken) return false;
+        Exam exam = examService.findById(id).orElseThrow(ExamNotFoundException::new);
+        Long examId = exam.getExamId();
+        Long courseId = exam.getCourse().getCourseId();
+        Long userId = getUserId(authentication);
+        boolean isPrivileged = courseService.isPrivileged(userId, courseId);
+        if(!courseService.belongs(userId, courseId)) return false;
+        if(!examService.belongs(examId, courseId)) return false;
+        if(!isPrivileged && answerService.didUserDeliver(examId, userId)) return false;
+        if(isPrivileged) return true;
+        return !LocalDateTime.now().isBefore(exam.getStartTime())
+                && !LocalDateTime.now().isAfter(exam.getEndTime());
+    }
+    public boolean canDeleteExamById(Authentication authentication, Long id) {
+        if(authentication instanceof AnonymousAuthenticationToken) return false;
+        Exam exam = examService.findById(id).orElseThrow(ExamNotFoundException::new);
+        return courseService.isPrivileged(getUserId(authentication), exam.getCourse().getCourseId());
     }
 }
