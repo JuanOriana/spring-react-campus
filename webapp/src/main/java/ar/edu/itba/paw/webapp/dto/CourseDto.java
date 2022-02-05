@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.models.Course;
 import org.springframework.hateoas.ResourceSupport;
 
 public class CourseDto extends ResourceSupport {
@@ -11,22 +10,6 @@ public class CourseDto extends ResourceSupport {
     private String board;
     private SubjectDto subject;
     private String uri;
-
-    public static CourseDto fromCourse(Course course){
-        if (course == null){
-            return null;
-        }
-
-        final CourseDto dto = new CourseDto();
-        dto.courseId = course.getCourseId();
-        dto.year = course.getYear();
-        dto.quarter = course.getQuarter();
-        dto.board = course.getBoard();
-        dto.subject = SubjectDto.fromSubject(course.getSubject());
-        StringBuilder aux = new StringBuilder("/course/");
-        dto.uri = aux.append(course.getCourseId().toString()).toString();
-        return dto;
-    }
 
     public long getCourseId() {
         return courseId;

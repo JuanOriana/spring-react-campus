@@ -1,10 +1,10 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.models.FileModel;
+import org.springframework.hateoas.ResourceSupport;
 
 import java.time.LocalDateTime;
 
-public class FileModelDto {
+public class FileModelDto extends ResourceSupport {
 
     private long fileId;
     private long size;
@@ -14,28 +14,7 @@ public class FileModelDto {
     private CourseDto course;
     private long downloads;
     private Boolean hidden;
-    private String uri;
     private FileCategoryDto fileCategory;
-
-    public static FileModelDto fromFile(FileModel file) {
-        if (file == null) {
-            return null;
-        }
-
-        final FileModelDto dto = new FileModelDto();
-        dto.fileId = file.getFileId();
-        dto.size = file.getSize();
-        dto.fileCategory = FileCategoryDto.fromFileCategory(file.getCategories().get(0));
-        dto.extension = FileExtensionDto.fromFileExtension(file.getExtension());
-        dto.fileName = file.getName();
-        dto.fileDate = file.getDate();
-        dto.course = CourseDto.fromCourse(file.getCourse());
-        dto.downloads = file.getDownloads();
-        dto.hidden = file.isHidden();
-        StringBuilder aux = new StringBuilder("/files/");
-        dto.uri = aux.append(file.getFileId().toString()).toString();
-        return dto;
-    }
 
     public FileCategoryDto getFileCategory() {
         return fileCategory;
@@ -107,13 +86,5 @@ public class FileModelDto {
 
     public void setHidden(Boolean hidden) {
         this.hidden = hidden;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String fileUri) {
-        this.uri = fileUri;
     }
 }

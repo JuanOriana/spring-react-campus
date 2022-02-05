@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.TimetableService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Timetable;
+import ar.edu.itba.paw.webapp.assembler.CourseAssembler;
 import ar.edu.itba.paw.webapp.dto.CourseDto;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,6 +38,9 @@ public class TimeTableControllerREST {
 
     @Autowired
     private AuthFacade authFacade;
+
+    @Autowired
+    private CourseAssembler courseAssembler;
 
     @GET
     @Produces("application/vnd.campus.api.v1+json")
@@ -74,7 +78,7 @@ public class TimeTableControllerREST {
                 for (int i = 0; i < hours.length; i++){
                     LocalTime timedHour = stringToTime(hours[i]);
                     if ((begins.isBefore(timedHour) || begins.equals(timedHour)) && ends.isAfter(timedHour)){
-                        timeTableMatrix.get(timetable.getDayOfWeek()).add(i,CourseDto.fromCourse(entry.getKey()));
+                        timeTableMatrix.get(timetable.getDayOfWeek()).add(i, courseAssembler.toResource(entry.getKey()));
                     }
                 }
             }

@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.FileModel;
 import ar.edu.itba.paw.models.exception.FileNotFoundException;
+import ar.edu.itba.paw.webapp.assembler.FileModelAssembler;
 import ar.edu.itba.paw.webapp.dto.FileModelDto;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.util.PaginationBuilder;
@@ -12,10 +13,8 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("files")
 @Component
@@ -29,6 +28,9 @@ public class FileController {
 
     @Autowired
     private AuthFacade authFacade;
+
+    @Autowired
+    private FileModelAssembler fileAssembler;
 
     @GET
     @Produces("application/vnd.campus.api.v1+json")
@@ -47,11 +49,7 @@ public class FileController {
             return Response.noContent().build();
         }
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<FileModelDto>>(
-                        filePage.getContent()
-                                .stream()
-                                .map(FileModelDto::fromFile)
-                                .collect(Collectors.toList())){});
+                new GenericEntity<List<FileModelDto>>(fileAssembler.toResources(filePage.getContent())){});
         return PaginationBuilder.build(filePage, builder, uriInfo, pageSize);
     }
 

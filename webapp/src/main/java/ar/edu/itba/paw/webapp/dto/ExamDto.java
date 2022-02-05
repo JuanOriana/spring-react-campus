@@ -1,11 +1,10 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.models.Exam;
+import org.springframework.hateoas.ResourceSupport;
 
-import javax.ws.rs.core.UriInfo;
 import java.time.LocalDateTime;
 
-public class ExamDto {
+public class ExamDto extends ResourceSupport {
 
     private Long examId;
 
@@ -22,8 +21,6 @@ public class ExamDto {
     private FileModelDto examFile;
 
     private Double average;
-
-    private String uri;
 
 
     public Long getExamId() {
@@ -82,40 +79,11 @@ public class ExamDto {
         this.examFile = examFile;
     }
 
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
     public Double getAverage() {
         return average;
     }
 
     public void setAverage(Double average) {
         this.average = average;
-    }
-
-
-    public static ExamDto fromExam(UriInfo uriInfo, Exam exam,Double average){
-        if (exam == null){
-            return null;
-        }
-
-        final ExamDto examDto = new ExamDto();
-        examDto.setExamId(exam.getExamId());
-        examDto.setExamFile(FileModelDto.fromFile(exam.getExamFile()));
-        examDto.setCourse(CourseDto.fromCourse(exam.getCourse()));
-        examDto.setDescription(exam.getDescription());
-        examDto.setEndTime(exam.getEndTime());
-        examDto.setStartTime(exam.getStartTime());
-        examDto.setTitle(exam.getTitle());
-        examDto.setAverage(average);
-
-        examDto.setUri(uriInfo.getBaseUriBuilder().path("exams").path(String.valueOf(exam.getCourse().getCourseId())).path(String.valueOf(exam.getExamId())).build().toString());
-
-        return examDto;
     }
 }

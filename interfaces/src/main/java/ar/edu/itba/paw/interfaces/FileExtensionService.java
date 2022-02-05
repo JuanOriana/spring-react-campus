@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.FileExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FileExtensionService {
 
@@ -14,6 +15,14 @@ public interface FileExtensionService {
      */
     FileExtension create(String fileExtension);
 
+
+    /**
+     * Attempts to find a FileExtension based on the queried id
+     * @param fileExtensionId of the queried FileExtension
+     * @return FileExtension if it was found, Optional.empty() otherwise
+     */
+    Optional<FileExtension> findById(Long fileExtensionId);
+
     /**
      * Attempts to update an extension
      *
@@ -22,6 +31,8 @@ public interface FileExtensionService {
      * @return true if the extension was successfully updated, false otherwise
      */
     boolean update(long fileExtensionId, String fileExtension);
+
+
 
     /**
      * Attempts to delete an extension

@@ -4,8 +4,7 @@ import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
-import ar.edu.itba.paw.webapp.assembler.CourseAssembler;
-import ar.edu.itba.paw.webapp.assembler.UserAssembler;
+import ar.edu.itba.paw.webapp.assembler.*;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
@@ -70,6 +69,15 @@ public class CourseController {
     @Autowired
     private UserAssembler userAssembler;
 
+    @Autowired
+    private AnswerAssembler answerAssembler;
+
+    @Autowired
+    private ExamAssembler examAssembler;
+
+    @Autowired
+    private FileModelAssembler fileAssembler;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
     @Path("/{courseId}/files")
@@ -108,12 +116,7 @@ public class CourseController {
             return Response.noContent().build();
         }
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<FileModelDto>>(
-                        filePage.getContent()
-                                .stream()
-                                .map(FileModelDto::fromFile)
-                                .collect(Collectors.toList())) {
-                });
+                new GenericEntity<List<FileModelDto>>(fileAssembler.toResources(filePage.getContent())){});
         return PaginationBuilder.build(filePage, builder, uriInfo, pageSize);
     }
 
@@ -267,9 +270,7 @@ public class CourseController {
         if (exams.isEmpty()) {
             return Response.noContent().build();
         }
-        List<ExamDto> examDtoList = exams.stream()
-                .map(exam -> ExamDto.fromExam(uriInfo, exam, examService.getAverageScoreOfExam(exam.getExamId())))
-                .collect(Collectors.toList());
+        List<ExamDto> examDtoList = examAssembler.toResources(exams);
         return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
         }).build();
     }
@@ -301,13 +302,13 @@ public class CourseController {
         if (courseService.isPrivileged(userId, courseId)) {
             Map<Exam, Double> examAverage = examService.getExamsAverage(courseId);
             List<ExamDto> examDtoList = new ArrayList<>();
-            examAverage.forEach((exam, average) -> examDtoList.add(ExamDto.fromExam(uriInfo, exam, average)));
+            examAverage.forEach((exam, average) -> examDtoList.add(examAssembler.toResource(exam)));
             return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
             }).build();
         }
         List<ExamDto> exams = examService.getResolvedExams(userId, courseId)
                 .stream()
-                .map(exam -> ExamDto.fromExam(uriInfo, exam, examService.getAverageScoreOfExam(exam.getExamId())))
+                .map(exam -> examAssembler.toResource(exam))
                 .collect(Collectors.toList());
         return Response.ok(new GenericEntity<List<ExamDto>>(exams) {
         }).build();
@@ -323,7 +324,7 @@ public class CourseController {
         Long userId = authFacade.getCurrentUserId();
         List<ExamDto> exams = examService.getUnresolvedExams(userId, courseId)
                 .stream()
-                .map(exam -> ExamDto.fromExam(uriInfo, exam, examService.getAverageScoreOfExam(exam.getExamId())))
+                .map(exam -> examAssembler.toResource(exam))
                 .collect(Collectors.toList());
         return Response.ok(new GenericEntity<List<ExamDto>>(exams) {
         }).build();
@@ -339,7 +340,7 @@ public class CourseController {
         Long userId = authFacade.getCurrentUserId();
         List<AnswerDto> answers = answerService.getMarks(userId, courseId)
                 .stream()
-                .map(answer -> AnswerDto.fromAnswer(uriInfo, answer))
+                .map(answer -> answerAssembler.toResource(answer))
                 .collect(Collectors.toList());
         return Response.ok(new GenericEntity<List<AnswerDto>>(answers) {
         }).build();

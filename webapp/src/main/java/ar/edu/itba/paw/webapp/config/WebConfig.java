@@ -1,8 +1,5 @@
 package ar.edu.itba.paw.webapp.config;
-import ar.edu.itba.paw.webapp.assembler.AnnouncementAssembler;
-import ar.edu.itba.paw.webapp.assembler.CourseAssembler;
-import ar.edu.itba.paw.webapp.assembler.SubjectAssembler;
-import ar.edu.itba.paw.webapp.assembler.UserAssembler;
+import ar.edu.itba.paw.webapp.assembler.*;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.security.service.implementation.AuthFacadeImpl;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -53,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     // Change this to a config/profile in the future
-    private static final boolean DEV_BUILD = true;
+    private static final boolean DEV_BUILD = false;
     private static boolean isOnDevBuild() {
         return DEV_BUILD;
     }
@@ -202,5 +199,20 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public CourseAssembler courseAssembler() { return new CourseAssembler(); }
 
     @Bean
-    public SubjectAssembler subjectAssembler() { return new SubjectAssembler();}
+    public SubjectAssembler subjectAssembler() { return new SubjectAssembler(); }
+
+    @Bean
+    public FileModelAssembler fileModelAssembler() { return new FileModelAssembler(); }
+
+    @Bean
+    public FileExtensionAssembler fileExtensionAssembler() { return new FileExtensionAssembler(); }
+
+    @Bean
+    public FileCategoryAssembler fileCategoryAssembler() { return new FileCategoryAssembler(); }
+
+    @Bean
+    public ExamAssembler examAssembler() { return new ExamAssembler(); }
+
+    @Bean
+    public AnswerAssembler answerAssembler() { return new AnswerAssembler(); }
 }

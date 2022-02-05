@@ -67,16 +67,4 @@ public class AnnouncementDto extends ResourceSupport {
         this.content = content;
     }
 
-    public static AnnouncementDto fromAnnouncement(Announcement announcement){
-        AnnouncementDto dto = new AnnouncementDto();
-
-        dto.setAnnouncementId(announcement.getAnnouncementId());
-        dto.setAuthor(UserDto.fromUser(announcement.getAuthor()));
-        dto.setTitle(announcement.getTitle());
-        dto.setContent(announcement.getContent());
-        dto.setTime(announcement.getDate());
-        dto.setCourse(CourseDto.fromCourse(announcement.getCourse()));
-
-        return dto;
-    }
 }

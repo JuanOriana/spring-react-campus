@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.models.exception;
 
-public class AnnouncementNotFoundException extends RuntimeException{
+public class AnnouncementNotFoundException extends RuntimeException {
     public AnnouncementNotFoundException() {
         super("The announcement does not exist");
     }

@@ -7,6 +7,8 @@ import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.exception.ExamNotFoundException;
+import ar.edu.itba.paw.webapp.assembler.AnswerAssembler;
+import ar.edu.itba.paw.webapp.assembler.ExamAssembler;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.AnswerDto;
 import ar.edu.itba.paw.webapp.dto.ExamDto;
@@ -49,14 +51,21 @@ public class ExamController {
     @Autowired
     private DtoConstraintValidator dtoValidator;
 
+    @Autowired
+    private AnswerAssembler answerAssembler;
+
+    @Autowired
+    private ExamAssembler examAssembler;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ExamController.class);
 
     @GET
     @Path("/{examId}")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getExams(@PathParam("examId") Long examId) {
-        ExamDto exam = ExamDto.fromExam(uriInfo, examService.findById(examId).orElseThrow(ExamNotFoundException::new), examService.getAverageScoreOfExam(examId));
-        return Response.ok(exam).build();
+        Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
+        ExamDto examDto = examAssembler.toResource(exam);
+        return Response.ok(new GenericEntity<ExamDto>(examDto){}).build();
     }
 
     @DELETE
@@ -86,13 +95,13 @@ public class ExamController {
                     new GenericEntity<List<AnswerDto>>(
                             paginatedAnswers.getContent()
                                     .stream()
-                                    .map(answer-> AnswerDto.fromAnswer(uriInfo, answer))
+                                    .map(answer -> answerAssembler.toResource(answer))
                                     .collect(Collectors.toList())){});
             return PaginationBuilder.build(paginatedAnswers, builder, uriInfo, pageSize);
         }
         List<AnswerDto> answerDtoList = answerService.getMarks(userId, exam.getCourse().getCourseId())
                 .stream()
-                .map(answer -> AnswerDto.fromAnswer(uriInfo, answer))
+                .map(answer -> answerAssembler.toResource(answer))
                 .collect(Collectors.toList());
         return Response.ok(new GenericEntity<List<AnswerDto>>(answerDtoList){}).build();
     }

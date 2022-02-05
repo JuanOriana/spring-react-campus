@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.FileCategory;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FileCategoryService {
 
@@ -13,6 +14,14 @@ public interface FileCategoryService {
      * @return the FileCategory Model object if it was successfully added
      */
     FileCategory create(String newCategory);
+
+
+    /**
+     * Attempts to find a FileCategory based on the queried id
+     * @param fileCategoryId of the queried file
+     * @return FileCategory if found, Optional.empty() otherwise
+     */
+    Optional<FileCategory> findById(Long fileCategoryId);
 
     /**
      * Attempts to update a category

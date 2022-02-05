@@ -1,23 +1,11 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.models.FileExtension;
+import org.springframework.hateoas.ResourceSupport;
 
-public class FileExtensionDto {
+public class FileExtensionDto extends ResourceSupport {
 
     private long fileExtensionId;
-    private String fileExtension;
-
-    public static FileExtensionDto fromFileExtension(FileExtension fileExtension){
-        if (fileExtension == null){
-            return null;
-        }
-
-        final FileExtensionDto dto = new FileExtensionDto();
-        dto.fileExtensionId = fileExtension.getFileExtensionId();
-        dto.fileExtension = fileExtension.getFileExtensionName();
-        return dto;
-
-    }
+    private String fileExtensionName;
 
     public long getFileExtensionId() {
         return fileExtensionId;
@@ -27,11 +15,11 @@ public class FileExtensionDto {
         this.fileExtensionId = fileExtensionId;
     }
 
-    public String getFileExtension() {
-        return fileExtension;
+    public String getFileExtensionName() {
+        return fileExtensionName;
     }
 
-    public void setFileExtension(String fileExtension) {
-        this.fileExtension = fileExtension;
+    public void setFileExtensionName(String fileExtensionName) {
+        this.fileExtensionName = fileExtensionName;
     }
 }
