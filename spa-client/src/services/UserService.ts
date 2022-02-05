@@ -18,7 +18,7 @@ export class UserService {
   }
 
   public async getLastFileNumber(): Promise<Result<number>> {
-    return getFetch<number>(this.basePath + "/last/file-number");
+    return getFetch<number>(this.basePath + "/file-number/last");
   }
 
   public async getUserProfileImage(userId: number): Promise<Result<File>> {

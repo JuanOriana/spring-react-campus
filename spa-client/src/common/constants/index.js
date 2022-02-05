@@ -6,5 +6,5 @@ export const paths = {
   SUBJECTS: "/subjects",
   USERS: "/users",
   ANSWERS: "/answers",
-  COURSES_QUERY_PARAMS: "/courses",
+  FILES: "/files",
 };

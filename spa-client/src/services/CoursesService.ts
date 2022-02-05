@@ -6,14 +6,14 @@ import {
   UserModel,
   ExamModel,
   PagedContent,
+  FileModel,
 } from "../types";
 import AnswerModel from "../types/AnswerModel";
 import { getFetch } from "../scripts/getFetch";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
-import { authedFetch } from "../scripts/authedFetch";
 import { postFetch } from "../scripts/postFetch";
-import { string } from "prop-types";
+import { fileUrlMaker } from "../scripts/fileUrlMaker";
 
 export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
@@ -79,7 +79,6 @@ export class CourseService {
   public async getCourseAnswers(
     courseId: number
   ): Promise<Result<PagedContent<AnswerModel[]>>> {
-    // TODO: Esperar respuesta mail para ver que hacer con los links en este caso
     return getPagedFetch<AnswerModel[]>(
       this.basePath + courseId + "/exams/answers"
     );
@@ -96,6 +95,30 @@ export class CourseService {
     return getPagedFetch<AnnouncementModel[]>(
       this.basePath + courseId + "/announcements"
     );
+  }
+
+  public async getFiles(
+    courseId: number,
+    categoryType?: number[],
+    extensionType?: number[],
+    query?: string,
+    orderProperty?: string,
+    orderDirection?: string,
+    page?: number,
+    pageSize?: number
+  ) {
+    let url = fileUrlMaker(
+      this.basePath + "/" + courseId + "/files",
+      categoryType,
+      extensionType,
+      query,
+      orderProperty,
+      orderDirection,
+      page,
+      pageSize
+    );
+
+    return getPagedFetch<FileModel>(url.toString());
   }
 
   public async newCourse(
@@ -148,8 +171,8 @@ export class CourseService {
     endTime: string
   ) {
     const newExam = JSON.stringify({
-      title: string,
-      content: string,
+      title: title,
+      content: content,
       file: file, // TODO ver si esto es correcto
       startTime: startTime,
       endTime: endTime,
@@ -171,11 +194,5 @@ export class CourseService {
       "application/vnd.campus.api.v1+json",
       newAnswer
     );
-  }
-
-  public async deleteFile(courseId: number, fileId: number) {
-    return authedFetch(this.basePath + "/" + courseId + "/files/" + fileId, {
-      method: "DELETE",
-    });
   }
 }
