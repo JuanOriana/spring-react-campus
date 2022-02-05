@@ -19,7 +19,7 @@ export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
 
   public async getCourseById(courseId: number): Promise<Result<CourseModel>> {
-    return getFetch<CourseModel>(this.basePath + courseId);
+    return getFetch<CourseModel>(this.basePath + "/" + courseId);
   }
 
   public async getCourses(
@@ -33,13 +33,17 @@ export class CourseService {
   public async getHelpers(
     courseId: number
   ): Promise<Result<PagedContent<UserModel[]>>> {
-    return getPagedFetch<UserModel[]>(this.basePath + courseId + "/helpers");
+    return getPagedFetch<UserModel[]>(
+      this.basePath + "/" + courseId + "/helpers"
+    );
   }
 
   public async getTeachers(
     courseId: number
   ): Promise<Result<PagedContent<UserModel[]>>> {
-    return getPagedFetch<UserModel[]>(this.basePath + courseId + "/teachers");
+    return getPagedFetch<UserModel[]>(
+      this.basePath + "/" + courseId + "/teachers"
+    );
   }
 
   public async getStudents(
@@ -57,14 +61,16 @@ export class CourseService {
   public async getExams(
     courseId: number
   ): Promise<Result<PagedContent<ExamModel[]>>> {
-    return getPagedFetch<ExamModel[]>(this.basePath + courseId + "/exams");
+    return getPagedFetch<ExamModel[]>(
+      this.basePath + "/" + courseId + "/exams"
+    );
   }
 
   public async getSolvedExams(
     courseId: number
   ): Promise<Result<PagedContent<ExamModel[]>>> {
     return getPagedFetch<ExamModel[]>(
-      this.basePath + courseId + "/exams/solved"
+      this.basePath + "/" + courseId + "/exams/solved"
     );
   }
 
@@ -72,7 +78,7 @@ export class CourseService {
     courseId: number
   ): Promise<Result<PagedContent<ExamModel[]>>> {
     return getPagedFetch<ExamModel[]>(
-      this.basePath + courseId + "/exams/unsolved"
+      this.basePath + "/" + courseId + "/exams/unsolved"
     );
   }
 
@@ -80,7 +86,7 @@ export class CourseService {
     courseId: number
   ): Promise<Result<PagedContent<AnswerModel[]>>> {
     return getPagedFetch<AnswerModel[]>(
-      this.basePath + courseId + "/exams/answers"
+      this.basePath + "/" + courseId + "/exams/answers"
     );
   }
 
@@ -93,7 +99,7 @@ export class CourseService {
     courseId: number
   ): Promise<Result<PagedContent<AnnouncementModel[]>>> {
     return getPagedFetch<AnnouncementModel[]>(
-      this.basePath + courseId + "/announcements"
+      this.basePath + "/" + courseId + "/announcements"
     );
   }
 

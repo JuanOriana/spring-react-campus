@@ -1,7 +1,7 @@
 import { paths } from "../common/constants";
 import { authedFetch } from "../scripts/authedFetch";
 import { getFetch } from "../scripts/getFetch";
-import { PagedContent, Result, UserModel } from "../types";
+import { CourseModel, PagedContent, Result, UserModel } from "../types";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
 import { postFetch } from "../scripts/postFetch";
@@ -29,7 +29,7 @@ export class UserService {
     userId: number,
     page?: number,
     pageSize?: number
-  ) {
+  ): Promise<Result<PagedContent<CourseModel[]>>> {
     let url = pageUrlMaker(
       this.basePath + "/" + userId + "/courses",
       page,

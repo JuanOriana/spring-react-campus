@@ -10,13 +10,14 @@ import {
   CourseName,
 } from "./styles";
 import BasicPagination from "../../components/BasicPagination";
-import { courseService, announcementsService } from "../../services";
+import { userService, announcementsService } from "../../services";
 import { useNavigate } from "react-router-dom";
 import LoadableData from "../../components/LoadableData";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
+import { useAuth } from "../../contexts/AuthContext";
 //
 
 function Portal() {
@@ -28,11 +29,12 @@ function Portal() {
   const [isAnnouncementLoading, setIsAnnouncementLoading] = useState(false);
   const [maxPage, setMaxPage] = useState(1);
   const [currentPage, pageSize] = usePagination(10);
+  const { user } = useAuth();
 
   useEffect(() => {
     setIsCourseLoading(true);
-    courseService
-      .getCourses(currentPage, pageSize)
+    userService
+      .getUsersCourses(user!.userId, currentPage, pageSize)
       .then((courses) => {
         if (courses.hasFailed())
           navigate(`/error?code=${courses.getError().getCode()}`);
