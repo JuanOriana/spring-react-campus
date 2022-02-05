@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.security.config;
 import ar.edu.itba.paw.webapp.security.api.*;
 import ar.edu.itba.paw.webapp.security.api.basic.BasicAuthenticationProvider;
 import ar.edu.itba.paw.webapp.security.api.jwt.JwtAuthenticationProvider;
+import ar.edu.itba.paw.webapp.security.voter.AntMatcherVoter;
 import ar.edu.itba.paw.webapp.security.voter.CampusVoter;
 import ar.edu.itba.paw.webapp.security.service.implementation.CampusUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +107,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CampusVoter courseVoter() { return new CampusVoter(); }
 
+    @Bean
+    public AntMatcherVoter antMatcherVoter() { return new AntMatcherVoter();}
+
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         CharacterEncodingFilter filter = new CharacterEncodingFilter();
@@ -124,6 +128,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .authorizeRequests()
                     .antMatchers(HttpMethod.GET,"/announcements").hasAuthority("USER")
+                    .antMatchers(HttpMethod.GET, "/announcements/{announcementId}").access("@antMatcherVoter.canAccessAnnouncement(authentication, #announcementId)")
+                    .antMatchers(HttpMethod.DELETE, "/announcements/{announcementId}").access("@antMatcherVoter.hasCoursePrivileges(authentication, #announcementId)")
+                    .antMatchers(HttpMethod.GET, "/answers/{answerId}").access("@antMatcherVoter.canAccessAnswer(authentication, #answerId)")
                     .antMatchers(HttpMethod.GET,"/timetable").hasAuthority("USER")
                     .antMatchers(HttpMethod.GET,"/files").hasAuthority("USER")
                     .antMatchers("/users").hasAuthority("ADMIN")
@@ -142,7 +149,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(Collections.singletonList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
-        configuration.setExposedHeaders(Arrays.asList("x-auth-token", "authorization", "X-Total-Pages"));
+        configuration.setExposedHeaders(Arrays.asList("x-auth-token", "authorization", "X-Total-Pages", "Content-Disposition"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

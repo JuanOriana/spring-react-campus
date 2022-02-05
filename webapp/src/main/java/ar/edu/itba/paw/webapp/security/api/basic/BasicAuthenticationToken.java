@@ -3,8 +3,6 @@ package ar.edu.itba.paw.webapp.security.api.basic;
 import ar.edu.itba.paw.webapp.security.api.model.AuthenticationTokenDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
@@ -12,8 +10,6 @@ public class BasicAuthenticationToken extends UsernamePasswordAuthenticationToke
 
     private String token;
     private AuthenticationTokenDetails tokenDetails;
-
-
 
     public BasicAuthenticationToken(Object principal, Object credentials,
                                     Collection<? extends GrantedAuthority> authorities,
