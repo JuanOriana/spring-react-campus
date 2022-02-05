@@ -30,6 +30,7 @@ public class CourseAssembler extends JaxRsResourceAssemblerSupport<Course, Cours
         result.setSubject(subject);
         result.add(course.getLinks());
         result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("files").withRel("files"));
+        result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("announcements").withRel("announcements"));
         result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("teachers").withRel("teachers"));
         result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("helpers").withRel("helpers"));
         result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("students").withRel("students"));
