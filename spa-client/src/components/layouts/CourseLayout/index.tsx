@@ -7,42 +7,49 @@ import {
   CoursePageWrapper,
   CourseDataContainer,
 } from "./styles";
+import { courseService } from "../../../services";
+import { useNavigate, useParams } from "react-router-dom";
+import LoadableData from "../../LoadableData";
+import { handleService } from "../../../scripts/handleService";
 
 function CourseLayout() {
-  const [course, setCourse] = useState({
-    courseId: 1,
-    year: 2022,
-    quarter: 2,
-    board: "F",
-    subject: { code: "97.01", name: "PAW" },
-  });
-  const [isTeacher, setIsTeacher] = useState(false);
+  const [course, setCourse] = useState<CourseModel | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { courseId } = useParams();
   useEffect(() => {
-    setCourse({
-      courseId: 1,
-      year: 2022,
-      quarter: 2,
-      board: "F",
-      subject: { code: "97.01", name: "PAW" },
-    });
-    setIsTeacher(true);
+    setIsLoading(true);
+    handleService(
+      courseService.getCourseById(parseInt(courseId ? courseId : "-1")),
+      navigate,
+      (courseData) => {
+        setCourse(courseData);
+      },
+      () => setIsLoading(false)
+    );
   }, []);
   return (
     <>
-      <CourseSectionName>{course && course.subject.name}</CourseSectionName>
-      <CoursePageWrapper>
-        <CourseSectionsCol
-          courseId={course.courseId}
-          courseName={course.subject.name}
-          year={course.year}
-          quarter={course.quarter}
-          code={course.subject.code}
-          board={course.board}
-        />
-        <CourseDataContainer>
-          <Outlet context={{ course: course, isTeacher: isTeacher }} />
-        </CourseDataContainer>
-      </CoursePageWrapper>
+      <LoadableData isLoading={isLoading}>
+        {course && (
+          <>
+            <CourseSectionName>{course!.subject.name}</CourseSectionName>
+            <CoursePageWrapper>
+              <CourseSectionsCol
+                courseId={course!.courseId}
+                courseName={course!.subject.name}
+                year={course!.year}
+                quarter={course!.quarter}
+                code={course!.subject.code}
+                board={course!.board}
+              />
+              <CourseDataContainer>
+                <Outlet context={course} />
+              </CourseDataContainer>
+            </CoursePageWrapper>
+          </>
+        )}
+      </LoadableData>
     </>
   );
 }

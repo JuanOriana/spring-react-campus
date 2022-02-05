@@ -9,66 +9,90 @@ import FileUnit from "../../components/FileUnit";
 import { usePagination } from "../../hooks/usePagination";
 import { BigWrapper, GeneralTitle } from "../../components/generalStyles/utils";
 import { FileGrid } from "./styles";
-import { getQueryOrDefault, useQuery } from "../../hooks/useQuery";
+import {
+  getQueryOrDefault,
+  getQueryOrDefaultMultiple,
+  useQuery,
+} from "../../hooks/useQuery";
 import { useNavigate } from "react-router-dom";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
+import { fileService } from "../../services";
+import { handleService } from "../../scripts/handleService";
+import LoadableData from "../../components/LoadableData";
 //
 
 function Files() {
   const { t } = useTranslation();
   const query = useQuery();
   const navigate = useNavigate();
-  const [currentPage] = usePagination(10);
+  const [currentPage, pageSize] = usePagination(10);
   const [files, setFiles] = useState(new Array(0));
+  const [isLoading, setIsLoading] = useState(false);
+  const [maxPage, setMaxPage] = useState(1);
   const orderDirection = getQueryOrDefault(query, "order-direction", "desc");
   const orderProperty = getQueryOrDefault(query, "order-property", "date");
-  const maxPage = 3;
+  const queryStringed = getQueryOrDefault(query, "query", "");
+  const extensionTypes = getQueryOrDefaultMultiple(query, "extension-type");
+  const categoryTypes = getQueryOrDefaultMultiple(query, "category-type");
 
   useEffect(() => {
-    setFiles([
-      {
-        fileId: 1,
-        name: "archivoprueba",
-        downloads: 10,
-        categories: [{ name: "hola" }],
-        extension: { fileExtensionName: "csv" },
-        course: { courseId: 1, subject: { name: "paw" } },
+    setIsLoading(true);
+    handleService(
+      fileService.getFiles(
+        categoryTypes.map((type) => parseInt(type)),
+        extensionTypes.map((type) => parseInt(type)),
+        queryStringed,
+        orderProperty,
+        orderDirection,
+        currentPage,
+        pageSize
+      ),
+      navigate,
+      (fileData) => {
+        setFiles(fileData.getContent());
+        setMaxPage(fileData.getMaxPage());
       },
-    ]);
+      () => setIsLoading(false)
+    );
   }, []);
 
   return (
     <>
-      <SectionHeading>{t('Files.title')}</SectionHeading>
+      <SectionHeading>{t("Files.title")}</SectionHeading>
       <BigWrapper>
         <FileSearcher
           orderDirection={orderDirection}
           orderProperty={orderProperty}
-          categoryType={[1]}
+          categoryType={categoryTypes}
+          query={queryStringed}
           categories={[
             { categoryName: "Hola", categoryId: 1 },
             { categoryName: "Dos", categoryId: 2 },
           ]}
-          extensionType={[2]}
+          extensionType={extensionTypes}
           extensions={[
             { fileExtensionName: "Otros", fileExtensionId: 1 },
             { fileExtensionName: "Hola", fileExtensionId: 2 },
             { fileExtensionName: "Dos", fileExtensionId: 3 },
           ]}
         />
-        <FileGrid>
-          {files.length === 0 && (
-            <GeneralTitle style={{ width: "100%", textAlign: "center" }}>
-              {t('Files.noResults')}
-            </GeneralTitle>
-          )}
-          {files.map((file) => (
-            <FileUnit key={file.fileId} isGlobal={true} file={file} />
-          ))}
-        </FileGrid>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <LoadableData isLoading={isLoading}>
+            <FileGrid>
+              {files.length === 0 && (
+                <GeneralTitle style={{ width: "100%", textAlign: "center" }}>
+                  {t("Files.noResults")}
+                </GeneralTitle>
+              )}
+              {files.map((file) => (
+                <FileUnit key={file.fileId} isGlobal={true} file={file} />
+              ))}
+            </FileGrid>
+          </LoadableData>
+        </div>
       </BigWrapper>
       <PaginationWrapper style={{ alignSelf: "center" }}>
         {currentPage > 1 && (
@@ -82,11 +106,14 @@ function Files() {
             <PaginationArrow
               xRotated={true}
               src="/images/page-arrow.png"
-              alt={t('BasicPagination.alt.beforePage')}
+              alt={t("BasicPagination.alt.beforePage")}
             />
           </button>
         )}
-        {t('BasicPagination.message', {currentPage: currentPage, maxPage: maxPage})}
+        {t("BasicPagination.message", {
+          currentPage: currentPage,
+          maxPage: maxPage,
+        })}
         {currentPage < maxPage && (
           <button
             onClick={() => {
@@ -97,7 +124,7 @@ function Files() {
           >
             <PaginationArrow
               src="/images/page-arrow.png"
-              alt={t('BasicPagination.alt.nextPage')}
+              alt={t("BasicPagination.alt.nextPage")}
             />
           </button>
         )}

@@ -1,28 +1,44 @@
 import { paths } from "../common/constants";
 import { authedFetch } from "../scripts/authedFetch";
 import { getFetch } from "../scripts/getFetch";
-import { Result, UserModel } from "../types";
+import { CourseModel, PagedContent, Result, UserModel } from "../types";
+import { getPagedFetch } from "../scripts/getPagedFetch";
+import { pageUrlMaker } from "../scripts/pageUrlMaker";
+import { postFetch } from "../scripts/postFetch";
 
 export class UserService {
   private readonly basePath = paths.BASE_URL + paths.USERS;
 
-  public async getUsers(): Promise<Result<UserModel[]>> {
-    return getFetch<UserModel[]>(this.basePath);
+  public async getUsers(): Promise<Result<PagedContent<UserModel[]>>> {
+    return getPagedFetch<UserModel[]>(this.basePath);
   }
 
   public async getUserById(userId: number): Promise<Result<UserModel>> {
-    return getFetch<UserModel>(this.basePath + userId);
+    return getFetch<UserModel>(this.basePath + "/" + userId);
   }
 
   public async getLastFileNumber(): Promise<Result<number>> {
-    return getFetch<number>(this.basePath + "last/file-number");
+    return getFetch<number>(this.basePath + "/file-number/last");
   }
 
   public async getUserProfileImage(userId: number): Promise<Result<File>> {
-    return getFetch<File>(this.basePath + userId + "/profile-image");
+    return getFetch<File>(this.basePath + "/" + userId + "/profile-image");
   }
 
-  public async newUSer(
+  public async getUsersCourses(
+    userId: number,
+    page?: number,
+    pageSize?: number
+  ): Promise<Result<PagedContent<CourseModel[]>>> {
+    let url = pageUrlMaker(
+      this.basePath + "/" + userId + "/courses",
+      page,
+      pageSize
+    );
+    return getPagedFetch(url.toString());
+  }
+
+  public async newUser(
     fileNumber: number,
     name: string,
     surname: string,
@@ -41,13 +57,23 @@ export class UserService {
       confirmPassword: confirmPassword,
     });
 
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
+    return postFetch(
+      this.basePath,
+      "application/vnd.campus.api.v1+json",
+      newUser
+    );
+  }
 
-    authedFetch(this.basePath, {
-      method: "POST",
-      headers: headers,
-      body: newUser,
+  public async sendEmail(userId: number, title: string, content: string) {
+    const email = JSON.stringify({
+      title: title,
+      content: content,
     });
+
+    return postFetch(
+      this.basePath + "/" + userId + "email",
+      "application/vnd.campus.api.v1+json",
+      email
+    );
   }
 }

@@ -1,19 +1,20 @@
 import { paths } from "../common/constants";
-import { authedFetch } from "../scripts/authedFetch";
 import { checkError } from "../scripts/ErrorChecker";
 import { ErrorResponse, Result, UserModel } from "../types";
 
 export class LoginService {
-  public async login(username: string, password: string):Promise<Result<UserModel>> {
+  public async login(
+    username: string,
+    password: string
+  ): Promise<Result<UserModel>> {
     const credentials = username + ":" + password;
 
     const hash = btoa(credentials);
     try {
-      const response = await fetch(paths.BASE_URL + "users/3", {
-        // TODO: Remplazar este id hardcodeado por el endpoint /user cuando este disponible
+      const response = await fetch(paths.BASE_URL + "/user", {
         method: "GET",
         headers: {
-          Authorization: "Basic as" + hash,
+          Authorization: "Basic " + hash,
         },
       });
 

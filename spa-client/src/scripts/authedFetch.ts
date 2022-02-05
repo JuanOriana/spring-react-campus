@@ -1,11 +1,11 @@
 function updateOptions(options: any) {
-  const update = { ...options };
+  let newOptions = { ...options };
+  newOptions.headers = { ...options.headers };
   const token = localStorage.getItem("token");
   if (token) {
-    const headers = update.headers as Headers;
-    headers.append("Authorization", `Bearer ${token}`);
+    newOptions.headers["Authorization"] = `Bearer ${token}`;
   }
-  return update;
+  return newOptions;
 }
 
 export function authedFetch(url: string, options: any) {

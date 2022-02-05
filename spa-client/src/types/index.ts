@@ -6,6 +6,7 @@ export type { default as FileCategoryModel } from "./FileCategoryModel";
 export type { default as FileExtensionModel } from "./FileExtensionModel";
 export type { default as FileModel } from "./FileModel";
 export { default as Result } from "./Result";
+export { default as PagedContent } from "./PagedContent";
 export type { default as RoleModel } from "./RoleModel";
 export type { default as Section } from "./Section";
 export type { default as SubjectModel } from "./SubjectModel";
