@@ -8,13 +8,13 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class AccessDeniedExceptionMapper implements ExceptionMapper<AccessDeniedException> {
+public class AccessDeniedExceptionMapper implements ExceptionMapper<Exception> {
 
     @Context
     private UriInfo uriInfo;
 
     @Override
-    public Response toResponse(AccessDeniedException exception) {
+    public Response toResponse(Exception exception) {
         return ResponseExceptionMapperUtil.toResponse(Response.Status.FORBIDDEN,
                 "You don't have enough permissions to perform this action", uriInfo);
     }
