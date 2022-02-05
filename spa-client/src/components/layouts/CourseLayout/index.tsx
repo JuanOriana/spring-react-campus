@@ -7,6 +7,7 @@ import {
   CoursePageWrapper,
   CourseDataContainer,
 } from "./styles";
+import { courseService } from "../../../services";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadableData from "../../LoadableData";
 import { handleService } from "../../../scripts/handleService";
