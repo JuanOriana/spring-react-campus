@@ -87,8 +87,8 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     @GET
     public Response getAnnouncements(@PathParam("courseId") Long courseId,
-                                     @QueryParam("page") Integer page,
-                                     @QueryParam("pageSize") Integer pageSize) {
+                                     @QueryParam("page") @DefaultValue("1") Integer page,
+                                     @QueryParam("pageSize") @DefaultValue("10") Integer pageSize) {
         CampusPage<Announcement> announcements = announcementService.listByCourse(courseId, page, pageSize);
         if(announcements.isEmpty()) {
             return Response.noContent().build();
