@@ -7,4 +7,5 @@ export const paths = {
   USERS: "/users",
   ANSWERS: "/answers",
   FILES: "/files",
+  TIME_TABLE : "/timetable"
 };
