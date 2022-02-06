@@ -80,9 +80,9 @@ public class CourseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
+    @GET
     @Path("/{courseId}/announcements")
     @Produces("application/vnd.campus.api.v1+json")
-    @GET
     public Response getAnnouncements(@PathParam("courseId") Long courseId,
                                      @QueryParam("page") @DefaultValue("1") Integer page,
                                      @QueryParam("pageSize") @DefaultValue("10") Integer pageSize) {

@@ -22,7 +22,7 @@ public class UserAssembler extends JaxRsResourceAssemblerSupport<User, UserDto> 
         UserDto user = createResourceWithId(entity.getUserId(), entity);
         UserDto result = mapper.userToUserDto(entity);
         result.add(user.getLinks());
-        result.add(JaxRsLinkBuilder.linkTo(UserController.class).slash(entity.getUserId()).slash("courses").withRel("courses"));
+        result.add(JaxRsLinkBuilder.linkTo(UserController.class).slash(entity.getUserId()).slash("courses{?page,pageSize}").withRel("courses"));
         result.add(JaxRsLinkBuilder.linkTo(UserController.class).slash(entity.getUserId()).slash("image").withRel("profile-image"));
         result.add(JaxRsLinkBuilder.linkTo(UserController.class).slash(entity.getUserId()).slash("timetable").withRel("timetable"));
         return result;

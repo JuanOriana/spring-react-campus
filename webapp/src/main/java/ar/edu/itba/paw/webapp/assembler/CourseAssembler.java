@@ -29,11 +29,11 @@ public class CourseAssembler extends JaxRsResourceAssemblerSupport<Course, Cours
         SubjectDto subject = subjectAssembler.toResource(entity.getSubject());
         result.setSubject(subject);
         result.add(course.getLinks());
-        result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("files").withRel("files"));
-        result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("announcements").withRel("announcements"));
+        result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("files{?categoryType,extension-type,query,order-property,order-direction,page,pageSize}").withRel("files"));
+        result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("announcements{?page,pageSize}").withRel("announcements"));
         result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("teachers").withRel("teachers"));
         result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("helpers").withRel("helpers"));
-        result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("students").withRel("students"));
+        result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("students{?page,pageSize}").withRel("students"));
         result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("exams").withRel("exams"));
         return result;
     }
