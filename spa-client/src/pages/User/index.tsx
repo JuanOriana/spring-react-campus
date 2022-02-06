@@ -2,14 +2,16 @@ import { BigWrapper } from "../../components/generalStyles/utils";
 import { useForm } from "react-hook-form";
 import { ErrorMessage, FormLabel } from "../../components/generalStyles/form";
 import { UserSectionWrapper, UserSectionImg } from "./styles";
-import { paths } from "../../common/constants";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import LoadableData from "../../components/LoadableData";
+import { handleService } from "../../scripts/handleService";
+import { userService } from "../../services";
+import { useNavigate } from "react-router-dom";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
-import { useAuth } from "../../contexts/AuthContext";
-import LoadableData from "../../components/LoadableData";
 //
 
 type FormData = {
@@ -20,6 +22,25 @@ type FormData = {
 function User() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const [userImg, setUserImg] = useState<string | undefined>(undefined);
+  const [isLoadingImg, setIsLoadingImg] = useState(false);
+
+  useEffect(() => {
+    setIsLoadingImg(true);
+    if (user) {
+      handleService(
+        userService.getUserProfileImage(user?.userId),
+        navigate,
+        (userImg) => {
+          const userImgUrl = URL.createObjectURL(userImg);
+          setUserImg(userImgUrl);
+        },
+        () => setIsLoadingImg(false)
+      );
+    }
+  }, [user]);
+
   const {
     register,
     handleSubmit,
@@ -44,9 +65,9 @@ function User() {
             <h1 style={{ marginBottom: "15px" }}>
               {user?.name} {user?.surname}
             </h1>
-            <UserSectionImg
-              src={`${paths.BASE_URL}/user/profile-image/${user?.userId}`}
-            />
+            <LoadableData isLoading={isLoadingImg}>
+              <UserSectionImg src={userImg!} />
+            </LoadableData>
             <form
               encType="multipart/form-data"
               acceptCharset="utf-8"

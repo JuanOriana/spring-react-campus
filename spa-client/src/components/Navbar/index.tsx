@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes, { InferProps } from "prop-types";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import type Section from "../../types/Section";
 
@@ -12,11 +12,13 @@ import {
   UserWrapper,
 } from "./styles";
 import { useAuth } from "../../contexts/AuthContext";
+import { handleService } from "../../scripts/handleService";
+import { userService } from "../../services";
+import { UserSectionImg } from "../../pages/User/styles";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
-import { paths } from "../../common/constants";
 //
 
 Navbar.propTypes = {
@@ -32,8 +34,9 @@ function Navbar() {
   const { t } = useTranslation();
   let navigate = useNavigate();
   let location = useLocation();
-  let auth = useAuth();
-  let { user } = useAuth();
+  let { user, signout } = useAuth();
+  const [userImg, setUserImg] = useState<string | undefined>(undefined);
+
   const pathname = location?.pathname;
   const sections: Section[] = [
     { path: "/portal", name: "Mis cursos" },
@@ -41,6 +44,22 @@ function Navbar() {
     { path: "/files", name: "Mis archivos" },
     { path: "/timetable", name: "Mis horarios" },
   ];
+
+  useEffect(() => {
+    if (user) {
+      handleService(
+        userService.getUserProfileImage(user?.userId),
+        navigate,
+        (userImg) => {
+          const userImgUrl = URL.createObjectURL(userImg);
+          setUserImg(userImgUrl);
+        },
+        () => {
+          return;
+        }
+      );
+    }
+  }, [user]);
   return (
     <NavContainer>
       <NavTitle>
@@ -63,21 +82,18 @@ function Navbar() {
             </NavSectionsContainer>
           )}
           <UserWrapper>
-            <Link to="/user">
-              {/*//TODO:FIX!*/}
-              {false && <img src="/images/default-user-image.png" />}
-              {true && (
-                <img
-                  src={`${paths.BASE_URL}/user/profile-image/${user?.userId}`}
-                />
-              )}
+            <Link to="/user" style={{ display: "flex" }}>
+              <UserSectionImg
+                src={userImg ? userImg : "/images/default-user-image.png"}
+                style={{ width: 32, height: 32, marginRight: 8 }}
+              />
               <h4>
                 {user?.name} {user?.surname}
               </h4>
             </Link>
             <LogoutButton
               onClick={() => {
-                auth.signout(() => navigate("/"));
+                signout(() => navigate("/"));
               }}
             >
               {" "}

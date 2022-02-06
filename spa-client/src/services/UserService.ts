@@ -1,6 +1,5 @@
 import { paths } from "../common/constants";
-import { authedFetch } from "../scripts/authedFetch";
-import { getFetch } from "../scripts/getFetch";
+import { getBlobFetch, getFetch } from "../scripts/getFetch";
 import { CourseModel, PagedContent, Result, UserModel } from "../types";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
@@ -21,8 +20,8 @@ export class UserService {
     return getFetch<number>(this.basePath + "/file-number/last");
   }
 
-  public async getUserProfileImage(userId: number): Promise<Result<File>> {
-    return getFetch<File>(this.basePath + "/" + userId + "/profile-image");
+  public async getUserProfileImage(userId: number): Promise<Result<Blob>> {
+    return getBlobFetch(this.basePath + "/" + userId + "/image");
   }
 
   public async getUsersCourses(
