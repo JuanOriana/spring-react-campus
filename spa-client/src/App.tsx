@@ -6,6 +6,8 @@ import MainLayout from "./components/layouts/MainLayout";
 import CourseLayout from "./components/layouts/CourseLayout";
 import RequireAuth from "./components/RequireAuth";
 import AdminLayout from "./components/layouts/AdminLayout";
+import "react-toastify/dist/ReactToastify.css";
+
 import {
   Portal,
   Timetable,
@@ -30,6 +32,7 @@ import {
   Login,
   Error,
 } from "./pages";
+import { ToastContainer } from "react-toastify";
 
 const theme = {
   cyanDarkest: "#176961",
@@ -87,6 +90,17 @@ function App() {
             <Route path="/login" element={<Login />} />
           </Routes>
         </BrowserRouter>
+        <ToastContainer
+          position="top-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </AuthProvider>
     </ThemeProvider>
   );
