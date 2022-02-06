@@ -7,7 +7,7 @@ import { PageContainer, PageOrganizer } from "../MainLayout/styles";
 function AdminLayout() {
   return (
     <PageOrganizer>
-      <Navbar currentUser={{ isAdmin: true, image: {}, name: "Juan" }} />
+      <Navbar />
       <PageContainer style={{ flexDirection: "row", alignItems: "start" }}>
         <Outlet />
       </PageContainer>

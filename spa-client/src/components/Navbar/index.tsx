@@ -63,11 +63,11 @@ function Navbar() {
   return (
     <NavContainer>
       <NavTitle>
-        <Link to={user?.isAdmin ? "/admin" : "/portal"}>CAMPUS</Link>
+        <Link to={user?.admin ? "/admin" : "/portal"}>CAMPUS</Link>
       </NavTitle>
       {user && (
         <>
-          {!user.isAdmin && (
+          {!user.admin && (
             <NavSectionsContainer>
               {sections.map((section) => (
                 <NavSectionItem

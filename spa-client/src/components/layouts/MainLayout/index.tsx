@@ -7,7 +7,7 @@ import { PageContainer, PageOrganizer } from "./styles";
 function MainLayout() {
   return (
     <PageOrganizer>
-      <Navbar currentUser={{ isAdmin: false, image: {}, name: "Juan" }} />
+      <Navbar />
       <PageContainer>
         <Outlet />
       </PageContainer>
