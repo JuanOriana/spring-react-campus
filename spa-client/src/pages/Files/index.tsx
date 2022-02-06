@@ -52,8 +52,8 @@ function Files() {
       ),
       navigate,
       (fileData) => {
-        setFiles(fileData.getContent());
-        setMaxPage(fileData.getMaxPage());
+        setFiles(fileData ? fileData.getContent() : []);
+        setMaxPage(fileData ? fileData.getMaxPage() : 1);
       },
       () => setIsLoading(false)
     );

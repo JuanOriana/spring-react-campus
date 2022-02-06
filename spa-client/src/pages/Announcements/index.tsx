@@ -28,8 +28,10 @@ function Announcements() {
       announcementsService.getAnnouncements(currentPage, pageSize),
       navigate,
       (announcementsData) => {
-        setAnnouncements(announcementsData.getContent());
-        setMaxPage(announcementsData.getMaxPage());
+        setAnnouncements(
+          announcementsData ? announcementsData.getContent() : []
+        );
+        setMaxPage(announcementsData ? announcementsData.getMaxPage() : 1);
       },
       () => setIsLoading(false)
     );

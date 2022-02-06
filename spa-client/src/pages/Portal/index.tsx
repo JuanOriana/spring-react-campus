@@ -39,8 +39,8 @@ function Portal() {
         userService.getUsersCourses(user!.userId, currentPage, pageSize),
         navigate,
         (coursesData) => {
-          setCourses(coursesData.getContent());
-          setMaxPage(coursesData.getMaxPage());
+          setCourses(coursesData ? coursesData.getContent() : []);
+          setMaxPage(coursesData ? coursesData.getMaxPage() : 1);
         },
         () => setIsCourseLoading(false)
       );
@@ -53,7 +53,9 @@ function Portal() {
       announcementsService.getAnnouncements(1, 3),
       navigate,
       (announcementsData) => {
-        setAnnouncements(announcementsData.getContent());
+        setAnnouncements(
+          announcementsData ? announcementsData.getContent() : []
+        );
       },
       () => setIsAnnouncementLoading(false)
     );
