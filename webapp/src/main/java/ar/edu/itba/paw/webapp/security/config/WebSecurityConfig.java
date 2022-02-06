@@ -155,7 +155,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.GET,"/files").hasAuthority("USER")
                     .antMatchers(HttpMethod.GET,"/files/{fileId}").access("@antMatcherVoter.canAccessFileById(authentication, #fileId)")
                     .antMatchers(HttpMethod.GET, "/user").hasAuthority("USER")
-                    .antMatchers(HttpMethod.GET, "/users/{userId}/**").access("@antMatcherVoter.canAccessUserById(authentication, #userId)")
                     .antMatchers(HttpMethod.POST, "/courses/{courseId}/exams").access("@antMatcherVoter.isPrivilegedInCourse(authentication, #courseId)")
                     .antMatchers(HttpMethod.POST, "/courses/{courseId}/files").access("@antMatcherVoter.isPrivilegedInCourse(authentication, #courseId)")
                     .antMatchers(HttpMethod.POST, "/courses").hasAuthority("ADMIN")
