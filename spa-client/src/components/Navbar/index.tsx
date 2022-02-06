@@ -16,6 +16,7 @@ import { useAuth } from "../../contexts/AuthContext";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
+import { paths } from "../../common/constants";
 //
 
 Navbar.propTypes = {
@@ -27,7 +28,7 @@ Navbar.propTypes = {
   }),
 };
 
-function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
+function Navbar() {
   const { t } = useTranslation();
   let navigate = useNavigate();
   let location = useLocation();
@@ -45,29 +46,34 @@ function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
       <NavTitle>
         <Link to={user?.isAdmin ? "/admin" : "/portal"}>CAMPUS</Link>
       </NavTitle>
-      {currentUser && (
+      {user && (
         <>
-          {!currentUser.isAdmin && (
+          {!user.isAdmin && (
             <NavSectionsContainer>
               {sections.map((section) => (
                 <NavSectionItem
                   active={pathname === section.path}
                   key={section.path}
                 >
-                  <Link to={section.path}>{t('Navbar.sections.' + section.path)}</Link>
+                  <Link to={section.path}>
+                    {t("Navbar.sections." + section.path)}
+                  </Link>
                 </NavSectionItem>
               ))}
             </NavSectionsContainer>
           )}
           <UserWrapper>
             <Link to="/user">
-              {!currentUser?.image && (
-                <img src="/images/default-user-image.png" />
+              {/*//TODO:FIX!*/}
+              {false && <img src="/images/default-user-image.png" />}
+              {true && (
+                <img
+                  src={`${paths.BASE_URL}/user/profile-image/${user?.userId}`}
+                />
               )}
-              {currentUser?.image && (
-                <img src={`/user/profile-image/${user?.userId}`} />
-              )}
-              <h4>{user?.name} {user?.surname}</h4>
+              <h4>
+                {user?.name} {user?.surname}
+              </h4>
             </Link>
             <LogoutButton
               onClick={() => {
@@ -75,7 +81,7 @@ function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
               }}
             >
               {" "}
-              {t('Navbar.logout')}
+              {t("Navbar.logout")}
             </LogoutButton>
           </UserWrapper>
         </>

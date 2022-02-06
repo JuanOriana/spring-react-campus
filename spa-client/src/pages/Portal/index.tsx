@@ -34,16 +34,18 @@ function Portal() {
 
   useEffect(() => {
     setIsCourseLoading(true);
-    handleService(
-      userService.getUsersCourses(user!.userId, currentPage, pageSize),
-      navigate,
-      (coursesData) => {
-        setCourses(coursesData.getContent());
-        setMaxPage(coursesData.getMaxPage());
-      },
-      () => setIsCourseLoading(false)
-    );
-  }, [currentPage, pageSize]);
+    if (user) {
+      handleService(
+        userService.getUsersCourses(user!.userId, currentPage, pageSize),
+        navigate,
+        (coursesData) => {
+          setCourses(coursesData.getContent());
+          setMaxPage(coursesData.getMaxPage());
+        },
+        () => setIsCourseLoading(false)
+      );
+    }
+  }, [user, currentPage, pageSize]);
 
   useEffect(() => {
     setIsAnnouncementLoading(true);
