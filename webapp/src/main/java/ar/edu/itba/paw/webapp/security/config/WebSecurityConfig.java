@@ -167,7 +167,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/users/file-number/last").hasAuthority("ADMIN")
                     .antMatchers("/subjects/**").hasAuthority("USER")
                     .antMatchers("/user").hasAuthority("USER")
-                    .antMatchers("/timetable").hasAuthority("USER")
                     .antMatchers("/**").permitAll()
                 //.accessDecisionManager(accessDecisionManager())
             .and()

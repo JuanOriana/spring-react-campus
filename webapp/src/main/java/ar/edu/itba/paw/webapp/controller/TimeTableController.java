@@ -13,7 +13,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 @Controller
-public class TimeTableController extends AuthController{
+public class TimeTableController extends AuthController {
 
     private static final String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
     private static final String[] hours = {"08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00",

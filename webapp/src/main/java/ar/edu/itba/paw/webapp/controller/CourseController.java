@@ -20,10 +20,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -100,7 +97,7 @@ public class CourseController {
 
     @Path("/{courseId}/files")
     @POST
-    @Consumes("application/vnd.campus.api.v1+json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("application/vnd.campus.api.v1+json")
     public Response postFile(@PathParam("courseId") Long courseId,
                              @FormDataParam("file") InputStream fileStream,
