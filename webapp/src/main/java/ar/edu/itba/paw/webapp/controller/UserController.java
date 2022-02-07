@@ -100,7 +100,7 @@ public class UserController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getUserCourses(@PathParam("userId") Long userId,
                                    @QueryParam("page") @DefaultValue("1") Integer page,
-                                   @QueryParam("pageSize") @DefaultValue("10") Integer pageSize) {
+                                   @QueryParam("page-size") @DefaultValue("10") Integer pageSize) {
         CampusPage<Course> courseCampusPage = courseService.list(userId, page, pageSize);
         if(courseCampusPage.isEmpty()) {
             return Response.noContent().build();

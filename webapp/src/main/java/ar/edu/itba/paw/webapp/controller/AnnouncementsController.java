@@ -38,7 +38,7 @@ public class AnnouncementsController {
     @GET
     @Produces("application/vnd.campus.api.v1+json")
     public Response getAnnouncements(@QueryParam("page") @DefaultValue("1") Integer page,
-                                     @QueryParam("pageSize") @DefaultValue("10") Integer pageSize) {
+                                     @QueryParam("page-size") @DefaultValue("10") Integer pageSize) {
         CampusPage<Announcement> announcements = announcementService.listByUser(authFacade.getCurrentUserId(), page, pageSize);
         if(announcements.isEmpty()) {
             return Response.noContent().build();

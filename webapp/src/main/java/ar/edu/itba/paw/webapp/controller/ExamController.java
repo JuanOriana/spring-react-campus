@@ -86,7 +86,7 @@ public class ExamController {
     public Response getAnswers(@PathParam("examId") Long examId,
                                @QueryParam("filter-by") @DefaultValue("corrected") String filter,
                                @QueryParam("page") @DefaultValue("1") Integer page,
-                               @QueryParam("pageSize") @DefaultValue("10") Integer pageSize) {
+                               @QueryParam("page-size") @DefaultValue("10") Integer pageSize) {
         Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
         Long userId = authFacade.getCurrentUserId();
         if(courseService.isPrivileged(userId, exam.getCourse().getCourseId())) {

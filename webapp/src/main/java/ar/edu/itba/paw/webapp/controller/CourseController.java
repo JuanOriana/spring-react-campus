@@ -167,11 +167,7 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getAvailableYears() {
         List<Integer> availableYears = courseService.getAvailableYears();
-        List<AvailableYearsDto> availableYearsDtoList = availableYears.stream()
-                .map(AvailableYearsDto::fromYear)
-                .collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<AvailableYearsDto>>(availableYearsDtoList) {
-        }).build();
+        return Response.ok(availableYears.toArray()).build();
     }
 
     @GET
@@ -260,7 +256,7 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseStudents(@QueryParam("page") @DefaultValue("1")
                                               Integer page,
-                                      @QueryParam("pageSize") @DefaultValue("10")
+                                      @QueryParam("page-size") @DefaultValue("10")
                                               Integer pageSize,
                                       @PathParam("courseId")
                                               Long courseId) {

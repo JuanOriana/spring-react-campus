@@ -40,7 +40,7 @@ public class FileController {
                              @QueryParam("order-property") @DefaultValue("date") String orderProperty,
                              @QueryParam("order-direction") @DefaultValue("desc") String orderDirection,
                              @QueryParam("page") @DefaultValue("1") Integer page,
-                             @QueryParam("pageSize") @DefaultValue("10") Integer pageSize) {
+                             @QueryParam("page-size") @DefaultValue("10") Integer pageSize) {
         categoryType = categoryType == null ? Collections.emptyList() : categoryType;
         extensionType = extensionType == null ? Collections.emptyList() : extensionType;
         CampusPage<FileModel> filePage = fileService.listByUser(query, extensionType, categoryType, authFacade.getCurrentUserId(),

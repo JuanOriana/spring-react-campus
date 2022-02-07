@@ -36,11 +36,6 @@ public class UserRegisterFormDto {
     //Minimum eight characters, at least one uppercase letter, one lowercase letter and one number (sourc: https://stackoverflow.com/questions/19605150/regex-for-password-must-contain-at-least-eight-characters-at-least-one-number-a )
     private String password;
 
-    @NotBlank
-    @NotNull
-    // if passwords do not match, confirmation is forced into a null value
-    private String confirmPassword;
-
     public int getFileNumber() {
         return fileNumber;
     }
@@ -87,22 +82,6 @@ public class UserRegisterFormDto {
 
     public void setPassword(String password) {
         this.password = password;
-        checkPasswordValidity();
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-        checkPasswordValidity();
-    }
-
-    private void checkPasswordValidity() {
-        if(this.password != null && !this.password.equals(confirmPassword)){
-            this.confirmPassword = null;
-        }
     }
 
 }
