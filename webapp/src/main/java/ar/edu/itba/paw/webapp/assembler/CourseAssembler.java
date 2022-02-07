@@ -7,6 +7,10 @@ import ar.edu.itba.paw.webapp.dto.SubjectDto;
 import ar.edu.itba.paw.webapp.mapper.CourseMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.TemplateVariable;
+import org.springframework.hateoas.TemplateVariables;
+import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.jaxrs.JaxRsLinkBuilder;
 import org.springframework.stereotype.Component;
 
@@ -29,11 +33,29 @@ public class CourseAssembler extends JaxRsResourceAssemblerSupport<Course, Cours
         SubjectDto subject = subjectAssembler.toResource(entity.getSubject());
         result.setSubject(subject);
         result.add(course.getLinks());
-        result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("files{?categoryType,extension-type,query,order-property,order-direction,page,pageSize}").withRel("files"));
-        result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("announcements{?page,pageSize}").withRel("announcements"));
+        Link fileLink = new Link(
+                new UriTemplate(
+                        JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("files").toString(),
+                        new TemplateVariables(new TemplateVariable("category-type,extension-type,query,order-property,order-direction,page,page-size", TemplateVariable.VariableType.REQUEST_PARAM))
+                ), "files"
+        );
+        result.add(fileLink);
+        Link announcementsLink = new Link(
+                new UriTemplate(
+                        JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("announcements").toString(),
+                        new TemplateVariables(new TemplateVariable("page,page-size", TemplateVariable.VariableType.REQUEST_PARAM))
+                ), "announcements"
+        );
+        result.add(announcementsLink);
         result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("teachers").withRel("teachers"));
         result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("helpers").withRel("helpers"));
-        result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("students{?page,pageSize}").withRel("students"));
+        Link studentsLink = new Link(
+                new UriTemplate(
+                        JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("students").toString(),
+                        new TemplateVariables(new TemplateVariable("page,page-size", TemplateVariable.VariableType.REQUEST_PARAM))
+                ), "students"
+        );
+        result.add(studentsLink);
         result.add(JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("exams").withRel("exams"));
         return result;
     }
