@@ -37,19 +37,18 @@ function FileUnit({ isGlobal, isMinimal, isTeacher, file }: FileUnitProps) {
           }}
         >
           <FileImg
-            src={`/images/extensions/${file?.extension!.fileExtension}.png`}
+            src={`/images/extensions/${file?.extension!.fileExtensionName}.png`}
             alt={
               file && file.fileName ? file.fileName! : t("FileUnit.alt.file")
             }
           />
           <FileName>{file.fileName}</FileName>
         </Link>
-        {!isMinimal &&
-          file?.categories?.map((category) => (
-            <FileCategoryName key={category.categoryId}>
-              {t("Category." + category.categoryName)}
-            </FileCategoryName>
-          ))}
+        {!isMinimal && file.fileCategory && (
+          <FileCategoryName key={file.fileCategory.categoryId}>
+            {t("Category." + file.fileCategory.categoryName)}
+          </FileCategoryName>
+        )}
       </div>
       <div style={{ display: "flex", alignItems: "center" }}>
         {!isMinimal && <FileName>{file.downloads}</FileName>}

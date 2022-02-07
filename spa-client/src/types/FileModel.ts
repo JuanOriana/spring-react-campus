@@ -6,7 +6,7 @@ export default interface FileModel {
   fileId: number;
   size?: number;
   extension: FileExtension;
-  categories: FileCategoryModel[];
+  fileCategory?: FileCategoryModel;
   fileName?: string;
   fileDate?: Date;
   course: CourseModel;

@@ -32,28 +32,28 @@ function StudentCourseExamStandalone() {
   const exam = {
     examId: 1,
     title: "Examen",
-    examFile:  {
+    examFile: {
       fileId: 1,
-      size:10,
+      size: 10,
       fileName: "xd",
       extension: {
-        fileExtension: ".doc",
-        fileExtensionId:12
+        fileExtensionName: ".doc",
+        fileExtensionId: 12,
       },
       course: {
         courseId: 1,
         year: 2021,
-        quarter:2,
-        board: 'A',
+        quarter: 2,
+        board: "A",
         subject: {
-          subjectId:1,
-          code:'a',
+          subjectId: 1,
+          code: "a",
           name: "PAW",
         },
-        courseUrl:"urlcurso",
-        isTeacher:true,
+        courseUrl: "urlcurso",
+        isTeacher: true,
       },
-      categories: [],
+      fileCategory: undefined,
       downloads: 2,
     },
     description: "hola\nxd",
@@ -115,9 +115,16 @@ function StudentCourseExamStandalone() {
       </SectionHeading>
       <BigWrapper>
         <h3 style={{ alignSelf: "center" }}>
-          {t('StudentCourseExamStandalone.timeLeft', {days: timeLeft.days, hours: timeLeft.hours, minutes: timeLeft.minutes, seconds: timeLeft.seconds})}
+          {t("StudentCourseExamStandalone.timeLeft", {
+            days: timeLeft.days,
+            hours: timeLeft.hours,
+            minutes: timeLeft.minutes,
+            seconds: timeLeft.seconds,
+          })}
         </h3>
-        <CommentTitle>{t('StudentCourseExamStandalone.examDescriptionTitle')}</CommentTitle>
+        <CommentTitle>
+          {t("StudentCourseExamStandalone.examDescriptionTitle")}
+        </CommentTitle>
         <p style={{ margin: "10px 0 10px 10px" }}>{exam.description}</p>
         <FileUnit file={exam.examFile} isMinimal={true} />
 
@@ -135,7 +142,7 @@ function StudentCourseExamStandalone() {
           onSubmit={onSubmit}
         >
           <FormLabel style={{ margin: "0 0 5px 0" }} htmlFor="exam">
-            {t('StudentCourseExamStandalone.form.solutionTitle')}
+            {t("StudentCourseExamStandalone.form.solutionTitle")}
           </FormLabel>
           <FormInput
             type="file"
@@ -151,10 +158,14 @@ function StudentCourseExamStandalone() {
             })}
           />
           {errors.file?.type === "required" && (
-            <ErrorMessage>{t('StudentCourseExamStandalone.error.file.isRequired')}</ErrorMessage>
+            <ErrorMessage>
+              {t("StudentCourseExamStandalone.error.file.isRequired")}
+            </ErrorMessage>
           )}
           {errors.file?.type === "size" && (
-            <ErrorMessage>{t('StudentCourseExamStandalone.error.file.size')}</ErrorMessage>
+            <ErrorMessage>
+              {t("StudentCourseExamStandalone.error.file.size")}
+            </ErrorMessage>
           )}
           <div
             style={{
@@ -164,9 +175,11 @@ function StudentCourseExamStandalone() {
             }}
           >
             <LinkButton to={`/course/${Course.courseId}/exams`}>
-              {t('StudentCourseExamStandalone.form.cancelSend')}
+              {t("StudentCourseExamStandalone.form.cancelSend")}
             </LinkButton>
-            <FormButton>{t('StudentCourseExamStandalone.form.send')}</FormButton>
+            <FormButton>
+              {t("StudentCourseExamStandalone.form.send")}
+            </FormButton>
           </div>
         </form>
       </BigWrapper>

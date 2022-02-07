@@ -27,7 +27,7 @@ function CourseTeachers() {
       courseService.getTeachers(course.courseId),
       navigate,
       (teacherData) => {
-        setTeachers(teacherData.getContent());
+        setTeachers(teacherData ? teacherData.getContent() : []);
       },
       () => setIsLoading(false)
     );
