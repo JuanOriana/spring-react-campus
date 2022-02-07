@@ -25,6 +25,7 @@ import { handleService } from "../../../scripts/handleService";
 import { courseService } from "../../../services";
 import { useNavigate } from "react-router-dom";
 import LoadableData from "../../../components/LoadableData";
+import { toast } from "react-toastify";
 //
 
 type FormData = {
@@ -37,6 +38,7 @@ function CourseAnnouncements() {
   const course = useCourseData();
   const navigate = useNavigate();
   const [announcements, setAnnouncements] = useState(new Array(0));
+  const [reload, setReload] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [maxPage, setMaxPage] = useState(1);
   const [currentPage, pageSize] = usePagination(10);
@@ -48,7 +50,35 @@ function CourseAnnouncements() {
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
-    reset();
+    courseService
+      .newAnnouncement(course.courseId, data.title, data.content)
+      .then((response) => {
+        toast.success("👑 Anuncio creado exitosamente!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        navigate(
+          `/course/${course.courseId}/announcements?page=1&pageSize=${pageSize}`
+        );
+        setReload(!reload);
+        reset();
+      })
+      .catch(() =>
+        toast.error("No se pudo crear el anuncio, intente de nuevo", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        })
+      );
   });
 
   useEffect(() => {
@@ -64,7 +94,7 @@ function CourseAnnouncements() {
       },
       () => setIsLoading(false)
     );
-  }, []);
+  }, [currentPage, pageSize, reload]);
 
   function renderTeacherForm() {
     return (

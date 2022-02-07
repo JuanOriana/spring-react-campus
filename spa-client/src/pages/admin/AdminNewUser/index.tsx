@@ -84,9 +84,14 @@ function AdminNewUser() {
           })
         )
         .catch(() =>
-          setError("confirmPassword", {
-            type: "repeated",
-            message: "Hubo un error en el servidor. Intente de nuevo",
+          toast.error("No se pudo crear el usuario, intente de nuevo", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
           })
         );
       reset();
