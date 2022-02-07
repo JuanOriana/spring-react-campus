@@ -5,6 +5,7 @@ import ar.edu.itba.paw.webapp.controller.FileController;
 import ar.edu.itba.paw.webapp.dto.FileExtensionDto;
 import ar.edu.itba.paw.webapp.mapper.FileExtensionMapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.hateoas.jaxrs.JaxRsLinkBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +21,7 @@ public class FileExtensionAssembler extends JaxRsResourceAssemblerSupport<FileEx
     public FileExtensionDto toResource(FileExtension entity) {
         FileExtensionDto fileExtensionDto = createResourceWithId(entity.getFileExtensionId(), entity);
         FileExtensionDto result = mapper.fileExtensionToFileExtensionDto(entity);
-        result.add(fileExtensionDto.getLinks());
+        result.add(JaxRsLinkBuilder.linkTo(FileController.class).slash("extensions").slash(entity.getFileExtensionId()).withSelfRel());
         return result;
     }
 }
