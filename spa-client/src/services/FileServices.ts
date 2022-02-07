@@ -2,7 +2,14 @@ import { paths } from "../common/constants";
 import { authedFetch } from "../scripts/authedFetch";
 import { fileUrlMaker } from "../scripts/fileUrlMaker";
 import { getPagedFetch } from "../scripts/getPagedFetch";
-import { ErrorResponse, FileModel, PagedContent, Result } from "../types";
+import {
+  ErrorResponse,
+  FileCategoryModel,
+  FileExtensionModel,
+  FileModel,
+  PagedContent,
+  Result,
+} from "../types";
 
 export class FileService {
   private readonly basePath = paths.BASE_URL + paths.FILES;
@@ -59,5 +66,17 @@ export class FileService {
     return authedFetch(this.basePath + "/" + fileId, {
       method: "DELETE",
     });
+  }
+
+  public async getCategories(): Promise<
+    Result<PagedContent<FileCategoryModel[]>>
+  > {
+    return getPagedFetch<FileCategoryModel[]>(this.basePath + "/categories");
+  }
+
+  public async getExtensions(): Promise<
+    Result<PagedContent<FileExtensionModel[]>>
+  > {
+    return getPagedFetch<FileExtensionModel[]>(this.basePath + "/extensions");
   }
 }

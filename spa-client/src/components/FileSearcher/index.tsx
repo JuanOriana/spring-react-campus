@@ -60,28 +60,25 @@ function FileSearcher({
     { code: "asc", message: "Ascendente" },
     { code: "desc", message: "Descendente" },
   ];
-
   const [isAmplified, setIsAmplified] = useState(false);
   const [catCheckState, setCatCheckState] = useState(new Array(1));
   const [extCheckState, setExtCheckState] = useState(new Array(1));
-  const [catAllState, setCatAllState] = useState(
-    arrayEquals(categories!, categoryType!)
-  );
-  const [extAllState, setExtAllState] = useState(
-    arrayEquals(extensions!, extensionType!)
-  );
+  const [catAllState, setCatAllState] = useState(false);
+  const [extAllState, setExtAllState] = useState(false);
 
   useEffect(() => {
+    setCatAllState(arrayEquals(categories!, categoryType!));
+    setExtAllState(arrayEquals(extensions!, extensionType!));
     const initCatCheckState = new Array(categories!.length);
     const initExtCheckState = new Array(extensions!.length);
     initCatCheckState.fill(false);
     initExtCheckState.fill(false);
 
-    categoryType!.map((idx) => (initCatCheckState[idx - 1] = true));
-    extensionType!.map((idx) => (initExtCheckState[idx - 1] = true));
+    categoryType!.map((idx) => (initCatCheckState[idx] = true));
+    extensionType!.map((idx) => (initExtCheckState[idx] = true));
     setCatCheckState(initCatCheckState);
     setExtCheckState(initExtCheckState);
-  }, []);
+  }, [categories, extensions]);
 
   function arrayEquals(a: any[], b: any[]) {
     return (
@@ -108,7 +105,7 @@ function FileSearcher({
             border: "none",
             margin: 0,
           }}
-          placeholder={t('FileSearcher.placeholder.fileName')}
+          placeholder={t("FileSearcher.placeholder.fileName")}
           defaultValue={query ? query : ""}
         />
         <FormButton
@@ -120,13 +117,13 @@ function FileSearcher({
             borderBottomLeftRadius: 0,
           }}
         >
-          {t('FileSearcher.search')}
+          {t("FileSearcher.search")}
         </FormButton>
         <PaginationArrow
           src="/images/outline-arrow.png"
           style={{ transform: "rotate(90deg)", marginLeft: "10px" }}
           onClick={() => setIsAmplified((lastState) => !lastState)}
-          alt={t('FileSearcher.alt.toggleFilters')}
+          alt={t("FileSearcher.alt.toggleFilters")}
           id="filter-toggle"
         />
       </div>
@@ -135,7 +132,9 @@ function FileSearcher({
         <FileFilterContainer>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <FileSelectLabel>{t('FileSearcher.searchBy.title')}</FileSelectLabel>
+              <FileSelectLabel>
+                {t("FileSearcher.searchBy.title")}
+              </FileSelectLabel>
               <FileSelect
                 name="order-property"
                 id="order-property"
@@ -143,11 +142,13 @@ function FileSearcher({
               >
                 {orderings.map((ordering) => (
                   <option key={ordering.code} value={ordering.code}>
-                    {t('FileSearcher.searchBy.' + ordering.code)}
+                    {t("FileSearcher.searchBy." + ordering.code)}
                   </option>
                 ))}
               </FileSelect>
-              <FileSelectLabel>{t('FileSearcher.orderBy.title')}</FileSelectLabel>
+              <FileSelectLabel>
+                {t("FileSearcher.orderBy.title")}
+              </FileSelectLabel>
               <FileSelect
                 name="order-direction"
                 id="order-direction"
@@ -155,14 +156,16 @@ function FileSearcher({
               >
                 {directions.map((direction) => (
                   <option key={direction.code} value={direction.code}>
-                    {t('FileSearcher.orderBy.' + direction.code)}
+                    {t("FileSearcher.orderBy." + direction.code)}
                   </option>
                 ))}
               </FileSelect>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <FileSelectLabel>{t('FileSearcher.fileType.title')}</FileSelectLabel>
+              <FileSelectLabel>
+                {t("FileSearcher.fileType.title")}
+              </FileSelectLabel>
               <span>
                 <FileCheckbox
                   type="checkbox"
@@ -177,7 +180,9 @@ function FileSearcher({
                     setExtCheckState(newExtCheckState);
                   }}
                 />
-                <FileCheckboxLabel>{t('FileSearcher.fileType.all')}</FileCheckboxLabel>
+                <FileCheckboxLabel>
+                  {t("FileSearcher.fileType.all")}
+                </FileCheckboxLabel>
               </span>
               {extensions!.map((extension, index) => (
                 <>
@@ -221,12 +226,16 @@ function FileSearcher({
                     });
                   }}
                 />
-                <FileCheckboxLabel>{t('FileSearcher.fileType.other')}</FileCheckboxLabel>
+                <FileCheckboxLabel>
+                  {t("FileSearcher.fileType.other")}
+                </FileCheckboxLabel>
               </span>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <FileSelectLabel>{t('FileSearcher.category.title')}</FileSelectLabel>
+              <FileSelectLabel>
+                {t("FileSearcher.category.title")}
+              </FileSelectLabel>
               <span>
                 <FileCheckbox
                   type="checkbox"
@@ -241,7 +250,9 @@ function FileSearcher({
                     setCatCheckState(newCatCheckState);
                   }}
                 />
-                <FileCheckboxLabel>{t('FileSearcher.category.all')}</FileCheckboxLabel>
+                <FileCheckboxLabel>
+                  {t("FileSearcher.category.all")}
+                </FileCheckboxLabel>
               </span>
               {categories!.map((category, index) => (
                 <span key={index}>
@@ -260,14 +271,13 @@ function FileSearcher({
                       });
                     }}
                   />
-                  {/*<FileCheckboxLabel>{t('Category.' + category.categoryName)}</FileCheckboxLabel>*/}
-                  {/*TODO: descomentar cuando este la API*/}
-                  <FileCheckboxLabel>{category.categoryName}</FileCheckboxLabel>
+                  <FileCheckboxLabel>
+                    {t("Category." + category.categoryName)}
+                  </FileCheckboxLabel>
                 </span>
               ))}
             </div>
           </div>
-          {/* TODO: creo que falta el checkbox "Otros" en categorias */}
           <FormButton
             type="button"
             style={{ alignSelf: "end" }}
@@ -286,27 +296,28 @@ function FileSearcher({
               });
             }}
           >
-            {t('FileSearcher.clearFilters')}
+            {t("FileSearcher.clearFilters")}
           </FormButton>
         </FileFilterContainer>
       )}
-      {/*TODO: CAMBIAR ESTO DE LOS TIPOS A LA CATEGORIA COMPLETA*/}
       {!isAmplified && (categoryType!.length > 0 || extensionType!.length > 0) && (
         <div
           style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
         >
           <FileCheckboxLabel style={{ fontWeight: 700 }}>
-            {t('FileSearcher.filteredBy')}
+            {t("FileSearcher.filteredBy")}
           </FileCheckboxLabel>
-          {categoryType!.map((category) => (
-            <FileFilterPill key={category} red={false}>
-              {category}
+          {categoryType!.map((idx) => (
+            <FileFilterPill key={idx} red={false}>
+              {categories[idx] &&
+                t("Category." + categories[idx]?.categoryName)}
             </FileFilterPill>
           ))}
-          {extensionType!.map((extension) => (
-            // FIX OTHER!
-            <FileFilterPill key={extension} red={true}>
-              {extension}
+          {extensionType!.map((idx) => (
+            <FileFilterPill key={idx} red={true}>
+              {idx === 0
+                ? t("FileSearcher.fileType.other")
+                : extensions[idx]?.fileExtensionName}
             </FileFilterPill>
           ))}
         </div>
