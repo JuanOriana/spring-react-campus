@@ -170,6 +170,7 @@ public class CourseController {
         return Response.ok(availableYears.toArray()).build();
     }
 
+    // TODO: Paginate all courses if no year and quarter was sent
     @GET
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourses(@QueryParam("page") @DefaultValue("1")
@@ -180,6 +181,10 @@ public class CourseController {
                                        Integer year,
                                @QueryParam("quarter")
                                        Integer quarter) {
+        if(year == null && quarter == null) {
+            List<Course> courses = courseService.list();
+            return Response.ok(new GenericEntity<List<CourseDto>>(courseAssembler.toResources(courses)){}).build();
+        }
         year = year == null ? Calendar.getInstance().get(Calendar.YEAR) : year;
         if (quarter == null) {
             quarter = Calendar.getInstance().get(Calendar.MONTH) <= 6 ? 1 : 2;
