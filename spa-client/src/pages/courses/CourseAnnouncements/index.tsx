@@ -22,10 +22,11 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
 import { handleService } from "../../../scripts/handleService";
-import { courseService } from "../../../services";
+import { announcementsService, courseService } from "../../../services";
 import { useNavigate } from "react-router-dom";
 import LoadableData from "../../../components/LoadableData";
 import { toast } from "react-toastify";
+import { AnnouncementModel } from "../../../types";
 //
 
 type FormData = {
@@ -43,16 +44,65 @@ function CourseAnnouncements() {
   const [maxPage, setMaxPage] = useState(1);
   const [currentPage, pageSize] = usePagination(10);
 
+  useEffect(() => {
+    setIsLoading(true);
+    handleService(
+      courseService.getAnnouncements(course.courseId),
+      navigate,
+      (announcementsData) => {
+        setAnnouncements(
+          announcementsData ? announcementsData.getContent() : []
+        );
+        setMaxPage(announcementsData ? announcementsData.getMaxPage() : 1);
+      },
+      () => setIsLoading(false)
+    );
+  }, [currentPage, pageSize, reload]);
+
+  function onDelete(id: number) {
+    announcementsService
+      .deleteAnnouncement(id)
+      .then(() => {
+        toast.success("👑 Anuncio eliminado exitosamente!", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        setAnnouncements((oldAnnouncements) =>
+          oldAnnouncements.filter(
+            (announcement: AnnouncementModel) =>
+              announcement.announcementId !== id
+          )
+        );
+      })
+      .catch(() =>
+        toast.error("No se pudo borrar el anuncio, intente de nuevo", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        })
+      );
+  }
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
+
   const onSubmit = handleSubmit((data: FormData) => {
     courseService
       .newAnnouncement(course.courseId, data.title, data.content)
-      .then((response) => {
+      .then(() => {
         toast.success("👑 Anuncio creado exitosamente!", {
           position: "bottom-right",
           autoClose: 5000,
@@ -80,21 +130,6 @@ function CourseAnnouncements() {
         })
       );
   });
-
-  useEffect(() => {
-    setIsLoading(true);
-    handleService(
-      courseService.getAnnouncements(course.courseId),
-      navigate,
-      (announcementsData) => {
-        setAnnouncements(
-          announcementsData ? announcementsData.getContent() : []
-        );
-        setMaxPage(announcementsData ? announcementsData.getMaxPage() : 1);
-      },
-      () => setIsLoading(false)
-    );
-  }, [currentPage, pageSize, reload]);
 
   function renderTeacherForm() {
     return (
@@ -181,8 +216,10 @@ function CourseAnnouncements() {
 
           {announcements.map((announcement) => (
             <AnnouncementUnit
+              key={announcement.announcementId}
               announcement={announcement}
               isTeacher={course.isTeacher}
+              onDelete={onDelete}
             />
           ))}
 
