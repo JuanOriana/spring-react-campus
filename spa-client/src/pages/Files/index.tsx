@@ -32,6 +32,8 @@ function Files() {
   const [files, setFiles] = useState(new Array(0));
   const [isLoading, setIsLoading] = useState(false);
   const [maxPage, setMaxPage] = useState(1);
+  const [categories, setCategories] = useState(new Array(0));
+  const [extensions, setExtensions] = useState(new Array(0));
   const orderDirection = getQueryOrDefault(query, "order-direction", "desc");
   const orderProperty = getQueryOrDefault(query, "order-property", "date");
   const queryStringed = getQueryOrDefault(query, "query", "");
@@ -52,11 +54,20 @@ function Files() {
       ),
       navigate,
       (fileData) => {
-        setFiles(fileData.getContent());
-        setMaxPage(fileData.getMaxPage());
+        setFiles(fileData ? fileData.getContent() : []);
+        setMaxPage(fileData ? fileData.getMaxPage() : 1);
       },
       () => setIsLoading(false)
     );
+  }, [currentPage, pageSize]);
+
+  useEffect(() => {
+    setCategories([{ categoryName: "Otros", categoryId: 1 }]);
+    setExtensions([
+      { fileExtensionName: "Otros", fileExtensionId: 1 },
+      { fileExtensionName: "Hola", fileExtensionId: 2 },
+      { fileExtensionName: "Dos", fileExtensionId: 3 },
+    ]);
   }, []);
 
   return (
@@ -68,16 +79,9 @@ function Files() {
           orderProperty={orderProperty}
           categoryType={categoryTypes}
           query={queryStringed}
-          categories={[
-            { categoryName: "Hola", categoryId: 1 },
-            { categoryName: "Dos", categoryId: 2 },
-          ]}
+          categories={categories}
           extensionType={extensionTypes}
-          extensions={[
-            { fileExtensionName: "Otros", fileExtensionId: 1 },
-            { fileExtensionName: "Hola", fileExtensionId: 2 },
-            { fileExtensionName: "Dos", fileExtensionId: 3 },
-          ]}
+          extensions={extensions}
         />
         <div style={{ display: "flex", alignItems: "center" }}>
           <LoadableData isLoading={isLoading}>

@@ -6,6 +6,6 @@ export default interface UserModel {
   email: string;
   fileNumber: number;
   token?: string;
-  url?:string;
-  isAdmin:boolean;
+  url?: string;
+  admin: boolean;
 }

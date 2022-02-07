@@ -1,6 +1,6 @@
 import React from "react";
 import { internalAuthProvider } from "../scripts/auth";
-import {UserModel} from "../types";
+import { UserModel } from "../types";
 
 interface AuthContextType {
   user: UserModel | null;
@@ -16,12 +16,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   let signin = (newUser: UserModel, callback: VoidFunction) => {
     return internalAuthProvider.signin(() => {
-      const isAdmin = false;
       setUser(newUser);
       if (!localStorage.getItem("user"))
-        localStorage.setItem("user",JSON.stringify(newUser));
+        localStorage.setItem("user", JSON.stringify(newUser));
       localStorage.setItem("token", newUser.token!);
-      localStorage.setItem("isAdmin","false");
+      localStorage.setItem("isAdmin", newUser.admin ? "true" : "false");
       callback();
     });
   };

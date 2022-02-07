@@ -5,6 +5,7 @@ import React from "react";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
+import { timeTableService } from "../../services";
 //
 
 function Timetable() {
@@ -42,15 +43,17 @@ function Timetable() {
     "#6F9A13",
   ];
 
+  timeTableService.getTimeTable().then((result) => console.log(result));
+
   return (
     <>
-      <SectionHeading>{t('Timetable.title')}</SectionHeading>
+      <SectionHeading>{t("Timetable.title")}</SectionHeading>
       <div>
         <TimetableLayout>
           <Days>
             <th></th>
             {days.map((day) => (
-              <th key={day}>{t('DaysOfTheWeek.' + day)}</th>
+              <th key={day}>{t("DaysOfTheWeek." + day)}</th>
             ))}
           </Days>
           {hours.map((hour) => (

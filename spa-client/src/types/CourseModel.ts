@@ -7,5 +7,5 @@ export default interface CourseModel {
   board: string;
   subject: SubjectModel;
   courseUrl: string;
-  isTeacher: boolean;
+  isTeacher?: boolean;
 }

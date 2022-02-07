@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes, { InferProps } from "prop-types";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import type Section from "../../types/Section";
 
@@ -12,6 +12,9 @@ import {
   UserWrapper,
 } from "./styles";
 import { useAuth } from "../../contexts/AuthContext";
+import { handleService } from "../../scripts/handleService";
+import { userService } from "../../services";
+import { UserSectionImg } from "../../pages/User/styles";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
@@ -27,12 +30,13 @@ Navbar.propTypes = {
   }),
 };
 
-function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
+function Navbar() {
   const { t } = useTranslation();
   let navigate = useNavigate();
   let location = useLocation();
-  let auth = useAuth();
-  let { user } = useAuth();
+  let { user, signout } = useAuth();
+  const [userImg, setUserImg] = useState<string | undefined>(undefined);
+
   const pathname = location?.pathname;
   const sections: Section[] = [
     { path: "/portal", name: "Mis cursos" },
@@ -40,42 +44,60 @@ function Navbar({ currentUser }: InferProps<typeof Navbar.propTypes>) {
     { path: "/files", name: "Mis archivos" },
     { path: "/timetable", name: "Mis horarios" },
   ];
+
+  useEffect(() => {
+    if (user) {
+      handleService(
+        userService.getUserProfileImage(user?.userId),
+        navigate,
+        (userImg) => {
+          const userImgUrl = URL.createObjectURL(userImg);
+          setUserImg(userImgUrl);
+        },
+        () => {
+          return;
+        }
+      );
+    }
+  }, [user]);
   return (
     <NavContainer>
       <NavTitle>
-        <Link to={user?.isAdmin ? "/admin" : "/portal"}>CAMPUS</Link>
+        <Link to={user?.admin ? "/admin" : "/portal"}>CAMPUS</Link>
       </NavTitle>
-      {currentUser && (
+      {user && (
         <>
-          {!currentUser.isAdmin && (
+          {!user.admin && (
             <NavSectionsContainer>
               {sections.map((section) => (
                 <NavSectionItem
                   active={pathname === section.path}
                   key={section.path}
                 >
-                  <Link to={section.path}>{t('Navbar.sections.' + section.path)}</Link>
+                  <Link to={section.path}>
+                    {t("Navbar.sections." + section.path)}
+                  </Link>
                 </NavSectionItem>
               ))}
             </NavSectionsContainer>
           )}
           <UserWrapper>
-            <Link to="/user">
-              {!currentUser?.image && (
-                <img src="/images/default-user-image.png" />
-              )}
-              {currentUser?.image && (
-                <img src={`/user/profile-image/${user?.userId}`} />
-              )}
-              <h4>{user?.name} {user?.surname}</h4>
+            <Link to="/user" style={{ display: "flex" }}>
+              <UserSectionImg
+                src={userImg ? userImg : "/images/default-user-image.png"}
+                style={{ width: 32, height: 32, marginRight: 8 }}
+              />
+              <h4>
+                {user?.name} {user?.surname}
+              </h4>
             </Link>
             <LogoutButton
               onClick={() => {
-                auth.signout(() => navigate("/"));
+                signout(() => navigate("/"));
               }}
             >
               {" "}
-              {t('Navbar.logout')}
+              {t("Navbar.logout")}
             </LogoutButton>
           </UserWrapper>
         </>

@@ -35,31 +35,31 @@ function CorrectExam() {
     title: "Examen",
     examFile: {
       fileId: 1,
-      size:10,
+      size: 10,
       fileName: "xd",
       extension: {
-        fileExtension: ".doc",
-        fileExtensionId:12
+        fileExtensionName: ".doc",
+        fileExtensionId: 12,
       },
       course: {
         courseId: 1,
         year: 2021,
-        quarter:2,
-        board: 'A',
+        quarter: 2,
+        board: "A",
         subject: {
-          subjectId:1,
-          code:'a',
+          subjectId: 1,
+          code: "a",
           name: "PAW",
         },
-        courseUrl:"urlcurso",
-        isTeacher:true,
+        courseUrl: "urlcurso",
+        isTeacher: true,
       },
-      categories: [],
+      fileCategory: undefined,
       downloads: 2,
     },
     description: "hola\nxd",
-    average:2,
-    url:"hola"
+    average: 2,
+    url: "hola",
   };
 
   const answer = {
@@ -70,28 +70,28 @@ function CorrectExam() {
     },
     score: 10,
     deliveredDate: new Date().toDateString(),
-    answerFile:  {
+    answerFile: {
       fileId: 1,
-      size:10,
+      size: 10,
       fileName: "xd",
       extension: {
-        fileExtension: ".doc",
-        fileExtensionId:12
+        fileExtensionName: ".doc",
+        fileExtensionId: 12,
       },
       course: {
         courseId: 1,
         year: 2021,
-        quarter:2,
-        board: 'A',
+        quarter: 2,
+        board: "A",
         subject: {
-          subjectId:1,
-          code:'a',
+          subjectId: 1,
+          code: "a",
           name: "PAW",
         },
-        courseUrl:"urlcurso",
-        isTeacher:true,
+        courseUrl: "urlcurso",
+        isTeacher: true,
       },
-      categories: [],
+      fileCategory: undefined,
       downloads: 2,
     },
   };
@@ -112,9 +112,7 @@ function CorrectExam() {
         {exam.title}
       </SectionHeading>
       <BigWrapper>
-        <CommentTitle>
-          {t('CorrectExam.descriptionTitle')}
-        </CommentTitle>
+        <CommentTitle>{t("CorrectExam.descriptionTitle")}</CommentTitle>
         <p
           style={{
             marginLeft: "30px",
@@ -125,11 +123,11 @@ function CorrectExam() {
           {exam.description}
         </p>
         <FileUnit file={exam.examFile} isMinimal={true} />
-        <CommentTitle>{t('CorrectExam.solutionTitle')}</CommentTitle>
+        <CommentTitle>{t("CorrectExam.solutionTitle")}</CommentTitle>
         {answer.deliveredDate && (
           <FileUnit file={answer.answerFile} isMinimal={true} />
         )}
-        {answer.deliveredDate && <p>{t('CorrectExam.examNotDone')}</p>}
+        {answer.deliveredDate && <p>{t("CorrectExam.examNotDone")}</p>}
         <form
           encType="multipart/form-data"
           acceptCharset="utf-8"
@@ -144,7 +142,7 @@ function CorrectExam() {
           onSubmit={onSubmit}
         >
           <FormLabel htmlFor="mark" style={{ margin: "0 0 5px 0" }}>
-            {t('CorrectExam.form.title')}
+            {t("CorrectExam.form.title")}
           </FormLabel>
           <input
             type="number"
@@ -164,15 +162,19 @@ function CorrectExam() {
             })}
           />
           {errors.mark?.type === "required" && (
-            <ErrorMessage>{t('CorrectExam.error.grade.isRequired')}</ErrorMessage>
+            <ErrorMessage>
+              {t("CorrectExam.error.grade.isRequired")}
+            </ErrorMessage>
           )}
           {errors.mark?.type === "max" && (
-            <ErrorMessage>{t('CorrectExam.error.grade.minGrade')}</ErrorMessage>
+            <ErrorMessage>{t("CorrectExam.error.grade.minGrade")}</ErrorMessage>
           )}
           {errors.mark?.type === "min" && (
-            <ErrorMessage>{t('CorrectExam.error.grade.maxGrade')}</ErrorMessage>
+            <ErrorMessage>{t("CorrectExam.error.grade.maxGrade")}</ErrorMessage>
           )}
-          <FormLabel htmlFor="comments">{t('CorrectExam.form.comments')}</FormLabel>
+          <FormLabel htmlFor="comments">
+            {t("CorrectExam.form.comments")}
+          </FormLabel>
           <FormArea
             style={{ width: "95%", resize: "none" }}
             cols={50}
@@ -185,7 +187,7 @@ function CorrectExam() {
           ></FormArea>
           {errors.comments?.type === "length" && (
             <ErrorMessage>
-              {t('CorrectExam.error.comments.length')}
+              {t("CorrectExam.error.comments.length")}
             </ErrorMessage>
           )}
           <div
@@ -203,9 +205,9 @@ function CorrectExam() {
               }}
               to={`/course/${Course.courseId}/exam/${exam.examId}`}
             >
-              {t('CorrectExam.form.cancelCorrectionButton')}
+              {t("CorrectExam.form.cancelCorrectionButton")}
             </LinkButton>
-            <FormButton>{t('CorrectExam.form.submitButton')}</FormButton>
+            <FormButton>{t("CorrectExam.form.submitButton")}</FormButton>
           </div>
         </form>
       </BigWrapper>

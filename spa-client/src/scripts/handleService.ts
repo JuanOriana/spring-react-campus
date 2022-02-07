@@ -10,7 +10,12 @@ export function handleService<T>(
   promise
     .then((response: Result<T>) => {
       if (response.hasFailed()) {
-        navigate(`/error?code=${response.getError().getCode()}`);
+        if (response.getError().getCode() === 204) {
+          // @ts-ignore
+          setterFunction(undefined);
+        } else {
+          navigate(`/error?code=${response.getError().getCode()}`);
+        }
       } else {
         setterFunction(response.getData());
       }

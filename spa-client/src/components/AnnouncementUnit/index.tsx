@@ -12,6 +12,7 @@ import { AnnouncementModel } from "../../types";
 interface AnnouncementUnitProps {
   isGlobal?: boolean;
   isTeacher?: boolean;
+  onDelete?: (id: number) => void;
   announcement: AnnouncementModel;
 }
 
@@ -19,6 +20,7 @@ function AnnouncementUnit({
   isGlobal,
   isTeacher,
   announcement,
+  onDelete,
 }: AnnouncementUnitProps) {
   return (
     <AnnouncementWrapper>
@@ -44,7 +46,13 @@ function AnnouncementUnit({
               </p>
             )}
           </div>
-          {isTeacher && <SmallIcon src="/images/trash-red.png" alt="delete" />}
+          {isTeacher && (
+            <SmallIcon
+              src="/images/trash-red.png"
+              alt="delete"
+              onClick={() => onDelete!(announcement.announcementId)}
+            />
+          )}
         </div>
       </AnnouncementHeader>
       <AnnouncementDate>{announcement.date}</AnnouncementDate>

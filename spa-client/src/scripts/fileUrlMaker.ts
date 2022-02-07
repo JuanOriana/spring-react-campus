@@ -11,21 +11,20 @@ export function fileUrlMaker(
   pageSize?: number
 ): URL {
   let url = pageUrlMaker(basePath, page, pageSize);
-
-  if (typeof categoryType !== "undefined") {
-    url.searchParams.append("categoryType", categoryType.toLocaleString());
+  if (categoryType && categoryType.length > 0) {
+    url.searchParams.append("category-type", categoryType.toLocaleString());
   }
-  if (typeof extensionType !== "undefined") {
-    url.searchParams.append("extensionType", extensionType.toLocaleString());
+  if (extensionType && extensionType.length > 0) {
+    url.searchParams.append("extension-type", extensionType.toLocaleString());
   }
-  if (typeof query !== "undefined") {
+  if (query && query !== "") {
     url.searchParams.append("query", query);
   }
-  if (typeof orderProperty !== "undefined") {
-    url.searchParams.append("orderProperty", orderProperty);
+  if (orderProperty && orderProperty !== "") {
+    url.searchParams.append("order-property", orderProperty);
   }
-  if (typeof orderDirection !== "undefined") {
-    url.searchParams.append("orderDirection", orderDirection);
+  if (orderDirection && orderDirection !== "") {
+    url.searchParams.append("order-direction", orderDirection);
   }
   return url;
 }

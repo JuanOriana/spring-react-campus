@@ -10,7 +10,12 @@ import React, { useEffect } from "react";
 
 function getCorrectPrivilegeRoute(isAdmin: boolean, location: Location): To {
   const startsWithAdmin = location.pathname.startsWith("/admin");
-  if ((isAdmin && startsWithAdmin) || (!isAdmin && !startsWithAdmin)) {
+  const startsWithUser = location.pathname.startsWith("/user");
+  if (
+    (isAdmin && startsWithAdmin) ||
+    (!isAdmin && !startsWithAdmin) ||
+    startsWithUser
+  ) {
     return location;
   }
   if (isAdmin && !startsWithAdmin) {

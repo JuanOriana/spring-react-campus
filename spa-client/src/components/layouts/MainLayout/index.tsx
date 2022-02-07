@@ -3,11 +3,12 @@ import Footer from "../../Footer";
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { PageContainer, PageOrganizer } from "./styles";
+// @ts-ignore
 
 function MainLayout() {
   return (
     <PageOrganizer>
-      <Navbar currentUser={{ isAdmin: false, image: {}, name: "Juan" }} />
+      <Navbar />
       <PageContainer>
         <Outlet />
       </PageContainer>
