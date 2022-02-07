@@ -60,7 +60,7 @@ public class FileController {
         FileModel file = fileService.findById(fileId).orElseThrow(FileNotFoundException::new);
         fileService.incrementDownloads(fileId);
         Response.ResponseBuilder response = Response.ok(new ByteArrayInputStream(file.getFile()));
-        response.header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"" );
+        response.header("Content-Disposition", "attachment; filename=\"" + file.getFileName() + "\"" );
         return response.build();
     }
 

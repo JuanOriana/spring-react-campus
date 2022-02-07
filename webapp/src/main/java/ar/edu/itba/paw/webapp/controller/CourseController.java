@@ -208,7 +208,7 @@ public class CourseController {
                 userService.findById(authFacade.getCurrentUserId()).orElseThrow(UserNotFoundException::new),
                 course,
                 uriInfo.getAbsolutePath().getPath());
-        URI location = URI.create(uriInfo.getBaseUri() + "/announcements/" + announcement.getAnnouncementId());
+        URI location = URI.create(uriInfo.getBaseUri() + "announcements/" + announcement.getAnnouncementId());
         LOGGER.debug("Announcement created on: {}", location.getPath());
         return Response.created(location).build();
     }

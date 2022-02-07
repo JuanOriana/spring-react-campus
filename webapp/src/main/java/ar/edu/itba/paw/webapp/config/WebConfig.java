@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     // Change this to a config/profile in the future
-    private static final boolean DEV_BUILD = true;
+    private static final boolean DEV_BUILD = false;
     private static boolean isOnDevBuild() {
         return DEV_BUILD;
     }
