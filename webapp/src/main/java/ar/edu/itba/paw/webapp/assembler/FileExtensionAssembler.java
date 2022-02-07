@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.assembler;
 
 import ar.edu.itba.paw.models.FileExtension;
-import ar.edu.itba.paw.webapp.controller.FileExtensionController;
+import ar.edu.itba.paw.webapp.controller.FileController;
 import ar.edu.itba.paw.webapp.dto.FileExtensionDto;
 import ar.edu.itba.paw.webapp.mapper.FileExtensionMapper;
 import org.mapstruct.factory.Mappers;
@@ -13,7 +13,7 @@ public class FileExtensionAssembler extends JaxRsResourceAssemblerSupport<FileEx
     private static final FileExtensionMapper mapper = Mappers.getMapper(FileExtensionMapper.class);
 
     public FileExtensionAssembler() {
-        super(FileExtensionController.class, FileExtensionDto.class);
+        super(FileController.class, FileExtensionDto.class);
     }
 
     @Override

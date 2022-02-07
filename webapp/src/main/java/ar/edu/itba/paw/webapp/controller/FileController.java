@@ -1,10 +1,20 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.interfaces.FileCategoryService;
+import ar.edu.itba.paw.interfaces.FileExtensionService;
 import ar.edu.itba.paw.interfaces.FileService;
 import ar.edu.itba.paw.models.CampusPage;
+import ar.edu.itba.paw.models.FileCategory;
+import ar.edu.itba.paw.models.FileExtension;
 import ar.edu.itba.paw.models.FileModel;
+import ar.edu.itba.paw.models.exception.FileCategoryNotFoundException;
+import ar.edu.itba.paw.models.exception.FileExtensionNotFoundException;
 import ar.edu.itba.paw.models.exception.FileNotFoundException;
+import ar.edu.itba.paw.webapp.assembler.FileCategoryAssembler;
+import ar.edu.itba.paw.webapp.assembler.FileExtensionAssembler;
 import ar.edu.itba.paw.webapp.assembler.FileModelAssembler;
+import ar.edu.itba.paw.webapp.dto.FileCategoryDto;
+import ar.edu.itba.paw.webapp.dto.FileExtensionDto;
 import ar.edu.itba.paw.webapp.dto.FileModelDto;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.util.PaginationBuilder;
@@ -31,6 +41,18 @@ public class FileController {
 
     @Autowired
     private FileModelAssembler fileAssembler;
+
+    @Autowired
+    private FileCategoryAssembler fileCategoryAssembler;
+
+    @Autowired
+    private FileExtensionAssembler fileExtensionAssembler;
+
+    @Autowired
+    private FileExtensionService fileExtensionService;
+
+    @Autowired
+    private FileCategoryService fileCategoryService;
 
     @GET
     @Produces("application/vnd.campus.api.v1+json")
@@ -70,6 +92,41 @@ public class FileController {
     public Response deleteFile(@PathParam("fileId") Long fileId) {
         if(!fileService.delete(fileId)) throw new FileNotFoundException();
         return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @Path("/categories")
+    @GET
+    @Produces("application/vnd.campus.api.v1+json")
+    public Response getFileCategories() {
+        List<FileCategory> fileCategories = fileCategoryService.getCategories();
+        if(fileCategories.isEmpty()) {
+            return Response.noContent().build();
+        }
+        return Response.ok(new GenericEntity<List<FileCategoryDto>>(fileCategoryAssembler.toResources(fileCategories)){}).build();
+    }
+
+    @GET
+    @Path("categories/{fileCategoryId}")
+    @Produces("application/vnd.campus.api.v1+json")
+    public Response getFileCategory(@PathParam("fileCategoryId") Long fileCategoryId) {
+        FileCategory fileCategory = fileCategoryService.findById(fileCategoryId).orElseThrow(FileCategoryNotFoundException::new);
+        return Response.ok(new GenericEntity<FileCategoryDto>(fileCategoryAssembler.toResource(fileCategory)){}).build();
+    }
+
+    @Path("extensions")
+    @GET
+    @Produces("application/vnd.campus.api.v1+json")
+    public Response getFileExtensions() {
+        List<FileExtension> fileExtensions = fileExtensionService.getExtensions();
+        return Response.ok(new GenericEntity<List<FileExtensionDto>>(fileExtensionAssembler.toResources(fileExtensions)){}).build();
+    }
+
+    @GET
+    @Path("extensions/{fileExtensionId}")
+    @Produces("application/vnd.campus.api.v1+json")
+    public Response getFileExtension(@PathParam("fileExtensionId") Long fileExtensionId) {
+        FileExtension fileExtension = fileExtensionService.findById(fileExtensionId).orElseThrow(FileExtensionNotFoundException::new);
+        return Response.ok(new GenericEntity<FileExtensionDto>(fileExtensionAssembler.toResource(fileExtension)){}).build();
     }
 
 

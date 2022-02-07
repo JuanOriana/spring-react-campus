@@ -153,6 +153,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.GET, "/courses/{courseId}/exams/average").access("@antMatcherVoter.isPrivilegedInCourse(authentication, #courseId)")
                     .antMatchers(HttpMethod.GET,"/timetable").hasAuthority("USER")
                     .antMatchers(HttpMethod.GET,"/files").hasAuthority("USER")
+                    .antMatchers(HttpMethod.GET,"/files/categories").hasAuthority("USER")
+                    .antMatchers(HttpMethod.GET,"/files/extensions").hasAuthority("USER")
                     .antMatchers(HttpMethod.GET,"/files/{fileId}").access("@antMatcherVoter.canAccessFileById(authentication, #fileId)")
                     .antMatchers(HttpMethod.GET, "/user").hasAuthority("USER")
                     .antMatchers(HttpMethod.POST, "/courses/{courseId}/exams").access("@antMatcherVoter.isPrivilegedInCourse(authentication, #courseId)")

@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.assembler;
 
 import ar.edu.itba.paw.models.FileCategory;
-import ar.edu.itba.paw.webapp.controller.FileCategoryController;
+import ar.edu.itba.paw.webapp.controller.FileController;
 import ar.edu.itba.paw.webapp.dto.FileCategoryDto;
 import ar.edu.itba.paw.webapp.mapper.FileCategoryMapper;
 import org.mapstruct.factory.Mappers;
@@ -13,7 +13,7 @@ public class FileCategoryAssembler extends JaxRsResourceAssemblerSupport<FileCat
     private static final FileCategoryMapper mapper = Mappers.getMapper(FileCategoryMapper.class);
 
     public FileCategoryAssembler() {
-        super(FileCategoryController.class, FileCategoryDto.class);
+        super(FileController.class, FileCategoryDto.class);
     }
 
     @Override
