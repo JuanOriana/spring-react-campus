@@ -58,11 +58,11 @@ public class FileController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getFiles(@QueryParam("category-type") List<Long> categoryType,
                              @QueryParam("extension-type") List<Long> extensionType,
-                             @QueryParam("query") @DefaultValue("") String query,
-                             @QueryParam("order-property") @DefaultValue("date") String orderProperty,
-                             @QueryParam("order-direction") @DefaultValue("desc") String orderDirection,
-                             @QueryParam("page") @DefaultValue("1") Integer page,
-                             @QueryParam("page-size") @DefaultValue("10") Integer pageSize) {
+                             @DefaultValue("") @QueryParam("query") String query,
+                             @DefaultValue("date") @QueryParam("order-property") String orderProperty,
+                             @DefaultValue("desc") @QueryParam("order-direction") String orderDirection,
+                             @DefaultValue("1") @QueryParam("page") Integer page,
+                             @DefaultValue("10") @QueryParam("page-size") Integer pageSize) {
         categoryType = categoryType == null ? Collections.emptyList() : categoryType;
         extensionType = extensionType == null ? Collections.emptyList() : extensionType;
         CampusPage<FileModel> filePage = fileService.listByUser(query, extensionType, categoryType, authFacade.getCurrentUserId(),
