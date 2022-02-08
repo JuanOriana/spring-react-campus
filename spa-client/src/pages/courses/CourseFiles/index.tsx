@@ -32,13 +32,11 @@ import {
 import { handleService } from "../../../scripts/handleService";
 import { courseService, fileService } from "../../../services";
 import LoadableData from "../../../components/LoadableData";
-import { toast } from "react-toastify";
-import { FileModel } from "../../../types";
+import { renderToast } from "../../../scripts/renderToast";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
-
 //
 
 type FormData = {
@@ -112,29 +110,10 @@ function CourseFiles() {
     fileService
       .deleteFile(id)
       .then(() => {
-        toast.success("👑 Archivo eliminado exitosamente!", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        setFiles((oldFiles) =>
-          oldFiles.filter((file: FileModel) => file.fileId !== id)
-        );
+        renderToast("👑 Archivo eliminado exitosamente!", "success");
       })
       .catch(() =>
-        toast.error("No se pudo borrar el archivo, intente de nuevo", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        })
+        renderToast("No se pudo borrar el archivo, intente de nuevo", "error")
       );
   }
 
@@ -223,7 +202,11 @@ function CourseFiles() {
               categoryType={categoryTypes}
               categories={categories}
               extensionType={extensionTypes}
-              extensions={extensions}
+              extensions={[
+                { fileExtensionName: "Otros", fileExtensionId: 1 },
+                { fileExtensionName: "Hola", fileExtensionId: 2 },
+                { fileExtensionName: "Dos", fileExtensionId: 3 },
+              ]}
             />
             <FileGrid>
               {files.length === 0 && (

@@ -25,7 +25,7 @@ import { handleService } from "../../../scripts/handleService";
 import { announcementsService, courseService } from "../../../services";
 import { useNavigate } from "react-router-dom";
 import LoadableData from "../../../components/LoadableData";
-import { toast } from "react-toastify";
+import { renderToast } from "../../../scripts/renderToast";
 import { AnnouncementModel } from "../../../types";
 //
 
@@ -63,15 +63,7 @@ function CourseAnnouncements() {
     announcementsService
       .deleteAnnouncement(id)
       .then(() => {
-        toast.success("👑 Anuncio eliminado exitosamente!", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        renderToast("👑 Anuncio eliminado exitosamente!", "success");
         setAnnouncements((oldAnnouncements) =>
           oldAnnouncements.filter(
             (announcement: AnnouncementModel) =>
@@ -80,15 +72,7 @@ function CourseAnnouncements() {
         );
       })
       .catch(() =>
-        toast.error("No se pudo borrar el anuncio, intente de nuevo", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        })
+        renderToast("No se pudo borrar el anuncio, intente de nuevo", "error")
       );
   }
 
@@ -103,15 +87,7 @@ function CourseAnnouncements() {
     courseService
       .newAnnouncement(course.courseId, data.title, data.content)
       .then(() => {
-        toast.success("👑 Anuncio creado exitosamente!", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        renderToast("👑 Anuncio creado exitosamente!", "success");
         navigate(
           `/course/${course.courseId}/announcements?page=1&pageSize=${pageSize}`
         );
@@ -119,15 +95,7 @@ function CourseAnnouncements() {
         reset();
       })
       .catch(() =>
-        toast.error("No se pudo crear el anuncio, intente de nuevo", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        })
+        renderToast("No se pudo crear el anuncio, intente de nuevo", "error")
       );
   });
 

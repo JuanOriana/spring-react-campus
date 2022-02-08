@@ -12,10 +12,10 @@ import { useForm } from "react-hook-form";
 import { userService } from "../../../services";
 import { useNavigate } from "react-router-dom";
 import { handleService } from "../../../scripts/handleService";
-import { toast } from "react-toastify";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
+import { renderToast } from "../../../scripts/renderToast";
 //
 
 type FormData = {
@@ -72,27 +72,9 @@ function AdminNewUser() {
           data.password,
           data.confirmPassword
         )
-        .then(() =>
-          toast.success("👑 Usuario creado exitosamente!", {
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          })
-        )
+        .then(() => renderToast("👑 Usuario creado exitosamente!", "success"))
         .catch(() =>
-          toast.error("No se pudo crear el usuario, intente de nuevo", {
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          })
+          renderToast("No se pudo crear el usuario, intente de nuevo", "error")
         );
       reset();
     }
