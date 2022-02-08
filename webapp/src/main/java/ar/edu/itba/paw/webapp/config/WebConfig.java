@@ -1,5 +1,5 @@
 package ar.edu.itba.paw.webapp.config;
-import ar.edu.itba.paw.webapp.assembler.*;
+import ar.edu.itba.paw.webapp.common.assemblers.*;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.security.service.implementation.AuthFacadeImpl;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 @EnableAsync
 @EnableWebMvc
 @EnableTransactionManagement
-@ComponentScan({"ar.edu.itba.paw.webapp.controller", "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
+@ComponentScan({"ar.edu.itba.paw.webapp.controllers", "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
