@@ -105,4 +105,17 @@ export class UserService {
       { method: "GET" }
     );
   }
+
+  public async updateUserProfileImage(userId: number, file: File) {
+    const formData = new FormData();
+
+    formData.append("file", file, file.name);
+    return resultFetch(this.basePath + "/" + userId + "/image", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      body: formData,
+    });
+  }
 }
