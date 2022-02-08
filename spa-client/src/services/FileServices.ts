@@ -2,6 +2,7 @@ import { paths } from "../common/constants";
 import { authedFetch } from "../scripts/authedFetch";
 import { fileUrlMaker } from "../scripts/fileUrlMaker";
 import { getPagedFetch } from "../scripts/getPagedFetch";
+import { resultFetch } from "../scripts/resultFetch";
 import {
   ErrorResponse,
   FileCategoryModel,
@@ -78,5 +79,21 @@ export class FileService {
     Result<PagedContent<FileExtensionModel[]>>
   > {
     return getPagedFetch<FileExtensionModel[]>(this.basePath + "/extensions");
+  }
+
+  public async getCategoryById(
+    categoryId: number
+  ): Promise<Result<FileCategoryModel>> {
+    return resultFetch(this.basePath + "/categories/" + categoryId, {
+      method: "GET",
+    });
+  }
+
+  public async getExtensionbyById(
+    extensionId: number
+  ): Promise<Result<FileExtensionModel>> {
+    return resultFetch(this.basePath + "/extensions/" + extensionId, {
+      method: "GET",
+    });
   }
 }
