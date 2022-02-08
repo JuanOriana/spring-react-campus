@@ -2,6 +2,7 @@ import { paths } from "../common/constants";
 import { getBlobFetch, getFetch } from "../scripts/getFetch";
 import {
   CourseModel,
+  ErrorResponse,
   PagedContent,
   PostResponse,
   Result,
@@ -61,6 +62,12 @@ export class UserService {
       password: password,
       confirmPassword: confirmPassword,
     });
+
+    if (confirmPassword! == password) {
+      return Result.failed(
+        new ErrorResponse(422, "Confirm password must match with password")
+      );
+    }
 
     return postFetch<PostResponse>(
       this.basePath,
