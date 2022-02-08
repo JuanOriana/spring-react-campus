@@ -1,5 +1,5 @@
 import { paths } from "../common/constants";
-import { getBlobFetch, getFetch } from "../scripts/getFetch";
+import { getBlobFetch } from "../scripts/getFetch";
 import {
   CourseModel,
   ErrorResponse,
@@ -10,7 +10,7 @@ import {
 } from "../types";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
-import { postFetch } from "../scripts/postFetch";
+import { resultFetch } from "../scripts/resultFetch";
 
 export class UserService {
   private readonly basePath = paths.BASE_URL + paths.USERS;
@@ -20,11 +20,15 @@ export class UserService {
   }
 
   public async getUserById(userId: number): Promise<Result<UserModel>> {
-    return getFetch<UserModel>(this.basePath + "/" + userId);
+    return resultFetch<UserModel>(this.basePath + "/" + userId, {
+      method: "GET",
+    });
   }
 
   public async getLastFileNumber(): Promise<Result<number>> {
-    return getFetch<number>(this.basePath + "/file-number/last");
+    return resultFetch<number>(this.basePath + "/file-number/last", {
+      method: "GET",
+    });
   }
 
   public async getUserProfileImage(userId: number): Promise<Result<Blob>> {
@@ -69,11 +73,13 @@ export class UserService {
       );
     }
 
-    return postFetch<PostResponse>(
-      this.basePath,
-      "application/vnd.campus.api.v1+json",
-      newUser
-    );
+    return resultFetch<PostResponse>(this.basePath, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/vnd.campus.api.v1+json",
+      },
+      body: newUser,
+    });
   }
 
   public async sendEmail(userId: number, title: string, content: string) {
@@ -82,10 +88,21 @@ export class UserService {
       content: content,
     });
 
-    return postFetch(
-      this.basePath + "/" + userId + "email",
-      "application/vnd.campus.api.v1+json",
-      email
+    return resultFetch(this.basePath + "/" + userId + "email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/vnd.campus.api.v1+json",
+      },
+      body: email,
+    });
+  }
+
+  public async getTimeTable(
+    userId: number
+  ): Promise<Result<Map<string, number[]>>> {
+    return resultFetch<Map<string, number[]>>(
+      this.basePath + "/" + userId + "/timetable",
+      { method: "GET" }
     );
   }
 }

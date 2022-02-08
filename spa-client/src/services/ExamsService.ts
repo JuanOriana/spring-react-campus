@@ -1,15 +1,16 @@
 import { paths } from "../common/constants";
-import { getFetch } from "../scripts/getFetch";
 import { ExamModel, PagedContent, PostResponse, Result } from "../types";
 import AnswerModel from "../types/AnswerModel";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { authedFetch } from "../scripts/authedFetch";
-import { postFetch } from "../scripts/postFetch";
+import { resultFetch } from "../scripts/resultFetch";
 
 export class ExamsServices {
   private readonly basePath = paths.BASE_URL + paths.EXAMS;
   public async getExamById(examId: number): Promise<Result<ExamModel>> {
-    return getFetch<ExamModel>(this.basePath + "/" + examId);
+    return resultFetch<ExamModel>(this.basePath + "/" + examId, {
+      method: "GET",
+    });
   }
 
   public async getExamAnswers(
@@ -32,10 +33,13 @@ export class ExamsServices {
       exam: answerFile,
     });
 
-    return postFetch<PostResponse>(
+    return resultFetch<PostResponse>(
       this.basePath + "/" + examId + "/answers",
-      "application/vnd.campus.api.v1+json",
-      newAnswer
+      {
+        method: "POST",
+        hearders: { "Content-Type": "application/vnd.campus.api.v1+json" },
+        body: newAnswer,
+      }
     );
   }
 }

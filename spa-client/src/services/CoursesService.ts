@@ -10,17 +10,18 @@ import {
   PostResponse,
 } from "../types";
 import AnswerModel from "../types/AnswerModel";
-import { getFetch } from "../scripts/getFetch";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
-import { postFetch } from "../scripts/postFetch";
 import { fileUrlMaker } from "../scripts/fileUrlMaker";
+import { resultFetch } from "../scripts/resultFetch";
 
 export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
 
   public async getCourseById(courseId: number): Promise<Result<CourseModel>> {
-    return getFetch<CourseModel>(this.basePath + "/" + courseId);
+    return resultFetch<CourseModel>(this.basePath + "/" + courseId, {
+      method: "GET",
+    });
   }
 
   public async getCourses(
@@ -93,7 +94,9 @@ export class CourseService {
 
   //TODO: Ver si este service puede mapear el json sin el type! (cuando podamos correr la api)
   public async getAvailableYears(): Promise<Result<number[]>> {
-    return getFetch<number[]>(this.basePath + "/available-years");
+    return resultFetch<number[]>(this.basePath + "/available-years", {
+      method: "GET",
+    });
   }
 
   public async getAnnouncements(
@@ -145,11 +148,11 @@ export class CourseService {
       endTimes: endTimes,
     });
 
-    return postFetch<PostResponse>(
-      this.basePath,
-      "application/vnd.campus.api.v1+json",
-      newCourse
-    );
+    return resultFetch<PostResponse>(this.basePath, {
+      method: "POST",
+      headers: { "Content-Type": "application/vnd.campus.api.v1+json" },
+      body: newCourse,
+    });
   }
 
   public async newAnnouncement(
@@ -162,10 +165,13 @@ export class CourseService {
       content: content,
     });
 
-    return postFetch<PostResponse>(
+    return resultFetch<PostResponse>(
       this.basePath + "/" + courseId + "/announcements",
-      "application/vnd.campus.api.v1+json",
-      newAnnouncement
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/vnd.campus.api.v1+json" },
+        body: newAnnouncement,
+      }
     );
   }
 
@@ -184,10 +190,29 @@ export class CourseService {
       startTime: startTime,
       endTime: endTime,
     });
-    return postFetch<PostResponse>(
+    return resultFetch<PostResponse>(
       this.basePath + "/" + courseId + "/exams",
-      "application/vnd.campus.api.v1+json",
-      newExam
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/vnd.campus.api.v1+json" },
+        body: newExam,
+      }
     );
+  }
+
+  public async newFile(
+    courseId: number,
+    file: File
+  ): Promise<Result<PostResponse>> {
+    const formData = new FormData();
+
+    formData.append("file", file, file.name);
+    return resultFetch(this.basePath + "/" + courseId, {
+      method: "POST",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      body: formData,
+    });
   }
 }

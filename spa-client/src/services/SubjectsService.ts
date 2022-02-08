@@ -1,8 +1,7 @@
 import { paths } from "../common/constants";
-import { getFetch } from "../scripts/getFetch";
 import { PagedContent, PostResponse, Result, SubjectModel } from "../types";
 import { getPagedFetch } from "../scripts/getPagedFetch";
-import { postFetch } from "../scripts/postFetch";
+import { resultFetch } from "../scripts/resultFetch";
 
 export class SubjectsService {
   private readonly basePath = paths.BASE_URL + paths.SUBJECTS;
@@ -12,7 +11,9 @@ export class SubjectsService {
   }
 
   public async getSubjectById(subjectId: number) {
-    return getFetch<SubjectModel>(this.basePath + "/" + subjectId);
+    return resultFetch<SubjectModel>(this.basePath + "/" + subjectId, {
+      method: "GET",
+    });
   }
 
   public async newSubject(
@@ -24,10 +25,12 @@ export class SubjectsService {
       name: name,
     });
 
-    return postFetch<PostResponse>(
-      this.basePath,
-      "application/vnd.campus.api.v1+json",
-      newSubject
-    );
+    return resultFetch<PostResponse>(this.basePath, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/vnd.campus.api.v1+json",
+      },
+      body: newSubject,
+    });
   }
 }

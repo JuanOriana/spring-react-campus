@@ -5,7 +5,8 @@ import React from "react";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
-import { timeTableService } from "../../services";
+import { userService } from "../../services";
+import { useAuth } from "../../contexts/AuthContext";
 //
 
 function Timetable() {
@@ -42,8 +43,10 @@ function Timetable() {
     "#821479",
     "#6F9A13",
   ];
+  const { user } = useAuth();
 
-  timeTableService.getTimeTable().then((result) => console.log(result));
+
+  userService.getTimeTable(user!.userId).then((result) => console.log(result));
 
   return (
     <>
