@@ -1,6 +1,12 @@
 import { paths } from "../common/constants";
 import { getBlobFetch, getFetch } from "../scripts/getFetch";
-import { CourseModel, PagedContent, Result, UserModel } from "../types";
+import {
+  CourseModel,
+  PagedContent,
+  PostResponse,
+  Result,
+  UserModel,
+} from "../types";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
 import { postFetch } from "../scripts/postFetch";
@@ -45,7 +51,7 @@ export class UserService {
     email: string,
     password: string,
     confirmPassword: string
-  ) {
+  ): Promise<Result<PostResponse>> {
     const newUser = JSON.stringify({
       fileNumber: fileNumber,
       name: name,
@@ -56,7 +62,7 @@ export class UserService {
       confirmPassword: confirmPassword,
     });
 
-    return postFetch(
+    return postFetch<PostResponse>(
       this.basePath,
       "application/vnd.campus.api.v1+json",
       newUser

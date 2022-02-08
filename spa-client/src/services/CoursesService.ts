@@ -7,6 +7,7 @@ import {
   ExamModel,
   PagedContent,
   FileModel,
+  PostResponse,
 } from "../types";
 import AnswerModel from "../types/AnswerModel";
 import { getFetch } from "../scripts/getFetch";
@@ -134,7 +135,7 @@ export class CourseService {
     year: number,
     startTimes: number[],
     endTimes: number[]
-  ) {
+  ): Promise<Result<PostResponse>> {
     const newCourse = JSON.stringify({
       subjectId: subjectId,
       quarter: quarter,
@@ -144,7 +145,7 @@ export class CourseService {
       endTimes: endTimes,
     });
 
-    return postFetch(
+    return postFetch<PostResponse>(
       this.basePath,
       "application/vnd.campus.api.v1+json",
       newCourse
@@ -155,13 +156,13 @@ export class CourseService {
     courseId: number,
     title: string,
     content: string
-  ) {
+  ): Promise<Result<PostResponse>> {
     const newAnnouncement = JSON.stringify({
       title: title,
       content: content,
     });
 
-    return postFetch(
+    return postFetch<PostResponse>(
       this.basePath + "/" + courseId + "/announcements",
       "application/vnd.campus.api.v1+json",
       newAnnouncement
@@ -175,7 +176,7 @@ export class CourseService {
     file: File,
     startTime: string,
     endTime: string
-  ) {
+  ): Promise<Result<PostResponse>> {
     const newExam = JSON.stringify({
       title: title,
       content: content,
@@ -183,22 +184,10 @@ export class CourseService {
       startTime: startTime,
       endTime: endTime,
     });
-    return postFetch(
+    return postFetch<PostResponse>(
       this.basePath + "/" + courseId + "/exams",
       "application/vnd.campus.api.v1+json",
       newExam
-    );
-  }
-
-  public async newAnswer(courseId: number, answerFile: File) {
-    const newAnswer = JSON.stringify({
-      exam: answerFile,
-    });
-
-    return postFetch(
-      this.basePath + "/" + courseId + "/exams",
-      "application/vnd.campus.api.v1+json",
-      newAnswer
     );
   }
 }
