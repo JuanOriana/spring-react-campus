@@ -85,7 +85,10 @@ function App() {
               <Route path="course/all" element={<AdminAllCourses />} />
               <Route path="course/select" element={<AdminSelectCourse />} />
               <Route path="course/new" element={<AdminNewCourse />} />
-              <Route path="course/enroll" element={<AdminAddUserToCourse />} />
+              <Route
+                path="course/:courseId/enroll"
+                element={<AdminAddUserToCourse />}
+              />
             </Route>
             <Route path="/login" element={<Login />} />
           </Routes>
