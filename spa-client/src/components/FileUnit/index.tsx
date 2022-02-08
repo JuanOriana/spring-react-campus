@@ -8,11 +8,15 @@ import {
   FileCategoryName,
   MediumIcon,
 } from "./styles";
+import { FileModel } from "../../types";
+import { saveAs } from "file-saver";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
-import { FileModel } from "../../types";
+import { fileService } from "../../services";
+import { handleService } from "../../scripts/handleService";
+
 //
 
 interface FileUnitProps {
@@ -24,17 +28,23 @@ interface FileUnitProps {
 
 function FileUnit({ isGlobal, isMinimal, isTeacher, file }: FileUnitProps) {
   const { t } = useTranslation();
+
+  function downloadFile() {
+    fileService.getFileById(file.fileId).then((blob) => {
+      if (!blob.hasFailed()) saveAs(blob.getData(), file.fileName);
+    });
+  }
   return (
     <FileUnitWrapper>
       <div style={{ display: "flex", alignItems: "center" }}>
-        <Link
-          to={`/file/${file.fileId}`}
-          target={"_blank"}
+        <div
           style={{
             display: "flex",
             marginLeft: "10px",
             alignItems: "center",
+            cursor: "pointer",
           }}
+          onClick={() => downloadFile()}
         >
           <FileImg
             src={`/images/extensions/${file?.extension!.fileExtensionName}.png`}
@@ -43,7 +53,7 @@ function FileUnit({ isGlobal, isMinimal, isTeacher, file }: FileUnitProps) {
             }
           />
           <FileName>{file.fileName}</FileName>
-        </Link>
+        </div>
         {!isMinimal && file.fileCategory && (
           <FileCategoryName key={file.fileCategory.categoryId}>
             {t("Category." + file.fileCategory.categoryName)}

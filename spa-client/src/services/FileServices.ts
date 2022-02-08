@@ -14,7 +14,7 @@ import {
 export class FileService {
   private readonly basePath = paths.BASE_URL + paths.FILES;
 
-  public async getFileById(fileId: number): Promise<Result<File>> {
+  public async getFileById(fileId: number): Promise<Result<Blob>> {
     try {
       let response = await authedFetch(this.basePath + "/" + fileId, {
         method: "GET",

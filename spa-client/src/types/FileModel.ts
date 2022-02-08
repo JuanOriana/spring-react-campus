@@ -12,6 +12,6 @@ export default interface FileModel {
   course: CourseModel;
   downloads: number;
   hidden?: boolean;
-  fileUri?: string;
+  link: [{ href: string }];
   file?: File;
 }
