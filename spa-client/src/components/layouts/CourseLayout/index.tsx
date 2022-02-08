@@ -26,7 +26,6 @@ function CourseLayout() {
       navigate,
       (courseData) => {
         setCourse(courseData);
-        console.log(courseData);
       },
       () => setIsLoading(false)
     );

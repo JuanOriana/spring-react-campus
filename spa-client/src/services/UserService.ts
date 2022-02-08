@@ -67,7 +67,7 @@ export class UserService {
       confirmPassword: confirmPassword,
     });
 
-    if (confirmPassword! == password) {
+    if (confirmPassword !== password) {
       return Result.failed(
         new ErrorResponse(422, "Confirm password must match with password")
       );

@@ -52,6 +52,7 @@ function CourseFiles() {
   const [currentPage, pageSize] = usePagination(10);
   const [files, setFiles] = useState(new Array(0));
   const [isLoading, setIsLoading] = useState(false);
+  const [reload, setReload] = useState(false);
   const [maxPage, setMaxPage] = useState(1);
   const [categories, setCategories] = useState(new Array(0));
   const [extensions, setExtensions] = useState(new Array(0));
@@ -81,7 +82,7 @@ function CourseFiles() {
       },
       () => setIsLoading(false)
     );
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, reload, course.courseId]);
 
   useEffect(() => {
     handleService(
@@ -104,7 +105,7 @@ function CourseFiles() {
         return;
       }
     );
-  }, []);
+  }, [navigate]);
 
   function onDelete(id: number) {
     fileService
@@ -124,7 +125,23 @@ function CourseFiles() {
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
-    reset();
+    courseService
+      .newFile(course.courseId, data.file[0], data.category)
+      .then((response) => {
+        if (!response.hasFailed()) {
+          renderToast("👑 Archivo creado exitosamente!", "success");
+          navigate(
+            `/course/${course.courseId}/files?page=1&pageSize=${pageSize}`
+          );
+          setReload(!reload);
+          reset();
+        } else {
+          renderToast("No se pudo crear el archivo, intente de nuevo", "error");
+        }
+      })
+      .catch(() =>
+        renderToast("No se pudo crear el archivo, intente de nuevo", "error")
+      );
   });
 
   function renderTeacherForm() {
@@ -165,9 +182,9 @@ function CourseFiles() {
           <FormLabel htmlFor="categoryId">
             {t("CourseFiles.teacher.form.category")}
           </FormLabel>
-          <FormSelect style={{ fontSize: "26px" }}>
+          <FormSelect style={{ fontSize: "26px" }} {...register("category")}>
             {categories.map((category) => (
-              <option value={category.categoryId}>
+              <option key={category.categoryId} value={category.categoryId}>
                 {t("Category." + category.categoryName)}
               </option>
             ))}
@@ -202,11 +219,7 @@ function CourseFiles() {
               categoryType={categoryTypes}
               categories={categories}
               extensionType={extensionTypes}
-              extensions={[
-                { fileExtensionName: "Otros", fileExtensionId: 1 },
-                { fileExtensionName: "Hola", fileExtensionId: 2 },
-                { fileExtensionName: "Dos", fileExtensionId: 3 },
-              ]}
+              extensions={extensions}
             />
             <FileGrid>
               {files.length === 0 && (

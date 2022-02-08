@@ -202,12 +202,12 @@ export class CourseService {
 
   public async newFile(
     courseId: number,
-    file: File
+    file: File,
+    categoryId: number
   ): Promise<Result<PostResponse>> {
     const formData = new FormData();
-
     formData.append("file", file, file.name);
-    return resultFetch(this.basePath + "/" + courseId, {
+    return resultFetch(this.basePath + "/" + courseId + "/files", {
       method: "POST",
       headers: {
         "Content-Type": "multipart/form-data",
