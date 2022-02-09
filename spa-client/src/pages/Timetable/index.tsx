@@ -62,6 +62,7 @@ function Timetable() {
         userService.getTimeTable(user.userId),
         navigate,
         (timesData) => {
+          console.log(timesData);
           setTimes(timesData);
           if (!timesData) return;
           const newCourseToColor = new Map<number, string>();
@@ -102,28 +103,28 @@ function Timetable() {
                       return <td key={`${dayIdx}-${hourIdx}`}></td>;
                     const currentCourse = times[dayIdx][hourIdx];
                     return (
-                      <Link
-                        key={`${dayIdx}-${hourIdx}`}
-                        to={`/course/${currentCourse!.courseId}`}
+                      <td
+                        style={{
+                          background: courseToColor.get(
+                            currentCourse!.courseId
+                          ),
+                          cursor: "pointer",
+                          fontWeight: 700,
+                        }}
+                        data-tooltip={
+                          currentCourse?.subject.code +
+                          " [" +
+                          currentCourse?.board +
+                          "]"
+                        }
                       >
-                        <td
-                          style={{
-                            background: courseToColor.get(
-                              currentCourse!.courseId
-                            ),
-                            cursor: "pointer",
-                            fontWeight: 700,
-                          }}
-                          data-tooltip={
-                            currentCourse?.subject.code +
-                            " [" +
-                            currentCourse?.board +
-                            "]"
-                          }
+                        <Link
+                          key={`${dayIdx}-${hourIdx}`}
+                          to={`/course/${currentCourse!.courseId}`}
                         >
                           {times[dayIdx][hourIdx]?.subject.name}
-                        </td>
-                      </Link>
+                        </Link>
+                      </td>
                     );
                   })}
               </tr>
