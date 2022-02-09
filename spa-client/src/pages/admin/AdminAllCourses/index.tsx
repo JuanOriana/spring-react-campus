@@ -64,7 +64,7 @@ function AdminAllCourses() {
         courseService.getAvailableYears(),
         navigate,
         (receivedYears) => {
-          setAllYears([2021]);
+          setAllYears(receivedYears.map((year) => year.year));
         },
         () => {
           return;
