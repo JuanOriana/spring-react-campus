@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
+import { renderToast } from "../../scripts/renderToast";
 //
 
 type FormData = {
@@ -23,6 +24,7 @@ function User() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [reload, setReload] = useState(false);
   const [userImg, setUserImg] = useState<string | undefined>(undefined);
   const [isLoadingImg, setIsLoadingImg] = useState(false);
 
@@ -48,7 +50,25 @@ function User() {
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
-    reset();
+    userService
+      .updateUserProfileImage(user ? user.userId : -1, data.image![0])
+      .then((result) => {
+        if (!result.hasFailed()) {
+          renderToast("👑 Imagen actualizada exitosamente!", "success");
+          setReload(!reload);
+          reset();
+        }
+        renderToast(
+          "No se pudo actualizar la imagen, intente de nuevo",
+          "error"
+        );
+      })
+      .catch(() =>
+        renderToast(
+          "No se pudo actualizar la imagen, intente de nuevo",
+          "error"
+        )
+      );
   });
 
   return (

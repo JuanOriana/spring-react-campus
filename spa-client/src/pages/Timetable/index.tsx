@@ -63,11 +63,12 @@ function Timetable() {
         navigate,
         (timesData) => {
           setTimes(timesData);
+          if (!timesData) return;
           const newCourseToColor = new Map<number, string>();
           for (let i = 0; i < 6; i++) {
             for (let j = 0; j < 15; j++) {
-              if (times[i] && times[i][j]) {
-                newCourseToColor.set(times[i][j]!.courseId, colors[maxIdx]);
+              if (timesData[i] && timesData[i][j]) {
+                newCourseToColor.set(timesData[i][j]!.courseId, colors[maxIdx]);
                 maxIdx = (maxIdx + 1) % colors.length;
               }
             }
@@ -97,7 +98,7 @@ function Timetable() {
                 <Time>{hour}</Time>
                 {courseToColor &&
                   days.map((day, dayIdx) => {
-                    if (!times[dayIdx] || !times[dayIdx][hourIdx])
+                    if (!times || !times[dayIdx] || !times[dayIdx][hourIdx])
                       return <td key={`${dayIdx}-${hourIdx}`}></td>;
                     const currentCourse = times[dayIdx][hourIdx];
                     return (
