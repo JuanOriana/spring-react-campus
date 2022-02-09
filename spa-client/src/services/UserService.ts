@@ -88,7 +88,7 @@ export class UserService {
       content: content,
     });
 
-    return resultFetch(this.basePath + "/" + userId + "/email", {
+    return resultFetch<PostResponse>(this.basePath + "/" + userId + "/email", {
       method: "POST",
       headers: {
         "Content-Type": "application/vnd.campus.api.v1+json",
