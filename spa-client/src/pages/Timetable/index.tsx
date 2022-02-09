@@ -62,9 +62,11 @@ function Timetable() {
         userService.getTimeTable(user.userId),
         navigate,
         (timesData) => {
-          console.log(timesData);
-          setTimes(timesData);
-          if (!timesData) return;
+          setTimes(timesData ? timesData : [[]]);
+          if (!timesData) {
+            setCourseToColor(new Map());
+            return;
+          }
           const newCourseToColor = new Map<number, string>();
           for (let i = 0; i < 6; i++) {
             for (let j = 0; j < 15; j++) {
