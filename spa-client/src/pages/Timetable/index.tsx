@@ -1,16 +1,21 @@
 import { TimetableLayout, Days, Time } from "./styles";
 import { SectionHeading } from "../../components/generalStyles/utils";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
 import { userService } from "../../services";
 import { useAuth } from "../../contexts/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { handleService } from "../../scripts/handleService";
+import LoadableData from "../../components/LoadableData";
+import { CourseModel } from "../../types";
 //
 
 function Timetable() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const days: string[] = [
     "Lunes",
     "Martes",
@@ -43,35 +48,88 @@ function Timetable() {
     "#821479",
     "#6F9A13",
   ];
+  const [courseToColor, setCourseToColor] = useState<
+    Map<number, string> | undefined
+  >(undefined);
+  let maxIdx = 0;
   const { user } = useAuth();
-
-
-  userService.getTimeTable(user!.userId).then((result) => console.log(result));
-
+  const [times, setTimes] = useState<(CourseModel | null)[][]>([[null]]);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    setIsLoading(true);
+    if (user) {
+      handleService(
+        userService.getTimeTable(user.userId),
+        navigate,
+        (timesData) => {
+          setTimes(timesData);
+          const newCourseToColor = new Map<number, string>();
+          for (let i = 0; i < 6; i++) {
+            for (let j = 0; j < 15; j++) {
+              if (times[i] && times[i][j]) {
+                newCourseToColor.set(times[i][j]!.courseId, colors[maxIdx]);
+                maxIdx = (maxIdx + 1) % colors.length;
+              }
+            }
+          }
+          setCourseToColor(newCourseToColor);
+        },
+        () => {
+          setIsLoading(false);
+        }
+      );
+    }
+  }, [user]);
   return (
     <>
       <SectionHeading>{t("Timetable.title")}</SectionHeading>
-      <div>
-        <TimetableLayout>
-          <Days>
-            <th></th>
-            {days.map((day) => (
-              <th key={day}>{t("DaysOfTheWeek." + day)}</th>
+      <LoadableData isLoading={isLoading}>
+        <div>
+          <TimetableLayout>
+            <Days>
+              <th></th>
+              {days.map((day) => (
+                <th key={day}>{t("DaysOfTheWeek." + day)}</th>
+              ))}
+            </Days>
+            {hours.map((hour, hourIdx) => (
+              <tr key={hour}>
+                <Time>{hour}</Time>
+                {courseToColor &&
+                  days.map((day, dayIdx) => {
+                    if (!times[dayIdx] || !times[dayIdx][hourIdx])
+                      return <td key={`${dayIdx}-${hourIdx}`}></td>;
+                    const currentCourse = times[dayIdx][hourIdx];
+                    return (
+                      <Link
+                        key={`${dayIdx}-${hourIdx}`}
+                        to={`/course/${currentCourse!.courseId}`}
+                      >
+                        <td
+                          style={{
+                            background: courseToColor.get(
+                              currentCourse!.courseId
+                            ),
+                            cursor: "pointer",
+                            fontWeight: 700,
+                          }}
+                          data-tooltip={
+                            currentCourse?.subject.code +
+                            " [" +
+                            currentCourse?.board +
+                            "]"
+                          }
+                        >
+                          {times[dayIdx][hourIdx]?.subject.name}
+                        </td>
+                      </Link>
+                    );
+                  })}
+              </tr>
             ))}
-          </Days>
-          {hours.map((hour) => (
-            <tr key={hour}>
-              <Time>{hour}</Time>
-              {
-                //FALTA LOGICA
-                days.map((day) => (
-                  <td key={day}></td>
-                ))
-              }
-            </tr>
-          ))}
-        </TimetableLayout>
-      </div>
+          </TimetableLayout>
+        </div>
+      </LoadableData>
     </>
   );
 }

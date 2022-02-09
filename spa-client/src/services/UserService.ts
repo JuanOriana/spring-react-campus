@@ -97,10 +97,8 @@ export class UserService {
     });
   }
 
-  public async getTimeTable(
-    userId: number
-  ): Promise<Result<Map<string, number[]>>> {
-    return resultFetch<Map<string, number[]>>(
+  public async getTimeTable(userId: number): Promise<Result<CourseModel[][]>> {
+    return resultFetch<CourseModel[][]>(
       this.basePath + "/" + userId + "/timetable",
       { method: "GET" }
     );
