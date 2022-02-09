@@ -48,17 +48,17 @@ function AdminAddUserToCourse() {
     setIsCourseLoading(true);
     if (courseId) {
       const courseIdAsInt = parseInt(courseId);
-      // handleService(
-      //   courseService.getCourseById(courseIdAsInt),
-      //   navigate,
-      //   (courseData) => {
-      //     console.log(courseData);
-      //     setCourse(courseData);
-      //   },
-      //   () => {
-      //     setIsCourseLoading(false);
-      //   }
-      // );
+      handleService(
+        courseService.getCourseById(courseIdAsInt),
+        navigate,
+        (courseData) => {
+          console.log(courseData);
+          setCourse(courseData);
+        },
+        () => {
+          setIsCourseLoading(false);
+        }
+      );
       handleService(
         userService.getUsers(),
         navigate,

@@ -11,14 +11,16 @@ import { FormText } from "../AdminAllCourses/styles";
 import { GeneralTitle } from "../../../components/generalStyles/utils";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { handleService } from "../../../scripts/handleService";
+import { courseService, subjectsService } from "../../../services";
+import { useNavigate } from "react-router-dom";
+import LoadableData from "../../../components/LoadableData";
+import { renderToast } from "../../../scripts/renderToast";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
-import { handleService } from "../../../scripts/handleService";
-import { subjectsService } from "../../../services";
-import { useNavigate } from "react-router-dom";
-import LoadableData from "../../../components/LoadableData";
+
 //
 
 const days: string[] = [
@@ -35,6 +37,8 @@ type FormData = {
   quarter: number;
   year: number;
   board: string;
+  startTimes: number[];
+  endTimes: number[];
 };
 
 function AdminNewCourse() {
@@ -67,7 +71,26 @@ function AdminNewCourse() {
   } = useForm<FormData>({ criteriaMode: "all" });
 
   const onSubmit = handleSubmit((data: FormData) => {
-    reset();
+    courseService
+      .newCourse(
+        data.subjectId,
+        data.quarter,
+        data.board,
+        data.year,
+        data.startTimes,
+        data.endTimes
+      )
+      .then((result) => {
+        if (!result.hasFailed()) {
+          renderToast("👑 Usuario creado exitosamente!", "success");
+          reset();
+        } else {
+          renderToast("No se pudo crear el usuario, intente de nuevo", "error");
+        }
+      })
+      .catch(() =>
+        renderToast("No se pudo crear el usuario, intente de nuevo", "error")
+      );
   });
 
   return (
@@ -100,7 +123,9 @@ function AdminNewCourse() {
               required
             >
               {subjects.map((subject) => (
-                <option value={subject.subjectId}>{subject.name}</option>
+                <option key={subject.subjectId} value={subject.subjectId}>
+                  {subject.name}
+                </option>
               ))}
             </FormSelect>
             <FormLabel htmlFor="quarter">
@@ -166,22 +191,29 @@ function AdminNewCourse() {
                 margin: "20px 20px 0 20px",
               }}
             >
-              {days.map((day) => (
-                <div style={{ display: "flex", flexDirection: "column" }}>
+              {days.map((day, index) => (
+                <div
+                  style={{ display: "flex", flexDirection: "column" }}
+                  key={"div" + day}
+                >
                   <FormText>{t("DaysOfTheWeek." + day)}</FormText>
                   <div style={{ display: "flex" }}>
                     <input
+                      key={"start" + day}
                       style={{ width: "3em" }}
                       type="number"
                       min="8"
                       max="22"
+                      {...register(`startTimes.${index}`, {})}
                     />
                     <p>:00 ---- </p>
                     <input
+                      key={"end" + day}
                       style={{ width: "3em" }}
                       type="number"
                       min="8"
                       max="22"
+                      {...register(`endTimes.${index}`, {})}
                     />
                     <p>:00</p>
                   </div>
