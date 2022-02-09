@@ -37,6 +37,7 @@ import { renderToast } from "../../../scripts/renderToast";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
+import { AnnouncementModel, FileModel } from "../../../types";
 //
 
 type FormData = {
@@ -112,6 +113,9 @@ function CourseFiles() {
       .deleteFile(id)
       .then(() => {
         renderToast("👑 Archivo eliminado exitosamente!", "success");
+        setFiles((oldFiles) =>
+          oldFiles.filter((file: FileModel) => file.fileId !== id)
+        );
       })
       .catch(() =>
         renderToast("No se pudo borrar el archivo, intente de nuevo", "error")
@@ -126,7 +130,7 @@ function CourseFiles() {
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
     courseService
-      .newFile(course.courseId, data.file[0], data.category)
+      .newFile(course.courseId, data.file[0], data.category ? data.category : 1)
       .then((response) => {
         if (!response.hasFailed()) {
           renderToast("👑 Archivo creado exitosamente!", "success");
@@ -182,7 +186,11 @@ function CourseFiles() {
           <FormLabel htmlFor="categoryId">
             {t("CourseFiles.teacher.form.category")}
           </FormLabel>
-          <FormSelect style={{ fontSize: "26px" }} {...register("category")}>
+          <FormSelect
+            style={{ fontSize: "26px" }}
+            {...register("category")}
+            defaultValue={1}
+          >
             {categories.map((category) => (
               <option key={category.categoryId} value={category.categoryId}>
                 {t("Category." + category.categoryName)}
