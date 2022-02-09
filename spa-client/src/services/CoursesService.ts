@@ -8,6 +8,7 @@ import {
   PagedContent,
   FileModel,
   PostResponse,
+  ErrorResponse,
 } from "../types";
 import AnswerModel from "../types/AnswerModel";
 import { getPagedFetch } from "../scripts/getPagedFetch";
@@ -92,8 +93,9 @@ export class CourseService {
     );
   }
 
-  public async getAvailableYears(): Promise<Result<{ year: number }[]>> {
-    return resultFetch<{ year: number }[]>(this.basePath + "/available-years", {
+  //TODO: Ver si este service puede mapear el json sin el type! (cuando podamos correr la api)
+  public async getAvailableYears(): Promise<Result<number[]>> {
+    return resultFetch<number[]>(this.basePath + "/available-years", {
       method: "GET",
     });
   }
@@ -205,13 +207,20 @@ export class CourseService {
     categoryId: number
   ): Promise<Result<PostResponse>> {
     const formData = new FormData();
+
+    if (categoryId === null) {
+      return Result.failed(new ErrorResponse(422, "Category must not be null"));
+    }
     formData.append("file", file, file.name);
-    return resultFetch(this.basePath + "/" + courseId + "/files", {
-      method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      body: formData,
-    });
+    formData.append("category", categoryId.toString());
+
+    return resultFetch<PostResponse>(
+      this.basePath + "/" + courseId + "/files",
+      {
+        method: "POST",
+        headers: {},
+        body: formData,
+      }
+    );
   }
 }
