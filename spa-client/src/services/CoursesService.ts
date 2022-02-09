@@ -27,9 +27,18 @@ export class CourseService {
 
   public async getCourses(
     page?: number,
-    pageSize?: number
+    pageSize?: number,
+    year?: number,
+    quarter?: number
   ): Promise<Result<PagedContent<CourseModel[]>>> {
     let url = pageUrlMaker(this.basePath, page, pageSize);
+    if (typeof year !== "undefined") {
+      url.searchParams.append("year", year.toString());
+    }
+
+    if (typeof quarter !== "undefined") {
+      url.searchParams.append("quarter", quarter.toString());
+    }
     return getPagedFetch<CourseModel[]>(url.toString());
   }
 
@@ -180,22 +189,38 @@ export class CourseService {
     courseId: number,
     title: string,
     content: string,
-    file: File,
-    startTime: string,
-    endTime: string
+    file: File | null,
+    startTime: Date,
+    endTime: Date
   ): Promise<Result<PostResponse>> {
-    const newExam = JSON.stringify({
+    if (file === null) {
+      return Result.failed(new ErrorResponse(422, "File field cannot be null"));
+    }
+    if (startTime >= endTime) {
+      return Result.failed(
+        new ErrorResponse(
+          422,
+          "Starttime cannot be greater or equal than endtime"
+        )
+      ); // TODO ver si este status code corresponde
+    }
+
+    const newExam = new FormData();
+    newExam.append("file", file, file.name);
+
+    const metadata = JSON.stringify({
       title: title,
       content: content,
-      file: file, // TODO ver si esto es correcto
-      startTime: startTime,
-      endTime: endTime,
+      startTime: startTime.toString(),
+      endTime: endTime.toString(),
     });
+    newExam.append("metadata", metadata);
+
     return resultFetch<PostResponse>(
       this.basePath + "/" + courseId + "/exams",
       {
         method: "POST",
-        headers: { "Content-Type": "application/vnd.campus.api.v1+json" },
+        headers: {},
         body: newExam,
       }
     );
