@@ -2,12 +2,20 @@ import { paths } from "../common/constants";
 import { authedFetch } from "../scripts/authedFetch";
 import { fileUrlMaker } from "../scripts/fileUrlMaker";
 import { getPagedFetch } from "../scripts/getPagedFetch";
-import { ErrorResponse, FileModel, PagedContent, Result } from "../types";
+import { resultFetch } from "../scripts/resultFetch";
+import {
+  ErrorResponse,
+  FileCategoryModel,
+  FileExtensionModel,
+  FileModel,
+  PagedContent,
+  Result,
+} from "../types";
 
 export class FileService {
   private readonly basePath = paths.BASE_URL + paths.FILES;
 
-  public async getFileById(fileId: number): Promise<Result<File>> {
+  public async getFileById(fileId: number): Promise<Result<Blob>> {
     try {
       let response = await authedFetch(this.basePath + "/" + fileId, {
         method: "GET",
@@ -58,6 +66,34 @@ export class FileService {
   public async deleteFile(fileId: number) {
     return authedFetch(this.basePath + "/" + fileId, {
       method: "DELETE",
+    });
+  }
+
+  public async getCategories(): Promise<
+    Result<PagedContent<FileCategoryModel[]>>
+  > {
+    return getPagedFetch<FileCategoryModel[]>(this.basePath + "/categories");
+  }
+
+  public async getExtensions(): Promise<
+    Result<PagedContent<FileExtensionModel[]>>
+  > {
+    return getPagedFetch<FileExtensionModel[]>(this.basePath + "/extensions");
+  }
+
+  public async getCategoryById(
+    categoryId: number
+  ): Promise<Result<FileCategoryModel>> {
+    return resultFetch(this.basePath + "/categories/" + categoryId, {
+      method: "GET",
+    });
+  }
+
+  public async getExtensionbyById(
+    extensionId: number
+  ): Promise<Result<FileExtensionModel>> {
+    return resultFetch(this.basePath + "/extensions/" + extensionId, {
+      method: "GET",
     });
   }
 }

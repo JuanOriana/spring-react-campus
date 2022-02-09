@@ -4,7 +4,11 @@ import {
   SectionHeading,
   Separator,
 } from "../../../components/generalStyles/utils";
-import { getQueryOrDefault, useQuery } from "../../../hooks/useQuery";
+import {
+  getQueryOrDefault,
+  getQueryOrDefaultMultiple,
+  useQuery,
+} from "../../../hooks/useQuery";
 import { useNavigate } from "react-router-dom";
 import { usePagination } from "../../../hooks/usePagination";
 import React, { useEffect, useState } from "react";
@@ -25,45 +29,98 @@ import {
   FormSelect,
   FormWrapper,
 } from "../../../components/generalStyles/form";
+import { handleService } from "../../../scripts/handleService";
+import { courseService, fileService } from "../../../services";
+import LoadableData from "../../../components/LoadableData";
+import { renderToast } from "../../../scripts/renderToast";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
+import { AnnouncementModel, FileModel } from "../../../types";
 //
 
 type FormData = {
   file: FileList;
-  //DEBERIA SER UN ENUM
-  category: object;
+  category: number;
 };
 
 function CourseFiles() {
   const { t } = useTranslation();
-  const Course = useCourseData();
+  const course = useCourseData();
   const query = useQuery();
   const navigate = useNavigate();
-  const [currentPage] = usePagination(10);
+  const [currentPage, pageSize] = usePagination(10);
   const [files, setFiles] = useState(new Array(0));
+  const [isLoading, setIsLoading] = useState(false);
+  const [reload, setReload] = useState(false);
+  const [maxPage, setMaxPage] = useState(1);
+  const [categories, setCategories] = useState(new Array(0));
+  const [extensions, setExtensions] = useState(new Array(0));
   const orderDirection = getQueryOrDefault(query, "order-direction", "desc");
   const orderProperty = getQueryOrDefault(query, "order-property", "date");
-  const maxPage = 3;
-  const categories = [
-    { categoryName: "practice", categoryId: 1 },
-    { categoryName: "exam", categoryId: 2 },
-  ];
+  const queryStringed = getQueryOrDefault(query, "query", "");
+  const extensionTypes = getQueryOrDefaultMultiple(query, "extension-type");
+  const categoryTypes = getQueryOrDefaultMultiple(query, "category-type");
 
   useEffect(() => {
-    setFiles([
-      {
-        fileId: 1,
-        name: "archivoprueba",
-        downloads: 10,
-        categories: [{ name: "hola" }],
-        extension: { fileExtensionName: "csv" },
-        course: { courseId: 1, subject: { name: "paw" } },
+    setIsLoading(true);
+    handleService(
+      courseService.getFiles(
+        course.courseId,
+        categoryTypes.map((type) => parseInt(type)),
+        extensionTypes.map((type) => parseInt(type)),
+        queryStringed,
+        orderProperty,
+        orderDirection,
+        currentPage,
+        pageSize
+      ),
+      navigate,
+      (fileData) => {
+        setFiles(fileData ? fileData.getContent() : []);
+        setMaxPage(fileData ? fileData.getMaxPage() : 1);
       },
-    ]);
-  }, []);
+      () => setIsLoading(false)
+    );
+  }, [currentPage, pageSize, reload, course.courseId]);
+
+  useEffect(() => {
+    handleService(
+      fileService.getCategories(),
+      navigate,
+      (fileCategories) => {
+        setCategories(fileCategories ? fileCategories.getContent() : []);
+      },
+      () => {
+        return;
+      }
+    );
+    handleService(
+      fileService.getExtensions(),
+      navigate,
+      (fileExtensions) => {
+        setExtensions(fileExtensions ? fileExtensions.getContent() : []);
+      },
+      () => {
+        return;
+      }
+    );
+  }, [navigate]);
+
+  function onDelete(id: number) {
+    fileService
+      .deleteFile(id)
+      .then(() => {
+        renderToast("👑 Archivo eliminado exitosamente!", "success");
+        setFiles((oldFiles) =>
+          oldFiles.filter((file: FileModel) => file.fileId !== id)
+        );
+      })
+      .catch(() =>
+        renderToast("No se pudo borrar el archivo, intente de nuevo", "error")
+      );
+  }
 
   const {
     register,
@@ -72,7 +129,23 @@ function CourseFiles() {
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
-    reset();
+    courseService
+      .newFile(course.courseId, data.file[0], data.category ? data.category : 1)
+      .then((response) => {
+        if (!response.hasFailed()) {
+          renderToast("👑 Archivo creado exitosamente!", "success");
+          navigate(
+            `/course/${course.courseId}/files?page=1&pageSize=${pageSize}`
+          );
+          setReload(!reload);
+          reset();
+        } else {
+          renderToast("No se pudo crear el archivo, intente de nuevo", "error");
+        }
+      })
+      .catch(() =>
+        renderToast("No se pudo crear el archivo, intente de nuevo", "error")
+      );
   });
 
   function renderTeacherForm() {
@@ -113,9 +186,13 @@ function CourseFiles() {
           <FormLabel htmlFor="categoryId">
             {t("CourseFiles.teacher.form.category")}
           </FormLabel>
-          <FormSelect style={{ fontSize: "26px" }}>
+          <FormSelect
+            style={{ fontSize: "26px" }}
+            {...register("category")}
+            defaultValue={1}
+          >
             {categories.map((category) => (
-              <option value={category.categoryId}>
+              <option key={category.categoryId} value={category.categoryId}>
                 {t("Category." + category.categoryName)}
               </option>
             ))}
@@ -134,70 +211,81 @@ function CourseFiles() {
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
         {t("CourseFiles.title")}
       </SectionHeading>
-      {Course.isTeacher && renderTeacherForm()}
-      <BigWrapper style={{ display: "flex", flexDirection: "column" }}>
-        <FileSearcher
-          orderDirection={orderDirection}
-          orderProperty={orderProperty}
-          categoryType={[1]}
-          categories={categories}
-          extensionType={[2]}
-          extensions={[
-            { fileExtensionName: "Otros", fileExtensionId: 1 },
-            { fileExtensionName: "Hola", fileExtensionId: 2 },
-            { fileExtensionName: "Dos", fileExtensionId: 3 },
-          ]}
-        />
-        <FileGrid>
-          {files.length === 0 && (
-            <GeneralTitle style={{ width: "100%", textAlign: "center" }}>
-              {t("CourseFiles.noResults")}
-            </GeneralTitle>
-          )}
-          {files.map((file) => (
-            <FileUnit
-              key={file.fileId}
-              isTeacher={Course.isTeacher}
-              file={file}
+      {course.isTeacher && renderTeacherForm()}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <LoadableData isLoading={isLoading}>
+          <BigWrapper style={{ display: "flex", flexDirection: "column" }}>
+            <FileSearcher
+              orderDirection={orderDirection}
+              orderProperty={orderProperty}
+              categoryType={categoryTypes}
+              categories={categories}
+              extensionType={extensionTypes}
+              extensions={extensions}
             />
-          ))}
-        </FileGrid>
-      </BigWrapper>
-      <PaginationWrapper style={{ alignSelf: "center" }}>
-        {currentPage > 1 && (
-          <button
-            onClick={() => {
-              query.set("page", String(currentPage - 1));
-              navigate(`/course/${Course.courseId}/files?${query.toString()}`);
-            }}
-            style={{ background: "none", border: "none" }}
-          >
-            <PaginationArrow
-              xRotated={true}
-              src="/images/page-arrow.png"
-              alt={t("BasicPagination.alt.beforePage")}
-            />
-          </button>
-        )}
-        {t("BasicPagination.message", {
-          currentPage: currentPage,
-          maxPage: maxPage,
-        })}
-        {currentPage < maxPage && (
-          <button
-            onClick={() => {
-              query.set("page", String(currentPage + 1));
-              navigate(`/course/${Course.courseId}/files?${query.toString()}`);
-            }}
-            style={{ background: "none", border: "none" }}
-          >
-            <PaginationArrow
-              src="/images/page-arrow.png"
-              alt={t("BasicPagination.alt.nextPage")}
-            />
-          </button>
-        )}
-      </PaginationWrapper>
+            <FileGrid>
+              {files.length === 0 && (
+                <GeneralTitle style={{ width: "100%", textAlign: "center" }}>
+                  {t("CourseFiles.noResults")}
+                </GeneralTitle>
+              )}
+              {files.map((file) => (
+                <FileUnit
+                  key={file.fileId}
+                  isTeacher={course.isTeacher}
+                  file={file}
+                  onDelete={onDelete}
+                />
+              ))}
+            </FileGrid>
+          </BigWrapper>
+          <PaginationWrapper style={{ alignSelf: "center" }}>
+            {currentPage > 1 && (
+              <button
+                onClick={() => {
+                  query.set("page", String(currentPage - 1));
+                  navigate(
+                    `/course/${course.courseId}/files?${query.toString()}`
+                  );
+                }}
+                style={{ background: "none", border: "none" }}
+              >
+                <PaginationArrow
+                  xRotated={true}
+                  src="/images/page-arrow.png"
+                  alt={t("BasicPagination.alt.beforePage")}
+                />
+              </button>
+            )}
+            {t("BasicPagination.message", {
+              currentPage: currentPage,
+              maxPage: maxPage,
+            })}
+            {currentPage < maxPage && (
+              <button
+                onClick={() => {
+                  query.set("page", String(currentPage + 1));
+                  navigate(
+                    `/course/${course.courseId}/files?${query.toString()}`
+                  );
+                }}
+                style={{ background: "none", border: "none" }}
+              >
+                <PaginationArrow
+                  src="/images/page-arrow.png"
+                  alt={t("BasicPagination.alt.nextPage")}
+                />
+              </button>
+            )}
+          </PaginationWrapper>
+        </LoadableData>
+      </div>
     </>
   );
 }

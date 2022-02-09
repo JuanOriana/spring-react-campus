@@ -1,9 +1,16 @@
 import { paths } from "../common/constants";
-import { getBlobFetch, getFetch } from "../scripts/getFetch";
-import { CourseModel, PagedContent, Result, UserModel } from "../types";
+import { getBlobFetch } from "../scripts/getFetch";
+import {
+  CourseModel,
+  ErrorResponse,
+  PagedContent,
+  PostResponse,
+  Result,
+  UserModel,
+} from "../types";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
-import { postFetch } from "../scripts/postFetch";
+import { resultFetch } from "../scripts/resultFetch";
 
 export class UserService {
   private readonly basePath = paths.BASE_URL + paths.USERS;
@@ -13,11 +20,15 @@ export class UserService {
   }
 
   public async getUserById(userId: number): Promise<Result<UserModel>> {
-    return getFetch<UserModel>(this.basePath + "/" + userId);
+    return resultFetch<UserModel>(this.basePath + "/" + userId, {
+      method: "GET",
+    });
   }
 
   public async getLastFileNumber(): Promise<Result<number>> {
-    return getFetch<number>(this.basePath + "/file-number/last");
+    return resultFetch<number>(this.basePath + "/file-number/last", {
+      method: "GET",
+    });
   }
 
   public async getUserProfileImage(userId: number): Promise<Result<Blob>> {
@@ -45,7 +56,7 @@ export class UserService {
     email: string,
     password: string,
     confirmPassword: string
-  ) {
+  ): Promise<Result<PostResponse>> {
     const newUser = JSON.stringify({
       fileNumber: fileNumber,
       name: name,
@@ -56,11 +67,19 @@ export class UserService {
       confirmPassword: confirmPassword,
     });
 
-    return postFetch(
-      this.basePath,
-      "application/vnd.campus.api.v1+json",
-      newUser
-    );
+    if (confirmPassword !== password) {
+      return Result.failed(
+        new ErrorResponse(422, "Confirm password must match with password")
+      );
+    }
+
+    return resultFetch<PostResponse>(this.basePath, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/vnd.campus.api.v1+json",
+      },
+      body: newUser,
+    });
   }
 
   public async sendEmail(userId: number, title: string, content: string) {
@@ -69,10 +88,32 @@ export class UserService {
       content: content,
     });
 
-    return postFetch(
-      this.basePath + "/" + userId + "email",
-      "application/vnd.campus.api.v1+json",
-      email
+    return resultFetch<PostResponse>(this.basePath + "/" + userId + "/email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/vnd.campus.api.v1+json",
+      },
+      body: email,
+    });
+  }
+
+  public async getTimeTable(userId: number): Promise<Result<CourseModel[][]>> {
+    return resultFetch<CourseModel[][]>(
+      this.basePath + "/" + userId + "/timetable",
+      { method: "GET" }
     );
+  }
+
+  public async updateUserProfileImage(userId: number, file: File) {
+    const formData = new FormData();
+
+    formData.append("file", file, file.name);
+    return resultFetch(this.basePath + "/" + userId + "/image", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      body: formData,
+    });
   }
 }

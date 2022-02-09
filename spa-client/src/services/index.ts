@@ -3,14 +3,18 @@ import { AnnouncementsService } from "./AnnouncementsService";
 import { LoginService } from "./LoginService";
 import { UserService } from "./UserService";
 import { FileService } from "./FileServices";
-import { TimeTableService } from "./TimeTableService";
+import { SubjectsService } from "./SubjectsService";
+import { ExamsServices } from "./ExamsService";
+import { AnswersService } from "./AnswersService";
 
 const courseService = new CourseService();
 const announcementsService = new AnnouncementsService();
 const loginService = new LoginService();
 const userService = new UserService();
 const fileService = new FileService();
-const timeTableService = new TimeTableService();
+const subjectsService = new SubjectsService();
+const examsService = new ExamsServices();
+const answersService = new AnswersService();
 
 export {
   courseService,
@@ -18,5 +22,7 @@ export {
   loginService,
   userService,
   fileService,
-  timeTableService,
+  subjectsService,
+  examsService,
+  answersService,
 };

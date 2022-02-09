@@ -11,19 +11,12 @@ import { Link } from "react-router-dom";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
+import AnswerModel from "../../types/AnswerModel";
 //
 
 interface StudentExamUnitProps {
   isCorrected?: boolean;
-  answer: {
-    answerId: number;
-    student: {
-      name: string;
-      surname: string;
-    };
-    score: number;
-    deliveredDate: Date;
-  };
+  answer: AnswerModel;
   examId: number;
 }
 

@@ -51,5 +51,5 @@ export const FileFilterPill = styled.div<{ red: boolean }>`
   padding: 4px 8px;
   margin-left: 6px;
   margin-bottom: 2px;
-  background: ${(props) => (props.red ? "#a80011" : props.theme.cyanLight)};
+  background: ${(props) => (props.red ? "#a80011" : props.theme.cyanDark)};
 `;

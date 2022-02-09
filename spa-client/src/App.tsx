@@ -64,7 +64,7 @@ function App() {
               <Route path="user" element={<User />} />
               <Route path="error" element={<Error />} />
               <Route path="*" element={<Custom404 />} />
-              <Route path="course/:courseId/mail/:mailId" element={<Mail />} />
+              <Route path="course/:courseId/mail/:userId" element={<Mail />} />
               <Route path="course/:courseId" element={<CourseLayout />}>
                 <Route index element={<Navigate to="announcements" />} />
                 <Route path="announcements" element={<CourseAnnouncements />} />
@@ -85,7 +85,10 @@ function App() {
               <Route path="course/all" element={<AdminAllCourses />} />
               <Route path="course/select" element={<AdminSelectCourse />} />
               <Route path="course/new" element={<AdminNewCourse />} />
-              <Route path="course/enroll" element={<AdminAddUserToCourse />} />
+              <Route
+                path="course/:courseId/enroll"
+                element={<AdminAddUserToCourse />}
+              />
             </Route>
             <Route path="/login" element={<Login />} />
           </Routes>

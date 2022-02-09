@@ -36,12 +36,12 @@ function AnnouncementUnit({
             }}
           >
             <p>
-              {announcement.author?.name} {announcement.author?.surname}
+              Autor: {announcement.author?.name} {announcement.author?.surname}
             </p>
             {isGlobal && (
               <p style={{ fontWeight: 700 }}>
                 <Link to={`/course/${announcement.course.courseId}`}>
-                  {announcement.course.subject.name}
+                  Materia: {announcement.course.subject.name}
                 </Link>
               </p>
             )}

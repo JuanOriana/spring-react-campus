@@ -1,9 +1,9 @@
 import { paths } from "../common/constants";
 import { AnnouncementModel, PagedContent, Result } from "../types";
-import { getFetch } from "../scripts/getFetch";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
 import { authedFetch } from "../scripts/authedFetch";
+import { resultFetch } from "../scripts/resultFetch";
 
 export class AnnouncementsService {
   private readonly basePath = paths.BASE_URL + paths.ANNOUNCEMENTS;
@@ -18,7 +18,10 @@ export class AnnouncementsService {
   public async getAnnouncementById(
     announcementId: number
   ): Promise<Result<AnnouncementModel>> {
-    return getFetch<AnnouncementModel>(this.basePath + "/" + announcementId);
+    return resultFetch<AnnouncementModel>(
+      this.basePath + "/" + announcementId,
+      { method: "GET" }
+    );
   }
 
   public async deleteAnnouncement(announcementId: number) {

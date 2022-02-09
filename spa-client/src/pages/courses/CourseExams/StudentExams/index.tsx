@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../../common/i18n/index";
+import { examsService } from "../../../../services";
 //
 const exampleExam = {
   examId: 1,

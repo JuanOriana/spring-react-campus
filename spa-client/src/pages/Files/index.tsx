@@ -62,12 +62,26 @@ function Files() {
   }, [currentPage, pageSize]);
 
   useEffect(() => {
-    setCategories([{ categoryName: "Otros", categoryId: 1 }]);
-    setExtensions([
-      { fileExtensionName: "Otros", fileExtensionId: 1 },
-      { fileExtensionName: "Hola", fileExtensionId: 2 },
-      { fileExtensionName: "Dos", fileExtensionId: 3 },
-    ]);
+    handleService(
+      fileService.getCategories(),
+      navigate,
+      (fileCategories) => {
+        setCategories(fileCategories ? fileCategories.getContent() : []);
+      },
+      () => {
+        return;
+      }
+    );
+    handleService(
+      fileService.getExtensions(),
+      navigate,
+      (fileExtensions) => {
+        setExtensions(fileExtensions ? fileExtensions.getContent() : []);
+      },
+      () => {
+        return;
+      }
+    );
   }, []);
 
   return (

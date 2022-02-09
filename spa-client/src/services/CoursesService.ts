@@ -7,26 +7,38 @@ import {
   ExamModel,
   PagedContent,
   FileModel,
+  PostResponse,
+  ErrorResponse,
 } from "../types";
 import AnswerModel from "../types/AnswerModel";
-import { getFetch } from "../scripts/getFetch";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
-import { postFetch } from "../scripts/postFetch";
 import { fileUrlMaker } from "../scripts/fileUrlMaker";
+import { resultFetch } from "../scripts/resultFetch";
 
 export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
 
   public async getCourseById(courseId: number): Promise<Result<CourseModel>> {
-    return getFetch<CourseModel>(this.basePath + "/" + courseId);
+    return resultFetch<CourseModel>(this.basePath + "/" + courseId, {
+      method: "GET",
+    });
   }
 
   public async getCourses(
     page?: number,
-    pageSize?: number
+    pageSize?: number,
+    year?: number,
+    quarter?: number
   ): Promise<Result<PagedContent<CourseModel[]>>> {
     let url = pageUrlMaker(this.basePath, page, pageSize);
+    if (typeof year !== "undefined") {
+      url.searchParams.append("year", year.toString());
+    }
+
+    if (typeof quarter !== "undefined") {
+      url.searchParams.append("quarter", quarter.toString());
+    }
     return getPagedFetch<CourseModel[]>(url.toString());
   }
 
@@ -92,7 +104,9 @@ export class CourseService {
 
   //TODO: Ver si este service puede mapear el json sin el type! (cuando podamos correr la api)
   public async getAvailableYears(): Promise<Result<number[]>> {
-    return getFetch<number[]>(this.basePath + "/available-years");
+    return resultFetch<number[]>(this.basePath + "/available-years", {
+      method: "GET",
+    });
   }
 
   public async getAnnouncements(
@@ -134,7 +148,7 @@ export class CourseService {
     year: number,
     startTimes: number[],
     endTimes: number[]
-  ) {
+  ): Promise<Result<PostResponse>> {
     const newCourse = JSON.stringify({
       subjectId: subjectId,
       quarter: quarter,
@@ -144,27 +158,30 @@ export class CourseService {
       endTimes: endTimes,
     });
 
-    return postFetch(
-      this.basePath,
-      "application/vnd.campus.api.v1+json",
-      newCourse
-    );
+    return resultFetch<PostResponse>(this.basePath, {
+      method: "POST",
+      headers: { "Content-Type": "application/vnd.campus.api.v1+json" },
+      body: newCourse,
+    });
   }
 
   public async newAnnouncement(
     courseId: number,
     title: string,
     content: string
-  ) {
+  ): Promise<Result<PostResponse>> {
     const newAnnouncement = JSON.stringify({
       title: title,
       content: content,
     });
 
-    return postFetch(
+    return resultFetch<PostResponse>(
       this.basePath + "/" + courseId + "/announcements",
-      "application/vnd.campus.api.v1+json",
-      newAnnouncement
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/vnd.campus.api.v1+json" },
+        body: newAnnouncement,
+      }
     );
   }
 
@@ -172,33 +189,63 @@ export class CourseService {
     courseId: number,
     title: string,
     content: string,
-    file: File,
-    startTime: string,
-    endTime: string
-  ) {
-    const newExam = JSON.stringify({
+    file: File | null,
+    startTime: Date,
+    endTime: Date
+  ): Promise<Result<PostResponse>> {
+    if (file === null) {
+      return Result.failed(new ErrorResponse(422, "File field cannot be null"));
+    }
+    if (startTime >= endTime) {
+      return Result.failed(
+        new ErrorResponse(
+          422,
+          "Starttime cannot be greater or equal than endtime"
+        )
+      ); // TODO ver si este status code corresponde
+    }
+
+    const newExam = new FormData();
+    newExam.append("file", file, file.name);
+
+    const metadata = JSON.stringify({
       title: title,
       content: content,
-      file: file, // TODO ver si esto es correcto
-      startTime: startTime,
-      endTime: endTime,
+      startTime: startTime.toString(),
+      endTime: endTime.toString(),
     });
-    return postFetch(
+    newExam.append("metadata", metadata);
+
+    return resultFetch<PostResponse>(
       this.basePath + "/" + courseId + "/exams",
-      "application/vnd.campus.api.v1+json",
-      newExam
+      {
+        method: "POST",
+        headers: {},
+        body: newExam,
+      }
     );
   }
 
-  public async newAnswer(courseId: number, answerFile: File) {
-    const newAnswer = JSON.stringify({
-      exam: answerFile,
-    });
+  public async newFile(
+    courseId: number,
+    file: File,
+    categoryId: number
+  ): Promise<Result<PostResponse>> {
+    const formData = new FormData();
 
-    return postFetch(
-      this.basePath + "/" + courseId + "/exams",
-      "application/vnd.campus.api.v1+json",
-      newAnswer
+    if (categoryId === null) {
+      return Result.failed(new ErrorResponse(422, "Category must not be null"));
+    }
+    formData.append("file", file, file.name);
+    formData.append("category", categoryId.toString());
+
+    return resultFetch<PostResponse>(
+      this.basePath + "/" + courseId + "/files",
+      {
+        method: "POST",
+        headers: {},
+        body: formData,
+      }
     );
   }
 }
