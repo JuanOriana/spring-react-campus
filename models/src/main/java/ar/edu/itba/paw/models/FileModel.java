@@ -50,7 +50,7 @@ public class FileModel {
     )
     private List<FileCategory> fileCategories;
 
-    /* default */ FileModel() {
+    public FileModel() {
         //For Hibernate
     }
 

@@ -10,6 +10,8 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class AnswerAssembler extends JaxRsResourceAssemblerSupport<Answer, AnswerDto> {
 

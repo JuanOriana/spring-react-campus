@@ -10,6 +10,7 @@ import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.util.PaginationBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -70,10 +71,16 @@ public class CourseController {
     private AnswerAssembler answerAssembler;
 
     @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
     private AnnouncementAssembler announcementAssembler;
 
     @Autowired
     private ExamAssembler examAssembler;
+
+    @Autowired
+    private ExamStatsAssembler examStatsAssembler;
 
     @Autowired
     private FileModelAssembler fileAssembler;
@@ -101,12 +108,16 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response postFile(@PathParam("courseId") Long courseId,
                              @FormDataParam("file") InputStream fileStream,
-                             @FormDataParam("file") FormDataContentDisposition fileMetadata) throws IOException {
+                             @FormDataParam("file") FormDataContentDisposition fileMetadata,
+                             @FormDataParam("category") String category) throws IOException {
+        if(category == null) {
+            throw new BadRequestException();
+        }
         File file = getFileFromStream(fileStream);
         if (file.length() == 0) throw new BadRequestException("No file was provided");
         Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
         FileModel fileModel = fileService.create(file.length(), fileMetadata.getFileName(), IOUtils.toByteArray(fileStream),
-                course);
+                course, Collections.singletonList(Long.parseLong(category)));
         URI location = URI.create(uriInfo.getAbsolutePath() + "/" + fileModel.getFileId());
         return Response.created(location).build();
     }
@@ -167,7 +178,7 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getAvailableYears() {
         List<Integer> availableYears = courseService.getAvailableYears();
-        return Response.ok(availableYears.toArray()).build();
+        return Response.ok(new GenericEntity<List<YearDto>>(availableYears.stream().map(YearDto::new).collect(Collectors.toList())){}).build();
     }
 
     // TODO: Paginate all courses if no year and quarter was sent
@@ -286,6 +297,9 @@ public class CourseController {
         if (exams.isEmpty()) {
             return Response.noContent().build();
         }
+        if(courseService.isPrivileged(authFacade.getCurrentUserId(), courseId)) {
+            return Response.ok(new GenericEntity<List<ExamStatsDto>>(examStatsAssembler.toResources(exams)){}).build();
+        }
         List<ExamDto> examDtoList = examAssembler.toResources(exams);
         return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
         }).build();
@@ -293,15 +307,18 @@ public class CourseController {
 
     @POST
     @Path("/{courseId}/exams")
-    @Consumes("application/vnd.campus.api.v1+json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("application/vnd.campus.api.v1+json")
     public Response newExam(@PathParam("courseId") Long courseId,
-                            @Valid ExamFormDto examFormDto) throws DtoValidationException {
-        dtoValidator.validate(examFormDto, "Invalid body request");
-        Exam exam = examService.create(courseId, examFormDto.getTitle(), examFormDto.getContent(),
-                examFormDto.getFile().getOriginalFilename(), examFormDto.getFile().getBytes(),
-                examFormDto.getFile().getSize(), LocalDateTime.parse(examFormDto.getStartTime()),
-                LocalDateTime.parse(examFormDto.getEndTime()));
+                            @FormDataParam("file") InputStream fileStream,
+                            @FormDataParam("file") FormDataContentDisposition fileMetadata,
+                            @FormDataParam("metadata") String examMetadata) throws IOException {
+        File file = getFileFromStream(fileStream);
+        if (file.length() == 0 || examMetadata == null) throw new BadRequestException("No file or file metadata was provided");
+        ExamFormDto examForm = objectMapper.readValue(examMetadata, ExamFormDto.class);
+        Exam exam = examService.create(courseId, examForm.getTitle(),
+                examForm.getContent(), fileMetadata.getFileName(), IOUtils.toByteArray(fileStream),
+                file.length(), LocalDateTime.parse(examForm.getStartTime()), LocalDateTime.parse(examForm.getEndTime()));
         URI location = URI.create(uriInfo.getBaseUri() + "/exams/" + exam.getExamId());
         LOGGER.debug("Created new exam on {}", location);
         return Response.created(location).build();
@@ -315,18 +332,15 @@ public class CourseController {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
-        if (courseService.isPrivileged(userId, courseId)) {
-            Map<Exam, Double> examAverage = examService.getExamsAverage(courseId);
-            List<ExamDto> examDtoList = new ArrayList<>();
-            examAverage.forEach((exam, average) -> examDtoList.add(examAssembler.toResource(exam)));
-            return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
-            }).build();
+        List<Exam> exams = examService.getResolvedExams(userId, courseId);
+        if(exams.isEmpty()) {
+            return Response.noContent().build();
         }
-        List<ExamDto> exams = examService.getResolvedExams(userId, courseId)
+        List<ExamDto> examDtoList = exams
                 .stream()
                 .map(exam -> examAssembler.toResource(exam))
                 .collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<ExamDto>>(exams) {
+        return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
         }).build();
     }
 
@@ -338,11 +352,15 @@ public class CourseController {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
-        List<ExamDto> exams = examService.getUnresolvedExams(userId, courseId)
+        List<Exam> exams = examService.getUnresolvedExams(userId, courseId);
+        if(exams.isEmpty()) {
+            return Response.noContent().build();
+        }
+        List<ExamDto> examDtoList = exams
                 .stream()
                 .map(exam -> examAssembler.toResource(exam))
                 .collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<ExamDto>>(exams) {
+        return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
         }).build();
     }
 

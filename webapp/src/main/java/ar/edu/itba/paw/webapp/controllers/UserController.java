@@ -1,22 +1,16 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 
-import ar.edu.itba.paw.interfaces.CourseService;
-import ar.edu.itba.paw.interfaces.TimetableService;
-import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.models.CampusPage;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Timetable;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.interfaces.*;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.common.assemblers.CourseAssembler;
+import ar.edu.itba.paw.webapp.common.assemblers.RoleAssembler;
 import ar.edu.itba.paw.webapp.common.assemblers.UserAssembler;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
-import ar.edu.itba.paw.webapp.dto.CourseDto;
-import ar.edu.itba.paw.webapp.dto.NextFileNumberDto;
-import ar.edu.itba.paw.webapp.dto.UserDto;
-import ar.edu.itba.paw.webapp.dto.UserRegisterFormDto;
+import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
+import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.util.PaginationBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +20,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -44,6 +39,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Context
     private UriInfo uriInfo;
 
@@ -60,7 +58,19 @@ public class UserController {
     private CourseAssembler courseAssembler;
 
     @Autowired
+    private AuthFacade authFacade;
+
+    @Autowired
     private TimetableService timetableService;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private RoleAssembler roleAssembler;
+
+    @Autowired
+    private MailingService mailingService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -85,6 +95,19 @@ public class UserController {
         LOGGER.debug("User of name {} created", user.getUsername());
         URI location = URI.create(uriInfo.getAbsolutePath() + "/" + user.getUserId());
         return Response.created(location).build();
+    }
+
+    @POST
+    @Path("/{userId}/mail")
+    @Consumes("application/vnd.campus.api.v1+json")
+    @Produces("application/vnd.campus.api.v1+json")
+    public Response sendEmail(@PathParam("userId") Long userId,
+                              @Valid EmailFormDto emailFormDto) {
+        dtoValidator.validate(emailFormDto, "Malformed body");
+        User recipient = userService.findById(userId).orElseThrow(UserNotFoundException::new);
+        mailingService.sendEmail(authFacade.getCurrentUser(), recipient.getUserId(), emailFormDto.getTitle(),
+                emailFormDto.getContent(), emailFormDto.getCourseId(), LocaleContextHolder.getLocale());
+        return Response.accepted().build();
     }
 
     @GET
@@ -139,6 +162,16 @@ public class UserController {
     }
 
     @GET
+    @Path("/roles")
+    @Produces("application/vnd.campus.api.v1+json")
+    public Response getRoles() {
+        List<Role> roles = roleService.list();
+        if(roles.isEmpty()) {
+            return Response.noContent().build();
+        }
+        return Response.ok(new GenericEntity<List<RoleDto>>(roleAssembler.toResources(roles)){}).build();
+    }
+    @GET
     @Path("/file-number/last")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getNextFileNumber() {
@@ -165,15 +198,14 @@ public class UserController {
             courseTimetables.put(course, timetableService.findById(course.getCourseId()));
         }
 
-        HashMap<Integer, List<CourseDto>> timeTableMatrix = createTimeTableMatrix(courseTimetables);
-
-        return Response.ok(new ObjectMapper().writeValueAsString(timeTableMatrix)).build();
+        ArrayList<ArrayList<CourseDto>> timeTableTest = createTimeTableMatrix(courseTimetables);
+        return Response.ok(objectMapper.writeValueAsString(timeTableTest)).build();
     }
 
-    private HashMap<Integer, List<CourseDto>> createTimeTableMatrix(Map<Course, List<Timetable>> timeMap) {
-        HashMap<Integer,List<CourseDto>> timeTableMatrix = new HashMap<>();
+    private ArrayList<ArrayList<CourseDto>> createTimeTableMatrix(Map<Course, List<Timetable>> timeMap){
+        ArrayList<ArrayList<CourseDto>> timeTableMatrix = new ArrayList<>();
         for (int i = 0; i < days.length; i++){
-            timeTableMatrix.put(i,new ArrayList<>());
+            timeTableMatrix.add(new ArrayList<>());
             for (int j = 0; j < hours.length; j++){
                 timeTableMatrix.get(i).add(j,null);
             }
@@ -186,7 +218,7 @@ public class UserController {
                 for (int i = 0; i < hours.length; i++){
                     LocalTime timedHour = stringToTime(hours[i]);
                     if ((begins.isBefore(timedHour) || begins.equals(timedHour)) && ends.isAfter(timedHour)){
-                        timeTableMatrix.get(timetable.getDayOfWeek()).add(i, courseAssembler.toResource(entry.getKey()));
+                        timeTableMatrix.get(timetable.getDayOfWeek()).set(i, courseAssembler.toResource(entry.getKey()));
                     }
                 }
             }

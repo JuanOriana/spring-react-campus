@@ -16,7 +16,7 @@ public class FileExtension {
     @Column(length = 5, nullable = false, unique = true, name = "fileExtension")
     private String fileExtensionName;
 
-    /* Default */ FileExtension() {
+    public FileExtension() {
         // Just for Hibernate
     }
 

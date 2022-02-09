@@ -160,6 +160,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.POST, "/courses/{courseId}/exams").access("@antMatcherVoter.isPrivilegedInCourse(authentication, #courseId)")
                     .antMatchers(HttpMethod.POST, "/courses/{courseId}/files").access("@antMatcherVoter.isPrivilegedInCourse(authentication, #courseId)")
                     .antMatchers(HttpMethod.POST, "/courses").hasAuthority("ADMIN")
+                    .antMatchers(HttpMethod.POST, "/exams/{examId}/answers").access("@antMatcherVoter.canAccessExamById(authentication, #examId)")
                     .antMatchers(HttpMethod.POST, "/courses/{courseId}/announcements").access("@antMatcherVoter.canPostAnnouncementByCourseId(authentication, #courseId)")
                     .antMatchers(HttpMethod.DELETE, "/exams/{examId}").access("@antMatcherVoter.canDeleteExamById(authentication, #examId)")
                     .antMatchers(HttpMethod.DELETE,"/files/{fileId}").access("@antMatcherVoter.canDeleteFileById(authentication, #fileId)")
@@ -170,7 +171,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/subjects/**").hasAuthority("USER")
                     .antMatchers("/user").hasAuthority("USER")
                     .antMatchers("/**").permitAll()
-                //.accessDecisionManager(accessDecisionManager())
             .and()
                 .addFilterBefore(bridgeAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }

@@ -9,7 +9,6 @@ public class CourseDto extends ResourceSupport {
     private int quarter;
     private String board;
     private SubjectDto subject;
-    private String uri;
 
     public long getCourseId() {
         return courseId;
@@ -49,13 +48,5 @@ public class CourseDto extends ResourceSupport {
 
     public void setSubject(SubjectDto subject) {
         this.subject = subject;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String courseUri) {
-        this.uri = courseUri;
     }
 }

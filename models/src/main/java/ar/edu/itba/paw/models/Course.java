@@ -26,7 +26,7 @@ public class Course {
     @JoinColumn(name = "subjectId")
     private Subject subject;
 
-    /* Default */ Course() {
+    public Course() {
         // Just for Hibernate
     }
 

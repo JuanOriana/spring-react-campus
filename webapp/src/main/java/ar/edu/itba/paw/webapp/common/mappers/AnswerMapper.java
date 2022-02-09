@@ -7,4 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface AnswerMapper {
     AnswerDto answerToAnswerDto(Answer answer);
+    Answer answerDtoToAnswer(AnswerDto answerDto);
 }

@@ -1,4 +1,5 @@
 package ar.edu.itba.paw.webapp.config;
+import ar.edu.itba.paw.interfaces.ExamService;
 import ar.edu.itba.paw.webapp.common.assemblers.*;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.security.service.implementation.AuthFacadeImpl;
@@ -185,6 +186,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
+    public ExamStatsAssembler examStatsAssembler() { return new ExamStatsAssembler(); }
+
+    @Bean
     public Validator validator() {
         return new LocalValidatorFactoryBean();
     }
@@ -215,4 +219,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public AnswerAssembler answerAssembler() { return new AnswerAssembler(); }
+
+    @Bean
+    public RoleAssembler roleAssembler() { return new RoleAssembler(); }
 }

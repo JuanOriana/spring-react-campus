@@ -34,7 +34,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
     @Override
     public FileModel create(Long size, LocalDateTime date, String name, byte[] file, Course course) {
         String fileExtension = getExtension(name);
-        TypedQuery<FileExtension> fileExtensionQuery = em.createQuery("SELECT fe FROM FileExtension fe WHERE fe.fileExtension = :fileExtensionName", FileExtension.class);
+        TypedQuery<FileExtension> fileExtensionQuery = em.createQuery("SELECT fe FROM FileExtension fe WHERE fe.fileExtensionName = :fileExtensionName", FileExtension.class);
         fileExtensionQuery.setParameter("fileExtensionName", fileExtension);
         List<FileExtension> resultsFileExtensionQuery = fileExtensionQuery.getResultList();
         if (resultsFileExtensionQuery.isEmpty()){
@@ -42,7 +42,7 @@ public class FileDaoJpa extends BasePaginationDaoImpl<FileModel> implements File
         } else {
             fileExtension = resultsFileExtensionQuery.get(0).getFileExtensionName();
         }
-        fileExtensionQuery = em.createQuery("SELECT fe FROM FileExtension fe WHERE fe.fileExtension = :fileExtensionName", FileExtension.class);
+        fileExtensionQuery = em.createQuery("SELECT fe FROM FileExtension fe WHERE fe.fileExtensionName = :fileExtensionName", FileExtension.class);
         fileExtensionQuery.setParameter("fileExtensionName", fileExtension);
         final FileModel fileModel = new FileModel.Builder()
                 .withSize(size)
