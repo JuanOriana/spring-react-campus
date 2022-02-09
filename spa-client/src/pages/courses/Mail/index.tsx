@@ -12,12 +12,13 @@ import React, { useEffect, useState } from "react";
 import { handleService } from "../../../scripts/handleService";
 import { userService } from "../../../services";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { UserModel } from "../../../types";
+import LoadableData from "../../../components/LoadableData";
+import { renderToast } from "../../../scripts/renderToast";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
-import { UserModel } from "../../../types";
-import LoadableData from "../../../components/LoadableData";
+
 //
 
 type FormData = {
@@ -30,7 +31,7 @@ function Mail() {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserModel | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
-  const { courseId, userId } = useParams();
+  const { userId } = useParams();
 
   useEffect(() => {
     setIsLoading(true);
@@ -51,7 +52,23 @@ function Mail() {
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
-    reset();
+    if (!userId) {
+      renderToast("No se pudo enviar el correo, intente de nuevo", "error");
+      return;
+    }
+    userService
+      .sendEmail(parseInt(userId), data.subject, data.content)
+      .then((result) => {
+        if (!result.hasFailed()) {
+          renderToast("Correo enviado exitosamente!", "success");
+          reset();
+        } else {
+          renderToast("No se pudo enviar el correo, intente de nuevo", "error");
+        }
+      })
+      .catch(() =>
+        renderToast("No se pudo enviar el correo, intente de nuevo", "error")
+      );
   });
 
   return (
