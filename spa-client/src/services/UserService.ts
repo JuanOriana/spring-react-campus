@@ -6,6 +6,7 @@ import {
   PagedContent,
   PostResponse,
   Result,
+  RoleModel,
   UserModel,
 } from "../types";
 import { getPagedFetch } from "../scripts/getPagedFetch";
@@ -114,6 +115,12 @@ export class UserService {
         "Content-Type": "multipart/form-data",
       },
       body: formData,
+    });
+  }
+
+  public async getRoles(): Promise<Result<RoleModel[]>> {
+    return resultFetch<RoleModel[]>(this.basePath + "/roles", {
+      method: "GET",
     });
   }
 }

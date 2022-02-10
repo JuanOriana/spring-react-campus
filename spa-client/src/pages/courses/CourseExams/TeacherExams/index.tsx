@@ -16,15 +16,16 @@ import {
 import ExamUnit from "../../../../components/ExamUnit";
 import { useForm } from "react-hook-form";
 import React, { useEffect, useState } from "react";
-
-// i18next imports
-import { useTranslation } from "react-i18next";
-import "../../../../common/i18n/index";
 import { courseService } from "../../../../services";
 import { renderToast } from "../../../../scripts/renderToast";
 import { useCourseData } from "../../../../components/layouts/CourseLayout";
 import { useNavigate } from "react-router-dom";
 import { usePagination } from "../../../../hooks/usePagination";
+
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../../common/i18n/index";
+
 //
 
 type FormData = {
@@ -41,10 +42,6 @@ function TeacherExams() {
   const navigate = useNavigate();
   const [currentPage, pageSize] = usePagination(10);
   const [reload, setReload] = useState(false);
-
-
-
-
 
   useEffect(() => {
     setExams([
@@ -78,11 +75,16 @@ function TeacherExams() {
     reset,
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
-  const onSubmit = handleSubmit((data: FormData) => 
-
-  {
+  const onSubmit = handleSubmit((data: FormData) => {
     courseService
-      .newExam(course.courseId,data.title,data.content,data.file[0],data.startTime,data.endTime)
+      .newExam(
+        course.courseId,
+        data.title,
+        data.content,
+        data.file[0],
+        data.startTime,
+        data.endTime
+      )
       .then((response) => {
         if (!response.hasFailed()) {
           renderToast("👑 Examen creado exitosamente!", "success");

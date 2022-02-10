@@ -103,8 +103,8 @@ export class CourseService {
   }
 
   //TODO: Ver si este service puede mapear el json sin el type! (cuando podamos correr la api)
-  public async getAvailableYears(): Promise<Result<number[]>> {
-    return resultFetch<number[]>(this.basePath + "/available-years", {
+  public async getAvailableYears(): Promise<Result<{ year: number }[]>> {
+    return resultFetch<{ year: number }[]>(this.basePath + "/available-years", {
       method: "GET",
     });
   }
