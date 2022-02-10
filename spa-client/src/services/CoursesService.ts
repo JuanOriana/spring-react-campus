@@ -78,6 +78,31 @@ export class CourseService {
     );
   }
 
+  public async getSolvedExams(
+    courseId: number
+  ): Promise<Result<PagedContent<ExamModel[]>>> {
+    return getPagedFetch<ExamModel[]>(
+      this.basePath + "/" + courseId + "/exams/solved"
+    );
+  }
+
+  public async getUnsolvedExams(
+    courseId: number
+  ): Promise<Result<PagedContent<ExamModel[]>>> {
+    return getPagedFetch<ExamModel[]>(
+      this.basePath + "/" + courseId + "/exams/unsolved"
+    );
+  }
+
+  public async getExamsAverage(courseId: number) {
+    return resultFetch<number>(
+      this.basePath + "/" + courseId + "/exams/average",
+      {
+        method: "GET",
+      }
+    );
+  }
+
   public async getCourseAnswers(
     courseId: number
   ): Promise<Result<PagedContent<AnswerModel[]>>> {

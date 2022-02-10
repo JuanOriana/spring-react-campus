@@ -41,20 +41,4 @@ export class ExamsServices {
       }
     );
   }
-
-  public async getSolvedExams(
-    courseId: number
-  ): Promise<Result<PagedContent<ExamModel[]>>> {
-    return getPagedFetch<ExamModel[]>(
-      paths.BASE_URL + paths.COURSES + "/" + courseId + "/exams/solved"
-    );
-  }
-
-  public async getUnsolvedExams(
-    courseId: number
-  ): Promise<Result<PagedContent<ExamModel[]>>> {
-    return getPagedFetch<ExamModel[]>(
-      paths.BASE_URL + paths.COURSES + "/" + courseId + "/exams/unsolved"
-    );
-  }
 }

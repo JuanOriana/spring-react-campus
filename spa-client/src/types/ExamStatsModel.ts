@@ -5,5 +5,5 @@ export default interface ExamStatsModel {
   average: number;
   corrected: AnswerModel[];
   notCorrected: AnswerModel[];
-  examDto: ExamModel;
+  exam: ExamModel;
 }

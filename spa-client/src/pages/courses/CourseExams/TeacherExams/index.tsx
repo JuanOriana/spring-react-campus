@@ -219,7 +219,7 @@ function TeacherExams() {
           {examsStats.length === 0 && <p>{t("TeacherExams.noExams")}</p>}
           {examsStats.map((examData) => (
             <ExamUnit
-              exam={examData.examDto}
+              exam={examData.exam}
               isTeacher={true}
               examsSolved={examData.corrected.length}
               userCount={
