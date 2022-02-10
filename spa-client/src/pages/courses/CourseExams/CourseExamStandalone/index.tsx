@@ -4,11 +4,15 @@ import { useCourseData } from "../../../../components/layouts/CourseLayout";
 import React from "react";
 
 function CourseExamStandalone() {
-  const { isTeacher } = useCourseData();
+  const { courseId, isTeacher } = useCourseData();
   return (
     <>
-      {isTeacher && <TeacherCourseExamStandalone />}
-      {!isTeacher && <StudentCourseExamStandalone />}
+      {courseId && (
+        <>
+          {isTeacher && <TeacherCourseExamStandalone />}
+          {!isTeacher && <StudentCourseExamStandalone />}
+        </>
+      )}
     </>
   );
 }

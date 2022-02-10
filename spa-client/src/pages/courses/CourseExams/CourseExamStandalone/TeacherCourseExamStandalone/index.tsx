@@ -14,159 +14,137 @@ import {
 } from "../../../../../components/generalStyles/pagination";
 import { useCourseData } from "../../../../../components/layouts/CourseLayout";
 import { usePagination } from "../../../../../hooks/usePagination";
-import React from "react";
-import { Link } from "react-router-dom";
-import StudentExamUnit from "../../../../../components/StudentExamUnit";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../../../common/i18n/index";
+import { handleService } from "../../../../../scripts/handleService";
+import { examsService } from "../../../../../services";
+import { ExamModel } from "../../../../../types";
+import StudentExamUnit from "../../../../../components/StudentExamUnit";
+import LoadableData from "../../../../../components/LoadableData";
 //
 
 function TeacherCourseExamStandalone() {
   const { t } = useTranslation();
-  const Course = useCourseData();
-  const maxPage = 3;
+  const course = useCourseData();
+  const navigate = useNavigate();
+  const { examId } = useParams();
   const [currentPage, pageSize] = usePagination(10);
-  const exam = {
-    examId: 1,
-    title: "Examen",
-    examFile:  {
-      fileId: 1,
-      size:10,
-      fileName: "xd",
-      extension: {
-        fileExtension: ".doc",
-        fileExtensionId:12
-      },
-      course: {
-        courseId: 1,
-        year: 2021,
-        quarter:2,
-        board: 'A',
-        subject: {
-          subjectId:1,
-          code:'a',
-          name: "PAW",
-        },
-        courseUrl:"urlcurso",
-        isTeacher:true,
-      },
-      categories: [],
-      downloads: 2,
-    },
-    description: "hola\nxd",
-  };
-
+  const [exam, setExam] = useState<ExamModel | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+  const [answers, setAnswers] = useState(new Array(1));
+  const [maxPage, setMaxPage] = useState(1);
   let filterBy;
   filterBy = "all";
   const average = 6.9;
-  const answers = [
-    {
-      answerId: 1,
-      student: {
-        name: "juan",
-        surname: "doe",
-      },
-      score: 10,
-      deliveredDate: new Date().toDateString(),
-      answerFile:  {
-        fileId: 1,
-        size:10,
-        fileName: "xd",
-        extension: {
-          fileExtension: ".doc",
-          fileExtensionId:12
+  useEffect(() => {
+    if (examId) {
+      setIsLoading(true);
+      handleService(
+        examsService.getExamById(parseInt(examId)),
+        navigate,
+        (examData) => {
+          setExam(examData);
         },
-        course: {
-          courseId: 1,
-          year: 2021,
-          quarter:2,
-          board: 'A',
-          subject: {
-            subjectId:1,
-            code:'a',
-            name: "PAW",
-          },
-          courseUrl:"urlcurso",
-          isTeacher:true,
+        () => {}
+      );
+
+      handleService(
+        examsService.getExamAnswers(parseInt(examId)),
+        navigate,
+        (answersData) => {
+          setAnswers(answersData ? answersData.getContent() : []);
+          setMaxPage(answersData ? answersData.getMaxPage() : 1);
         },
-        categories: [],
-        downloads: 2,
-      },
+        () => {
+          setIsLoading(false);
+        }
+      );
     }
-  ];
+  }, [examId]);
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        {exam.title}
+        {exam && exam.title}
       </SectionHeading>
-      <BigWrapper>
-        <FileQueryContainer method="get">
-          <FileQueryContainer id="filter-container" style={{ display: "flex" }}>
+      <LoadableData isLoading={isLoading}>
+        <BigWrapper>
+          <FileQueryContainer
+            method="get"
+            id="filter-container"
+            style={{ display: "flex" }}
+          >
             <FileSelectLabel
               htmlFor="filter-by"
               style={{ marginBottom: "4px" }}
             >
-              {t('TeacherCourseExamStandalone.filteredBy')}
+              {t("TeacherCourseExamStandalone.filteredBy")}
             </FileSelectLabel>
-            <FileSelect name="filter-by" id="filter-by">
-              <option value="all" selected={filterBy === "all"}>
-                {t('TeacherCourseExamStandalone.filters.all')}
+            <FileSelect name="filter-by" id="filter-by" defaultValue={filterBy}>
+              <option value="all">
+                {t("TeacherCourseExamStandalone.filters.all")}
               </option>
-              <option value="corrected" selected={filterBy === "corrected"}>
-                {t('TeacherCourseExamStandalone.filters.corrected')}
+              <option value="corrected">
+                {t("TeacherCourseExamStandalone.filters.corrected")}
               </option>
-              <option
-                value="not corrected"
-                selected={filterBy === "not-corrected"}
-              >
-                {t('TeacherCourseExamStandalone.filters.notCorrected')}
+              <option defaultValue="not-corrected">
+                {t("TeacherCourseExamStandalone.filters.notCorrected")}
               </option>
             </FileSelect>
-            <FormButton style={{ alignSelf: "end" }}>{t('TeacherCourseExamStandalone.filterButton')}</FormButton>
+            <FormButton style={{ alignSelf: "end" }}>
+              {t("TeacherCourseExamStandalone.filterButton")}
+            </FormButton>
           </FileQueryContainer>
-        </FileQueryContainer>
-        <SectionHeading style={{ marginLeft: "10px" }}>
-          {average}
-        </SectionHeading>
-        {answers.length === 0 && <>{t('TeacherCourseExamStandalone.noExams')}</>}
-        {/* {answers.map((answer) => (
-          <StudentExamUnit
-            answer={answer}
-            isCorrected={answer.score !== null}
-            examId={exam.examId}
-          />
-        ))} */}
-      </BigWrapper>
-      <PaginationWrapper style={{ alignSelf: "center" }}>
-        {currentPage > 1 && (
-          <Link
-            to={`/course/${Course.courseId}/exam/${exam.examId}?page=${
-              currentPage - 1
-            }&pageSize=${pageSize}&filter-by=${filterBy}`}
-          >
-            <PaginationArrow
-              xRotated={true}
-              src="/images/page-arrow.png"
-              alt={t('BasicPagination.alt.beforePage')}
+          <SectionHeading style={{ marginLeft: "10px" }}>
+            {average}
+          </SectionHeading>
+          {answers.length === 0 && (
+            <>{t("TeacherCourseExamStandalone.noExams")}</>
+          )}
+          {answers.map((answer) => (
+            <StudentExamUnit
+              key={answer.answerId}
+              answer={answer}
+              isCorrected={answer.score !== null}
+              examId={parseInt(examId ? examId : "-1")}
             />
-          </Link>
-        )}
-        {t('BasicPagination.message', {currentPage: currentPage, maxPage: maxPage})}
-        {currentPage < maxPage && (
-          <Link
-            to={`/course/${Course.courseId}/exam/${exam.examId}?page=${
-              currentPage + 1
-            }&pageSize=${pageSize}&filter-by=${filterBy}`}
-          >
-            <PaginationArrow
-              src="/images/page-arrow.png"
-              alt={t('BasicPagination.alt.nextPage')}
-            />
-          </Link>
-        )}
-      </PaginationWrapper>
+          ))}
+        </BigWrapper>
+        <PaginationWrapper style={{ alignSelf: "center" }}>
+          {currentPage > 1 && (
+            <Link
+              to={`/course/${course.courseId}/exam/${examId}?page=${
+                currentPage - 1
+              }&pageSize=${pageSize}&filter-by=${filterBy}`}
+            >
+              <PaginationArrow
+                xRotated={true}
+                src="/images/page-arrow.png"
+                alt={t("BasicPagination.alt.beforePage")}
+              />
+            </Link>
+          )}
+          {t("BasicPagination.message", {
+            currentPage: currentPage,
+            maxPage: maxPage,
+          })}
+          {currentPage < maxPage && (
+            <Link
+              to={`/course/${course.courseId}/exam/${examId}?page=${
+                currentPage + 1
+              }&pageSize=${pageSize}&filter-by=${filterBy}`}
+            >
+              <PaginationArrow
+                src="/images/page-arrow.png"
+                alt={t("BasicPagination.alt.nextPage")}
+              />
+            </Link>
+          )}
+        </PaginationWrapper>
+      </LoadableData>
     </>
   );
 }

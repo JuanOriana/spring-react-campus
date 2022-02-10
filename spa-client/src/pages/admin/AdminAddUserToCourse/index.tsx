@@ -52,7 +52,6 @@ function AdminAddUserToCourse() {
         courseService.getCourseById(courseIdAsInt),
         navigate,
         (courseData) => {
-          console.log(courseData);
           setCourse(courseData);
         },
         () => {

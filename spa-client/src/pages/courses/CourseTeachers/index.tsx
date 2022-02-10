@@ -41,7 +41,7 @@ function CourseTeachers() {
       <BigWrapper>
         <LoadableData isLoading={isLoading}>
           {teachers.map((teacher) => (
-            <TeacherUnit>
+            <TeacherUnit key={teacher.userId}>
               {!teacher.image && (
                 <TeacherIcon
                   alt={`${teacher.name} ${teacher.surname}`}

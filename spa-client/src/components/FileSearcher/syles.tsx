@@ -9,6 +9,15 @@ export const FileQueryContainer = styled.form`
   border-radius: 12px;
 `;
 
+export const FileQueryContainerDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  background: ${(props) => props.theme.cyanDarkest};
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+`;
+
 export const FileFilterContainer = styled.div`
   display: flex;
   padding: 0 30px;

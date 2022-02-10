@@ -15,6 +15,7 @@ import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
 import { fileUrlMaker } from "../scripts/fileUrlMaker";
 import { resultFetch } from "../scripts/resultFetch";
+import ExamStatsModel from "../types/ExamStatsModel";
 
 export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
@@ -70,11 +71,10 @@ export class CourseService {
     );
     return getPagedFetch<UserModel[]>(url.toString());
   }
-  public async getExams(
-    courseId: number
-  ): Promise<Result<PagedContent<ExamModel[]>>> {
-    return getPagedFetch<ExamModel[]>(
-      this.basePath + "/" + courseId + "/exams"
+  public async getExams(courseId: number): Promise<Result<ExamStatsModel[]>> {
+    return resultFetch<ExamStatsModel[]>(
+      this.basePath + "/" + courseId + "/exams",
+      { method: "GET" }
     );
   }
 

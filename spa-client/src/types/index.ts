@@ -12,3 +12,4 @@ export type { default as Section } from "./Section";
 export type { default as SubjectModel } from "./SubjectModel";
 export type { default as UserModel } from "./UserModel";
 export type { default as PostResponse } from "./PostResponse";
+export type { default as ExamsStatsModel } from "./ExamStatsModel";
