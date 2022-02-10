@@ -21,6 +21,10 @@ public class AnswerDto extends ResourceSupport {
 
     private String corrections;
 
+    public AnswerDto() {
+        // For MessageBody
+    }
+
     public Long getAnswerId() {
         return answerId;
     }
@@ -28,7 +32,6 @@ public class AnswerDto extends ResourceSupport {
     public void setAnswerId(Long answerId) {
         this.answerId = answerId;
     }
-
 
     public LocalDateTime getDeliveredDate() {
         return deliveredDate;

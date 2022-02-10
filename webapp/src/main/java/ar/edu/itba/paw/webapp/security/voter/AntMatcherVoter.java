@@ -87,6 +87,10 @@ public class AntMatcherVoter {
         return courseService.isPrivileged(userId, course.getCourseId());
     }
 
+    public boolean isStudentInCourse(Authentication authentication, Long id) {
+        return !isPrivilegedInCourse(authentication, id);
+    }
+
     public boolean canPostAnnouncementByCourseId(Authentication authentication, Long id) {
         if(isAdmin(authentication)) return true;
         if(authentication instanceof AnonymousAuthenticationToken) return false;

@@ -372,10 +372,7 @@ public class CourseController {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
-        List<AnswerDto> answers = answerService.getMarks(userId, courseId)
-                .stream()
-                .map(answer -> answerAssembler.toResource(answer))
-                .collect(Collectors.toList());
+        List<AnswerDto> answers = answerAssembler.toResources(answerService.getMarks(userId, courseId));
         return Response.ok(new GenericEntity<List<AnswerDto>>(answers) {
         }).build();
     }
@@ -389,7 +386,6 @@ public class CourseController {
         }
         Long userId = authFacade.getCurrentUserId();
         Double average = answerService.getAverageOfUserInCourse(userId, courseId);
-        return Response.ok(new GenericEntity<Double>(average) {
-        }).build();
+        return Response.ok(new GenericEntity<AverageDto>(new AverageDto(average)) {}).build();
     }
 }
