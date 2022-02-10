@@ -8,7 +8,10 @@ import React, { useEffect, useState } from "react";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../../common/i18n/index";
-import { examsService } from "../../../../services";
+import { courseService, examsService } from "../../../../services";
+import { handleService } from "../../../../scripts/handleService";
+import { useCourseData } from "../../../../components/layouts/CourseLayout";
+import { useNavigate } from "react-router-dom";
 //
 const exampleExam = {
   examId: 1,
@@ -32,32 +35,22 @@ const exampleExam = {
 
 function StudentExams() {
   const { t } = useTranslation();
+  const course = useCourseData();
+  const navigate = useNavigate();
   const average = 9.2;
   const [unresolvedExams, setUnresolvedExams] = useState(new Array(0));
   const [answerMarks, setAnswerMarks] = useState(new Array(0));
 
   useEffect(() => {
-    setUnresolvedExams([
-      {
-        examId: 1,
-        title: "Examen",
-        description: "adssada",
-        endTime: new Date(),
-        startTime: new Date(),
-        examFile: undefined,
-        average: 9,
-        course: {
-          courseId: 1,
-          courseUrl: "asdad",
-          board: "asdasd",
-          quarter: 1,
-          year: 2022,
-          isTeacher: true,
-          subject: { subjectId: 1, code: "F", name: "PAW" },
-        },
-        url: "xd",
+    handleService(
+      courseService.getSolvedExams(course.courseId),
+      navigate,
+      (examData) => {
+        setUnresolvedExams(examData ? examData.getContent() : []);
       },
-    ]);
+      () => {}
+    );
+
     setAnswerMarks([
       {
         score: 8,
