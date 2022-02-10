@@ -160,7 +160,7 @@ public class CourseControllerEE extends AuthController {
                               @Valid CreateExamForm createExamForm, final BindingResult errors,
                               RedirectAttributes redirectAttributes) {
         if (!errors.hasErrors()) {
-            Exam exam = examService.create(courseId, createExamForm.getTitle(), createExamForm.getContent(),
+            Exam exam = examService.create(courseId, authFacade.getCurrentUserId(), createExamForm.getTitle(), createExamForm.getContent(),
                     createExamForm.getFile().getOriginalFilename(), createExamForm.getFile().getBytes(),
                     createExamForm.getFile().getSize(), LocalDateTime.parse(createExamForm.getStartTime()),
                     LocalDateTime.parse(createExamForm.getEndTime()));

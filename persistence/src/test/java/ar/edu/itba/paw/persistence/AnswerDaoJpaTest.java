@@ -62,20 +62,20 @@ public class AnswerDaoJpaTest extends BasicPopulator {
         assertTrue(answerDao.update(DB_ANSWER_ID, answer));
     }
 
-    @Test
-    public void testEmptyAnswer() {
-        Answer answer = new Answer.Builder()
-                .withAnswerId(DB_ANSWER_ID)
-                .withDeliveredDate(LocalDateTime.now())
-                .withStudent(student)
-                .withExam(exam)
-                .withAnswerFile(createFileModelObject(FILE_PATH, DB_FILE_ID))
-                .build();
-
-        Answer dbAnswer = answerDao.updateEmptyAnswer(EXAM_ID, student, null, answer);
-        assertNotNull(dbAnswer);
-        assertEquals(DB_FILE_ID, dbAnswer.getAnswerFile().getFileId());
-    }
+//    @Test
+//    public void testEmptyAnswer() {
+//        Answer answer = new Answer.Builder()
+//                .withAnswerId(DB_ANSWER_ID)
+//                .withDeliveredDate(LocalDateTime.now())
+//                .withStudent(student)
+//                .withExam(exam)
+//                .withAnswerFile(createFileModelObject(FILE_PATH, DB_FILE_ID))
+//                .build();
+//
+//        Answer dbAnswer = answerDao.updateEmptyAnswer(EXAM_ID, student, null, answer);
+//        assertNotNull(dbAnswer);
+//        assertEquals(DB_FILE_ID, dbAnswer.getAnswerFile().getFileId());
+//    }
 
     @Test
     public void testDelete() {

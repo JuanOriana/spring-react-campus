@@ -32,6 +32,7 @@ public class AnswerServiceImpl implements AnswerService {
         return answersDao.update(answerId, answer);
     }
 
+
     @Transactional
     @Override
     public Answer updateEmptyAnswer(Long examId, User student, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime) {
@@ -46,8 +47,7 @@ public class AnswerServiceImpl implements AnswerService {
             }
         }
         fileDao.associateCategory(answerFileModel.getFileId(), examCategoryId);
-
-        return answersDao.updateEmptyAnswer(examId, student, null, new Answer(exam, deliveredTime, student, null, answerFileModel, null, null));
+        return answersDao.updateEmptyAnswer(examId, student, deliveredTime, answerFileModel);
     }
 
     @Transactional
@@ -93,6 +93,11 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public boolean didUserDeliver(Long examId, Long userId) {
         return answersDao.didUserDeliver(examId, userId);
+    }
+
+    @Override
+    public Answer findUserAnswer(Long examId, Long userId, Long courseId) {
+        return answersDao.findUserAnswer(examId, userId, courseId);
     }
 
     @Transactional(readOnly = true)

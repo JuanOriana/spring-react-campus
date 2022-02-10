@@ -4,7 +4,6 @@ import ar.edu.itba.paw.models.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface AnswerDao {
@@ -13,7 +12,7 @@ public interface AnswerDao {
 
     boolean update(Long answerId, Answer answer);
 
-    Answer updateEmptyAnswer(Long examId, User student, Long teacherId, Answer answer);
+    Answer updateEmptyAnswer(Long examId, User student, LocalDateTime deliveryDate, FileModel fileModel);
 
     boolean delete(Long answerId);
 
@@ -27,7 +26,7 @@ public interface AnswerDao {
 
     Long getTotalCorrectedAnswers(Long examId);
 
-    void createEmptyAnswers(Exam exam, List<User> students);
+    void createEmptyAnswers(Exam exam, List<User> students, User teacher);
 
     boolean didUserDeliver(Long examId, Long userId);
 
@@ -36,4 +35,6 @@ public interface AnswerDao {
     List<Answer> getMarks(Long userId, Long courseId);
 
     Double getAverageOfUserInCourse(Long studentId, Long courseId);
+
+    Answer findUserAnswer(Long examId, Long userId, Long courseId);
 }

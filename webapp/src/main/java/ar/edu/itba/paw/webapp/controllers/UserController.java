@@ -102,11 +102,11 @@ public class UserController {
     @Consumes("application/vnd.campus.api.v1+json")
     @Produces("application/vnd.campus.api.v1+json")
     public Response sendEmail(@PathParam("userId") Long userId,
-                              @Valid EmailFormDto emailFormDto) {
-        dtoValidator.validate(emailFormDto, "Malformed body");
+                              @Valid MailFormDto mailFormDto) {
+        dtoValidator.validate(mailFormDto, "Malformed body");
         User recipient = userService.findById(userId).orElseThrow(UserNotFoundException::new);
-        mailingService.sendEmail(authFacade.getCurrentUser(), recipient.getUserId(), emailFormDto.getTitle(),
-                emailFormDto.getContent(), emailFormDto.getCourseId(), LocaleContextHolder.getLocale());
+        mailingService.sendEmail(authFacade.getCurrentUser(), recipient.getUserId(), mailFormDto.getTitle(),
+                mailFormDto.getContent(), mailFormDto.getCourseId(), LocaleContextHolder.getLocale());
         return Response.accepted().build();
     }
 

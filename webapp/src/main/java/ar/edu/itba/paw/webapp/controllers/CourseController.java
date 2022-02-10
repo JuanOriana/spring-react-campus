@@ -316,7 +316,7 @@ public class CourseController {
         File file = getFileFromStream(fileStream);
         if (file.length() == 0 || examMetadata == null) throw new BadRequestException("No file or file metadata was provided");
         ExamFormDto examForm = objectMapper.readValue(examMetadata, ExamFormDto.class);
-        Exam exam = examService.create(courseId, examForm.getTitle(),
+        Exam exam = examService.create(courseId, authFacade.getCurrentUserId(), examForm.getTitle(),
                 examForm.getContent(), fileMetadata.getFileName(), IOUtils.toByteArray(fileStream),
                 file.length(), LocalDateTime.parse(examForm.getStartTime()), LocalDateTime.parse(examForm.getEndTime()));
         URI location = URI.create(uriInfo.getBaseUri() + "/exams/" + exam.getExamId());
@@ -356,11 +356,7 @@ public class CourseController {
         if(exams.isEmpty()) {
             return Response.noContent().build();
         }
-        List<ExamDto> examDtoList = exams
-                .stream()
-                .map(exam -> examAssembler.toResource(exam))
-                .collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
+        return Response.ok(new GenericEntity<List<ExamDto>>(examAssembler.toResources(exams)) {
         }).build();
     }
 

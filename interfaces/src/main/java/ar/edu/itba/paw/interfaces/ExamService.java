@@ -24,7 +24,8 @@ public interface ExamService {
      * @param endTime
      * @return
      */
-    Exam create(Long courseId, String title, String description, String fileName, byte[] examFile, Long examFileSize, LocalDateTime startTime, LocalDateTime endTime);
+    Exam create(Long courseId, Long teacherId, String title, String description, String fileName,
+                byte[] examFile, Long examFileSize, LocalDateTime startTime, LocalDateTime endTime);
 
     /**
      * @param courseId

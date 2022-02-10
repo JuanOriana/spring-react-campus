@@ -93,6 +93,8 @@ public interface AnswerService {
      */
     boolean didUserDeliver(Long examId, Long userId);
 
+    Answer findUserAnswer(Long examId, Long userId, Long courseId);
+
     /**
      * Returns a filtered-paginated list of answers
      *

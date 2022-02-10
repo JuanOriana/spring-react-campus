@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.dto;
 
-public class EmailFormDto {
+public class MailFormDto {
     String title;
     String content;
     Long courseId;
