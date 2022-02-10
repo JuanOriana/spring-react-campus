@@ -31,6 +31,7 @@ public class FileModelAssembler extends JaxRsResourceAssemblerSupport<FileModel,
 
     @Override
     public FileModelDto toResource(FileModel entity) {
+        if(entity == null) return new FileModelDto();
         FileModelDto fileModelDto = createResourceWithId(entity.getFileId(), entity);
         FileModelDto result = mapper.fileModelToFileModelDto(entity);
         FileCategoryDto fileCategoryDto = fileCategoryAssembler.toResource(entity.getCategories().get(0));

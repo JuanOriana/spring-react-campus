@@ -23,6 +23,8 @@ public class ExamDto extends ResourceSupport {
     private Double average;
 
 
+
+
     public Long getExamId() {
         return examId;
     }

@@ -33,15 +33,15 @@ public class ExamStatsAssembler extends JaxRsResourceAssemblerSupport<Exam, Exam
     }
 
     @Override
-    public ExamStatsDto toResource(Exam exam) {
-        ExamDto examDto = examAssembler.toResource(exam);
-        ExamStatsDto examStatsDto = new ExamStatsDto(examDto);
-        List<Answer> corrected = answerService.getFilteredAnswers(exam.getExamId(), "corrected", 1, 50).getContent();
-        List<Answer> notCorrected = answerService.getFilteredAnswers(exam.getExamId(), "not corrected", 1, 50).getContent();
-        examStatsDto.setExamDto(examDto);
-        examStatsDto.setCorrected(answerAssembler.toResources(corrected.isEmpty() ? Collections.emptyList() : corrected));
-        examStatsDto.setNotCorrected(answerAssembler.toResources(notCorrected.isEmpty() ? Collections.emptyList() : notCorrected));
-        examStatsDto.setAverage(examService.getAverageScoreOfExam(exam.getExamId()));
-        return examStatsDto;
+    public ExamStatsDto toResource(Exam entity) {
+        ExamDto examDto = examAssembler.toResource(entity);
+        ExamStatsDto exam = new ExamStatsDto();
+        List<Answer> corrected = answerService.getFilteredAnswers(entity.getExamId(), "corrected", 1, 50).getContent();
+        List<Answer> notCorrected = answerService.getFilteredAnswers(entity.getExamId(), "not corrected", 1, 50).getContent();
+        exam.setExam(examDto);
+        exam.setCorrected(answerAssembler.toResources(corrected.isEmpty() ? Collections.emptyList() : corrected));
+        exam.setNotCorrected(answerAssembler.toResources(notCorrected.isEmpty() ? Collections.emptyList() : notCorrected));
+        exam.setAverage(examService.getAverageScoreOfExam(entity.getExamId()));
+        return exam;
     }
 }

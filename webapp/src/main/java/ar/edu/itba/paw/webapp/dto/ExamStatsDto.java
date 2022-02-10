@@ -6,25 +6,21 @@ import java.util.List;
 
 public class ExamStatsDto extends ResourceSupport {
 
-    ExamDto examDto;
-    List<AnswerDto> corrected;
-    List<AnswerDto> notCorrected;
-    Double average;
+    private ExamDto exam;
+    private List<AnswerDto> corrected;
+    private List<AnswerDto> notCorrected;
+    private Double average;
 
     public ExamStatsDto() {
         // For Jax-Rs
     }
 
-    public ExamStatsDto(ExamDto examDto) {
-        this.examDto = examDto;
+    public ExamDto getExam() {
+        return exam;
     }
 
-    public ExamDto getExamDto() {
-        return examDto;
-    }
-
-    public void setExamDto(ExamDto examDto) {
-        this.examDto = examDto;
+    public void setExam(ExamDto exam) {
+        this.exam = exam;
     }
 
     public List<AnswerDto> getCorrected() {

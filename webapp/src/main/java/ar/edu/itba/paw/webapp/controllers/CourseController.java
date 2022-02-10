@@ -178,7 +178,7 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getAvailableYears() {
         List<Integer> availableYears = courseService.getAvailableYears();
-        return Response.ok(new GenericEntity<List<YearDto>>(availableYears.stream().map(YearDto::new).collect(Collectors.toList())){}).build();
+        return Response.ok(new GenericEntity<YearListDto>(new YearListDto(availableYears)){}).build();
     }
 
     // TODO: Paginate all courses if no year and quarter was sent
