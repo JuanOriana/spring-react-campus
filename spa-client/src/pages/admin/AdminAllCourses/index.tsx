@@ -37,26 +37,32 @@ function AdminAllCourses() {
   const [currentPage, pageSize] = usePagination(10);
   const [maxPage, setMaxPage] = useState(1);
   const query = useQuery();
-  const year = getQueryOrDefault(
+  const yearStringed = getQueryOrDefault(
     query,
     "year",
     new Date().getFullYear().toString()
   );
   const quarter = getQueryOrDefault(query, "quarter", "1");
-  const [allYears, setAllYears] = useState([parseInt(year)]);
+  const [allYears, setAllYears] = useState<number[]>(new Array(1));
+  const [year, setYear] = useState(parseInt(yearStringed));
 
   useEffect(() => {
     setIsLoading(true);
     handleService(
-      courseService.getCourses(currentPage, pageSize),
+      courseService.getCourses(
+        currentPage,
+        pageSize,
+        parseInt(yearStringed),
+        parseInt(quarter)
+      ),
       navigate,
       (coursesData) => {
-        setCourses(coursesData.getContent());
-        setMaxPage(coursesData.getMaxPage());
+        setCourses(coursesData ? coursesData.getContent() : []);
+        setMaxPage(coursesData ? coursesData.getMaxPage() : 1);
       },
       () => setIsLoading(false)
     );
-  }, [currentPage, pageSize, quarter, year]);
+  }, [currentPage, pageSize, quarter, yearStringed]);
 
   useEffect(
     () =>
@@ -64,7 +70,7 @@ function AdminAllCourses() {
         courseService.getAvailableYears(),
         navigate,
         (receivedYears) => {
-          setAllYears(receivedYears.map((year) => year));
+          setAllYears(receivedYears.map((year) => year.year));
         },
         () => {
           return;
@@ -86,61 +92,68 @@ function AdminAllCourses() {
       >
         <SectionHeading>
           {t("AdminAllCourses.allCoursesFrom", {
-            year: year,
+            year: yearStringed,
             quarter: quarter,
           })}
         </SectionHeading>
         <CourseTableForm method="get">
-          <div style={{ display: "flex" }}>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <FormLabel htmlFor="year">
-                {t("AdminAllCourses.form.year")}
-              </FormLabel>
-              <FormSelect name="year" id="year" defaultValue={year}>
-                {allYears.map((optionYear) => (
-                  <option key={optionYear} value={optionYear}>
-                    {optionYear}
-                  </option>
-                ))}
-              </FormSelect>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <FormText>{t("AdminAllCourses.form.quarter")}</FormText>
+          <LoadableData isLoading={isLoading}>
+            <div style={{ display: "flex" }}>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <FormLabel htmlFor="year">
+                  {t("AdminAllCourses.form.year")}
+                </FormLabel>
+                <FormSelect
+                  name="year"
+                  id="year"
+                  value={year}
+                  onChange={(event) => setYear(parseInt(event.target.value))}
+                >
+                  {allYears.map((optionYear) => (
+                    <option key={optionYear} value={optionYear}>
+                      {optionYear}
+                    </option>
+                  ))}
+                </FormSelect>
+              </div>
               <div
                 style={{
                   display: "flex",
-                  width: "70%",
-                  justifyContent: "space-between",
+                  flexDirection: "column",
+                  alignItems: "center",
                 }}
               >
-                <FormLabel style={{ margin: 0 }}>
-                  <input
-                    type="radio"
-                    value="1"
-                    name="quarter"
-                    defaultChecked={quarter === "1"}
-                  />
-                  <span>1Q</span>
-                </FormLabel>
-                <FormLabel style={{ margin: 0 }}>
-                  <input
-                    type="radio"
-                    value="2"
-                    name="quarter"
-                    defaultChecked={quarter === "2"}
-                  />
-                  <span>2Q</span>
-                </FormLabel>
+                <FormText>{t("AdminAllCourses.form.quarter")}</FormText>
+                <div
+                  style={{
+                    display: "flex",
+                    width: "70%",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <FormLabel style={{ margin: 0 }}>
+                    <input
+                      type="radio"
+                      value="1"
+                      name="quarter"
+                      defaultChecked={quarter === "1"}
+                    />
+                    <span>1Q</span>
+                  </FormLabel>
+                  <FormLabel style={{ margin: 0 }}>
+                    <input
+                      type="radio"
+                      value="2"
+                      name="quarter"
+                      defaultChecked={quarter === "2"}
+                    />
+                    <span>2Q</span>
+                  </FormLabel>
+                </div>
               </div>
             </div>
-          </div>
-          <FormButton>{t("AdminAllCourses.form.searchButton")}</FormButton>
+            <FormButton>{t("AdminAllCourses.form.searchButton")}</FormButton>
+          </LoadableData>
         </CourseTableForm>
         <LoadableData isLoading={isLoading}>
           {courses.length === 0 && (

@@ -15,6 +15,7 @@ import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
 import { fileUrlMaker } from "../scripts/fileUrlMaker";
 import { resultFetch } from "../scripts/resultFetch";
+import ExamStatsModel from "../types/ExamStatsModel";
 
 export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
@@ -70,11 +71,10 @@ export class CourseService {
     );
     return getPagedFetch<UserModel[]>(url.toString());
   }
-  public async getExams(
-    courseId: number
-  ): Promise<Result<PagedContent<ExamModel[]>>> {
-    return getPagedFetch<ExamModel[]>(
-      this.basePath + "/" + courseId + "/exams"
+  public async getExams(courseId: number): Promise<Result<ExamStatsModel[]>> {
+    return resultFetch<ExamStatsModel[]>(
+      this.basePath + "/" + courseId + "/exams",
+      { method: "GET" }
     );
   }
 
@@ -94,6 +94,15 @@ export class CourseService {
     );
   }
 
+  public async getExamsAverage(courseId: number) {
+    return resultFetch<number>(
+      this.basePath + "/" + courseId + "/exams/average",
+      {
+        method: "GET",
+      }
+    );
+  }
+
   public async getCourseAnswers(
     courseId: number
   ): Promise<Result<PagedContent<AnswerModel[]>>> {
@@ -103,8 +112,8 @@ export class CourseService {
   }
 
   //TODO: Ver si este service puede mapear el json sin el type! (cuando podamos correr la api)
-  public async getAvailableYears(): Promise<Result<number[]>> {
-    return resultFetch<number[]>(this.basePath + "/available-years", {
+  public async getAvailableYears(): Promise<Result<{ year: number }[]>> {
+    return resultFetch<{ year: number }[]>(this.basePath + "/available-years", {
       method: "GET",
     });
   }

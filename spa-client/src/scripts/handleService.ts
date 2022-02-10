@@ -13,6 +13,8 @@ export function handleService<T>(
         if (response.getError().getCode() === 204) {
           // @ts-ignore
           setterFunction(undefined);
+        } else if (isNaN(response.getError().getCode())) {
+          return;
         } else {
           navigate(`/error?code=${response.getError().getCode()}`);
         }

@@ -32,17 +32,17 @@ function CourseSchedule() {
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        {t('CourseSchedule.title')}
+        {t("CourseSchedule.title")}
       </SectionHeading>
       <BigWrapper>
-        <h3 style={{ margin: "10px 0" }}>
-          {t('CourseSchedule.subTitle')}
-        </h3>
+        <h3 style={{ margin: "10px 0" }}>{t("CourseSchedule.subTitle")}</h3>
         {days.map((day, index) => (
           <>
             {times[index] && (
               <>
-                <h3 style={{ margin: "3px 0 0 10px" }}>{t('DaysOfTheWeek.' + day)}</h3>
+                <h3 style={{ margin: "3px 0 0 10px" }}>
+                  {t("DaysOfTheWeek." + day)}
+                </h3>
                 <p style={{ marginLeft: "15px" }}>
                   {`› ${times[index]!.begin.hour}:${
                     times[index]!.begin.minute

@@ -29,15 +29,14 @@ export class ExamsServices {
     examId: number,
     answerFile: File
   ): Promise<Result<PostResponse>> {
-    const newAnswer = JSON.stringify({
-      exam: answerFile,
-    });
+    const newAnswer = new FormData();
+    newAnswer.append("file", answerFile, answerFile.name);
 
     return resultFetch<PostResponse>(
       this.basePath + "/" + examId + "/answers",
       {
         method: "POST",
-        hearders: { "Content-Type": "application/vnd.campus.api.v1+json" },
+        hearders: {},
         body: newAnswer,
       }
     );

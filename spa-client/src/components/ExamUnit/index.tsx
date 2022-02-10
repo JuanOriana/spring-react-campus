@@ -52,7 +52,7 @@ function ExamUnit({
       >
         <div style={{ display: "flex", alignItems: "center" }}>
           <DeliveredLink
-            isDelivered={isDelivered === true}
+            isDelivered={isDelivered}
             to={`../exam/${exam.examId}`}
           >
             <FileImg

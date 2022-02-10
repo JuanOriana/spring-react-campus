@@ -2,6 +2,7 @@ import { ErrorResponse, Result } from "../types";
 import { authedFetch } from "./authedFetch";
 import { checkError } from "./ErrorChecker";
 import { postErrorChecker } from "./postErrorChecker";
+import { putErrorChecker } from "./putErrorChecker";
 
 export async function resultFetch<RetType>(
   url: string,
@@ -14,6 +15,8 @@ export async function resultFetch<RetType>(
 
     if (options.method === "POST") {
       parsedResponse = postErrorChecker(response);
+    } else if (options.method === "PUT") {
+      parsedResponse = putErrorChecker(response);
     } else {
       parsedResponse = await checkError<RetType>(response);
     }

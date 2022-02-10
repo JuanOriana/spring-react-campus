@@ -16,15 +16,19 @@ import {
 import ExamUnit from "../../../../components/ExamUnit";
 import { useForm } from "react-hook-form";
 import React, { useEffect, useState } from "react";
-
-// i18next imports
-import { useTranslation } from "react-i18next";
-import "../../../../common/i18n/index";
 import { courseService } from "../../../../services";
 import { renderToast } from "../../../../scripts/renderToast";
 import { useCourseData } from "../../../../components/layouts/CourseLayout";
 import { useNavigate } from "react-router-dom";
 import { usePagination } from "../../../../hooks/usePagination";
+
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../../common/i18n/index";
+import { handleService } from "../../../../scripts/handleService";
+import ExamStatsModel from "../../../../types/ExamStatsModel";
+import LoadableData from "../../../../components/LoadableData";
+
 //
 
 type FormData = {
@@ -36,38 +40,20 @@ type FormData = {
 };
 function TeacherExams() {
   const { t } = useTranslation();
-  const [exams, setExams] = useState(new Array(0));
+  const [examsStats, setExamsStats] = useState<ExamStatsModel[]>(new Array(1));
+  const [isLoading, setIsLoading] = useState(false);
   const course = useCourseData();
   const navigate = useNavigate();
-  const [currentPage, pageSize] = usePagination(10);
   const [reload, setReload] = useState(false);
 
-
-
-
-
   useEffect(() => {
-    setExams([
-      {
-        examId: 1,
-        title: "Examen",
-        description: "adssada",
-        endTime: new Date(),
-        startTime: new Date(),
-        examFile: undefined,
-        average: 9,
-        course: {
-          courseId: 1,
-          courseUrl: "asdad",
-          board: "asdasd",
-          quarter: 1,
-          year: 2022,
-          isTeacher: true,
-          subject: { subjectId: 1, code: "F", name: "PAW" },
-        },
-        url: "xd",
-      },
-    ]);
+    setIsLoading(true);
+    handleService(
+      courseService.getExams(course.courseId),
+      navigate,
+      (examStatsData) => setExamsStats(examStatsData),
+      () => setIsLoading(false)
+    );
   }, []);
 
   const [isBefore, setIsBefore] = useState(false);
@@ -78,17 +64,20 @@ function TeacherExams() {
     reset,
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
-  const onSubmit = handleSubmit((data: FormData) => 
-
-  {
+  const onSubmit = handleSubmit((data: FormData) => {
     courseService
-      .newExam(course.courseId,data.title,data.content,data.file[0],data.startTime,data.endTime)
+      .newExam(
+        course.courseId,
+        data.title,
+        data.content,
+        data.file[0],
+        data.startTime,
+        data.endTime
+      )
       .then((response) => {
         if (!response.hasFailed()) {
           renderToast("👑 Examen creado exitosamente!", "success");
-          navigate(
-            `/course/${course.courseId}/exams?page=1&pageSize=${pageSize}`
-          );
+          navigate(`/course/${course.courseId}/exams`);
           setReload(!reload);
           reset();
           reset();
@@ -224,19 +213,22 @@ function TeacherExams() {
       </FormWrapper>
       <Separator reduced={true}>.</Separator>
 
-      <BigWrapper>
-        <h3 style={{ margin: "10px 0" }}>{t("TeacherExams.recentExams")}</h3>
-        {exams.length === 0 && <p>{t("TeacherExams.noExams")}</p>}
-        {exams.map((exam) => (
-          //EXAMS SOLVED Y USERCOUNT SALE DE QUE EXAMS EN VERDAD ES UN MAPA
-          <ExamUnit
-            exam={exam}
-            isTeacher={true}
-            examsSolved={7}
-            userCount={30}
-            average={8}
-          />
-        ))}
+      <BigWrapper style={{ alignItems: isLoading ? "center" : "stretch" }}>
+        <LoadableData isLoading={isLoading}>
+          <h3 style={{ margin: "10px 0" }}>{t("TeacherExams.recentExams")}</h3>
+          {examsStats.length === 0 && <p>{t("TeacherExams.noExams")}</p>}
+          {examsStats.map((examData) => (
+            <ExamUnit
+              exam={examData.exam}
+              isTeacher={true}
+              examsSolved={examData.corrected.length}
+              userCount={
+                examData.corrected.length + examData.notCorrected.length
+              }
+              average={examData.average}
+            />
+          ))}
+        </LoadableData>
       </BigWrapper>
     </>
   );

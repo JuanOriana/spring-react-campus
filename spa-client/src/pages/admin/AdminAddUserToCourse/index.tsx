@@ -41,7 +41,7 @@ function AdminAddUserToCourse() {
   const [courseTeachers, setCourseTeachers] = useState(new Array(1));
   const [courseStudents, setCourseStudents] = useState(new Array(1));
   const [courseHelpers, setCourseHelpers] = useState(new Array(1));
-
+  const [roles, setRoles] = useState(new Array(1));
   const [isCourseLoading, setIsCourseLoading] = useState(false);
 
   useEffect(() => {
@@ -52,12 +52,19 @@ function AdminAddUserToCourse() {
         courseService.getCourseById(courseIdAsInt),
         navigate,
         (courseData) => {
-          console.log(courseData);
           setCourse(courseData);
         },
         () => {
           setIsCourseLoading(false);
         }
+      );
+      handleService(
+        userService.getRoles(),
+        navigate,
+        (roleData) => {
+          setRoles(roleData);
+        },
+        () => {}
       );
       handleService(
         userService.getUsers(),
@@ -94,13 +101,13 @@ function AdminAddUserToCourse() {
     }
   }, [courseId]);
 
-  const roles = [{ roleId: 1, roleName: "student" }];
-
   const { register, handleSubmit, reset, setError } = useForm<FormData>({
     criteriaMode: "all",
   });
 
-  const onSubmit = handleSubmit((data: FormData) => {
+  const onSubmit = handleSubmit(({ userId, roleId }: FormData) => {
+    console.log(userId ? userId : users[0].userId);
+    console.log(roleId ? roleId : roles[0].roleId);
     reset();
   });
   return (
@@ -162,7 +169,9 @@ function AdminAddUserToCourse() {
               </FormText>
               <ul>
                 {courseStudents.map((student) => (
-                  <li key={student.userId}>{student.name}</li>
+                  <li key={student.userId}>
+                    {student.name} {student.surname}
+                  </li>
                 ))}
               </ul>
               {maxPage > 1 && (
@@ -175,7 +184,7 @@ function AdminAddUserToCourse() {
                 >
                   {currentPage > 1 && (
                     <Link
-                      to={`/admin/course/${courseId}/enroll&page=${
+                      to={`/admin/course/${courseId}/enroll?page=${
                         currentPage - 1
                       }&pageSize=${pageSize}`}
                     >
@@ -193,7 +202,7 @@ function AdminAddUserToCourse() {
                   })}
                   {currentPage < maxPage && (
                     <Link
-                      to={`/admin/course/${courseId}/enroll&page=${
+                      to={`/admin/course/${courseId}/enroll?page=${
                         currentPage + 1
                       }&pageSize=${pageSize}`}
                     >
@@ -214,7 +223,9 @@ function AdminAddUserToCourse() {
                   </FormText>
                   <ul>
                     {courseTeachers.map((teacher) => (
-                      <li key={teacher.userId}>{teacher.name}</li>
+                      <li key={teacher.userId}>
+                        {teacher.name} {teacher.surname}
+                      </li>
                     ))}
                   </ul>
                 </>
@@ -226,7 +237,9 @@ function AdminAddUserToCourse() {
                   </FormText>
                   <ul>
                     {courseHelpers.map((helper) => (
-                      <li key={helper.userId}>{helper.name}</li>
+                      <li key={helper.userId}>
+                        {helper.name} {helper.surname}
+                      </li>
                     ))}
                   </ul>
                 </>

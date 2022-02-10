@@ -20,37 +20,36 @@ function CourseLayout() {
   const { user } = useAuth();
   const { courseId } = useParams();
   useEffect(() => {
+    if (!user) return;
     setIsLoading(true);
     handleService(
       courseService.getCourseById(parseInt(courseId ? courseId : "-1")),
       navigate,
       (courseData) => {
-        setCourse(courseData);
+        handleService(
+          courseService.getTeachers(parseInt(courseId ? courseId : "-1")),
+          navigate,
+          (users) => {
+            let isTeacher = false;
+            if (users) {
+              for (const iterUser of users.getContent()) {
+                if (iterUser.userId === user!.userId) {
+                  isTeacher = true;
+                  break;
+                }
+              }
+            }
+            setCourse({ ...courseData!, isTeacher: isTeacher });
+          },
+          () => {
+            return;
+          }
+        );
       },
       () => setIsLoading(false)
     );
-  }, []);
-
-  useEffect(() => {
-    if (!user) return;
-    handleService(
-      courseService.getTeachers(parseInt(courseId ? courseId : "-1")),
-      navigate,
-      (users) => {
-        if (users) {
-          for (const iterUser of users.getContent()) {
-            if (iterUser.userId === user.userId)
-              setCourse((lastCourse) => {
-                return { ...lastCourse!, isTeacher: true };
-              });
-          }
-        }
-      },
-      () => {
-        return;
-      }
-    );
   }, [user]);
+
   return (
     <>
       <LoadableData isLoading={isLoading}>
