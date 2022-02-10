@@ -5,6 +5,7 @@ import {
   ErrorResponse,
   PagedContent,
   PostResponse,
+  PutResponse,
   Result,
   RoleModel,
   UserModel,
@@ -105,15 +106,16 @@ export class UserService {
     );
   }
 
-  public async updateUserProfileImage(userId: number, file: File) {
+  public async updateUserProfileImage(
+    userId: number,
+    file: File
+  ): Promise<Result<PutResponse>> {
     const formData = new FormData();
 
     formData.append("file", file, file.name);
-    return resultFetch(this.basePath + "/" + userId + "/image", {
+    return resultFetch<PutResponse>(this.basePath + "/" + userId + "/image", {
       method: "PUT",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      headers: {},
       body: formData,
     });
   }

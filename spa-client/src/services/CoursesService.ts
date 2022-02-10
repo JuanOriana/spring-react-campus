@@ -78,22 +78,6 @@ export class CourseService {
     );
   }
 
-  public async getSolvedExams(
-    courseId: number
-  ): Promise<Result<PagedContent<ExamModel[]>>> {
-    return getPagedFetch<ExamModel[]>(
-      this.basePath + "/" + courseId + "/exams/solved"
-    );
-  }
-
-  public async getUnsolvedExams(
-    courseId: number
-  ): Promise<Result<PagedContent<ExamModel[]>>> {
-    return getPagedFetch<ExamModel[]>(
-      this.basePath + "/" + courseId + "/exams/unsolved"
-    );
-  }
-
   public async getCourseAnswers(
     courseId: number
   ): Promise<Result<PagedContent<AnswerModel[]>>> {

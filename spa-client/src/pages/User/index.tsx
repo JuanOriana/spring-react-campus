@@ -57,11 +57,12 @@ function User() {
           renderToast("👑 Imagen actualizada exitosamente!", "success");
           setReload(!reload);
           reset();
-        }
+        }else{
         renderToast(
           "No se pudo actualizar la imagen, intente de nuevo",
           "error"
         );
+        }
       })
       .catch(() =>
         renderToast(
