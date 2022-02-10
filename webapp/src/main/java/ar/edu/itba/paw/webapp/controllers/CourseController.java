@@ -85,6 +85,9 @@ public class CourseController {
     @Autowired
     private FileModelAssembler fileAssembler;
 
+    @Autowired
+    private TimetableService timetableService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
     @GET
@@ -303,6 +306,18 @@ public class CourseController {
         List<ExamDto> examDtoList = examAssembler.toResources(exams);
         return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
         }).build();
+    }
+
+    @GET
+    @Path("/{courseId}/timetable")
+    @Produces("application/vnd.campus.api.v1+json")
+    public Response getTimetable(@PathParam("courseId") Long courseId) {
+        Timetable[] schedule = timetableService.findByIdOrdered(courseId);
+        if(schedule.length == 0) {
+            return Response.noContent().build();
+        }
+        List<TimetableDto> timetable = Arrays.stream(schedule).map(TimetableDto::fromTimetable).collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<TimetableDto>>(timetable){}).build();
     }
 
     @POST
