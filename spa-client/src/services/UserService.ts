@@ -8,6 +8,7 @@ import {
   PutResponse,
   Result,
   RoleModel,
+  UserCourseModel,
   UserModel,
 } from "../types";
 import { getPagedFetch } from "../scripts/getPagedFetch";
@@ -41,13 +42,13 @@ export class UserService {
     userId: number,
     page?: number,
     pageSize?: number
-  ): Promise<Result<PagedContent<CourseModel[]>>> {
+  ): Promise<Result<PagedContent<UserCourseModel[]>>> {
     let url = pageUrlMaker(
       this.basePath + "/" + userId + "/courses",
       page,
       pageSize
     );
-    return getPagedFetch(url.toString());
+    return getPagedFetch<UserCourseModel[]>(url.toString());
   }
 
   public async newUser(
