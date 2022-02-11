@@ -9,5 +9,5 @@ export default interface AnswerModel {
   teacher: UserModel;
   answerFile: FileModel;
   score: number;
-  correction: string;
+  corrections: string;
 }

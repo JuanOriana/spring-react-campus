@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { handleService } from "../../../../../scripts/handleService";
 import { examsService } from "../../../../../services";
 import { ExamModel } from "../../../../../types";
+import { renderToast } from "../../../../../scripts/renderToast";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
@@ -87,11 +88,25 @@ function StudentCourseExamStandalone() {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
-    reset();
+    examsService
+      .newAnswer(parseInt(examId ? examId : "-1"), data.file[0])
+      .then((result) => {
+        if (result.hasFailed()) {
+          renderToast(
+            "No se pudo enviar la respuesta, intente de nuevo",
+            "error"
+          );
+          return;
+        }
+        navigate(`/course/${course.courseId}/exams`);
+        renderToast("👑 Examen enviado exitosamente!", "success");
+      })
+      .catch(() =>
+        renderToast("No se pudo enviar la respuesta, intente de nuevo", "error")
+      );
   });
   return (
     <>

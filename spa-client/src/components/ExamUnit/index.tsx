@@ -11,6 +11,7 @@ import {
 import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
 import { ExamModel } from "../../types";
+import AnswerModel from "../../types/AnswerModel";
 //
 
 interface ExamUnitProps {
@@ -20,10 +21,7 @@ interface ExamUnitProps {
   userCount?: number;
   isDelivered?: boolean;
   isTeacher?: boolean;
-  answer?: {
-    score: number;
-    corrections: string;
-  };
+  answer?: AnswerModel;
   onDelete?: (id: number) => void;
 }
 

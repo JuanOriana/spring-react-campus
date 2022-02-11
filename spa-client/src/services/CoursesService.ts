@@ -118,8 +118,10 @@ export class CourseService {
     return parseExamModelResponse(resp);
   }
 
-  public async getExamsAverage(courseId: number) {
-    return resultFetch<number>(
+  public async getExamsAverage(
+    courseId: number
+  ): Promise<Result<{ average: number }>> {
+    return resultFetch<{ average: number }>(
       this.basePath + "/" + courseId + "/exams/average",
       {
         method: "GET",

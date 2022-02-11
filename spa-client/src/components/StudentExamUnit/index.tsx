@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes, { InferProps } from "prop-types";
 import {
   FileImg,
   FileName,
@@ -47,7 +46,9 @@ function StudentExamUnit({
             {t("StudentExamUnit.notHandedIn")}
           </FileName>
         )}
-        {answer.deliveredDate && <FileName>{answer.deliveredDate}</FileName>}
+        {answer.deliveredDate && (
+          <FileName>{answer.deliveredDate.toDateString()}</FileName>
+        )}
       </div>
       {!isCorrected && (
         <Link
