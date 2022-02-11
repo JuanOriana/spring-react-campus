@@ -22,12 +22,11 @@ type FormData = {
 
 function User() {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [userImg, setUserImg] = useState<string | undefined>(undefined);
   const [isLoadingImg, setIsLoadingImg] = useState(false);
-
   useEffect(() => {
     setIsLoadingImg(true);
     if (user) {
@@ -37,11 +36,12 @@ function User() {
         (userImg) => {
           const userImgUrl = URL.createObjectURL(userImg);
           setUserImg(userImgUrl);
+          //setUser({ ...user, url: userImgUrl });
         },
         () => setIsLoadingImg(false)
       );
     }
-  }, [user]);
+  }, [user, reload]);
 
   const {
     register,
@@ -57,11 +57,11 @@ function User() {
           renderToast("👑 Imagen actualizada exitosamente!", "success");
           setReload(!reload);
           reset();
-        }else{
-        renderToast(
-          "No se pudo actualizar la imagen, intente de nuevo",
-          "error"
-        );
+        } else {
+          renderToast(
+            "No se pudo actualizar la imagen, intente de nuevo",
+            "error"
+          );
         }
       })
       .catch(() =>

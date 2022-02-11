@@ -70,7 +70,7 @@ function AdminAllCourses() {
         courseService.getAvailableYears(),
         navigate,
         (receivedYears) => {
-          setAllYears(receivedYears.map((year) => year.year));
+          setAllYears(receivedYears.years);
         },
         () => {
           return;

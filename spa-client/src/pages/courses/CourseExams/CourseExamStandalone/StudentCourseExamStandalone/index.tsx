@@ -11,7 +11,7 @@ import {
   FormButton,
   ErrorMessage,
 } from "../../../../../components/generalStyles/form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { number } from "prop-types";
 import { useForm } from "react-hook-form";
@@ -19,6 +19,9 @@ import { useForm } from "react-hook-form";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../../../common/i18n/index";
+import { handleService } from "../../../../../scripts/handleService";
+import { examsService } from "../../../../../services";
+import { ExamModel } from "../../../../../types";
 //
 
 type FormData = {
@@ -27,77 +30,63 @@ type FormData = {
 
 function StudentCourseExamStandalone() {
   const { t } = useTranslation();
-  const Course = useCourseData();
+  const course = useCourseData();
   const navigate = useNavigate();
-  const exam = {
-    examId: 1,
-    title: "Examen",
-    examFile: {
-      fileId: 1,
-      size: 10,
-      fileName: "xd",
-      extension: {
-        fileExtensionName: ".doc",
-        fileExtensionId: 12,
-      },
-      course: {
-        courseId: 1,
-        year: 2021,
-        quarter: 2,
-        board: "A",
-        subject: {
-          subjectId: 1,
-          code: "a",
-          name: "PAW",
-        },
-        courseUrl: "urlcurso",
-        isTeacher: true,
-      },
-      fileCategory: undefined,
-      downloads: 2,
-    },
-    description: "hola\nxd",
-  };
+  const { examId } = useParams();
+  const [exam, setExam] = useState<ExamModel | undefined>(undefined);
 
-  const endDate = new Date("1/13/2022");
+  useEffect(() => {
+    handleService(
+      examsService.getExamById(parseInt(examId ? examId : "-1")),
+      navigate,
+      (examData) => {
+        setExam(examData);
+      },
+      () => {}
+    );
+  }, []);
+
+  const endDate = new Date("2/13/2022");
 
   const calculateTimeLeft = () => {
-    let difference = +endDate - +new Date();
+    console.log(typeof exam?.endTime!);
+    let difference = +exam?.endTime! - +new Date();
 
-    let timeLeft = {
-      days: number,
-      hours: number,
-      minutes: number,
-      seconds: number,
-    };
-
+    let newTimeLeft;
     if (difference > 0) {
-      timeLeft = {
-        // @ts-ignore
+      newTimeLeft = {
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        // @ts-ignore
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        // @ts-ignore
         minutes: Math.floor((difference / 1000 / 60) % 60),
-        // @ts-ignore
         seconds: Math.floor((difference / 1000) % 60),
       };
 
       if (difference < 3000) {
-        navigate(`courses/${Course.courseId}/exams`);
+        navigate(`courses/${course.courseId}/exams`);
       }
     }
-
-    return timeLeft;
+    return newTimeLeft;
   };
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const [timeLeft, setTimeLeft] = useState<
+    | {
+        days: number;
+        hours: number;
+        minutes: number;
+        seconds: number;
+      }
+    | undefined
+  >();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-  });
+    let timer: NodeJS.Timeout;
+    if (exam?.endTime) {
+      timer = setTimeout(() => {
+        setTimeLeft(calculateTimeLeft());
+      }, 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [exam]);
 
   const {
     register,
@@ -111,22 +100,22 @@ function StudentCourseExamStandalone() {
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        {exam.title}
+        {exam?.title}
       </SectionHeading>
       <BigWrapper>
         <h3 style={{ alignSelf: "center" }}>
           {t("StudentCourseExamStandalone.timeLeft", {
-            days: timeLeft.days,
-            hours: timeLeft.hours,
-            minutes: timeLeft.minutes,
-            seconds: timeLeft.seconds,
+            days: timeLeft?.days,
+            hours: timeLeft?.hours,
+            minutes: timeLeft?.minutes,
+            seconds: timeLeft?.seconds,
           })}
         </h3>
         <CommentTitle>
           {t("StudentCourseExamStandalone.examDescriptionTitle")}
         </CommentTitle>
-        <p style={{ margin: "10px 0 10px 10px" }}>{exam.description}</p>
-        <FileUnit file={exam.examFile} isMinimal={true} />
+        <p style={{ margin: "10px 0 10px 10px" }}>{exam?.description}</p>
+        {exam && <FileUnit file={exam?.examFile!} isMinimal={true} />}
 
         <form
           encType="multipart/form-data"
@@ -174,7 +163,7 @@ function StudentCourseExamStandalone() {
               justifyContent: "center",
             }}
           >
-            <LinkButton to={`/course/${Course.courseId}/exams`}>
+            <LinkButton to={`/course/${course.courseId}/exams`}>
               {t("StudentCourseExamStandalone.form.cancelSend")}
             </LinkButton>
             <FormButton>

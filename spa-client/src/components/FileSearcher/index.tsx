@@ -67,8 +67,8 @@ function FileSearcher({
   const [extAllState, setExtAllState] = useState(false);
 
   useEffect(() => {
-    setCatAllState(arrayEquals(categories!, categoryType!));
-    setExtAllState(arrayEquals(extensions!, extensionType!));
+    setCatAllState(categoryType ? categoryType.includes("-1") : false);
+    setExtAllState(extensionType ? extensionType.includes("-1") : false);
     const initCatCheckState = new Array(categories!.length);
     const initExtCheckState = new Array(extensions!.length);
     initCatCheckState.fill(false);
@@ -78,16 +78,7 @@ function FileSearcher({
     extensionType!.map((idx) => (initExtCheckState[idx] = true));
     setCatCheckState(initCatCheckState);
     setExtCheckState(initExtCheckState);
-  }, [categories, extensions]);
-
-  function arrayEquals(a: any[], b: any[]) {
-    return (
-      Array.isArray(a) &&
-      Array.isArray(b) &&
-      a.length === b.length &&
-      a.every((val, index) => val === b[index])
-    );
-  }
+  }, [categories, extensions, extensionType, categoryType]);
 
   return (
     <FileQueryContainer action="">
@@ -307,19 +298,25 @@ function FileSearcher({
           <FileCheckboxLabel style={{ fontWeight: 700 }}>
             {t("FileSearcher.filteredBy")}
           </FileCheckboxLabel>
-          {categoryType!.map((idx) => (
-            <FileFilterPill key={idx} red={false}>
-              {categories[idx] &&
-                t("Category." + categories[idx]?.categoryName)}
-            </FileFilterPill>
-          ))}
-          {extensionType!.map((idx) => (
-            <FileFilterPill key={idx} red={true}>
-              {idx === 0
-                ? t("FileSearcher.fileType.other")
-                : extensions[idx]?.fileExtensionName}
-            </FileFilterPill>
-          ))}
+          {categoryType!.map((idx) => {
+            if (idx === "-1") return;
+            return (
+              <FileFilterPill key={idx} red={false}>
+                {categories[idx] &&
+                  t("Category." + categories[idx]?.categoryName)}
+              </FileFilterPill>
+            );
+          })}
+          {extensionType!.map((idx) => {
+            if (idx === "-1") return;
+            return (
+              <FileFilterPill key={idx} red={true}>
+                {idx === 0
+                  ? t("FileSearcher.fileType.other")
+                  : extensions[idx]?.fileExtensionName}
+              </FileFilterPill>
+            );
+          })}
         </div>
       )}
     </FileQueryContainer>

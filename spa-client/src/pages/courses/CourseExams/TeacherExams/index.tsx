@@ -16,7 +16,11 @@ import {
 import ExamUnit from "../../../../components/ExamUnit";
 import { useForm } from "react-hook-form";
 import React, { useEffect, useState } from "react";
-import { courseService } from "../../../../services";
+import {
+  announcementsService,
+  courseService,
+  examsService,
+} from "../../../../services";
 import { renderToast } from "../../../../scripts/renderToast";
 import { useCourseData } from "../../../../components/layouts/CourseLayout";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +32,7 @@ import "../../../../common/i18n/index";
 import { handleService } from "../../../../scripts/handleService";
 import ExamStatsModel from "../../../../types/ExamStatsModel";
 import LoadableData from "../../../../components/LoadableData";
+import { AnnouncementModel } from "../../../../types";
 
 //
 
@@ -89,6 +94,20 @@ function TeacherExams() {
         renderToast("No se pudo crear el examen, intente de nuevo", "error")
       );
   });
+
+  function onDelete(id: number) {
+    examsService
+      .deleteExam(id)
+      .then(() => {
+        renderToast("👑 Examen eliminado exitosamente!", "success");
+        setExamsStats((oldExamStats) =>
+          oldExamStats.filter((exam: ExamStatsModel) => exam.exam.examId !== id)
+        );
+      })
+      .catch(() =>
+        renderToast("No se pudo borrar el Examen, intente de nuevo", "error")
+      );
+  }
 
   return (
     <>
@@ -226,6 +245,7 @@ function TeacherExams() {
                 examData.corrected.length + examData.notCorrected.length
               }
               average={examData.average}
+              onDelete={onDelete}
             />
           ))}
         </LoadableData>
