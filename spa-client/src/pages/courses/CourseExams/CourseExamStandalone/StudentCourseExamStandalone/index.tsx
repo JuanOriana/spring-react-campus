@@ -13,15 +13,14 @@ import {
 } from "../../../../../components/generalStyles/form";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { number } from "prop-types";
 import { useForm } from "react-hook-form";
+import { handleService } from "../../../../../scripts/handleService";
+import { examsService } from "../../../../../services";
+import { ExamModel } from "../../../../../types";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../../../common/i18n/index";
-import { handleService } from "../../../../../scripts/handleService";
-import { examsService } from "../../../../../services";
-import { ExamModel } from "../../../../../types";
 //
 
 type FormData = {
@@ -45,8 +44,6 @@ function StudentCourseExamStandalone() {
       () => {}
     );
   }, []);
-
-  const endDate = new Date("2/13/2022");
 
   const calculateTimeLeft = () => {
     console.log(typeof exam?.endTime!);
@@ -80,6 +77,7 @@ function StudentCourseExamStandalone() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
+    console.log(typeof exam?.endTime);
     if (exam?.endTime) {
       timer = setTimeout(() => {
         setTimeLeft(calculateTimeLeft());

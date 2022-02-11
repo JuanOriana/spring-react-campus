@@ -4,14 +4,15 @@ import {
 } from "../../../../components/generalStyles/utils";
 import ExamUnit from "../../../../components/ExamUnit";
 import React, { useEffect, useState } from "react";
+import { courseService } from "../../../../services";
+import { handleService } from "../../../../scripts/handleService";
+import { useCourseData } from "../../../../components/layouts/CourseLayout";
+import { useNavigate } from "react-router-dom";
+import LoadableData from "../../../../components/LoadableData";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../../common/i18n/index";
-import { courseService, examsService } from "../../../../services";
-import { handleService } from "../../../../scripts/handleService";
-import { useCourseData } from "../../../../components/layouts/CourseLayout";
-import { useNavigate } from "react-router-dom";
 //
 const exampleExam = {
   examId: 1,
@@ -39,16 +40,20 @@ function StudentExams() {
   const navigate = useNavigate();
   const average = 9.2;
   const [unresolvedExams, setUnresolvedExams] = useState(new Array(0));
+  const [isLoading, setIsLoading] = useState(false);
   const [answerMarks, setAnswerMarks] = useState(new Array(0));
 
   useEffect(() => {
+    setIsLoading(true);
     handleService(
       courseService.getUnsolvedExams(course.courseId),
       navigate,
       (examData) => {
         setUnresolvedExams(examData ? examData.getContent() : []);
       },
-      () => {}
+      () => {
+        setIsLoading(false);
+      }
     );
 
     setAnswerMarks([
@@ -66,31 +71,39 @@ function StudentExams() {
       </SectionHeading>
       <BigWrapper>
         <h3 style={{ margin: "10px 0" }}>{t("StudentExams.toDo")}</h3>
-        {unresolvedExams.length === 0 && <p>{t("StudentExams.noExams")}</p>}
-        {unresolvedExams.map((exam) => (
-          <ExamUnit exam={exam} />
-        ))}
-        {answerMarks.length !== 0 && (
-          <>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <h3 style={{ margin: "10px 0" }}>
-                {t("StudentExams.sentExams")}
-              </h3>
-              <SectionHeading style={{ fontSize: "20px", marginRight: "10px" }}>
-                {average}
-              </SectionHeading>
-            </div>
-            {answerMarks.map((answer) => (
-              <ExamUnit exam={answer.exam} answer={answer} isDelivered={true} />
-            ))}
-          </>
-        )}
+        <LoadableData isLoading={isLoading}>
+          {unresolvedExams.length === 0 && <p>{t("StudentExams.noExams")}</p>}
+          {unresolvedExams.map((exam) => (
+            <ExamUnit exam={exam} />
+          ))}
+          {answerMarks.length !== 0 && (
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <h3 style={{ margin: "10px 0" }}>
+                  {t("StudentExams.sentExams")}
+                </h3>
+                <SectionHeading
+                  style={{ fontSize: "20px", marginRight: "10px" }}
+                >
+                  {average}
+                </SectionHeading>
+              </div>
+              {answerMarks.map((answer) => (
+                <ExamUnit
+                  exam={answer.exam}
+                  answer={answer}
+                  isDelivered={true}
+                />
+              ))}
+            </>
+          )}
+        </LoadableData>
       </BigWrapper>
     </>
   );

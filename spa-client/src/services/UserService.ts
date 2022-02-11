@@ -38,7 +38,7 @@ export class UserService {
     return getBlobFetch(this.basePath + "/" + userId + "/image");
   }
 
-  public async getUsersCourses(
+  public async getUserCourses(
     userId: number,
     page?: number,
     pageSize?: number
