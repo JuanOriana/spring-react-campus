@@ -1,11 +1,27 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.Link;
+import java.io.Serializable;
+import java.util.List;
 
-public class FileCategoryDto extends ResourceSupport {
+public class FileCategoryDto implements Serializable {
 
     private long categoryId;
     private String categoryName;
+    private List<Link> links;
+
+    public FileCategoryDto() {
+        // For MessageBodyWriter
+    }
+
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
 
     public long getCategoryId() {
         return categoryId;

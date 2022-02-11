@@ -12,29 +12,40 @@ import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.jaxrs.JaxRsLinkBuilder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
-public class UserAssembler extends JaxRsResourceAssemblerSupport<User, UserDto> {
+public class UserAssembler {
 
     private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
 
     public UserAssembler() {
-        super(UserController.class, UserDto.class);
+        // For spring
     }
 
-    @Override
-    public UserDto toResource(User entity) {
-        UserDto user = createResourceWithId(entity.getUserId(), entity);
+    public UserDto toResource(User entity, boolean showDeepLinks) {
         UserDto result = mapper.userToUserDto(entity);
-        result.add(user.getLinks());
-        Link coursesLink = new Link(
-                new UriTemplate(
-                        JaxRsLinkBuilder.linkTo(UserController.class).slash(entity.getUserId()).slash("courses").toString(),
-                        new TemplateVariables(new TemplateVariable("page,page-size", TemplateVariable.VariableType.REQUEST_PARAM))
-                ), "courses"
-        );
-        result.add(coursesLink);
-        result.add(JaxRsLinkBuilder.linkTo(UserController.class).slash(entity.getUserId()).slash("image").withRel("profile-image"));
-        result.add(JaxRsLinkBuilder.linkTo(UserController.class).slash(entity.getUserId()).slash("timetable").withRel("timetable"));
+        List<Link> links = new ArrayList<>();
+        links.add(JaxRsLinkBuilder.linkTo(UserController.class).slash(entity.getUserId()).withSelfRel());
+        if(showDeepLinks) {
+            Link coursesLink = new Link(
+                    new UriTemplate(
+                            JaxRsLinkBuilder.linkTo(UserController.class).slash(entity.getUserId()).slash("courses").toString(),
+                            new TemplateVariables(new TemplateVariable("page,page-size", TemplateVariable.VariableType.REQUEST_PARAM))
+                    ), "courses"
+            );
+            links.add(coursesLink);
+            links.add(JaxRsLinkBuilder.linkTo(UserController.class).slash(entity.getUserId()).slash("image").withRel("profile-image"));
+            links.add(JaxRsLinkBuilder.linkTo(UserController.class).slash(entity.getUserId()).slash("timetable").withRel("timetable"));
+            result.setLinks(links);
+        }
         return result;
+    }
+
+    public List<UserDto> toResources(List<User> users, boolean showDeepLinks) {
+        List<UserDto> userDtoList = new ArrayList<>();
+        users.forEach(u -> userDtoList.add(toResource(u, showDeepLinks)));
+        return userDtoList;
     }
 }

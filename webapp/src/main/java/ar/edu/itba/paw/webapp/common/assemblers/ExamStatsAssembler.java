@@ -10,11 +10,12 @@ import ar.edu.itba.paw.webapp.dto.ExamStatsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Component
-public class ExamStatsAssembler extends JaxRsResourceAssemblerSupport<Exam, ExamStatsDto> {
+public class ExamStatsAssembler {
 
     @Autowired
     private ExamService examService;
@@ -29,19 +30,24 @@ public class ExamStatsAssembler extends JaxRsResourceAssemblerSupport<Exam, Exam
     private ExamAssembler examAssembler;
 
     public ExamStatsAssembler() {
-        super(ExamController.class, ExamStatsDto.class);
+        // For spring
     }
 
-    @Override
-    public ExamStatsDto toResource(Exam entity) {
-        ExamDto examDto = examAssembler.toResource(entity);
+    public ExamStatsDto toResource(Exam entity, boolean showDeepLinks) {
+        ExamDto examDto = examAssembler.toResource(entity, showDeepLinks);
         ExamStatsDto exam = new ExamStatsDto();
         List<Answer> corrected = answerService.getFilteredAnswers(entity.getExamId(), "corrected", 1, 50).getContent();
         List<Answer> notCorrected = answerService.getFilteredAnswers(entity.getExamId(), "not corrected", 1, 50).getContent();
         exam.setExam(examDto);
-        exam.setCorrected(answerAssembler.toResources(corrected.isEmpty() ? Collections.emptyList() : corrected));
-        exam.setNotCorrected(answerAssembler.toResources(notCorrected.isEmpty() ? Collections.emptyList() : notCorrected));
+        exam.setCorrected(answerAssembler.toResources(corrected.isEmpty() ? Collections.emptyList() : corrected, showDeepLinks));
+        exam.setNotCorrected(answerAssembler.toResources(notCorrected.isEmpty() ? Collections.emptyList() : notCorrected, showDeepLinks));
         exam.setAverage(examService.getAverageScoreOfExam(entity.getExamId()));
         return exam;
+    }
+
+    public List<ExamStatsDto> toResources(List<Exam> exams, boolean showDeepLinks) {
+        List<ExamStatsDto> examStatsDtoList = new ArrayList<>();
+        exams.forEach(e -> examStatsDtoList.add(toResource(e, showDeepLinks)));
+        return examStatsDtoList;
     }
 }

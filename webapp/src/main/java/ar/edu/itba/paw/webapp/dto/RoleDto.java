@@ -1,12 +1,29 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Role;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
-public class RoleDto extends ResourceSupport {
+import java.io.Serializable;
+import java.util.List;
+
+public class RoleDto implements Serializable {
 
     private Integer roleId;
     private String roleName;
+    private List<Link> links;
+
+    public RoleDto() {
+        // For MessageBodyWriter
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
 
     public static RoleDto fromRole(Role role) {
         if (role == null){

@@ -71,7 +71,7 @@ public class ExamController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getExams(@PathParam("examId") Long examId) {
         Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
-        ExamDto examDto = examAssembler.toResource(exam);
+        ExamDto examDto = examAssembler.toResource(exam, false);
         return Response.ok(new GenericEntity<ExamDto>(examDto){}).build();
     }
 
@@ -102,13 +102,13 @@ public class ExamController {
                     new GenericEntity<List<AnswerDto>>(
                             paginatedAnswers.getContent()
                                     .stream()
-                                    .map(answer -> answerAssembler.toResource(answer))
+                                    .map(answer -> answerAssembler.toResource(answer, false))
                                     .collect(Collectors.toList())){});
             return PaginationBuilder.build(paginatedAnswers, builder, uriInfo, pageSize);
         }
         List<AnswerDto> answerDtoList = answerService.getMarks(userId, exam.getCourse().getCourseId())
                 .stream()
-                .map(answer -> answerAssembler.toResource(answer))
+                .map(answer -> answerAssembler.toResource(answer, false))
                 .collect(Collectors.toList());
         return Response.ok(new GenericEntity<List<AnswerDto>>(answerDtoList){}).build();
     }

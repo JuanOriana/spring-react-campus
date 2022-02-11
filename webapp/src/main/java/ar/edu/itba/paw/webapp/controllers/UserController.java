@@ -79,7 +79,7 @@ public class UserController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response listUsers() {
         final List<User> users = userService.list();
-        return Response.ok(new GenericEntity<List<UserDto>>(userAssembler.toResources(users)){}).build();
+        return Response.ok(new GenericEntity<List<UserDto>>(userAssembler.toResources(users, true)){}).build();
     }
 
     @POST
@@ -115,7 +115,7 @@ public class UserController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getUser(@PathParam("userId") Long userId) {
         User user = userService.findById(userId).orElseThrow(UserNotFoundException::new);
-        return Response.ok(userAssembler.toResource(user)).build();
+        return Response.ok(userAssembler.toResource(user, true)).build();
     }
 
     @GET
@@ -131,7 +131,7 @@ public class UserController {
         List<Course> courses = courseCampusPage.getContent();
         List<UserCourseDto> userCourseDtoList = new ArrayList<>();
         courses.forEach(c -> {
-            CourseDto courseDto = courseAssembler.toResource(c);
+            CourseDto courseDto = courseAssembler.toResource(c,false);
             RoleDto roleDto = roleAssembler.toResource(courseService.getUserRoleInCourse(c.getCourseId(), authFacade.getCurrentUserId()));
             userCourseDtoList.add(new UserCourseDto(courseDto, roleDto));
         });
@@ -225,7 +225,7 @@ public class UserController {
                 for (int i = 0; i < hours.length; i++){
                     LocalTime timedHour = stringToTime(hours[i]);
                     if ((begins.isBefore(timedHour) || begins.equals(timedHour)) && ends.isAfter(timedHour)){
-                        timeTableMatrix.get(timetable.getDayOfWeek()).set(i, courseAssembler.toResource(entry.getKey()));
+                        timeTableMatrix.get(timetable.getDayOfWeek()).set(i, courseAssembler.toResource(entry.getKey(), false));
                     }
                 }
             }

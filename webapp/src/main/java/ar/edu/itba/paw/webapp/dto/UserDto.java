@@ -1,9 +1,12 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.User;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.Link;
 
-public class UserDto extends ResourceSupport {
+import java.io.Serializable;
+import java.util.List;
+
+public class UserDto implements Serializable {
 
     private Long userId;
     private String name;
@@ -12,6 +15,21 @@ public class UserDto extends ResourceSupport {
     private String email;
     private Integer fileNumber;
     private Boolean isAdmin;
+    private List<Link> links;
+
+
+    public UserDto() {
+        // For MessageBodyWriter
+    }
+
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
 
     public static UserDto fromUser(User user) {
         if (user == null){

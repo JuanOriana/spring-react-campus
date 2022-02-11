@@ -2,16 +2,22 @@ package ar.edu.itba.paw.webapp.common.assemblers;
 
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.webapp.controllers.ExamController;
+import ar.edu.itba.paw.webapp.controllers.SubjectController;
 import ar.edu.itba.paw.webapp.dto.CourseDto;
 import ar.edu.itba.paw.webapp.dto.ExamDto;
 import ar.edu.itba.paw.webapp.dto.FileModelDto;
 import ar.edu.itba.paw.webapp.common.mappers.ExamMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.jaxrs.JaxRsLinkBuilder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
-public class ExamAssembler extends JaxRsResourceAssemblerSupport<Exam, ExamDto> {
+public class ExamAssembler {
 
     @Autowired
     private CourseAssembler courseAssembler;
@@ -22,18 +28,24 @@ public class ExamAssembler extends JaxRsResourceAssemblerSupport<Exam, ExamDto> 
     private static final ExamMapper mapper = Mappers.getMapper(ExamMapper.class);
 
     public ExamAssembler() {
-        super(ExamController.class, ExamDto.class);
+        // For spring
     }
 
-    @Override
-    public ExamDto toResource(Exam entity) {
-        ExamDto examDto = createResourceWithId(entity.getExamId(), entity);
+    public ExamDto toResource(Exam entity, boolean showDeepLinks) {
         ExamDto result = mapper.examToExamDto(entity);
-        CourseDto courseDto = courseAssembler.toResource(entity.getCourse());
-        FileModelDto fileModelDto = fileModelAssembler.toResource(entity.getExamFile());
+        CourseDto courseDto = courseAssembler.toResource(entity.getCourse(), showDeepLinks);
+        FileModelDto fileModelDto = fileModelAssembler.toResource(entity.getExamFile(), showDeepLinks);
         result.setCourse(courseDto);
         result.setExamFile(fileModelDto);
-        result.add(examDto.getLinks());
+        List<Link> links = new ArrayList<>();
+        links.add(JaxRsLinkBuilder.linkTo(ExamController.class).slash(entity.getExamId()).withSelfRel());
+        result.setLinks(links);
         return result;
+    }
+
+    public List<ExamDto> toResources(List<Exam> exams, boolean showDeepLinks) {
+        List<ExamDto> examDtoList = new ArrayList<>();
+        exams.forEach(e -> examDtoList.add(toResource(e, showDeepLinks)));
+        return examDtoList;
     }
 }

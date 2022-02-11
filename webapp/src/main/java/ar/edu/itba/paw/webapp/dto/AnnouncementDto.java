@@ -1,11 +1,11 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.models.Announcement;
-import org.springframework.hateoas.ResourceSupport;
-
+import org.springframework.hateoas.Link;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
-public class AnnouncementDto extends ResourceSupport {
+public class AnnouncementDto implements Serializable {
 
     private Long announcementId;
 
@@ -18,6 +18,20 @@ public class AnnouncementDto extends ResourceSupport {
     private LocalDateTime time;
 
     private CourseDto course;
+
+    private List<Link> links;
+
+    public AnnouncementDto() {
+        // For MessageBodyWriter
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
 
     public Long getAnnouncementId() {
         return announcementId;

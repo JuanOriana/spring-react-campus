@@ -42,7 +42,7 @@ public class AnswerController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getAnswer(@PathParam("answerId") Long answerId) {
         Answer answer = answerService.findById(answerId).orElseThrow(AnswerNotFoundException::new);
-        return Response.ok(new GenericEntity<AnswerDto>(answerAssembler.toResource(answer)){}).build();
+        return Response.ok(new GenericEntity<AnswerDto>(answerAssembler.toResource(answer, false)){}).build();
     }
 
     @PUT

@@ -1,28 +1,32 @@
 package ar.edu.itba.paw.webapp.dto;
 
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.Link;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
-public class AnswerDto extends ResourceSupport {
-
+public class AnswerDto implements Serializable {
     private Long answerId;
-
     private LocalDateTime deliveredDate;
-
     private UserDto student;
-
     private UserDto teacher;
-
     private FileModelDto answerFile;
-
     private Float score;
-
     private String corrections;
+    private List<Link> links;
 
     public AnswerDto() {
         // For MessageBody
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
     }
 
     public Long getAnswerId() {

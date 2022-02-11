@@ -1,18 +1,28 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import org.springframework.hateoas.ResourceSupport;
-
+import org.springframework.hateoas.Link;
+import java.io.Serializable;
 import java.util.List;
 
-public class ExamStatsDto extends ResourceSupport {
+public class ExamStatsDto implements Serializable {
 
     private ExamDto exam;
     private List<AnswerDto> corrected;
     private List<AnswerDto> notCorrected;
     private Double average;
+    private List<Link> links;
+
 
     public ExamStatsDto() {
         // For Jax-Rs
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
     }
 
     public ExamDto getExam() {

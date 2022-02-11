@@ -1,14 +1,30 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.Link;
 
-public class CourseDto extends ResourceSupport {
+import java.io.Serializable;
+import java.util.List;
+
+public class CourseDto implements Serializable {
 
     private long courseId;
     private int year;
     private int quarter;
     private String board;
     private SubjectDto subject;
+    private List<Link> links;
+
+    public CourseDto() {
+        // For MessageBodyWriter
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
 
     public long getCourseId() {
         return courseId;

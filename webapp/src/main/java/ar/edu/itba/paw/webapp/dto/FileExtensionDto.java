@@ -1,11 +1,27 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.Link;
 
-public class FileExtensionDto extends ResourceSupport {
+import java.io.Serializable;
+import java.util.List;
+
+public class FileExtensionDto implements Serializable {
 
     private long fileExtensionId;
     private String fileExtensionName;
+    private List<Link> links;
+
+    public FileExtensionDto() {
+
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
 
     public long getFileExtensionId() {
         return fileExtensionId;

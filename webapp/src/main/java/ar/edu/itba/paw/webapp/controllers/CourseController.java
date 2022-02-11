@@ -104,7 +104,7 @@ public class CourseController {
             return Response.noContent().build();
         }
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<AnnouncementDto>>(announcementAssembler.toResources(announcements.getContent())){});
+                new GenericEntity<List<AnnouncementDto>>(announcementAssembler.toResources(announcements.getContent(), false)){});
         return PaginationBuilder.build(announcements, builder, uriInfo, pageSize);
     }
 
@@ -148,7 +148,7 @@ public class CourseController {
             return Response.noContent().build();
         }
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<FileModelDto>>(fileAssembler.toResources(filePage.getContent())){});
+                new GenericEntity<List<FileModelDto>>(fileAssembler.toResources(filePage.getContent(), false)){});
         return PaginationBuilder.build(filePage, builder, uriInfo, pageSize);
     }
 
@@ -200,7 +200,7 @@ public class CourseController {
                                        Integer quarter) {
         if(year == null && quarter == null) {
             List<Course> courses = courseService.list();
-            return Response.ok(new GenericEntity<List<CourseDto>>(courseAssembler.toResources(courses)){}).build();
+            return Response.ok(new GenericEntity<List<CourseDto>>(courseAssembler.toResources(courses, false)){}).build();
         }
         year = year == null ? Calendar.getInstance().get(Calendar.YEAR) : year;
         if (quarter == null) {
@@ -208,7 +208,7 @@ public class CourseController {
         }
         CampusPage<Course> courses = courseService.listByYearQuarter(year, quarter, page, pageSize);
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<CourseDto>>(courseAssembler.toResources(courses.getContent())) {
+                new GenericEntity<List<CourseDto>>(courseAssembler.toResources(courses.getContent(), false)) {
                 });
         return PaginationBuilder.build(courses, builder, uriInfo, pageSize);
     }
@@ -238,7 +238,7 @@ public class CourseController {
             throw new BadRequestException();
         }
         Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
-        return Response.ok(courseAssembler.toResource(course)).build();
+        return Response.ok(courseAssembler.toResource(course, true)).build();
     }
 
     @GET
@@ -252,7 +252,7 @@ public class CourseController {
         if (courseTeachers.isEmpty()) {
             return Response.noContent().build();
         }
-        List<UserDto> teachers = userAssembler.toResources(courseTeachers);
+        List<UserDto> teachers = userAssembler.toResources(courseTeachers, true);
         return Response.ok(new GenericEntity<List<UserDto>>(teachers) {
         }).build();
     }
@@ -268,7 +268,7 @@ public class CourseController {
         if (courseHelpers.isEmpty()) {
             return Response.noContent().build();
         }
-        List<UserDto> helpers = userAssembler.toResources(courseHelpers);
+        List<UserDto> helpers = userAssembler.toResources(courseHelpers, true);
         return Response.ok(new GenericEntity<List<UserDto>>(helpers) {
         }).build();
     }
@@ -290,7 +290,7 @@ public class CourseController {
             return Response.noContent().build();
         }
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<UserDto>>(userAssembler.toResources(enrolledStudents.getContent())) {
+                new GenericEntity<List<UserDto>>(userAssembler.toResources(enrolledStudents.getContent(), true)) {
                 });
         return PaginationBuilder.build(enrolledStudents, builder, uriInfo, pageSize);
     }
@@ -304,9 +304,9 @@ public class CourseController {
             return Response.noContent().build();
         }
         if(courseService.isPrivileged(authFacade.getCurrentUserId(), courseId)) {
-            return Response.ok(new GenericEntity<List<ExamStatsDto>>(examStatsAssembler.toResources(exams)){}).build();
+            return Response.ok(new GenericEntity<List<ExamStatsDto>>(examStatsAssembler.toResources(exams, false)){}).build();
         }
-        List<ExamDto> examDtoList = examAssembler.toResources(exams);
+        List<ExamDto> examDtoList = examAssembler.toResources(exams, false);
         return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
         }).build();
     }
@@ -367,7 +367,7 @@ public class CourseController {
         }
         List<ExamDto> examDtoList = exams
                 .stream()
-                .map(exam -> examAssembler.toResource(exam))
+                .map(exam -> examAssembler.toResource(exam, false))
                 .collect(Collectors.toList());
         return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
         }).build();
@@ -385,7 +385,7 @@ public class CourseController {
         if(exams.isEmpty()) {
             return Response.noContent().build();
         }
-        return Response.ok(new GenericEntity<List<ExamDto>>(examAssembler.toResources(exams)) {
+        return Response.ok(new GenericEntity<List<ExamDto>>(examAssembler.toResources(exams, false)) {
         }).build();
     }
 
@@ -397,7 +397,7 @@ public class CourseController {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
-        List<AnswerDto> answers = answerAssembler.toResources(answerService.getMarks(userId, courseId));
+        List<AnswerDto> answers = answerAssembler.toResources(answerService.getMarks(userId, courseId), false);
         return Response.ok(new GenericEntity<List<AnswerDto>>(answers) {
         }).build();
     }

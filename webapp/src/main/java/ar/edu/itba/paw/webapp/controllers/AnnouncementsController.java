@@ -44,7 +44,7 @@ public class AnnouncementsController {
             return Response.noContent().build();
         }
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<AnnouncementDto>>(assembler.toResources(announcements.getContent())){});
+                new GenericEntity<List<AnnouncementDto>>(assembler.toResources(announcements.getContent(), false)){});
         return PaginationBuilder.build(announcements, builder, uriInfo, pageSize);
     }
 
@@ -53,7 +53,7 @@ public class AnnouncementsController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getAnnouncement(@PathParam("announcementId") Long announcementId) {
         Announcement announcement = announcementService.findById(announcementId).orElseThrow(AnnouncementNotFoundException::new);
-        return Response.ok(new GenericEntity<AnnouncementDto>(assembler.toResource(announcement)){}).build();
+        return Response.ok(new GenericEntity<AnnouncementDto>(assembler.toResource(announcement, false)){}).build();
     }
 
     @DELETE

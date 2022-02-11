@@ -24,6 +24,6 @@ public class ProfileController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getUser() {
         User user = authFacade.getCurrentUser();
-        return Response.ok(assembler.toResource(user)).build();
+        return Response.ok(assembler.toResource(user, true)).build();
     }
 }

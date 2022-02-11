@@ -1,29 +1,33 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.Link;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
-public class ExamDto extends ResourceSupport {
-
+public class ExamDto implements Serializable {
     private Long examId;
-
     private CourseDto course;
-
     private LocalDateTime startTime;
-
     private LocalDateTime endTime;
-
     private String title;
-
     private String description;
-
     private FileModelDto examFile;
-
     private Double average;
+    private List<Link> links;
 
+    public ExamDto() {
+        // For MessageBodyWriter
+    }
 
+    public List<Link> getLinks() {
+        return links;
+    }
 
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
 
     public Long getExamId() {
         return examId;

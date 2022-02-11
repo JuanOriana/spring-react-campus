@@ -1,10 +1,11 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import org.springframework.hateoas.ResourceSupport;
-
+import org.springframework.hateoas.Link;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
-public class FileModelDto extends ResourceSupport {
+public class FileModelDto implements Serializable {
 
     private long fileId;
     private long size;
@@ -15,6 +16,19 @@ public class FileModelDto extends ResourceSupport {
     private long downloads;
     private Boolean hidden;
     private FileCategoryDto fileCategory;
+    private List<Link> links;
+
+    public FileModelDto() {
+        // For MessageBodyWriter
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
 
     public FileCategoryDto getFileCategory() {
         return fileCategory;

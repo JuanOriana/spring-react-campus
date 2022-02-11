@@ -72,7 +72,7 @@ public class FileController {
             return Response.noContent().build();
         }
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<FileModelDto>>(fileAssembler.toResources(filePage.getContent())){});
+                new GenericEntity<List<FileModelDto>>(fileAssembler.toResources(filePage.getContent(), false)){});
         return PaginationBuilder.build(filePage, builder, uriInfo, pageSize);
     }
 
@@ -107,14 +107,14 @@ public class FileController {
     }
 
     @GET
-    @Path("categories/{fileCategoryId}")
+    @Path("/categories/{fileCategoryId}")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getFileCategory(@PathParam("fileCategoryId") Long fileCategoryId) {
         FileCategory fileCategory = fileCategoryService.findById(fileCategoryId).orElseThrow(FileCategoryNotFoundException::new);
         return Response.ok(new GenericEntity<FileCategoryDto>(fileCategoryAssembler.toResource(fileCategory)){}).build();
     }
 
-    @Path("extensions")
+    @Path("/extensions")
     @GET
     @Produces("application/vnd.campus.api.v1+json")
     public Response getFileExtensions() {
@@ -123,7 +123,7 @@ public class FileController {
     }
 
     @GET
-    @Path("extensions/{fileExtensionId}")
+    @Path("/extensions/{fileExtensionId}")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getFileExtension(@PathParam("fileExtensionId") Long fileExtensionId) {
         FileExtension fileExtension = fileExtensionService.findById(fileExtensionId).orElseThrow(FileExtensionNotFoundException::new);
