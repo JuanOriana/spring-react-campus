@@ -4,7 +4,7 @@ export default interface AnswerModel {
   answerId: number;
   examUrl: string;
   answerUrl: string;
-  deliveredDate: string;
+  deliveredDate: Date;
   student: UserModel;
   teacher: UserModel;
   answerFile: FileModel;

@@ -2,6 +2,7 @@ import { paths } from "../common/constants";
 import { authedFetch } from "../scripts/authedFetch";
 import { fileUrlMaker } from "../scripts/fileUrlMaker";
 import { getPagedFetch } from "../scripts/getPagedFetch";
+import { parseFileResponse } from "../scripts/parseFileResponse";
 import { resultFetch } from "../scripts/resultFetch";
 import {
   ErrorResponse,
@@ -60,7 +61,9 @@ export class FileService {
       page,
       pageSize
     );
-    return getPagedFetch<FileModel[]>(url.toString());
+    const resp = await getPagedFetch<FileModel[]>(url.toString());
+
+    return parseFileResponse(resp);
   }
 
   public async deleteFile(fileId: number) {

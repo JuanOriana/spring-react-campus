@@ -4,8 +4,8 @@ import FileModel from "./FileModel";
 export default interface ExamModel {
   examId: number;
   course: CourseModel;
-  startTime?: string;
-  endTime?: string;
+  startTime?: Date;
+  endTime?: Date;
   title: string;
   description: string;
   examFile?: FileModel;

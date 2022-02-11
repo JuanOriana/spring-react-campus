@@ -16,6 +16,10 @@ import { pageUrlMaker } from "../scripts/pageUrlMaker";
 import { fileUrlMaker } from "../scripts/fileUrlMaker";
 import { resultFetch } from "../scripts/resultFetch";
 import ExamStatsModel from "../types/ExamStatsModel";
+import { parseAnnouncementResponse } from "../scripts/parseAnnouncementResponse";
+import { parseAnswersResponse } from "../scripts/parseAnswersResponse";
+import { parseExamModelResponse } from "../scripts/parseExamModelResponse";
+import { parseFileResponse } from "../scripts/parseFileResponse";
 
 export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
@@ -81,17 +85,21 @@ export class CourseService {
   public async getSolvedExams(
     courseId: number
   ): Promise<Result<PagedContent<ExamModel[]>>> {
-    return getPagedFetch<ExamModel[]>(
+    const resp = await getPagedFetch<ExamModel[]>(
       this.basePath + "/" + courseId + "/exams/solved"
     );
+
+    return parseExamModelResponse(resp);
   }
 
   public async getUnsolvedExams(
     courseId: number
   ): Promise<Result<PagedContent<ExamModel[]>>> {
-    return getPagedFetch<ExamModel[]>(
+    const resp = await getPagedFetch<ExamModel[]>(
       this.basePath + "/" + courseId + "/exams/unsolved"
     );
+
+    return parseExamModelResponse(resp);
   }
 
   public async getExamsAverage(courseId: number) {
@@ -106,9 +114,11 @@ export class CourseService {
   public async getCourseAnswers(
     courseId: number
   ): Promise<Result<PagedContent<AnswerModel[]>>> {
-    return getPagedFetch<AnswerModel[]>(
+    const resp = await getPagedFetch<AnswerModel[]>(
       this.basePath + "/" + courseId + "/exams/answers"
     );
+
+    return parseAnswersResponse(resp);
   }
 
   //TODO: Ver si este service puede mapear el json sin el type! (cuando podamos correr la api)
@@ -124,9 +134,10 @@ export class CourseService {
   public async getAnnouncements(
     courseId: number
   ): Promise<Result<PagedContent<AnnouncementModel[]>>> {
-    return getPagedFetch<AnnouncementModel[]>(
+    const resp = await getPagedFetch<AnnouncementModel[]>(
       this.basePath + "/" + courseId + "/announcements"
     );
+    return parseAnnouncementResponse(resp);
   }
 
   public async getFiles(
@@ -150,7 +161,8 @@ export class CourseService {
       pageSize
     );
 
-    return getPagedFetch<FileModel[]>(url.toString());
+    const resp = await getPagedFetch<FileModel[]>(url.toString());
+    return parseFileResponse(resp);
   }
 
   public async getTimes(

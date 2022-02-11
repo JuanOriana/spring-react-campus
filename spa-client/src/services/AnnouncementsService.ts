@@ -4,6 +4,7 @@ import { getPagedFetch } from "../scripts/getPagedFetch";
 import { pageUrlMaker } from "../scripts/pageUrlMaker";
 import { authedFetch } from "../scripts/authedFetch";
 import { resultFetch } from "../scripts/resultFetch";
+import { parseAnnouncementResponse } from "../scripts/parseAnnouncementResponse";
 
 export class AnnouncementsService {
   private readonly basePath = paths.BASE_URL + paths.ANNOUNCEMENTS;
@@ -12,16 +13,22 @@ export class AnnouncementsService {
     pageSize?: number
   ): Promise<Result<PagedContent<AnnouncementModel[]>>> {
     let url = pageUrlMaker(this.basePath, page, pageSize);
-    return getPagedFetch<AnnouncementModel[]>(url.toString());
+    const resp = await getPagedFetch<AnnouncementModel[]>(url.toString());
+    return parseAnnouncementResponse(resp);
   }
 
   public async getAnnouncementById(
     announcementId: number
   ): Promise<Result<AnnouncementModel>> {
-    return resultFetch<AnnouncementModel>(
+    const resp = await resultFetch<AnnouncementModel>(
       this.basePath + "/" + announcementId,
       { method: "GET" }
     );
+
+    if (!resp.hasFailed()) {
+      resp.getData().date = new Date(resp.getData().date);
+    }
+    return resp;
   }
 
   public async deleteAnnouncement(announcementId: number) {

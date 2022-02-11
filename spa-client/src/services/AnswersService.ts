@@ -8,9 +8,18 @@ export class AnswersService {
   private readonly basePath = paths.BASE_URL + paths.ANSWERS;
 
   public async getAnswerById(answerId: number): Promise<Result<AnswerModel>> {
-    return resultFetch<AnswerModel>(this.basePath + "/" + answerId, {
-      method: "GET",
-    });
+    const resp = await resultFetch<AnswerModel>(
+      this.basePath + "/" + answerId,
+      {
+        method: "GET",
+      }
+    );
+
+    if (resp.hasFailed()) return resp;
+
+    resp.getData().deliveredDate = new Date(resp.getData().deliveredDate);
+
+    return resp;
   }
 
   public async deleteAnswer(answerId: number) {
