@@ -128,8 +128,15 @@ public class UserController {
         if(courseCampusPage.isEmpty()) {
             return Response.noContent().build();
         }
+        List<Course> courses = courseCampusPage.getContent();
+        List<UserCourseDto> userCourseDtoList = new ArrayList<>();
+        courses.forEach(c -> {
+            CourseDto courseDto = courseAssembler.toResource(c);
+            RoleDto roleDto = roleAssembler.toResource(courseService.getUserRoleInCourse(c.getCourseId(), authFacade.getCurrentUserId()));
+            userCourseDtoList.add(new UserCourseDto(courseDto, roleDto));
+        });
         Response.ResponseBuilder builder = Response.ok(
-                new GenericEntity<List<CourseDto>>(courseAssembler.toResources(courseCampusPage.getContent())){});
+                new GenericEntity<List<UserCourseDto>>(userCourseDtoList){});
         return PaginationBuilder.build(courseCampusPage, builder, uriInfo, pageSize);
     }
 
