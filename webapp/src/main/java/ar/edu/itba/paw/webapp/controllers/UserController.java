@@ -131,7 +131,7 @@ public class UserController {
         List<Course> courses = courseCampusPage.getContent();
         List<UserCourseDto> userCourseDtoList = new ArrayList<>();
         courses.forEach(c -> {
-            CourseDto courseDto = courseAssembler.toResource(c,false);
+            CourseDto courseDto = courseAssembler.toResource(c,true);
             RoleDto roleDto = roleAssembler.toResource(courseService.getUserRoleInCourse(c.getCourseId(), authFacade.getCurrentUserId()));
             userCourseDtoList.add(new UserCourseDto(courseDto, roleDto));
         });

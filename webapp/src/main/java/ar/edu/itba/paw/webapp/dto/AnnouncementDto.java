@@ -15,7 +15,7 @@ public class AnnouncementDto implements Serializable {
 
     private UserDto author;
 
-    private LocalDateTime time;
+    private LocalDateTime date;
 
     private CourseDto course;
 
@@ -49,12 +49,12 @@ public class AnnouncementDto implements Serializable {
         this.author = author;
     }
 
-    public LocalDateTime getTime() {
-        return time;
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public void setTime(LocalDateTime time) {
-        this.time = time;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     public CourseDto getCourse() {

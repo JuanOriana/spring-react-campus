@@ -11,7 +11,7 @@ public class FileModelDto implements Serializable {
     private long size;
     private FileExtensionDto extension;
     private String fileName;
-    private LocalDateTime fileDate;
+    private LocalDateTime date;
     private CourseDto course;
     private long downloads;
     private Boolean hidden;
@@ -70,12 +70,12 @@ public class FileModelDto implements Serializable {
         this.fileName = fileName;
     }
 
-    public LocalDateTime getFileDate() {
-        return fileDate;
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public void setFileDate(LocalDateTime fileDate) {
-        this.fileDate = fileDate;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     public CourseDto getCourse() {
