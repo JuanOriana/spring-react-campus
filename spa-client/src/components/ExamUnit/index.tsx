@@ -24,6 +24,7 @@ interface ExamUnitProps {
     score: number;
     corrections: string;
   };
+  onDelete?: (id: number) => void;
 }
 
 function ExamUnit({
@@ -34,6 +35,7 @@ function ExamUnit({
   examsSolved,
   userCount,
   average,
+  onDelete,
 }: ExamUnitProps) {
   const { t } = useTranslation();
   const [showCorrections, setShowCorrections] = useState(false);
@@ -98,6 +100,7 @@ function ExamUnit({
               <MediumIcon
                 src="/images/trash.png"
                 alt={`${t("ExamUnit.alt.delete")}`}
+                onClick={() => onDelete!(exam.examId)}
               />
             </>
           )}

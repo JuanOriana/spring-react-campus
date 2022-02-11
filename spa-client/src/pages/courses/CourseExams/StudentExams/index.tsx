@@ -43,7 +43,7 @@ function StudentExams() {
 
   useEffect(() => {
     handleService(
-      courseService.getSolvedExams(course.courseId),
+      courseService.getUnsolvedExams(course.courseId),
       navigate,
       (examData) => {
         setUnresolvedExams(examData ? examData.getContent() : []);

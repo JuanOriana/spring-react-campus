@@ -2,24 +2,24 @@ import {
   BigWrapper,
   SectionHeading,
 } from "../../../components/generalStyles/utils";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
+import { courseService } from "../../../services";
+import { useCourseData } from "../../../components/layouts/CourseLayout";
+import { handleService } from "../../../scripts/handleService";
+import { useNavigate } from "react-router-dom";
+import LoadableData from "../../../components/LoadableData";
 //
-
-const times = [
-  { begin: { hour: 18, minute: 30 }, end: { hour: 21, minute: 30 } },
-  null,
-  null,
-  null,
-  { begin: { hour: 18, minute: 30 }, end: { hour: 21, minute: 30 } },
-  null,
-];
 
 function CourseSchedule() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const course = useCourseData();
+  const [times, setTimes] = useState(new Array(1));
+  const [isLoading, setIsLoading] = useState(false);
   const days: string[] = [
     "Lunes",
     "Martes",
@@ -29,29 +29,40 @@ function CourseSchedule() {
     "Sabado",
   ];
 
+  useEffect(() => {
+    setIsLoading(true);
+    handleService(
+      courseService.getTimes(course.courseId),
+      navigate,
+      (timesData) => setTimes(timesData ? timesData : []),
+      () => setIsLoading(false)
+    );
+  }, []);
+
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
         {t("CourseSchedule.title")}
       </SectionHeading>
       <BigWrapper>
-        <h3 style={{ margin: "10px 0" }}>{t("CourseSchedule.subTitle")}</h3>
-        {days.map((day, index) => (
-          <>
-            {times[index] && (
-              <>
-                <h3 style={{ margin: "3px 0 0 10px" }}>
-                  {t("DaysOfTheWeek." + day)}
-                </h3>
-                <p style={{ marginLeft: "15px" }}>
-                  {`› ${times[index]!.begin.hour}:${
-                    times[index]!.begin.minute
-                  } - ${times[index]!.end.hour}:${times[index]!.end.minute}`}
-                </p>
-              </>
-            )}
-          </>
-        ))}
+        <LoadableData isLoading={isLoading}>
+          <h3 style={{ margin: "10px 0" }}>{t("CourseSchedule.subTitle")}</h3>
+          {days.map((day, index) => (
+            <>
+              {times[index] && times[index].startTime && (
+                <>
+                  <h3 style={{ margin: "3px 0 0 10px" }}>
+                    {t("DaysOfTheWeek." + day)}
+                  </h3>
+                  <p style={{ marginLeft: "15px" }}>
+                    {`› ${times[index]!.startTime}
+                     - ${times[index]!.endTime}`}
+                  </p>
+                </>
+              )}
+            </>
+          ))}
+        </LoadableData>
       </BigWrapper>
     </>
   );

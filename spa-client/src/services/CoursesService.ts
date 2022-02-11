@@ -112,10 +112,13 @@ export class CourseService {
   }
 
   //TODO: Ver si este service puede mapear el json sin el type! (cuando podamos correr la api)
-  public async getAvailableYears(): Promise<Result<{ year: number }[]>> {
-    return resultFetch<{ year: number }[]>(this.basePath + "/available-years", {
-      method: "GET",
-    });
+  public async getAvailableYears(): Promise<Result<{ years: number[] }>> {
+    return resultFetch<{ years: number[] }>(
+      this.basePath + "/available-years",
+      {
+        method: "GET",
+      }
+    );
   }
 
   public async getAnnouncements(
@@ -150,6 +153,14 @@ export class CourseService {
     return getPagedFetch<FileModel[]>(url.toString());
   }
 
+  public async getTimes(
+    courseId: number
+  ): Promise<Result<{ startTime: string; endTime: string }[]>> {
+    return resultFetch<{ startTime: string; endTime: string }[]>(
+      this.basePath + "/" + courseId + "/timetable",
+      { method: "GET" }
+    );
+  }
   public async newCourse(
     subjectId: number,
     quarter: number,
