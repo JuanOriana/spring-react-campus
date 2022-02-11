@@ -46,10 +46,9 @@ function StudentCourseExamStandalone() {
   }, []);
 
   const calculateTimeLeft = () => {
-    console.log(typeof exam?.endTime!);
     let difference = +exam?.endTime! - +new Date();
 
-    let newTimeLeft;
+    let newTimeLeft = undefined;
     if (difference > 0) {
       newTimeLeft = {
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -57,7 +56,6 @@ function StudentCourseExamStandalone() {
         minutes: Math.floor((difference / 1000 / 60) % 60),
         seconds: Math.floor((difference / 1000) % 60),
       };
-
       if (difference < 3000) {
         navigate(`courses/${course.courseId}/exams`);
       }
@@ -77,14 +75,14 @@ function StudentCourseExamStandalone() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    console.log(typeof exam?.endTime);
     if (exam?.endTime) {
       timer = setTimeout(() => {
+        console.log("ADSA");
         setTimeLeft(calculateTimeLeft());
       }, 1000);
     }
     return () => clearTimeout(timer);
-  }, [exam]);
+  }, [exam, timeLeft]);
 
   const {
     register,
