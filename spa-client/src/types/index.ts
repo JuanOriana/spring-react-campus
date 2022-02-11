@@ -15,3 +15,4 @@ export type { default as PostResponse } from "./PostResponse";
 export type { default as ExamsStatsModel } from "./ExamStatsModel";
 export type { default as PutResponse } from "./PutResponse";
 export type { default as UserCourseModel } from "./UserCoursesModel";
+export type { default as SolvedExamModel } from "./SolvedExamModel";

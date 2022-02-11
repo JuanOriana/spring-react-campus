@@ -9,6 +9,7 @@ import {
   FileModel,
   PostResponse,
   ErrorResponse,
+  SolvedExamModel,
 } from "../types";
 import AnswerModel from "../types/AnswerModel";
 import { getPagedFetch } from "../scripts/getPagedFetch";
@@ -84,12 +85,26 @@ export class CourseService {
 
   public async getSolvedExams(
     courseId: number
-  ): Promise<Result<PagedContent<ExamModel[]>>> {
-    const resp = await getPagedFetch<ExamModel[]>(
+  ): Promise<Result<PagedContent<SolvedExamModel[]>>> {
+    const resp = await getPagedFetch<SolvedExamModel[]>(
       this.basePath + "/" + courseId + "/exams/solved"
     );
 
-    return parseExamModelResponse(resp);
+    if (!resp.hasFailed()) {
+      resp
+        .getData()
+        .getContent()
+        .forEach((item) => {
+          item.answer.deliveredDate = new Date(item.answer.deliveredDate);
+          item.exam.endTime = new Date(
+            item.exam.endTime ? item.exam.endTime : ""
+          );
+          item.exam.startTime = new Date(
+            item.exam.startTime ? item.exam.startTime : ""
+          );
+        });
+    }
+    return resp;
   }
 
   public async getUnsolvedExams(
