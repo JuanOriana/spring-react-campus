@@ -7,7 +7,6 @@ import ar.edu.itba.paw.models.exception.DuplicateCourseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -157,6 +156,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> listWhereStudent(Long userId) {
         return courseDao.listWhereStudent(userId);
+    }
+
+    @Override
+    public Role getUserRoleInCourse(Long courseId, Long userId) {
+        return courseDao.getUserRoleInCourse(courseId, userId);
     }
 
     @Transactional(readOnly = true)

@@ -4,7 +4,6 @@ import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.*;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -53,6 +52,14 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
         String query = "SELECT courseId FROM courses NATURAL JOIN user_to_course WHERE userId = :userId ORDER BY year DESC, quarter DESC";
         String mappingQuery = "SELECT DISTINCT enrollment.course FROM Enrollment enrollment WHERE enrollment.course.courseId IN (:ids) ORDER BY enrollment.course.year DESC, enrollment.course.quarter DESC";
         return listBy(properties, query, mappingQuery, pageRequest, Course.class);
+    }
+
+    @Override
+    public Role getUserRoleInCourse(Long courseId, Long userId) {
+        TypedQuery<Role> roleTypedQuery = em.createQuery("SELECT enrollment.role FROM Enrollment enrollment WHERE enrollment.user.userId = :userId AND enrollment.course.courseId = :courseId", Role.class);
+        roleTypedQuery.setParameter("courseId", courseId);
+        roleTypedQuery.setParameter("userId", userId);
+        return roleTypedQuery.getSingleResult();
     }
 
     @Override

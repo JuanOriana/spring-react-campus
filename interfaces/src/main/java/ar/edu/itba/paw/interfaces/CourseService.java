@@ -141,6 +141,9 @@ public interface CourseService {
      */
     List<Course> listWhereStudent(Long userId);
 
+
+    Role getUserRoleInCourse(Long courseId, Long userId);
+
     /**
      * Attempts to get all courses in the pair year-quarter
      * @param year to get the courses from
@@ -150,8 +153,8 @@ public interface CourseService {
     CampusPage<Course> listByYearQuarter(Integer year, Integer quarter, Integer page, Integer pageSize);
 
     /**
-     * Attempts to get a list of years where there are courses present
-     * @return list of years where there are courses present
+     * Attempts to get a list of years when there are courses present
+     * @return list of years when there are courses present
      */
     List<Integer> getAvailableYears();
 

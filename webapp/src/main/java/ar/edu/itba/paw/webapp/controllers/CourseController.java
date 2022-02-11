@@ -65,6 +65,9 @@ public class CourseController {
     private CourseAssembler courseAssembler;
 
     @Autowired
+    private RoleAssembler roleAssembler;
+
+    @Autowired
     private UserAssembler userAssembler;
 
     @Autowired
@@ -306,6 +309,17 @@ public class CourseController {
         List<ExamDto> examDtoList = examAssembler.toResources(exams);
         return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
         }).build();
+    }
+
+    @GET
+    @Path("/{courseId}/role")
+    @Produces("application/vnd.campus.api.v1+json")
+    public Response getUserRoleInCourse(@PathParam("courseId") Long courseId) {
+        if(courseId == null) {
+            throw new BadRequestException();
+        }
+        Role role = courseService.getUserRoleInCourse(courseId, authFacade.getCurrentUserId());
+        return Response.ok(new GenericEntity<RoleDto>(roleAssembler.toResource(role)){}).build();
     }
 
     @GET

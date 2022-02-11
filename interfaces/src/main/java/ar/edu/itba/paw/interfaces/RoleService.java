@@ -28,7 +28,7 @@ public interface RoleService {
     boolean delete(Integer roleId);
 
     /**
-     * Lists all roles available for a user
+     * Lists all roles available
      * @return list of Role's (if any)
      */
     List<Role> list();
