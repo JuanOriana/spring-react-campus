@@ -10,6 +10,7 @@ import {
   PostResponse,
   ErrorResponse,
   SolvedExamModel,
+  RoleModel,
 } from "../types";
 import AnswerModel from "../types/AnswerModel";
 import { getPagedFetch } from "../scripts/getPagedFetch";
@@ -294,5 +295,11 @@ export class CourseService {
         body: formData,
       }
     );
+  }
+
+  public async getRole(courseId: number) {
+    return resultFetch<RoleModel>(this.basePath + "/" + courseId + "/role", {
+      method: "GET",
+    });
   }
 }
