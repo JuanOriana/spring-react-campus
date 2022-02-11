@@ -9,9 +9,17 @@ import { parseAnswersResponse } from "../scripts/parseAnswersResponse";
 export class ExamsServices {
   private readonly basePath = paths.BASE_URL + paths.EXAMS;
   public async getExamById(examId: number): Promise<Result<ExamModel>> {
-    return resultFetch<ExamModel>(this.basePath + "/" + examId, {
+    const resp = await resultFetch<ExamModel>(this.basePath + "/" + examId, {
       method: "GET",
     });
+
+    if (!resp.hasFailed()) {
+      const exam = resp.getData();
+      exam.endTime = new Date(exam.endTime ? exam.endTime : "");
+      exam.startTime = new Date(exam.startTime ? exam.startTime : "");
+    }
+
+    return resp;
   }
 
   public async getExamAnswers(
