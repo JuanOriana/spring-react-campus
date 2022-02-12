@@ -15,9 +15,10 @@ import AnswerModel from "../../types/AnswerModel";
 
 interface StudentExamUnitProps {
   answer: AnswerModel;
+  onDelete?: (id: number) => void;
 }
 
-function StudentExamUnit({ answer }: StudentExamUnitProps) {
+function StudentExamUnit({ answer, onDelete }: StudentExamUnitProps) {
   const { t } = useTranslation();
   return (
     <FileUnitWrapper>
@@ -63,6 +64,7 @@ function StudentExamUnit({ answer }: StudentExamUnitProps) {
             <MediumIcon
               src="/images/x.png"
               alt={t("StudentExamUnit.alt.check")}
+              onClick={() => onDelete!(answer.answerId)}
             />
           </button>
         </div>
