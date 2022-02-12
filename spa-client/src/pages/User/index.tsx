@@ -22,9 +22,9 @@ type FormData = {
 
 function User() {
   const { t } = useTranslation();
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const [reload, setReload] = useState(false);
+  const [reload, setReload] = useState(true);
   const [userImg, setUserImg] = useState<string | undefined>(undefined);
   const [isLoadingImg, setIsLoadingImg] = useState(false);
   useEffect(() => {
@@ -34,9 +34,7 @@ function User() {
         userService.getUserProfileImage(user?.userId),
         navigate,
         (userImg) => {
-          const userImgUrl = URL.createObjectURL(userImg);
-          setUserImg(userImgUrl);
-          //setUser({ ...user, url: userImgUrl });
+          setUserImg(URL.createObjectURL(userImg));
         },
         () => setIsLoadingImg(false)
       );

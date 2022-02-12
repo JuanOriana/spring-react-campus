@@ -38,7 +38,7 @@ export class UserService {
     return getBlobFetch(this.basePath + "/" + userId + "/image");
   }
 
-  public async getUsersCourses(
+  public async getUserCourses(
     userId: number,
     page?: number,
     pageSize?: number
@@ -85,13 +85,19 @@ export class UserService {
     });
   }
 
-  public async sendEmail(userId: number, title: string, content: string) {
+  public async sendEmail(
+    userId: number,
+    courseId: number,
+    title: string,
+    content: string
+  ) {
     const email = JSON.stringify({
       title: title,
       content: content,
+      courseId: courseId,
     });
 
-    return resultFetch<PostResponse>(this.basePath + "/" + userId + "/email", {
+    return resultFetch<PostResponse>(this.basePath + "/" + userId + "/mail", {
       method: "POST",
       headers: {
         "Content-Type": "application/vnd.campus.api.v1+json",

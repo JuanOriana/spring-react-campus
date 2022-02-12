@@ -1,4 +1,4 @@
-import { paths } from "../common/constants";
+import { APPLICATION_V1_JSON_TYPE, paths } from "../common/constants";
 import {
   Result,
   CourseModel,
@@ -9,6 +9,8 @@ import {
   FileModel,
   PostResponse,
   ErrorResponse,
+  SolvedExamModel,
+  RoleModel,
 } from "../types";
 import AnswerModel from "../types/AnswerModel";
 import { getPagedFetch } from "../scripts/getPagedFetch";
@@ -16,6 +18,10 @@ import { pageUrlMaker } from "../scripts/pageUrlMaker";
 import { fileUrlMaker } from "../scripts/fileUrlMaker";
 import { resultFetch } from "../scripts/resultFetch";
 import ExamStatsModel from "../types/ExamStatsModel";
+import { parseAnnouncementResponse } from "../scripts/parseAnnouncementResponse";
+import { parseAnswersResponse } from "../scripts/parseAnswersResponse";
+import { parseExamModelResponse } from "../scripts/parseExamModelResponse";
+import { parseFileResponse } from "../scripts/parseFileResponse";
 
 export class CourseService {
   private readonly basePath = paths.BASE_URL + paths.COURSES;
@@ -43,6 +49,22 @@ export class CourseService {
     return getPagedFetch<CourseModel[]>(url.toString());
   }
 
+  public async enrollHelperToCourse(
+    courseId: number,
+    userId: number
+  ): Promise<Result<PostResponse>> {
+    const helperInfo = { userId: userId };
+
+    return resultFetch<PostResponse>(
+      this.basePath + "/" + courseId + "/helpers",
+      {
+        method: "POST",
+        headers: {},
+        body: helperInfo,
+      }
+    );
+  }
+
   public async getHelpers(
     courseId: number
   ): Promise<Result<PagedContent<UserModel[]>>> {
@@ -51,11 +73,43 @@ export class CourseService {
     );
   }
 
+  public async enrollTeacherToCourse(
+    courseId: number,
+    userId: number
+  ): Promise<Result<PostResponse>> {
+    const teacherInfo = { userId: userId };
+
+    return resultFetch<PostResponse>(
+      this.basePath + "/" + courseId + "/teachers",
+      {
+        method: "POST",
+        headers: {},
+        body: teacherInfo,
+      }
+    );
+  }
+
   public async getTeachers(
     courseId: number
   ): Promise<Result<PagedContent<UserModel[]>>> {
     return getPagedFetch<UserModel[]>(
       this.basePath + "/" + courseId + "/teachers"
+    );
+  }
+
+  public async enrollStudentToCourse(
+    courseId: number,
+    userId: number
+  ): Promise<Result<PostResponse>> {
+    const studentInfo = { userId: userId };
+
+    return resultFetch<PostResponse>(
+      this.basePath + "/" + courseId + "/students",
+      {
+        method: "POST",
+        headers: {},
+        body: studentInfo,
+      }
     );
   }
 
@@ -80,22 +134,44 @@ export class CourseService {
 
   public async getSolvedExams(
     courseId: number
-  ): Promise<Result<PagedContent<ExamModel[]>>> {
-    return getPagedFetch<ExamModel[]>(
+  ): Promise<Result<PagedContent<SolvedExamModel[]>>> {
+    const resp = await getPagedFetch<SolvedExamModel[]>(
       this.basePath + "/" + courseId + "/exams/solved"
     );
+
+    if (!resp.hasFailed()) {
+      resp
+        .getData()
+        .getContent()
+        .forEach((item) => {
+          item.answer.deliveredDate = item.answer.deliveredDate
+            ? new Date(item.answer.deliveredDate)
+            : undefined;
+          item.exam.endTime = item.exam.endTime
+            ? new Date(item.exam.endTime)
+            : undefined;
+          item.exam.startTime = item.exam.startTime
+            ? new Date(item.exam.startTime)
+            : undefined;
+        });
+    }
+    return resp;
   }
 
   public async getUnsolvedExams(
     courseId: number
   ): Promise<Result<PagedContent<ExamModel[]>>> {
-    return getPagedFetch<ExamModel[]>(
+    const resp = await getPagedFetch<ExamModel[]>(
       this.basePath + "/" + courseId + "/exams/unsolved"
     );
+
+    return parseExamModelResponse(resp);
   }
 
-  public async getExamsAverage(courseId: number) {
-    return resultFetch<number>(
+  public async getExamsAverage(
+    courseId: number
+  ): Promise<Result<{ average: number }>> {
+    return resultFetch<{ average: number }>(
       this.basePath + "/" + courseId + "/exams/average",
       {
         method: "GET",
@@ -106,9 +182,11 @@ export class CourseService {
   public async getCourseAnswers(
     courseId: number
   ): Promise<Result<PagedContent<AnswerModel[]>>> {
-    return getPagedFetch<AnswerModel[]>(
+    const resp = await getPagedFetch<AnswerModel[]>(
       this.basePath + "/" + courseId + "/exams/answers"
     );
+
+    return parseAnswersResponse(resp);
   }
 
   //TODO: Ver si este service puede mapear el json sin el type! (cuando podamos correr la api)
@@ -124,9 +202,10 @@ export class CourseService {
   public async getAnnouncements(
     courseId: number
   ): Promise<Result<PagedContent<AnnouncementModel[]>>> {
-    return getPagedFetch<AnnouncementModel[]>(
+    const resp = await getPagedFetch<AnnouncementModel[]>(
       this.basePath + "/" + courseId + "/announcements"
     );
+    return parseAnnouncementResponse(resp);
   }
 
   public async getFiles(
@@ -150,7 +229,8 @@ export class CourseService {
       pageSize
     );
 
-    return getPagedFetch<FileModel[]>(url.toString());
+    const resp = await getPagedFetch<FileModel[]>(url.toString());
+    return parseFileResponse(resp);
   }
 
   public async getTimes(
@@ -180,7 +260,7 @@ export class CourseService {
 
     return resultFetch<PostResponse>(this.basePath, {
       method: "POST",
-      headers: { "Content-Type": "application/vnd.campus.api.v1+json" },
+      headers: { "Content-Type": APPLICATION_V1_JSON_TYPE },
       body: newCourse,
     });
   }
@@ -199,7 +279,7 @@ export class CourseService {
       this.basePath + "/" + courseId + "/announcements",
       {
         method: "POST",
-        headers: { "Content-Type": "application/vnd.campus.api.v1+json" },
+        headers: { "Content-Type": APPLICATION_V1_JSON_TYPE },
         body: newAnnouncement,
       }
     );
@@ -267,5 +347,11 @@ export class CourseService {
         body: formData,
       }
     );
+  }
+
+  public async getRole(courseId: number) {
+    return resultFetch<RoleModel>(this.basePath + "/" + courseId + "/role", {
+      method: "GET",
+    });
   }
 }

@@ -56,8 +56,9 @@ function Mail() {
       renderToast("No se pudo enviar el correo, intente de nuevo", "error");
       return;
     }
+    //TODO: courseIdFix
     userService
-      .sendEmail(parseInt(userId), data.subject, data.content)
+      .sendEmail(parseInt(userId), 420000000, data.subject, data.content)
       .then((result) => {
         if (!result.hasFailed()) {
           renderToast("Correo enviado exitosamente!", "success");

@@ -9,3 +9,5 @@ export const paths = {
   FILES: "/files",
   TIME_TABLE : "/timetable"
 };
+
+export const APPLICATION_V1_JSON_TYPE = "application/vnd.campus.api.v1+json";

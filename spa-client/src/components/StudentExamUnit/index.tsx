@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes, { InferProps } from "prop-types";
 import {
   FileImg,
   FileName,
@@ -15,16 +14,10 @@ import AnswerModel from "../../types/AnswerModel";
 //
 
 interface StudentExamUnitProps {
-  isCorrected?: boolean;
   answer: AnswerModel;
-  examId: number;
 }
 
-function StudentExamUnit({
-  examId,
-  isCorrected,
-  answer,
-}: StudentExamUnitProps) {
+function StudentExamUnit({ answer }: StudentExamUnitProps) {
   const { t } = useTranslation();
   return (
     <FileUnitWrapper>
@@ -47,9 +40,11 @@ function StudentExamUnit({
             {t("StudentExamUnit.notHandedIn")}
           </FileName>
         )}
-        {answer.deliveredDate && <FileName>{answer.deliveredDate}</FileName>}
+        {answer.deliveredDate && (
+          <FileName>{answer.deliveredDate.toDateString()}</FileName>
+        )}
       </div>
-      {!isCorrected && (
+      {answer.score !== 0 && !answer.score && (
         <Link
           to={`answer/${answer.answerId}/correct`}
           style={{ display: "flex", alignItems: "center" }}
@@ -60,7 +55,8 @@ function StudentExamUnit({
           />
         </Link>
       )}
-      {isCorrected && (
+
+      {(answer.score === 0 || answer.score) && (
         <div style={{ display: "flex", alignItems: "center" }}>
           <FileName style={{ marginRight: "10px" }}>{answer.score}</FileName>
           <button style={{ background: "none", border: "none" }} type="button">

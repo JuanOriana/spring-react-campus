@@ -8,7 +8,7 @@ export default interface FileModel {
   extension: FileExtension;
   fileCategory?: FileCategoryModel;
   fileName?: string;
-  fileDate?: string;
+  fileDate?: Date;
   course: CourseModel;
   downloads: number;
   hidden?: boolean;

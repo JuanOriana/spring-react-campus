@@ -6,6 +6,6 @@ export default interface AnnouncementModel {
   title: string;
   content: string;
   author: UserModel;
-  date: string;
+  date: Date;
   course: CourseModel;
 }

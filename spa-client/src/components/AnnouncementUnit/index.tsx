@@ -55,7 +55,7 @@ function AnnouncementUnit({
           )}
         </div>
       </AnnouncementHeader>
-      <AnnouncementDate>{announcement.date}</AnnouncementDate>
+      <AnnouncementDate>{announcement.date.toDateString()}</AnnouncementDate>
       {announcement?.content}
     </AnnouncementWrapper>
   );

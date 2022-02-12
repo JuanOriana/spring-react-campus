@@ -15,12 +15,19 @@ import {
 import FileUnit from "../../../../../components/FileUnit";
 import { useCourseData } from "../../../../../components/layouts/CourseLayout";
 import { useForm } from "react-hook-form";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { examsService } from "../../../../../services";
+import { answersService } from "../../../../../services";
+import { useNavigate, useParams } from "react-router-dom";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../../../common/i18n/index";
-import { examsService } from "../../../../../services";
+import { handleService } from "../../../../../scripts/handleService";
+import { ExamModel } from "../../../../../types";
+import AnswerModel from "../../../../../types/AnswerModel";
+import LoadableData from "../../../../../components/LoadableData";
+import { renderToast } from "../../../../../scripts/renderToast";
 //
 
 type FormData = {
@@ -30,87 +37,63 @@ type FormData = {
 
 function CorrectExam() {
   const { t } = useTranslation();
-  const Course = useCourseData();
-  const exam = {
-    examId: 1,
-    title: "Examen",
-    examFile: {
-      fileId: 1,
-      size: 10,
-      fileName: "xd",
-      extension: {
-        fileExtensionName: ".doc",
-        fileExtensionId: 12,
+  const navigate = useNavigate();
+  const course = useCourseData();
+  const { examId, answerId } = useParams();
+  const [exam, setExam] = useState<ExamModel | undefined>();
+  const [answer, setAnswer] = useState<AnswerModel | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    setIsLoading(true);
+    handleService(
+      examsService.getExamById(parseInt(examId ? examId : "-1")),
+      navigate,
+      (examData) => {
+        setExam(examData);
       },
-      course: {
-        courseId: 1,
-        year: 2021,
-        quarter: 2,
-        board: "A",
-        subject: {
-          subjectId: 1,
-          code: "a",
-          name: "PAW",
-        },
-        courseUrl: "urlcurso",
-        isTeacher: true,
-      },
-      fileCategory: undefined,
-      downloads: 2,
-    },
-    description: "hola\nxd",
-    average: 2,
-    url: "hola",
-  };
+      () => {
+        setIsLoading(false);
+      }
+    );
 
-  const answer = {
-    answerId: 1,
-    student: {
-      name: "juan",
-      surname: "doe",
-    },
-    score: 10,
-    deliveredDate: new Date().toDateString(),
-    answerFile: {
-      fileId: 1,
-      size: 10,
-      fileName: "xd",
-      extension: {
-        fileExtensionName: ".doc",
-        fileExtensionId: 12,
+    handleService(
+      answersService.getAnswerById(parseInt(answerId ? answerId : "-1")),
+      navigate,
+      (answerData) => {
+        setAnswer(answerData);
       },
-      course: {
-        courseId: 1,
-        year: 2021,
-        quarter: 2,
-        board: "A",
-        subject: {
-          subjectId: 1,
-          code: "a",
-          name: "PAW",
-        },
-        courseUrl: "urlcurso",
-        isTeacher: true,
-      },
-      fileCategory: undefined,
-      downloads: 2,
-    },
-  };
+      () => {}
+    );
+  }, []);
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
-    reset();
+    answersService
+      .correctAnswer(parseInt(answerId!), data.comments, data.mark)
+      .then((result) => {
+        if (result.hasFailed() && result.getError().getCode() !== 204) {
+          renderToast(
+            "No se pudo corregir el examen, intente de nuevo",
+            "error"
+          );
+          return;
+        }
+        renderToast(`👑 Se corrigio el examen con ${data.mark}`, "success");
+        navigate(`/course/${course.courseId}/exam/${exam?.examId}`);
+      })
+      .catch(() =>
+        renderToast("No se pudo corregir el examen, intente de nuevo", "error")
+      );
   });
 
   return (
-    <>
+    <LoadableData isLoading={isLoading}>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        {exam.title}
+        {exam?.title}
       </SectionHeading>
       <BigWrapper>
         <CommentTitle>{t("CorrectExam.descriptionTitle")}</CommentTitle>
@@ -121,14 +104,14 @@ function CorrectExam() {
             marginBottom: "10px",
           }}
         >
-          {exam.description}
+          {exam?.description}
         </p>
-        <FileUnit file={exam.examFile} isMinimal={true} />
+        {exam && <FileUnit file={exam!.examFile!} isMinimal={true} />}
         <CommentTitle>{t("CorrectExam.solutionTitle")}</CommentTitle>
-        {answer.deliveredDate && (
+        {answer?.deliveredDate && (
           <FileUnit file={answer.answerFile} isMinimal={true} />
         )}
-        {answer.deliveredDate && <p>{t("CorrectExam.examNotDone")}</p>}
+        {!answer?.deliveredDate && <p>{t("CorrectExam.examNotDone")}</p>}
         <form
           encType="multipart/form-data"
           acceptCharset="utf-8"
@@ -204,7 +187,7 @@ function CorrectExam() {
                 background: "#a80011",
                 textAlign: "center",
               }}
-              to={`/course/${Course.courseId}/exam/${exam.examId}`}
+              to={`/course/${course.courseId}/exam/${exam?.examId}`}
             >
               {t("CorrectExam.form.cancelCorrectionButton")}
             </LinkButton>
@@ -212,7 +195,7 @@ function CorrectExam() {
           </div>
         </form>
       </BigWrapper>
-    </>
+    </LoadableData>
   );
 }
 

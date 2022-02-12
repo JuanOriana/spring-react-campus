@@ -13,15 +13,15 @@ import {
 } from "../../../../../components/generalStyles/form";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { number } from "prop-types";
 import { useForm } from "react-hook-form";
+import { handleService } from "../../../../../scripts/handleService";
+import { examsService } from "../../../../../services";
+import { ExamModel } from "../../../../../types";
+import { renderToast } from "../../../../../scripts/renderToast";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../../../common/i18n/index";
-import { handleService } from "../../../../../scripts/handleService";
-import { examsService } from "../../../../../services";
-import { ExamModel } from "../../../../../types";
 //
 
 type FormData = {
@@ -46,13 +46,10 @@ function StudentCourseExamStandalone() {
     );
   }, []);
 
-  const endDate = new Date("2/13/2022");
-
   const calculateTimeLeft = () => {
-    console.log(typeof exam?.endTime!);
     let difference = +exam?.endTime! - +new Date();
 
-    let newTimeLeft;
+    let newTimeLeft = undefined;
     if (difference > 0) {
       newTimeLeft = {
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -60,7 +57,6 @@ function StudentCourseExamStandalone() {
         minutes: Math.floor((difference / 1000 / 60) % 60),
         seconds: Math.floor((difference / 1000) % 60),
       };
-
       if (difference < 3000) {
         navigate(`courses/${course.courseId}/exams`);
       }
@@ -82,20 +78,35 @@ function StudentCourseExamStandalone() {
     let timer: NodeJS.Timeout;
     if (exam?.endTime) {
       timer = setTimeout(() => {
+        console.log("ADSA");
         setTimeLeft(calculateTimeLeft());
       }, 1000);
     }
     return () => clearTimeout(timer);
-  }, [exam]);
+  }, [exam, timeLeft]);
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
-    reset();
+    examsService
+      .editAnswerByStudent(parseInt(examId ? examId : "-1"), data.file[0])
+      .then((result) => {
+        if (result.hasFailed()) {
+          renderToast(
+            "No se pudo enviar la respuesta, intente de nuevo",
+            "error"
+          );
+          return;
+        }
+        navigate(`/course/${course.courseId}/exams`);
+        renderToast("👑 Examen enviado exitosamente!", "success");
+      })
+      .catch(() =>
+        renderToast("No se pudo enviar la respuesta, intente de nuevo", "error")
+      );
   });
   return (
     <>

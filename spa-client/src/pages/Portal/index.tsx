@@ -19,24 +19,27 @@ import { useTranslation } from "react-i18next";
 import "../../common/i18n/index";
 import { useAuth } from "../../contexts/AuthContext";
 import { handleService } from "../../scripts/handleService";
+import { UserCourseModel } from "../../types";
 //
 
 function Portal() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [courses, setCourses] = useState(new Array(0));
-  const [isCourseLoading, setIsCourseLoading] = useState(false);
+  const [isCourseLoading, setIsCourseLoading] = useState(true);
   const [announcements, setAnnouncements] = useState(new Array(0));
-  const [isAnnouncementLoading, setIsAnnouncementLoading] = useState(false);
+  const [isAnnouncementLoading, setIsAnnouncementLoading] = useState(true);
   const [maxPage, setMaxPage] = useState(1);
   const [currentPage, pageSize] = usePagination(10);
   const { user } = useAuth();
+
+  const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     setIsCourseLoading(true);
     if (user) {
       handleService(
-        userService.getUsersCourses(user!.userId, currentPage, pageSize),
+        userService.getUserCourses(user!.userId, currentPage, pageSize),
         navigate,
         (coursesData) => {
           setCourses(coursesData ? coursesData.getContent() : []);
@@ -66,21 +69,36 @@ function Portal() {
       <SectionHeading>{t("Portal.title")}</SectionHeading>
       <CoursesContainer>
         <LoadableData isLoading={isCourseLoading} spinnerMultiplier={1}>
-          {courses.map((course) => (
+          {courses.map((courseData: UserCourseModel) => (
             // TODO: AGREGAR CHEQUEO DE SI ES CONTENIDO POR CURRENT COURESE O NO Y SI ES ESTUDIANTE O NO
-            <Course isOld={false} key={course.courseId}>
-              <CourseName style={{ display: "flex", alignItems: "center" }}>
-                <Link to={`/course/${course.courseId}`}>
-                  {`${course.subject.name} [${course.board}]`}
+            <Course isOld={false} key={courseData.course.courseId}>
+              <CourseName
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  color:
+                    courseData.course.year === currentYear ? "black" : "grey",
+                }}
+              >
+                <Link to={`/course/${courseData.course.courseId}`}>
+                  {`${courseData.course.subject.name} [${courseData.course.board}]`}
                 </Link>
-                {/*<c:if test="${!coursesAsStudent.contains(courseItem)}">*/}
-                {/*    <img src="<c:url value="/resources/images/graduation-hat.png"/>"*/}
-                {/*         alt="<spring:message code=" img.alt.teacher.icon" />" style="margin-left: 10px"*/}
-                {/*         width="28px"/>*/}
-                {/*</c:if>*/}
+                {courseData.role.roleName !== "Student" && (
+                  <img
+                    src="/images/graduation-hat.png"
+                    alt="Profesor"
+                    style={{ marginLeft: "10px" }}
+                    width="28px"
+                  />
+                )}
               </CourseName>
-              <CourseName>
-                {course.quarter}Q-{course.year}
+              <CourseName
+                style={{
+                  color:
+                    courseData.course.year === currentYear ? "black" : "grey",
+                }}
+              >
+                {courseData.course.quarter}Q-{courseData.course.year}
               </CourseName>
             </Course>
           ))}

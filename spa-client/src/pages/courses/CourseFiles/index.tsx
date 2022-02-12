@@ -33,11 +33,11 @@ import { handleService } from "../../../scripts/handleService";
 import { courseService, fileService } from "../../../services";
 import LoadableData from "../../../components/LoadableData";
 import { renderToast } from "../../../scripts/renderToast";
+import { FileModel } from "../../../types";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
-import { AnnouncementModel, FileModel } from "../../../types";
 //
 
 type FormData = {
@@ -52,7 +52,7 @@ function CourseFiles() {
   const navigate = useNavigate();
   const [currentPage, pageSize] = usePagination(10);
   const [files, setFiles] = useState(new Array(0));
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [reload, setReload] = useState(false);
   const [maxPage, setMaxPage] = useState(1);
   const [categories, setCategories] = useState(new Array(0));

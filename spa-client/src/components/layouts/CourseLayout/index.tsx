@@ -15,7 +15,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 
 function CourseLayout() {
   const [course, setCourse] = useState<CourseModel | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { user } = useAuth();
   const { courseId } = useParams();

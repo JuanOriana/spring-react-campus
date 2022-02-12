@@ -40,7 +40,7 @@ function CourseAnnouncements() {
   const navigate = useNavigate();
   const [announcements, setAnnouncements] = useState(new Array(0));
   const [reload, setReload] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [maxPage, setMaxPage] = useState(1);
   const [currentPage, pageSize] = usePagination(10);
 
