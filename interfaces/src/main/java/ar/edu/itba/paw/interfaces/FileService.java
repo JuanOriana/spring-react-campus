@@ -74,7 +74,7 @@ public interface FileService {
     /**
      * Attempts to get file/s that the user is authorized given some criterias of searching and filter
      *
-     * @param keyword      establish the key word to be search. In case of not searching nothing can be null or ""
+     * @param keyword      establish the key word to be search. In case of not searching can be null or ""
      * @param extensions List of ids of the extensions that are expected in the return list. To get all send an empty list
      * @param categories List of ids of the categories that are expected in the return list. To get all send an empty list
      * @param userId     the ID of the user that is searching

@@ -23,6 +23,7 @@ SSH_HOST='pampero.itba.edu.ar'
 SSH_PORT='22'
 HOME_PATH='/home/' + SSH_USERNAME
 
+#  paw-2021b-4@10.16.1.110
 SFTP_HOST='10.16.1.110'
 SFTP_PORT='22'
 SFTP_USER='paw-2021b-4'

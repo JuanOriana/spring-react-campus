@@ -22,6 +22,20 @@ public interface CourseService {
     /**
      * Attempts to update a course
      * @param id of the course to be modified
+     * @param year of the course
+     * @param quarter of the course
+     * @param board code of the course
+     * @param subjectId of the subject associated to the course
+     * @param startTimes list of starting times for the course
+     * @param endTimes list of ending times for the course
+     * @return true if the course was successfully updated, false otherwise
+     */
+    boolean update(Long id, Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
+                          List<Integer> endTimes);
+
+    /**
+     * Attempts to update a course
+     * @param id of the course to be modified
      * @param course modified course
      * @return true if the course was successfully updated, false otherwise
      */
@@ -127,6 +141,9 @@ public interface CourseService {
      */
     List<Course> listWhereStudent(Long userId);
 
+
+    Role getUserRoleInCourse(Long courseId, Long userId);
+
     /**
      * Attempts to get all courses in the pair year-quarter
      * @param year to get the courses from
@@ -136,8 +153,8 @@ public interface CourseService {
     CampusPage<Course> listByYearQuarter(Integer year, Integer quarter, Integer page, Integer pageSize);
 
     /**
-     * Attempts to get a list of years where there are courses present
-     * @return list of years where there are courses present
+     * Attempts to get a list of years when there are courses present
+     * @return list of years when there are courses present
      */
     List<Integer> getAvailableYears();
 

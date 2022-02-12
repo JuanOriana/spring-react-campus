@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.CampusPageRequest;
 import ar.edu.itba.paw.models.CampusPageSort;
 import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileModel;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,7 @@ public class FileDaoImplTest extends BasicPopulator {
     @Test
     public void testCreate() {
         FileModel mockFile = createFileModelObject(FILE_PATH, FILE_ID);
-        FileModel fileModel = fileDao.create(mockFile.getSize(), LocalDateTime.now(), mockFile.getName(),
+        FileModel fileModel = fileDao.create(mockFile.getSize(), LocalDateTime.now(), mockFile.getFileName(),
                 mockFile.getFile(), mockFile.getCourse());
         assertNotNull(fileModel);
     }
@@ -48,7 +47,7 @@ public class FileDaoImplTest extends BasicPopulator {
     @Test
     public void testUpdate() {
         FileModel fModel = createFileModelObject("src/test/resources/test.png", DB_FILE_ID);
-        fModel.setName("nuevoNombre");
+        fModel.setFileName("nuevoNombre");
         assertTrue(fileDao.update(DB_FILE_ID, fModel));
     }
 
@@ -92,7 +91,7 @@ public class FileDaoImplTest extends BasicPopulator {
         List<FileModel> list = fileDao.findByCategory(2L);
 
         assertEquals(2L, list.size());
-        assertEquals(FILE_NAME, list.get(0).getName());
+        assertEquals(FILE_NAME, list.get(0).getFileName());
 
     }
 

@@ -29,7 +29,7 @@ public class Subject {
         this.coursesList = coursesList;
     }
 
-    /* Default */ Subject() {
+    public Subject() {
         // Just for Hibernate
     }
     public Subject(Long subjectId, String code, String name) {

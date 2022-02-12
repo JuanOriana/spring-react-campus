@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.models.exception;
 
 public class AnswerNotFoundException extends RuntimeException {
+
     public AnswerNotFoundException() {
+        super("Answer does not exist");
     }
 
     public AnswerNotFoundException(String message) {

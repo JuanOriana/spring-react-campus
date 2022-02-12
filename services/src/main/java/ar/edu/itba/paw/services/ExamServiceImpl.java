@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
+import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +30,15 @@ public class ExamServiceImpl implements ExamService {
     private FileCategoryDao fileCategoryDao;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private AnswerDao answerDao;
 
     @Transactional
     @Override
-    public Exam create(Long courseId, String title, String description, String fileName, byte[] examFile, Long examFileSize, LocalDateTime startTime, LocalDateTime endTime) {
+    public Exam create(Long courseId, Long teacherId, String title, String description, String fileName,
+                       byte[] examFile, Long examFileSize, LocalDateTime startTime, LocalDateTime endTime) {
         final Optional<Course> course = courseDao.findById(courseId);
 
         if (course.isPresent()) {
@@ -48,7 +53,7 @@ public class ExamServiceImpl implements ExamService {
             fileDao.associateCategory(fileModel.getFileId(), examCategoryId);
             Exam exam = examDao.create(courseId, title, description, fileModel, startTime, endTime);
             List<User> students = courseDao.getStudents(courseId);
-            answerDao.createEmptyAnswers(exam, students);
+            answerDao.createEmptyAnswers(exam, students, userService.findById(teacherId).orElseThrow(UserNotFoundException::new));
             return exam;
         } else {
             throw new CourseNotFoundException();

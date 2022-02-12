@@ -1,15 +1,12 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.interfaces.CourseDao;
-import ar.edu.itba.paw.interfaces.CourseService;
-import ar.edu.itba.paw.interfaces.TimetableService;
-import ar.edu.itba.paw.interfaces.UserDao;
+import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.models.exception.DuplicateCourseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -47,6 +44,27 @@ public class CourseServiceImpl implements CourseService {
             }
         }
         return course;
+    }
+
+    @Transactional
+    @Override
+    public boolean update(Long id, Integer year, Integer quarter, String board, Long subjectId, List<Integer> startTimes,
+                         List<Integer> endTimes) {
+
+        Course course = findById(id).orElseThrow(CourseNotFoundException::new);
+        course.setQuarter(quarter);
+        course.setYear(year);
+        course.setBoard(board);
+        course.setSubject(course.getSubject());
+        for (int i = 0; i < days.length; i++) {
+            Integer startHour = startTimes.get(i);
+            Integer endHour = endTimes.get(i);
+            if (startHour != null && endHour != null) {
+                timetableService.update(id, i, LocalTime.of(startHour, 0, 0),
+                        LocalTime.of(endHour, 0, 0));
+            }
+        }
+        return update(id, course);
     }
 
     @Transactional
@@ -138,6 +156,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> listWhereStudent(Long userId) {
         return courseDao.listWhereStudent(userId);
+    }
+
+    @Override
+    public Role getUserRoleInCourse(Long courseId, Long userId) {
+        return courseDao.getUserRoleInCourse(courseId, userId);
     }
 
     @Transactional(readOnly = true)

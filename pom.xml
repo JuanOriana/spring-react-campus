@@ -8,8 +8,10 @@
     <packaging>pom</packaging>
     <name>paw-2021b-4</name>
     <properties>
-        <org.springframework.version>4.2.5.RELEASE</org.springframework.version>
-        <spring-security.version>4.0.4.RELEASE</spring-security.version>
+        <org.springframework.version>4.3.22.RELEASE</org.springframework.version>
+        <spring-security.version>4.2.11.RELEASE</spring-security.version>
+        <org.springframework.hateoas.version>0.25.1.RELEASE</org.springframework.hateoas.version>
+        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
         <servlet-api.version>2.5</servlet-api.version>
         <jstl.version>1.2</jstl.version>
         <junit.version>4.11</junit.version>
@@ -30,10 +32,54 @@
         <org.thymeleaf.version>3.0.11.RELEASE</org.thymeleaf.version>
         <org.hibernate.version>5.1.0.Final</org.hibernate.version>
         <org.hibernate.jpa.version>1.0.0.Final</org.hibernate.jpa.version>
+        <jersey.version>3.0-SNAPSHOT</jersey.version>
+        <jackson.version>2.13.1</jackson.version>
+        <jjwt.version>0.7.0</jjwt.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>jersey-snapshot</id>
+            <url>https://maven.java.net/content/repositories/snapshots/</url>
+            <name>Jersey Snapshots</name>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${org.mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.hateoas</groupId>
+                <artifactId>spring-hateoas</artifactId>
+                <version>${org.springframework.hateoas.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-parameter-names</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jdk8</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-java8</artifactId>
@@ -165,6 +211,7 @@
                 <artifactId>spring-context</artifactId>
                 <version>${org.springframework.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
@@ -206,6 +253,68 @@
                 <artifactId>thymeleaf-spring4</artifactId>
                 <version>${org.thymeleaf.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <artifactId>jersey-container-servlet-core</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-multipart</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.ext</groupId>
+                <artifactId>jersey-spring4</artifactId>
+                <version>${jersey.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.glassfish.hk2</groupId>
+                        <artifactId>hk2</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2</artifactId>
+                <version>2.5.0-b05</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-server</artifactId>
+                <version>${jersey.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.validation</groupId>
+                        <artifactId>validation-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- JERSEY JSON -->
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-moxy</artifactId>
+                <version>${jersey.version}</version>
+                <exclusions>
+                    <!-- Not Java 10 compliant -->
+                    <exclusion>
+                        <groupId>org.eclipse.persistence</groupId>
+                        <artifactId>org.eclipse.persistence.moxy</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- Java 10 compatible -->
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.moxy</artifactId>
+                <version>2.7.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-jaxb</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>
@@ -218,6 +327,23 @@
                 <version>${maven-war-plugin.version}</version>
                 <configuration>
                     <packagingExcludes>**/logback-test.xml</packagingExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source> <!-- depending on your project -->
+                    <target>1.8</target> <!-- depending on your project -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                        <!-- other annotation processors -->
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>

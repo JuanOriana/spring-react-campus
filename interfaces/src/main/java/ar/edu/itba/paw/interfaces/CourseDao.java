@@ -17,6 +17,8 @@ public interface CourseDao {
 
     CampusPage<Course> list(Long userId, CampusPageRequest pageRequest);
 
+    Role getUserRoleInCourse(Long courseId, Long userId);
+
     List<Course> listCurrent(Long userId);
 
     Optional<Course> findById(Long id);

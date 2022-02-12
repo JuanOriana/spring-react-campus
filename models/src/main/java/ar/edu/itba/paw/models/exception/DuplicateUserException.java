@@ -7,6 +7,9 @@ public class DuplicateUserException extends RuntimeException {
     private final String surname;
     private final String username;
     private final String email;
+    private boolean isUsernameTaken = false;
+    private boolean isEmailTaken = false;
+    private boolean isFileNumberTaken = false;
 
     public static class Builder {
         private Integer fileNumber;
@@ -26,7 +29,7 @@ public class DuplicateUserException extends RuntimeException {
             this.email = email;
         }
 
-        public Builder withFileNumber(Integer fileNumber){
+        public Builder withFileNumber(Integer fileNumber) {
             this.fileNumber = fileNumber;
             return Builder.this;
         }
@@ -66,14 +69,14 @@ public class DuplicateUserException extends RuntimeException {
     }
 
     public boolean isUsernameDuplicated() {
-        return this.username.isEmpty();
+        return this.isUsernameTaken;
     }
 
     public boolean isFileNumberDuplicated() {
-        return this.fileNumber == 0;
+        return this.isFileNumberTaken;
     }
     public boolean isEmailDuplicated() {
-        return this.email.isEmpty();
+        return this.isEmailTaken;
     }
 
     public Integer getFileNumber() {
@@ -92,9 +95,22 @@ public class DuplicateUserException extends RuntimeException {
         return username;
     }
 
+    public void setUsernameTaken(boolean usernameTaken) {
+        isUsernameTaken = usernameTaken;
+    }
+
+    public void setEmailTaken(boolean emailTaken) {
+        isEmailTaken = emailTaken;
+    }
+
+    public void setFileNumberTaken(boolean fileNumberTaken) {
+        isFileNumberTaken = fileNumberTaken;
+    }
+
     public boolean shouldTrigger() {
         return this.isUsernameDuplicated() || this.isFileNumberDuplicated() || this.isEmailDuplicated();
     }
+
 
     public String getEmail() {
         return email;
