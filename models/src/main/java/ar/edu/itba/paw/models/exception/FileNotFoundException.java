@@ -2,6 +2,7 @@ package ar.edu.itba.paw.models.exception;
 
 public class FileNotFoundException extends RuntimeException {
     public FileNotFoundException() {
+        super("The file id doesn't exist");
     }
 
     public FileNotFoundException(String message) {

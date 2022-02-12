@@ -64,7 +64,7 @@ public class ExamDaoJpa extends BasePaginationDaoImpl<Exam> implements ExamDao {
 
     @Override
     public List<Exam> getUnresolvedExams(Long studentId, Long courseId) {
-        TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT exam FROM Exam exam WHERE exam NOT IN (SELECT answer.exam FROM Answer answer WHERE answer.student.userId = :studentId AND answer.deliveredDate IS NOT NULL) AND exam.course.courseId = :courseId AND exam.endTime > :nowTime", Exam.class);
+        TypedQuery<Exam> unresolvedExamsTypedQuery = em.createQuery("SELECT DISTINCT(answer.exam) FROM Answer answer WHERE answer.student.userId = :studentId AND answer.exam.course.courseId = :courseId AND answer.deliveredDate IS NULL AND answer.exam.endTime >= :nowTime AND answer.exam.startTime <= :nowTime", Exam.class);
         unresolvedExamsTypedQuery.setParameter("studentId", studentId);
         unresolvedExamsTypedQuery.setParameter("courseId", courseId);
         unresolvedExamsTypedQuery.setParameter("nowTime", LocalDateTime.now());

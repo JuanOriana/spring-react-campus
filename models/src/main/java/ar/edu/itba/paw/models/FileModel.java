@@ -50,7 +50,7 @@ public class FileModel {
     )
     private List<FileCategory> fileCategories;
 
-    /* default */ FileModel() {
+    public FileModel() {
         //For Hibernate
     }
 
@@ -206,11 +206,11 @@ public class FileModel {
         this.extension = extension;
     }
 
-    public String getName() {
+    public String getFileName() {
         return fileName;
     }
 
-    public void setName(String fileName) {
+    public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
@@ -263,7 +263,7 @@ public class FileModel {
     }
 
     public void merge(FileModel fileModel) {
-        this.fileName = this.fileName.equals(fileModel.getName())  ? this.fileName : fileModel.getName();
+        this.fileName = this.fileName.equals(fileModel.getFileName())  ? this.fileName : fileModel.getFileName();
         this.extension = this.extension.equals(fileModel.getExtension()) ? this.extension : fileModel.extension;
         this.size = this.size.equals(fileModel.getSize()) ? this.size : fileModel.size;
         this.fileDate = this.fileDate.equals(fileModel.getDate()) ? this.fileDate : fileModel.fileDate;

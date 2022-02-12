@@ -3,8 +3,6 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.User;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +27,7 @@ public interface AnswerService {
      * @param deliveredTime  the answer delivered time
      * @return updated answer object
      */
-    Answer updateEmptyAnswer(Long examId, User student, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime);
+    Answer updateEmptyAnswer(Long examId, Long studentId, String answerFileName, byte[] answerFile, Long answerFileSize);
 
     /**
      * Attempts to delete an answer
@@ -92,6 +90,8 @@ public interface AnswerService {
      * @return true if the user delivered an answer, false otherwise
      */
     boolean didUserDeliver(Long examId, Long userId);
+
+    Answer findUserAnswer(Long examId, Long userId, Long courseId);
 
     /**
      * Returns a filtered-paginated list of answers

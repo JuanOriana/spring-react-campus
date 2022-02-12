@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FileExtensionServiceImpl implements FileExtensionService {
@@ -23,6 +24,12 @@ public class FileExtensionServiceImpl implements FileExtensionService {
     @Override
     public FileExtension create(String fileExtension) {
         return fileExtensionDao.create(fileExtension);
+    }
+
+    @Transactional
+    @Override
+    public Optional<FileExtension> findById(Long fileExtensionId) {
+        return fileExtensionDao.findById(fileExtensionId);
     }
 
     @Transactional

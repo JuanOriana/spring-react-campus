@@ -2,6 +2,7 @@ package ar.edu.itba.paw.models.exception;
 
 public class ExamNotFoundException extends RuntimeException {
     public ExamNotFoundException() {
+        super("The exam does not exist");
     }
 
     public ExamNotFoundException(String message) {

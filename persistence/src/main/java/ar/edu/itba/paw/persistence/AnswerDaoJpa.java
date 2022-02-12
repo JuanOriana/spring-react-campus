@@ -31,10 +31,10 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
     }
 
     @Override
-    public void createEmptyAnswers(Exam exam, List<User> students) {
+    public void createEmptyAnswers(Exam exam, List<User> students, User teacher) {
         Answer answer;
         for (User student : students) {
-            answer = new Answer(exam, null, student, null, null, null, null);
+            answer = new Answer(exam, null, student, teacher, null, null, null);
             em.persist(answer);
         }
     }
@@ -57,18 +57,13 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
     }
 
     @Override
-    public Answer updateEmptyAnswer(Long examId, User student, Long teacherId, Answer answer) {
+    public Answer updateEmptyAnswer(Long examId, Long studentId, LocalDateTime deliveryDate, FileModel fileModel) {
         TypedQuery<Answer> getEmptyAnswer = em.createQuery("SELECT a FROM Answer a WHERE a.student.userId = :studentId AND a.exam.examId = :examId", Answer.class);
         getEmptyAnswer.setParameter("examId", examId);
-        getEmptyAnswer.setParameter("studentId", student.getUserId());
+        getEmptyAnswer.setParameter("studentId", studentId);
         Answer oldAnswer = getEmptyAnswer.getSingleResult();
-        if (oldAnswer != null) {
-            answer.setScore(oldAnswer.getScore()); // if the exam was already corrected, not delete that value
-            answer.setCorrections(oldAnswer.getCorrections());
-            answer.setTeacher(oldAnswer.getTeacher());
-            this.update(oldAnswer.getAnswerId(), answer);
-        }
-
+        oldAnswer.setDeliveredDate(deliveryDate);
+        oldAnswer.setAnswerFile(fileModel);
         return oldAnswer;
     }
 
@@ -158,6 +153,15 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
 
         return averageQuery.getSingleResult();
 
+    }
+
+    @Override
+    public Answer findUserAnswer(Long examId, Long userId, Long courseId) {
+        TypedQuery<Answer> answerTypedQuery = em.createQuery("SELECT a FROM Answer a WHERE a.student.userId = :userId AND a.exam.course.courseId = :courseId AND a.exam.examId = :examId", Answer.class);
+        answerTypedQuery.setParameter("examId", examId);
+        answerTypedQuery.setParameter("userId", userId);
+        answerTypedQuery.setParameter("courseId", courseId);
+        return answerTypedQuery.getSingleResult();
     }
 
 

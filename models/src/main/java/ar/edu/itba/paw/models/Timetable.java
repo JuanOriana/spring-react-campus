@@ -43,6 +43,7 @@ public class Timetable {
         this.endTime = endTime;
     }
 
+
     public Course getCourse() {
         return course;
     }

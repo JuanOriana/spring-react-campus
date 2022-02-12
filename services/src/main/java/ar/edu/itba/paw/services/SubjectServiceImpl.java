@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
@@ -29,6 +30,11 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public boolean update(Long subjectId, String code, String name) {
         return subjectDao.update(subjectId, code, name);
+    }
+
+    @Override
+    public Optional<Subject> findById(Long subjectId) {
+        return subjectDao.findById(subjectId);
     }
 
     @Transactional

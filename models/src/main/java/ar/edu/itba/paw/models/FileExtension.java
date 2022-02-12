@@ -13,20 +13,20 @@ public class FileExtension {
     @Column(name = "fileExtensionId")
     private Long fileExtensionId;
 
-    @Column(length = 5, nullable = false, unique = true)
-    private String fileExtension;
+    @Column(length = 5, nullable = false, unique = true, name = "fileExtension")
+    private String fileExtensionName;
 
-    /* Default */ FileExtension() {
+    public FileExtension() {
         // Just for Hibernate
     }
 
-    public FileExtension(Long fileExtensionId, String fileExtension) {
+    public FileExtension(Long fileExtensionId, String fileExtensionName) {
         this.fileExtensionId = fileExtensionId;
-        this.fileExtension = fileExtension;
+        this.fileExtensionName = fileExtensionName;
     }
 
-    public FileExtension(String fileExtension) {
-        this.fileExtension = fileExtension;
+    public FileExtension(String fileExtensionName) {
+        this.fileExtensionName = fileExtensionName;
     }
 
     public Long getFileExtensionId() {
@@ -38,11 +38,11 @@ public class FileExtension {
     }
 
     public String getFileExtensionName() {
-        return fileExtension;
+        return fileExtensionName;
     }
 
     public void setFileExtensionName(String fileExtensionName) {
-        this.fileExtension = fileExtensionName;
+        this.fileExtensionName = fileExtensionName;
     }
 
     @Override

@@ -1,7 +1,10 @@
 package ar.edu.itba.paw.models.exception;
 
 public class CourseNotFoundException extends RuntimeException {
+
+
     public CourseNotFoundException() {
+        super("The course does not exist");
     }
 
     public CourseNotFoundException(String message) {

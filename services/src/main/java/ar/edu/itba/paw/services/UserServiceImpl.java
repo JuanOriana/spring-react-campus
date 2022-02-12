@@ -27,13 +27,17 @@ public class UserServiceImpl implements UserService {
         boolean matchEmail = userDao.findByEmail(email).isPresent();
         boolean matchFileNumber = userDao.findByFileNumber(fileNumber).isPresent();
         if(matchUsername || matchEmail || matchFileNumber) {
-            throw new DuplicateUserException.Builder()
+            DuplicateUserException due = new DuplicateUserException.Builder()
                     .withName(name)
                     .withSurname(surname)
-                    .withUsername(matchUsername ? "" : username)
-                    .withEmail(matchEmail ? "" : email)
-                    .withFileNumber(matchFileNumber ? 0 : fileNumber)
+                    .withUsername(username)
+                    .withEmail(email)
+                    .withFileNumber(fileNumber)
                     .build();
+            due.setEmailTaken(matchEmail);
+            due.setFileNumberTaken(matchFileNumber);
+            due.setUsernameTaken(matchUsername);
+            throw due;
         }
         return userDao.create(fileNumber, name, surname, username,
                 email, passwordEncoder.encode(password), isAdmin);

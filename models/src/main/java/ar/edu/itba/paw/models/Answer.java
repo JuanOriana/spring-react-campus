@@ -5,7 +5,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -121,7 +120,7 @@ public class Answer {
         this.corrections = corrections;
     }
 
-    public void merge(Answer answer){
+    public void merge(Answer answer) {
         this.answerFile = answer.answerFile;
         this.corrections = answer.corrections;
         this.deliveredDate = answer.deliveredDate;
@@ -227,7 +226,7 @@ public class Answer {
         }
     }
 
-    private Answer(Builder builder){
+    private Answer(Builder builder) {
         this.answerId = builder.answerId;
         this.exam = builder.exam;
         this.student = builder.student;

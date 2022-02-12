@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Subject;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface SubjectService {
@@ -22,6 +23,13 @@ public interface SubjectService {
      * @return true if the subject was successfully updated, false otherwise
      */
     boolean update(Long subjectId, String code, String name);
+
+    /**
+     * Attempts to find a subject based on the provided id
+     * @param subjectId of the queried subject
+     * @return Subject if any id matches the search, Optional.empty() otherwise
+     */
+    Optional<Subject> findById(Long subjectId);
 
     /**
      * Attempts to delete a subject
