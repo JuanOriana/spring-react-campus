@@ -1,5 +1,11 @@
 import { paths } from "../common/constants";
-import { ExamModel, PagedContent, PostResponse, Result } from "../types";
+import {
+  ExamModel,
+  PagedContent,
+  PostResponse,
+  PutResponse,
+  Result,
+} from "../types";
 import AnswerModel from "../types/AnswerModel";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { authedFetch } from "../scripts/authedFetch";
@@ -36,20 +42,17 @@ export class ExamsServices {
     return authedFetch(this.basePath + "/" + examId, { method: "DELETE" });
   }
 
-  public async newAnswer(
+  public async editAnswerByStudent(
     examId: number,
     answerFile: File
-  ): Promise<Result<PostResponse>> {
+  ): Promise<Result<PutResponse>> {
     const newAnswer = new FormData();
     newAnswer.append("file", answerFile, answerFile.name);
 
-    return resultFetch<PostResponse>(
-      this.basePath + "/" + examId + "/answers",
-      {
-        method: "POST",
-        hearders: {},
-        body: newAnswer,
-      }
-    );
+    return resultFetch<PutResponse>(this.basePath + "/" + examId + "/answers", {
+      method: "PUT",
+      hearders: {},
+      body: newAnswer,
+    });
   }
 }

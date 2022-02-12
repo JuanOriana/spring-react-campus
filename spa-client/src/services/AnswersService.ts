@@ -30,8 +30,8 @@ export class AnswersService {
 
   public async correctAnswer(
     answerId: number,
-    correction: string,
-    score: number
+    correction?: string,
+    score?: number
   ): Promise<Result<PutResponse>> {
     const corrections = JSON.stringify({
       correction: correction,
