@@ -7,7 +7,6 @@ import {
   FileSelectLabel,
   FileSelect,
 } from "../../../../../components/FileSearcher/syles";
-import { FormButton } from "../../../../../components/generalStyles/form";
 import {
   PaginationArrow,
   PaginationWrapper,
@@ -16,29 +15,31 @@ import { useCourseData } from "../../../../../components/layouts/CourseLayout";
 import { usePagination } from "../../../../../hooks/usePagination";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-
-// i18next imports
-import { useTranslation } from "react-i18next";
-import "../../../../../common/i18n/index";
 import { handleService } from "../../../../../scripts/handleService";
 import { examsService } from "../../../../../services";
 import { ExamModel } from "../../../../../types";
 import StudentExamUnit from "../../../../../components/StudentExamUnit";
 import LoadableData from "../../../../../components/LoadableData";
+import { getQueryOrDefault, useQuery } from "../../../../../hooks/useQuery";
+
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../../../common/i18n/index";
+
 //
 
 function TeacherCourseExamStandalone() {
   const { t } = useTranslation();
   const course = useCourseData();
   const navigate = useNavigate();
+  const query = useQuery();
   const { examId } = useParams();
   const [currentPage, pageSize] = usePagination(10);
+  const filterBy = getQueryOrDefault(query, "filter-by", "all");
   const [exam, setExam] = useState<ExamModel | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [answers, setAnswers] = useState(new Array(1));
   const [maxPage, setMaxPage] = useState(1);
-  let filterBy;
-  filterBy = "all";
   const average = 6.9;
   useEffect(() => {
     if (examId) {
@@ -53,7 +54,12 @@ function TeacherCourseExamStandalone() {
       );
 
       handleService(
-        examsService.getExamAnswers(parseInt(examId)),
+        examsService.getExamAnswers(
+          parseInt(examId),
+          currentPage,
+          pageSize,
+          filterBy
+        ),
         navigate,
         (answersData) => {
           setAnswers(answersData ? answersData.getContent() : []);
@@ -64,7 +70,7 @@ function TeacherCourseExamStandalone() {
         }
       );
     }
-  }, [examId]);
+  }, [examId, currentPage, pageSize, filterBy]);
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
@@ -83,7 +89,14 @@ function TeacherCourseExamStandalone() {
             >
               {t("TeacherCourseExamStandalone.filteredBy")}
             </FileSelectLabel>
-            <FileSelect name="filter-by" id="filter-by" defaultValue={filterBy}>
+            <FileSelect
+              name="filter-by"
+              id="filter-by"
+              defaultValue={filterBy}
+              onChange={(event) => {
+                navigate(`?page=1&filter-by=${event.target.value}`);
+              }}
+            >
               <option value="all">
                 {t("TeacherCourseExamStandalone.filters.all")}
               </option>
@@ -94,9 +107,6 @@ function TeacherCourseExamStandalone() {
                 {t("TeacherCourseExamStandalone.filters.notCorrected")}
               </option>
             </FileSelect>
-            <FormButton style={{ alignSelf: "end" }}>
-              {t("TeacherCourseExamStandalone.filterButton")}
-            </FormButton>
           </FileQueryContainer>
           <SectionHeading style={{ marginLeft: "10px" }}>
             {average}
@@ -108,7 +118,6 @@ function TeacherCourseExamStandalone() {
             <StudentExamUnit
               key={answer.answerId}
               answer={answer}
-              isCorrected={answer.score !== null}
               examId={parseInt(examId ? examId : "-1")}
             />
           ))}
