@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.subject;
 
 import ar.edu.itba.paw.models.Subject;
 import org.springframework.hateoas.Link;

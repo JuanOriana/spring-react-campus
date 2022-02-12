@@ -1,5 +1,6 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.file;
 
+import ar.edu.itba.paw.webapp.dto.course.CourseDto;
 import org.springframework.hateoas.Link;
 import java.io.Serializable;
 import java.time.LocalDateTime;

@@ -1,11 +1,8 @@
 package ar.edu.itba.paw.webapp.common.assemblers;
 
-import ar.edu.itba.paw.models.FileCategory;
 import ar.edu.itba.paw.models.FileExtension;
 import ar.edu.itba.paw.webapp.controllers.FileController;
-import ar.edu.itba.paw.webapp.controllers.SubjectController;
-import ar.edu.itba.paw.webapp.dto.FileCategoryDto;
-import ar.edu.itba.paw.webapp.dto.FileExtensionDto;
+import ar.edu.itba.paw.webapp.dto.file.FileExtensionDto;
 import ar.edu.itba.paw.webapp.common.mappers.FileExtensionMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.hateoas.Link;

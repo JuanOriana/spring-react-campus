@@ -57,10 +57,10 @@ public class AnswerDaoJpa extends BasePaginationDaoImpl<Answer> implements Answe
     }
 
     @Override
-    public Answer updateEmptyAnswer(Long examId, User student, LocalDateTime deliveryDate, FileModel fileModel) {
+    public Answer updateEmptyAnswer(Long examId, Long studentId, LocalDateTime deliveryDate, FileModel fileModel) {
         TypedQuery<Answer> getEmptyAnswer = em.createQuery("SELECT a FROM Answer a WHERE a.student.userId = :studentId AND a.exam.examId = :examId", Answer.class);
         getEmptyAnswer.setParameter("examId", examId);
-        getEmptyAnswer.setParameter("studentId", student.getUserId());
+        getEmptyAnswer.setParameter("studentId", studentId);
         Answer oldAnswer = getEmptyAnswer.getSingleResult();
         oldAnswer.setDeliveredDate(deliveryDate);
         oldAnswer.setAnswerFile(fileModel);

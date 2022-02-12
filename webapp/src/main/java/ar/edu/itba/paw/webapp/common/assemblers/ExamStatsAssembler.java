@@ -4,9 +4,8 @@ import ar.edu.itba.paw.interfaces.AnswerService;
 import ar.edu.itba.paw.interfaces.ExamService;
 import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.Exam;
-import ar.edu.itba.paw.webapp.controllers.ExamController;
-import ar.edu.itba.paw.webapp.dto.ExamDto;
-import ar.edu.itba.paw.webapp.dto.ExamStatsDto;
+import ar.edu.itba.paw.webapp.dto.exam.ExamDto;
+import ar.edu.itba.paw.webapp.dto.exam.ExamStatsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

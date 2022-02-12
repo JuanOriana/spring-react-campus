@@ -2,7 +2,7 @@ package ar.edu.itba.paw.webapp.common.assemblers;
 
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.webapp.controllers.UserController;
-import ar.edu.itba.paw.webapp.dto.UserDto;
+import ar.edu.itba.paw.webapp.dto.user.UserDto;
 import ar.edu.itba.paw.webapp.common.mappers.UserMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.hateoas.Link;

@@ -7,7 +7,8 @@ import ar.edu.itba.paw.models.exception.AnswerNotFoundException;
 import ar.edu.itba.paw.webapp.common.assemblers.AnswerAssembler;
 import ar.edu.itba.paw.webapp.common.mappers.AnswerMapper;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
-import ar.edu.itba.paw.webapp.dto.AnswerDto;
+import ar.edu.itba.paw.webapp.dto.answer.AnswerCorrectionDto;
+import ar.edu.itba.paw.webapp.dto.answer.AnswerDto;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,8 +36,6 @@ public class AnswerController {
     @Autowired
     private DtoConstraintValidator dtoConstraintValidator;
 
-    private static final AnswerMapper answerMapper = Mappers.getMapper(AnswerMapper.class);
-
     @GET
     @Path("/{answerId}")
     @Produces("application/vnd.campus.api.v1+json")
@@ -49,12 +48,13 @@ public class AnswerController {
     @Path("/{answerId}")
     @Produces("application/vnd.campus.api.v1+json")
     public Response editAnswer(@PathParam("answerId") Long answerId,
-                               @Valid AnswerDto answerDto) {
+                               @Valid AnswerCorrectionDto answerDto) {
         dtoConstraintValidator.validate(answerDto, "Malformed body");
         Answer answer = answerService.findById(answerId).orElseThrow(AnswerNotFoundException::new);
-        answer.merge(answerMapper.answerDtoToAnswer(answerDto));
-       answerService.update(answerId, answer);
-        return Response.ok().build();
+        answer.setScore(answerDto.getScore());
+        answer.setCorrections(answerDto.getCorrection());
+        answerService.update(answerId, answer);
+        return Response.noContent().build();
     }
 
 

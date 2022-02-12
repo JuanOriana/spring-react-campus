@@ -35,9 +35,9 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Transactional
     @Override
-    public Answer updateEmptyAnswer(Long examId, User student, String answerFileName, byte[] answerFile, Long answerFileSize, LocalDateTime deliveredTime) {
+    public Answer updateEmptyAnswer(Long examId, Long studentId, String answerFileName, byte[] answerFile, Long answerFileSize) {
         Exam exam = examDao.findById(examId).orElseThrow(ExamNotFoundException::new);
-        FileModel answerFileModel = fileDao.create(answerFileSize, deliveredTime, answerFileName, answerFile, exam.getCourse());
+        FileModel answerFileModel = fileDao.create(answerFileSize, LocalDateTime.now(), answerFileName, answerFile, exam.getCourse());
         answerFileModel.setHidden(true);
         long examCategoryId = 0;
         for (FileCategory fc : fileCategoryDao.getCategories()) {
@@ -47,7 +47,7 @@ public class AnswerServiceImpl implements AnswerService {
             }
         }
         fileDao.associateCategory(answerFileModel.getFileId(), examCategoryId);
-        return answersDao.updateEmptyAnswer(examId, student, deliveredTime, answerFileModel);
+        return answersDao.updateEmptyAnswer(examId, studentId, LocalDateTime.now(), answerFileModel);
     }
 
     @Transactional

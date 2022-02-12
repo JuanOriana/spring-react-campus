@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.common.mappers;
 
 import ar.edu.itba.paw.models.Exam;
-import ar.edu.itba.paw.webapp.dto.ExamDto;
+import ar.edu.itba.paw.webapp.dto.exam.ExamDto;
 import org.mapstruct.Mapper;
 
 @Mapper

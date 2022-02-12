@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.common.mappers;
 
 import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.webapp.dto.UserDto;
+import ar.edu.itba.paw.webapp.dto.user.UserDto;
 import org.mapstruct.Mapper;
 
 @Mapper

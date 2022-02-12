@@ -2,8 +2,7 @@ package ar.edu.itba.paw.webapp.common.assemblers;
 
 import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.webapp.controllers.SubjectController;
-import ar.edu.itba.paw.webapp.controllers.UserController;
-import ar.edu.itba.paw.webapp.dto.SubjectDto;
+import ar.edu.itba.paw.webapp.dto.subject.SubjectDto;
 import ar.edu.itba.paw.webapp.common.mappers.CourseMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.hateoas.Link;

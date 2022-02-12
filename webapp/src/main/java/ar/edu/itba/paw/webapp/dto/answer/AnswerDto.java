@@ -1,6 +1,8 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.answer;
 
 
+import ar.edu.itba.paw.webapp.dto.file.FileModelDto;
+import ar.edu.itba.paw.webapp.dto.user.UserDto;
 import org.springframework.hateoas.Link;
 
 import java.io.Serializable;
@@ -9,7 +11,7 @@ import java.util.List;
 
 public class AnswerDto implements Serializable {
     private Long answerId;
-    private LocalDateTime deliveredDate;
+    private LocalDateTime date;
     private UserDto student;
     private UserDto teacher;
     private FileModelDto answerFile;
@@ -38,11 +40,11 @@ public class AnswerDto implements Serializable {
     }
 
     public LocalDateTime getDeliveredDate() {
-        return deliveredDate;
+        return date;
     }
 
     public void setDeliveredDate(LocalDateTime deliveredDate) {
-        this.deliveredDate = deliveredDate;
+        this.date = deliveredDate;
     }
 
     public UserDto getStudent() {

@@ -10,10 +10,8 @@ import ar.edu.itba.paw.models.exception.ExamNotFoundException;
 import ar.edu.itba.paw.webapp.common.assemblers.AnswerAssembler;
 import ar.edu.itba.paw.webapp.common.assemblers.ExamAssembler;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
-import ar.edu.itba.paw.webapp.dto.AnswerDto;
-import ar.edu.itba.paw.webapp.dto.ExamDto;
-import ar.edu.itba.paw.webapp.dto.SolveExamFormDto;
-import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
+import ar.edu.itba.paw.webapp.dto.answer.AnswerDto;
+import ar.edu.itba.paw.webapp.dto.exam.ExamDto;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.util.PaginationBuilder;
 import org.apache.commons.io.IOUtils;
@@ -24,15 +22,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,72 +86,32 @@ public class ExamController {
     @Path("/{examId}/answers")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getAnswers(@PathParam("examId") Long examId,
-                               @QueryParam("filter-by") @DefaultValue("corrected") String filter,
+                               @QueryParam("filter-by") @DefaultValue("") String filter,
                                @QueryParam("page") @DefaultValue("1") Integer page,
                                @QueryParam("page-size") @DefaultValue("10") Integer pageSize) {
-        Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
-        Long userId = authFacade.getCurrentUserId();
-        if(courseService.isPrivileged(userId, exam.getCourse().getCourseId())) {
-            CampusPage<Answer> paginatedAnswers = answerService.getFilteredAnswers(examId, filter, page, pageSize);
-            Response.ResponseBuilder builder = Response.ok(
-                    new GenericEntity<List<AnswerDto>>(
-                            paginatedAnswers.getContent()
-                                    .stream()
-                                    .map(answer -> answerAssembler.toResource(answer, false))
-                                    .collect(Collectors.toList())){});
-            return PaginationBuilder.build(paginatedAnswers, builder, uriInfo, pageSize);
-        }
-        List<AnswerDto> answerDtoList = answerService.getMarks(userId, exam.getCourse().getCourseId())
-                .stream()
-                .map(answer -> answerAssembler.toResource(answer, false))
-                .collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<AnswerDto>>(answerDtoList){}).build();
+        CampusPage<Answer> paginatedAnswers = answerService.getFilteredAnswers(examId, filter, page, pageSize);
+        Response.ResponseBuilder builder = Response.ok(
+                new GenericEntity<List<AnswerDto>>(
+                        paginatedAnswers.getContent()
+                                .stream()
+                                .map(answer -> answerAssembler.toResource(answer, false))
+                                .collect(Collectors.toList())){});
+        return PaginationBuilder.build(paginatedAnswers, builder, uriInfo, pageSize);
     }
 
-    @POST
+    @PUT
     @Path("/{examId}/answers")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("application/vnd.campus.api.v1+json")
-    public Response postAnswer(@PathParam("examId") Long examId,
-                               @FormDataParam("file") InputStream fileStream,
-                               @FormDataParam("file") FormDataContentDisposition fileMetadata) throws IOException {
-        if (examId == null) {
-            throw new BadRequestException();
-        }
-        Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
+    public Response uploadAnswer(@PathParam("examId") Long examId,
+                                 @FormDataParam("file") InputStream fileStream,
+                                 @FormDataParam("file") FormDataContentDisposition fileMetadata) throws IOException {
         File file = getFileFromStream(fileStream);
-        if (file.length() == 0) throw new BadRequestException("No file was provided");
-        Answer answer = answerService.updateEmptyAnswer(exam.getExamId(),
-                authFacade.getCurrentUser(),
-                fileMetadata.getFileName(),
-                IOUtils.toByteArray(fileStream),
-                file.length(),
-                LocalDateTime.now());
-        URI location = URI.create(uriInfo.getBaseUri() + "/answers/" + answer.getAnswerId());
-        return Response.created(location).build();
-    }
-
-
-    @POST
-    @Path("/{examId}/answers")
-    @Produces("application/vnd.campus.api.v1+json")
-    @Consumes("application/vnd.campus.api.v1+json")
-    public Response newAnswer(@PathParam("examId") Long examId,
-                              @Valid SolveExamFormDto solveExamFormDto)
-            throws DtoValidationException {
-        dtoValidator.validate(solveExamFormDto, "Invalid body request");
-        Long userId = authFacade.getCurrentUserId();
-        Exam exam = examService.findById(examId).orElseThrow(ExamNotFoundException::new);
-        if(!courseService.isPrivileged(userId, exam.getCourse().getCourseId())) {
-            throw new ForbiddenException();
-        }
-        Answer answer = answerService.updateEmptyAnswer(examId, authFacade.getCurrentUser(),
-                solveExamFormDto.getExam().getName(),
-                solveExamFormDto.getExam().getBytes(),
-                solveExamFormDto.getExam().getSize(),
-                LocalDateTime.now());
-        URI location = URI.create(uriInfo.getBaseUri() + "/answers/" + answer.getAnswerId());
-        return Response.created(location).build();
+        if (file.length() == 0) throw new BadRequestException("No file or file metadata was provided");
+        Answer answer = answerService.updateEmptyAnswer(examId, authFacade.getCurrentUserId(), fileMetadata.getFileName(),
+                IOUtils.toByteArray(fileStream), file.length());
+        LOGGER.debug("Uploaded answer file {} to exam {}", answer.getAnswerFile().getFileName(), answer.getExam().getExamId());
+        return Response.ok().build();
     }
 
     private File getFileFromStream(InputStream in) throws IOException {

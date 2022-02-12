@@ -6,7 +6,7 @@ import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.exception.AnnouncementNotFoundException;
 import ar.edu.itba.paw.webapp.common.assemblers.AnnouncementAssembler;
-import ar.edu.itba.paw.webapp.dto.AnnouncementDto;
+import ar.edu.itba.paw.webapp.dto.announcement.AnnouncementDto;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.util.PaginationBuilder;
 import org.slf4j.Logger;

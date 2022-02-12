@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.config;
 import ar.edu.itba.paw.interfaces.ExamService;
 import ar.edu.itba.paw.webapp.common.assemblers.*;
+import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.security.service.implementation.AuthFacadeImpl;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -222,4 +223,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public RoleAssembler roleAssembler() { return new RoleAssembler(); }
+
+    @Bean
+    public DtoConstraintValidator dtoConstraintValidator() { return new DtoConstraintValidator(); }
 }

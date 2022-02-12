@@ -67,7 +67,7 @@ public class AntMatcherVoter {
         if(authentication instanceof AnonymousAuthenticationToken) return false;
         Answer answer = answerService.findById(id).orElseThrow(AnswerNotFoundException::new);
         Long userId = getUserId(authentication);
-        return answer.getStudent().getUserId().equals(userId);
+        return answer.getStudent().getUserId().equals(userId) || answer.getTeacher().getUserId().equals(userId);
     }
 
     public boolean canDeleteAnswerById(Authentication authentication, Long id) {

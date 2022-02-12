@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.common.mappers;
 
 import ar.edu.itba.paw.models.FileExtension;
-import ar.edu.itba.paw.webapp.dto.FileExtensionDto;
+import ar.edu.itba.paw.webapp.dto.file.FileExtensionDto;
 import org.mapstruct.Mapper;
 
 @Mapper

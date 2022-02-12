@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.exam;
 
 import ar.edu.itba.paw.webapp.constraint.annotation.MaxFileSize;
 import ar.edu.itba.paw.webapp.constraint.annotation.NotEmptyFile;

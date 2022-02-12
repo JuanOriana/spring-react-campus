@@ -1,7 +1,10 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.course;
 
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.webapp.dto.RoleDto;
+import ar.edu.itba.paw.webapp.dto.user.UserDto;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

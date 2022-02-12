@@ -2,10 +2,9 @@ package ar.edu.itba.paw.webapp.common.assemblers;
 
 import ar.edu.itba.paw.models.Announcement;
 import ar.edu.itba.paw.webapp.controllers.AnnouncementsController;
-import ar.edu.itba.paw.webapp.controllers.SubjectController;
-import ar.edu.itba.paw.webapp.dto.AnnouncementDto;
-import ar.edu.itba.paw.webapp.dto.CourseDto;
-import ar.edu.itba.paw.webapp.dto.UserDto;
+import ar.edu.itba.paw.webapp.dto.announcement.AnnouncementDto;
+import ar.edu.itba.paw.webapp.dto.course.CourseDto;
+import ar.edu.itba.paw.webapp.dto.user.UserDto;
 import ar.edu.itba.paw.webapp.common.mappers.AnnouncementMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;

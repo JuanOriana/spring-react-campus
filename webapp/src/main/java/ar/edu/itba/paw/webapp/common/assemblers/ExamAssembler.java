@@ -2,10 +2,9 @@ package ar.edu.itba.paw.webapp.common.assemblers;
 
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.webapp.controllers.ExamController;
-import ar.edu.itba.paw.webapp.controllers.SubjectController;
-import ar.edu.itba.paw.webapp.dto.CourseDto;
-import ar.edu.itba.paw.webapp.dto.ExamDto;
-import ar.edu.itba.paw.webapp.dto.FileModelDto;
+import ar.edu.itba.paw.webapp.dto.course.CourseDto;
+import ar.edu.itba.paw.webapp.dto.exam.ExamDto;
+import ar.edu.itba.paw.webapp.dto.file.FileModelDto;
 import ar.edu.itba.paw.webapp.common.mappers.ExamMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;

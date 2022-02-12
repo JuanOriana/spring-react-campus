@@ -7,6 +7,15 @@ import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.common.assemblers.*;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.announcement.AnnouncementDto;
+import ar.edu.itba.paw.webapp.dto.announcement.AnnouncementFormDto;
+import ar.edu.itba.paw.webapp.dto.answer.AnswerDto;
+import ar.edu.itba.paw.webapp.dto.course.CourseDto;
+import ar.edu.itba.paw.webapp.dto.course.CourseFormDto;
+import ar.edu.itba.paw.webapp.dto.exam.*;
+import ar.edu.itba.paw.webapp.dto.file.FileModelDto;
+import ar.edu.itba.paw.webapp.dto.user.TimetableDto;
+import ar.edu.itba.paw.webapp.dto.user.UserDto;
 import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
 import ar.edu.itba.paw.webapp.security.service.AuthFacade;
 import ar.edu.itba.paw.webapp.util.PaginationBuilder;
@@ -365,11 +374,14 @@ public class CourseController {
         if(exams.isEmpty()) {
             return Response.noContent().build();
         }
-        List<ExamDto> examDtoList = exams
-                .stream()
-                .map(exam -> examAssembler.toResource(exam, false))
-                .collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<ExamDto>>(examDtoList) {
+        List<ExamAnswerDto> examAnswerDtoList = new ArrayList<>();
+        exams.forEach(e -> {
+            Answer answer = answerService.findUserAnswer(e.getExamId(), authFacade.getCurrentUserId(), courseId);
+            examAnswerDtoList.add(
+                    new ExamAnswerDto(examAssembler.toResource(e, false),
+                            answerAssembler.toResource(answer, false)));
+        });
+        return Response.ok(new GenericEntity<List<ExamAnswerDto>>(examAnswerDtoList) {
         }).build();
     }
 
@@ -397,7 +409,11 @@ public class CourseController {
             throw new BadRequestException();
         }
         Long userId = authFacade.getCurrentUserId();
-        List<AnswerDto> answers = answerAssembler.toResources(answerService.getMarks(userId, courseId), false);
+        List<Answer> answerList = answerService.getMarks(userId, courseId);
+        if(answerList.isEmpty()) {
+            return Response.noContent().build();
+        }
+        List<AnswerDto> answers = answerAssembler.toResources(answerList, false);
         return Response.ok(new GenericEntity<List<AnswerDto>>(answers) {
         }).build();
     }
@@ -413,4 +429,7 @@ public class CourseController {
         Double average = answerService.getAverageOfUserInCourse(userId, courseId);
         return Response.ok(new GenericEntity<AverageDto>(new AverageDto(average)) {}).build();
     }
+
+
+
 }

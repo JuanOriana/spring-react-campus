@@ -12,7 +12,7 @@ public interface AnswerDao {
 
     boolean update(Long answerId, Answer answer);
 
-    Answer updateEmptyAnswer(Long examId, User student, LocalDateTime deliveryDate, FileModel fileModel);
+    Answer updateEmptyAnswer(Long examId, Long studentId, LocalDateTime deliveryDate, FileModel fileModel);
 
     boolean delete(Long answerId);
 

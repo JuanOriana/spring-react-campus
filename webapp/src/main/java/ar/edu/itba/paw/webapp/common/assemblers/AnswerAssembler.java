@@ -1,11 +1,10 @@
 package ar.edu.itba.paw.webapp.common.assemblers;
 
 import ar.edu.itba.paw.models.Answer;
-import ar.edu.itba.paw.webapp.controllers.AnnouncementsController;
 import ar.edu.itba.paw.webapp.controllers.AnswerController;
-import ar.edu.itba.paw.webapp.dto.AnswerDto;
-import ar.edu.itba.paw.webapp.dto.FileModelDto;
-import ar.edu.itba.paw.webapp.dto.UserDto;
+import ar.edu.itba.paw.webapp.dto.answer.AnswerDto;
+import ar.edu.itba.paw.webapp.dto.file.FileModelDto;
+import ar.edu.itba.paw.webapp.dto.user.UserDto;
 import ar.edu.itba.paw.webapp.common.mappers.AnswerMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;

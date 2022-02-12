@@ -1,4 +1,7 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.user;
+
+import ar.edu.itba.paw.webapp.dto.RoleDto;
+import ar.edu.itba.paw.webapp.dto.course.CourseDto;
 
 public class UserCourseDto {
 

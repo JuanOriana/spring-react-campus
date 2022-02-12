@@ -1,5 +1,6 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.course;
 
+import ar.edu.itba.paw.webapp.dto.subject.SubjectDto;
 import org.springframework.hateoas.Link;
 
 import java.io.Serializable;
