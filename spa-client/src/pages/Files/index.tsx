@@ -30,7 +30,7 @@ function Files() {
   const navigate = useNavigate();
   const [currentPage, pageSize] = usePagination(10);
   const [files, setFiles] = useState(new Array(0));
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [maxPage, setMaxPage] = useState(1);
   const [categories, setCategories] = useState(new Array(0));
   const [extensions, setExtensions] = useState(new Array(0));

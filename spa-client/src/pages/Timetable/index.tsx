@@ -54,7 +54,7 @@ function Timetable() {
   let maxIdx = 0;
   const { user } = useAuth();
   const [times, setTimes] = useState<(CourseModel | null)[][]>([[null]]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     setIsLoading(true);
     if (user) {

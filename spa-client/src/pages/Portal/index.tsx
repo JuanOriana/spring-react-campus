@@ -26,9 +26,9 @@ function Portal() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [courses, setCourses] = useState(new Array(0));
-  const [isCourseLoading, setIsCourseLoading] = useState(false);
+  const [isCourseLoading, setIsCourseLoading] = useState(true);
   const [announcements, setAnnouncements] = useState(new Array(0));
-  const [isAnnouncementLoading, setIsAnnouncementLoading] = useState(false);
+  const [isAnnouncementLoading, setIsAnnouncementLoading] = useState(true);
   const [maxPage, setMaxPage] = useState(1);
   const [currentPage, pageSize] = usePagination(10);
   const { user } = useAuth();
@@ -85,7 +85,7 @@ function Portal() {
                 </Link>
                 {courseData.role.roleName !== "Student" && (
                   <img
-                    src="images/graduation-hat.png"
+                    src="/images/graduation-hat.png"
                     alt="Profesor"
                     style={{ marginLeft: "10px" }}
                     width="28px"

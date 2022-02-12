@@ -19,7 +19,7 @@ function CourseSchedule() {
   const navigate = useNavigate();
   const course = useCourseData();
   const [times, setTimes] = useState(new Array(1));
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const days: string[] = [
     "Lunes",
     "Martes",

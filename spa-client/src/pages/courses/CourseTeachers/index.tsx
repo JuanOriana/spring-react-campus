@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
 import { handleService } from "../../../scripts/handleService";
-import { courseService } from "../../../services";
+import { courseService, userService } from "../../../services";
 import LoadableData from "../../../components/LoadableData";
 //
 
@@ -19,7 +19,9 @@ function CourseTeachers() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [teachers, setTeachers] = useState(new Array(1));
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userImgs, setUserImgs] = useState<string[]>(new Array(1));
+
   const course = useCourseData();
   useEffect(() => {
     setIsLoading(true);
@@ -28,6 +30,24 @@ function CourseTeachers() {
       navigate,
       (teacherData) => {
         setTeachers(teacherData ? teacherData.getContent() : []);
+        if (teacherData) {
+          setUserImgs(new Array(teacherData.getContent().length));
+          teacherData.getContent().map((teacher, idx) => {
+            handleService(
+              userService.getUserProfileImage(teacher.userId),
+              navigate,
+              (imgData) => {
+                if (imgData.size > 0)
+                  setUserImgs((lastUserImgs) => {
+                    const newUserImgs = [...lastUserImgs];
+                    newUserImgs[idx] = URL.createObjectURL(imgData);
+                    return newUserImgs;
+                  });
+              },
+              () => {}
+            );
+          });
+        }
       },
       () => setIsLoading(false)
     );
@@ -40,18 +60,18 @@ function CourseTeachers() {
       </SectionHeading>
       <BigWrapper>
         <LoadableData isLoading={isLoading}>
-          {teachers.map((teacher) => (
+          {teachers.map((teacher, idx) => (
             <TeacherUnit key={teacher.userId}>
-              {!teacher.image && (
+              {(!userImgs || !userImgs[idx]) && (
                 <TeacherIcon
                   alt={`${teacher.name} ${teacher.surname}`}
-                  src="/resources/images/default-user-image.png"
+                  src="/images/default-user-image.png"
                 />
               )}
-              {teacher.image && (
+              {userImgs && userImgs[idx] && (
                 <TeacherIcon
                   alt={`${teacher.name} ${teacher.surname}`}
-                  src={`/user/profile-image/${teacher.userId}`}
+                  src={userImgs[idx]}
                 />
               )}
               <div
