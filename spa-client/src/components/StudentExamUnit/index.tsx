@@ -15,7 +15,6 @@ import AnswerModel from "../../types/AnswerModel";
 
 interface StudentExamUnitProps {
   answer: AnswerModel;
-  examId: number;
 }
 
 function StudentExamUnit({ answer }: StudentExamUnitProps) {
@@ -45,7 +44,7 @@ function StudentExamUnit({ answer }: StudentExamUnitProps) {
           <FileName>{answer.deliveredDate.toDateString()}</FileName>
         )}
       </div>
-      {!answer.score && (
+      {answer.score !== 0 && !answer.score && (
         <Link
           to={`answer/${answer.answerId}/correct`}
           style={{ display: "flex", alignItems: "center" }}
@@ -56,7 +55,8 @@ function StudentExamUnit({ answer }: StudentExamUnitProps) {
           />
         </Link>
       )}
-      {answer.score && (
+
+      {(answer.score === 0 || answer.score) && (
         <div style={{ display: "flex", alignItems: "center" }}>
           <FileName style={{ marginRight: "10px" }}>{answer.score}</FileName>
           <button style={{ background: "none", border: "none" }} type="button">
