@@ -11,6 +11,7 @@ import { getPagedFetch } from "../scripts/getPagedFetch";
 import { authedFetch } from "../scripts/authedFetch";
 import { resultFetch } from "../scripts/resultFetch";
 import { parseAnswersResponse } from "../scripts/parseAnswersResponse";
+import { pageUrlMaker } from "../scripts/pageUrlMaker";
 
 export class ExamsServices {
   private readonly basePath = paths.BASE_URL + paths.EXAMS;
@@ -29,11 +30,22 @@ export class ExamsServices {
   }
 
   public async getExamAnswers(
-    examId: number
+    examId: number,
+    page?: number,
+    pageSize?: number,
+    filterBy?: string
   ): Promise<Result<PagedContent<AnswerModel[]>>> {
-    const resp = await getPagedFetch<AnswerModel[]>(
-      this.basePath + "/" + examId + "/answers"
+    const url = pageUrlMaker(
+      this.basePath + "/" + examId + "/answers",
+      page,
+      pageSize
     );
+
+    if (typeof filterBy !== "undefined") {
+      url.searchParams.append("filter-by", filterBy);
+    }
+
+    const resp = await getPagedFetch<AnswerModel[]>(url.toString());
 
     return parseAnswersResponse(resp);
   }

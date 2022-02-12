@@ -9,7 +9,7 @@ export function pageUrlMaker(
   }
 
   if (typeof pageSize !== "undefined") {
-    url.searchParams.append("pageSize", pageSize.toString());
+    url.searchParams.append("page-size", pageSize.toString());
   }
 
   return url;
