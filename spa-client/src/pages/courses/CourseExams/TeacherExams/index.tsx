@@ -62,6 +62,11 @@ function TeacherExams() {
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
+    setIsBefore(false);
+    if (data.endTime <= data.startTime) {
+      setIsBefore(true);
+      return;
+    }
     courseService
       .newExam(
         course.courseId,
