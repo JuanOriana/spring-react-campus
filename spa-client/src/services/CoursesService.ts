@@ -144,13 +144,15 @@ export class CourseService {
         .getData()
         .getContent()
         .forEach((item) => {
-          item.answer.deliveredDate = new Date(item.answer.deliveredDate);
-          item.exam.endTime = new Date(
-            item.exam.endTime ? item.exam.endTime : ""
-          );
-          item.exam.startTime = new Date(
-            item.exam.startTime ? item.exam.startTime : ""
-          );
+          item.answer.deliveredDate = item.answer.deliveredDate
+            ? new Date(item.answer.deliveredDate)
+            : undefined;
+          item.exam.endTime = item.exam.endTime
+            ? new Date(item.exam.endTime)
+            : undefined;
+          item.exam.startTime = item.exam.startTime
+            ? new Date(item.exam.startTime)
+            : undefined;
         });
     }
     return resp;

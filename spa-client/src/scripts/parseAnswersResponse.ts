@@ -9,7 +9,10 @@ export function parseAnswersResponse(
       .getData()
       .getContent()
       .forEach(
-        (answer) => (answer.deliveredDate = new Date(answer.deliveredDate))
+        (answer) =>
+          (answer.deliveredDate = answer.deliveredDate
+            ? new Date(answer.deliveredDate)
+            : undefined)
       );
   }
 

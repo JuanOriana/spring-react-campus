@@ -8,8 +8,10 @@ export function parseExamModelResponse(
       .getData()
       .getContent()
       .forEach((exam) => {
-        exam.endTime = new Date(exam.endTime ? exam.endTime : "");
-        exam.startTime = new Date(exam.startTime ? exam.startTime : "");
+        console.log(exam.endTime);
+
+        exam.endTime = exam.endTime ? new Date(exam.endTime) : undefined;
+        exam.startTime = exam.startTime ? new Date(exam.startTime) : undefined;
       });
   }
 

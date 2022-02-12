@@ -16,8 +16,10 @@ export class AnswersService {
     );
 
     if (resp.hasFailed()) return resp;
-
-    resp.getData().deliveredDate = new Date(resp.getData().deliveredDate);
+    console.log("ANSWERBYIDE");
+    console.log(resp.getData().deliveredDate);
+    const ans = resp.getData().deliveredDate;
+    resp.getData().deliveredDate = ans ? new Date(ans) : undefined;
 
     return resp;
   }

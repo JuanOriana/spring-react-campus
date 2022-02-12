@@ -22,8 +22,8 @@ export class ExamsServices {
 
     if (!resp.hasFailed()) {
       const exam = resp.getData();
-      exam.endTime = new Date(exam.endTime ? exam.endTime : "");
-      exam.startTime = new Date(exam.startTime ? exam.startTime : "");
+      exam.endTime = exam.endTime ? new Date(exam.endTime) : undefined;
+      exam.startTime = exam.startTime ? new Date(exam.startTime) : undefined;
     }
 
     return resp;
