@@ -1,4 +1,4 @@
-import { paths } from "../common/constants";
+import { APPLICATION_V1_JSON_TYPE, paths } from "../common/constants";
 import {
   Result,
   CourseModel,
@@ -49,6 +49,22 @@ export class CourseService {
     return getPagedFetch<CourseModel[]>(url.toString());
   }
 
+  public async enrollHelperToCourse(
+    courseId: number,
+    userId: number
+  ): Promise<Result<PostResponse>> {
+    const helperInfo = { userId: userId };
+
+    return resultFetch<PostResponse>(
+      this.basePath + "/" + courseId + "/helpers",
+      {
+        method: "POST",
+        headers: {},
+        body: helperInfo,
+      }
+    );
+  }
+
   public async getHelpers(
     courseId: number
   ): Promise<Result<PagedContent<UserModel[]>>> {
@@ -57,11 +73,43 @@ export class CourseService {
     );
   }
 
+  public async enrollTeacherToCourse(
+    courseId: number,
+    userId: number
+  ): Promise<Result<PostResponse>> {
+    const teacherInfo = { userId: userId };
+
+    return resultFetch<PostResponse>(
+      this.basePath + "/" + courseId + "/teachers",
+      {
+        method: "POST",
+        headers: {},
+        body: teacherInfo,
+      }
+    );
+  }
+
   public async getTeachers(
     courseId: number
   ): Promise<Result<PagedContent<UserModel[]>>> {
     return getPagedFetch<UserModel[]>(
       this.basePath + "/" + courseId + "/teachers"
+    );
+  }
+
+  public async enrollStudentToCourse(
+    courseId: number,
+    userId: number
+  ): Promise<Result<PostResponse>> {
+    const studentInfo = { userId: userId };
+
+    return resultFetch<PostResponse>(
+      this.basePath + "/" + courseId + "/students",
+      {
+        method: "POST",
+        headers: {},
+        body: studentInfo,
+      }
     );
   }
 
@@ -210,7 +258,7 @@ export class CourseService {
 
     return resultFetch<PostResponse>(this.basePath, {
       method: "POST",
-      headers: { "Content-Type": "application/vnd.campus.api.v1+json" },
+      headers: { "Content-Type": APPLICATION_V1_JSON_TYPE },
       body: newCourse,
     });
   }
@@ -229,7 +277,7 @@ export class CourseService {
       this.basePath + "/" + courseId + "/announcements",
       {
         method: "POST",
-        headers: { "Content-Type": "application/vnd.campus.api.v1+json" },
+        headers: { "Content-Type": APPLICATION_V1_JSON_TYPE },
         body: newAnnouncement,
       }
     );

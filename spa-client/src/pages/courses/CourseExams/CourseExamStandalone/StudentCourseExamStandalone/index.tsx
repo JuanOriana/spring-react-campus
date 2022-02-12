@@ -92,7 +92,7 @@ function StudentCourseExamStandalone() {
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
     examsService
-      .newAnswer(parseInt(examId ? examId : "-1"), data.file[0])
+      .editAnswerByStudent(parseInt(examId ? examId : "-1"), data.file[0])
       .then((result) => {
         if (result.hasFailed()) {
           renderToast(
