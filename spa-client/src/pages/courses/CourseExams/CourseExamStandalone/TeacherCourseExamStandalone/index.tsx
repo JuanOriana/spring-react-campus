@@ -21,7 +21,6 @@ import { ExamModel } from "../../../../../types";
 import StudentExamUnit from "../../../../../components/StudentExamUnit";
 import LoadableData from "../../../../../components/LoadableData";
 import { getQueryOrDefault, useQuery } from "../../../../../hooks/useQuery";
-
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../../../common/i18n/index";
@@ -115,11 +114,7 @@ function TeacherCourseExamStandalone() {
             <>{t("TeacherCourseExamStandalone.noExams")}</>
           )}
           {answers.map((answer) => (
-            <StudentExamUnit
-              key={answer.answerId}
-              answer={answer}
-              examId={parseInt(examId ? examId : "-1")}
-            />
+            <StudentExamUnit key={answer.answerId} answer={answer} />
           ))}
         </BigWrapper>
         <PaginationWrapper style={{ alignSelf: "center" }}>
