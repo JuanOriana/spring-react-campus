@@ -48,7 +48,7 @@ function CourseSchedule() {
         <LoadableData isLoading={isLoading}>
           <h3 style={{ margin: "10px 0" }}>{t("CourseSchedule.subTitle")}</h3>
           {days.map((day, index) => (
-            <>
+            <div key={day}>
               {times[index] && times[index].startTime && (
                 <>
                   <h3 style={{ margin: "3px 0 0 10px" }}>
@@ -60,7 +60,7 @@ function CourseSchedule() {
                   </p>
                 </>
               )}
-            </>
+            </div>
           ))}
         </LoadableData>
       </BigWrapper>

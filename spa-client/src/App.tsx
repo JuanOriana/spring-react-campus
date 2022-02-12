@@ -66,7 +66,7 @@ function App() {
               <Route path="*" element={<Custom404 />} />
               <Route path="course/:courseId/mail/:userId" element={<Mail />} />
               <Route path="course/:courseId" element={<CourseLayout />}>
-                <Route index element={<Navigate to="announcements" />} />
+                <Route index element={<CourseAnnouncements />} />
                 <Route path="announcements" element={<CourseAnnouncements />} />
                 <Route path="files" element={<CourseFiles />} />
                 <Route path="exams" element={<CourseExams />} />

@@ -70,7 +70,7 @@ function StudentExams() {
         <LoadableData isLoading={isLoading}>
           {unresolvedExams.length === 0 && <p>{t("StudentExams.noExams")}</p>}
           {unresolvedExams.map((exam) => (
-            <ExamUnit exam={exam} />
+            <ExamUnit key={exam.examId} exam={exam} />
           ))}
           {answerMarks.length !== 0 && (
             <>
@@ -92,6 +92,7 @@ function StudentExams() {
               </div>
               {answerMarks.map((answer: SolvedExamModel) => (
                 <ExamUnit
+                  key={answer.exam.examId}
                   exam={answer.exam}
                   answer={answer.answer}
                   isDelivered={true}
