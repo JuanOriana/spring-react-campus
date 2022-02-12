@@ -12,7 +12,8 @@ public class DtoValidationExceptionMapper implements ExceptionMapper<DtoValidati
 
     @Override
     public Response toResponse(final DtoValidationException exception) {
-        return Response.status(Response.Status.CONFLICT).entity(new ExceptionDto(exception.getMessage(), exception.getConstraintViolations())).build();
+        Response.Status status = Response.Status.CONFLICT;
+        return Response.status(status).entity(new ExceptionDto(exception.getMessage(), exception.getConstraintViolations(), status.getReasonPhrase(), status.getStatusCode())).build();
     }
 
 }

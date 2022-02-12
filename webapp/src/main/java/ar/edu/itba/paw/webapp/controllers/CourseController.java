@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
+import ar.edu.itba.paw.models.exception.UserEnrolledException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.common.assemblers.*;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
@@ -12,6 +13,7 @@ import ar.edu.itba.paw.webapp.dto.announcement.AnnouncementFormDto;
 import ar.edu.itba.paw.webapp.dto.answer.AnswerDto;
 import ar.edu.itba.paw.webapp.dto.course.CourseDto;
 import ar.edu.itba.paw.webapp.dto.course.CourseFormDto;
+import ar.edu.itba.paw.webapp.dto.course.EnrollUserDto;
 import ar.edu.itba.paw.webapp.dto.exam.*;
 import ar.edu.itba.paw.webapp.dto.file.FileModelDto;
 import ar.edu.itba.paw.webapp.dto.user.TimetableDto;
@@ -102,8 +104,7 @@ public class CourseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
-    @GET
-    @Path("/{courseId}/announcements")
+    @GET @Path("/{courseId}/announcements")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getAnnouncements(@PathParam("courseId") Long courseId,
                                      @QueryParam("page") @DefaultValue("1") Integer page,
@@ -117,8 +118,7 @@ public class CourseController {
         return PaginationBuilder.build(announcements, builder, uriInfo, pageSize);
     }
 
-    @Path("/{courseId}/files")
-    @POST
+    @POST @Path("/{courseId}/files")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("application/vnd.campus.api.v1+json")
     public Response postFile(@PathParam("courseId") Long courseId,
@@ -138,8 +138,7 @@ public class CourseController {
     }
 
 
-    @GET
-    @Path("/{courseId}/files")
+    @GET @Path("/{courseId}/files")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getFiles(@PathParam("courseId") Long courseId,
                              @QueryParam("category-type") List<Long> categoryType,
@@ -188,8 +187,36 @@ public class CourseController {
         return Response.created(location).build();
     }
 
-    @GET
-    @Path("/available-years")
+    private Response enrollUser(Long userId, Long courseId, Integer roleId) {
+        if(courseService.belongs(userId, courseId)) {
+            throw new UserEnrolledException();
+        }
+        courseService.enroll(userId, courseId, roleId);
+        return Response.noContent().build();
+    }
+
+    @POST @Path("/{courseId}/teachers")
+    @Consumes("application/vnd.campus.api.v1+json")
+    public Response enrollTeacher(@PathParam("courseId") Long courseId,
+                               @Valid EnrollUserDto enrollData) {
+        return enrollUser(enrollData.getUserId(), courseId, Roles.TEACHER.getValue());
+    }
+
+    @POST @Path("/{courseId}/helpers")
+    @Consumes("application/vnd.campus.api.v1+json")
+    public Response enrollAssistant(@PathParam("courseId") Long courseId,
+                                  @Valid EnrollUserDto enrollData) {
+        return enrollUser(enrollData.getUserId(), courseId, Roles.ASSISTANT.getValue());
+    }
+
+    @POST @Path("/{courseId}/students")
+    @Consumes("application/vnd.campus.api.v1+json")
+    public Response enrollStudent(@PathParam("courseId") Long courseId,
+                                    @Valid EnrollUserDto enrollData) {
+        return enrollUser(enrollData.getUserId(), courseId, Roles.STUDENT.getValue());
+    }
+
+    @GET @Path("/available-years")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getAvailableYears() {
         List<Integer> availableYears = courseService.getAvailableYears();
@@ -222,8 +249,7 @@ public class CourseController {
         return PaginationBuilder.build(courses, builder, uriInfo, pageSize);
     }
 
-    @POST
-    @Path("/{courseId}/announcements")
+    @POST @Path("/{courseId}/announcements")
     @Consumes("application/vnd.campus.api.v1+json")
     public Response newAnnouncement(@PathParam("courseId") Long courseId,
                                     @Valid AnnouncementFormDto announcementDto) throws DtoValidationException {
@@ -239,8 +265,7 @@ public class CourseController {
         return Response.created(location).build();
     }
 
-    @GET
-    @Path("/{courseId}")
+    @GET @Path("/{courseId}")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseById(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
@@ -250,8 +275,7 @@ public class CourseController {
         return Response.ok(courseAssembler.toResource(course, true)).build();
     }
 
-    @GET
-    @Path("/{courseId}/teachers")
+    @GET @Path("/{courseId}/teachers")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseTeachers(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
@@ -266,8 +290,7 @@ public class CourseController {
         }).build();
     }
 
-    @GET
-    @Path("/{courseId}/helpers")
+    @GET @Path("/{courseId}/helpers")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseHelpers(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
@@ -282,8 +305,7 @@ public class CourseController {
         }).build();
     }
 
-    @GET
-    @Path("/{courseId}/students")
+    @GET @Path("/{courseId}/students")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseStudents(@QueryParam("page") @DefaultValue("1")
                                               Integer page,
@@ -304,8 +326,7 @@ public class CourseController {
         return PaginationBuilder.build(enrolledStudents, builder, uriInfo, pageSize);
     }
 
-    @GET
-    @Path("/{courseId}/exams")
+    @GET @Path("/{courseId}/exams")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseExams(@PathParam("courseId") Long courseId) {
         List<Exam> exams = examService.listByCourse(courseId);
@@ -320,8 +341,7 @@ public class CourseController {
         }).build();
     }
 
-    @GET
-    @Path("/{courseId}/role")
+    @GET @Path("/{courseId}/role")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getUserRoleInCourse(@PathParam("courseId") Long courseId) {
         if(courseId == null) {
@@ -331,8 +351,7 @@ public class CourseController {
         return Response.ok(new GenericEntity<RoleDto>(roleAssembler.toResource(role)){}).build();
     }
 
-    @GET
-    @Path("/{courseId}/timetable")
+    @GET @Path("/{courseId}/timetable")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getTimetable(@PathParam("courseId") Long courseId) {
         Timetable[] schedule = timetableService.findByIdOrdered(courseId);
@@ -343,8 +362,7 @@ public class CourseController {
         return Response.ok(new GenericEntity<List<TimetableDto>>(timetable){}).build();
     }
 
-    @POST
-    @Path("/{courseId}/exams")
+    @POST @Path("/{courseId}/exams")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("application/vnd.campus.api.v1+json")
     public Response newExam(@PathParam("courseId") Long courseId,
@@ -362,8 +380,7 @@ public class CourseController {
         return Response.created(location).build();
     }
 
-    @GET
-    @Path("/{courseId}/exams/solved")
+    @GET @Path("/{courseId}/exams/solved")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getResolvedExams(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
@@ -385,8 +402,7 @@ public class CourseController {
         }).build();
     }
 
-    @GET
-    @Path("/{courseId}/exams/unsolved")
+    @GET @Path("/{courseId}/exams/unsolved")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getUnresolvedExams(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
@@ -401,8 +417,7 @@ public class CourseController {
         }).build();
     }
 
-    @GET
-    @Path("/{courseId}/exams/answers")
+    @GET @Path("/{courseId}/exams/answers")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseAnswers(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
@@ -418,8 +433,7 @@ public class CourseController {
         }).build();
     }
 
-    @GET
-    @Path("/{courseId}/exams/average")
+    @GET @Path("/{courseId}/exams/average")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseAverage(@PathParam("courseId") Long courseId) {
         if (courseId == null) {

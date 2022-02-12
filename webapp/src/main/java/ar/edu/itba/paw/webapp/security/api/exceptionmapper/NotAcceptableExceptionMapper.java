@@ -15,6 +15,6 @@ public class NotAcceptableExceptionMapper implements ExceptionMapper<NotAcceptab
 
     @Override
     public Response toResponse(NotAcceptableException e) {
-        return ResponseExceptionMapperUtil.toResponse(Response.Status.NOT_ACCEPTABLE, "Provided api version on contract is not acceptable", uriInfo);
+        return ResponseExceptionMapperUtil.toResponse(Response.Status.NOT_ACCEPTABLE, "Provided API version on contract is not supported", uriInfo);
     }
 }

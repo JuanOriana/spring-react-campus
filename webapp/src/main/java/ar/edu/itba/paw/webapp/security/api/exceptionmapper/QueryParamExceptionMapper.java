@@ -16,6 +16,6 @@ public class QueryParamExceptionMapper implements ExceptionMapper<QueryParamExce
 
     @Override
     public Response toResponse(QueryParamException e) {
-        return ResponseExceptionMapperUtil.toResponse(Response.Status.BAD_REQUEST, "Malformed query param", uriInfo);
+        return ResponseExceptionMapperUtil.toResponse(Response.Status.BAD_REQUEST, "Malformed query parameter", uriInfo);
     }
 }

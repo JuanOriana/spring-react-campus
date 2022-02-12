@@ -8,6 +8,8 @@ import javax.validation.ConstraintViolation;
 
 public class ExceptionDto {
 
+    private String title;
+    private Integer status;
     private String message;
     private List<FieldViolationDto> errors;
 
@@ -17,10 +19,11 @@ public class ExceptionDto {
         this.setMessage(message);
     }
 
-    public ExceptionDto(final String message, final Set<? extends ConstraintViolation<?>> constraintViolations) {
+    public ExceptionDto(final String message, final Set<? extends ConstraintViolation<?>> constraintViolations, String title, Integer status) {
         this.setMessage(message);
         errors = new ArrayList<>(constraintViolations.size());
-
+        this.title = title;
+        this.status = status;
         constraintViolations.forEach((constraintViolation) -> {
             if (!constraintViolation.getPropertyPath().toString().isEmpty())
                 errors.add(new FieldViolationDto(constraintViolation));
@@ -43,4 +46,19 @@ public class ExceptionDto {
         this.errors = errors;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }

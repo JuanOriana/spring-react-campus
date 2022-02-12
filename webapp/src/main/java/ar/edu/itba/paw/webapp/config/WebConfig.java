@@ -51,13 +51,11 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    // Change this to a config/profile in the future
-    private static final boolean DEV_BUILD = false;
+    private static final boolean DEV_BUILD = true;
     private static boolean isOnDevBuild() {
         return DEV_BUILD;
     }
 
-    // Move to a bean in the future since dependencies should be requested as late as possible
     @Autowired
     Environment environment;
 

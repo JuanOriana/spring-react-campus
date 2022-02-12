@@ -39,9 +39,6 @@ public class ExamController {
     private UriInfo uriInfo;
 
     @Autowired
-    private CourseService courseService;
-
-    @Autowired
     private AnswerService answerService;
 
     @Autowired
@@ -49,9 +46,6 @@ public class ExamController {
 
     @Autowired
     private AuthFacade authFacade;
-
-    @Autowired
-    private DtoConstraintValidator dtoValidator;
 
     @Autowired
     private AnswerAssembler answerAssembler;

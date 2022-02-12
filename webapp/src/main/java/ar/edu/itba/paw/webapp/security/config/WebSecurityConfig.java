@@ -4,7 +4,6 @@ import ar.edu.itba.paw.webapp.security.api.*;
 import ar.edu.itba.paw.webapp.security.api.basic.BasicAuthenticationProvider;
 import ar.edu.itba.paw.webapp.security.api.jwt.JwtAuthenticationProvider;
 import ar.edu.itba.paw.webapp.security.voter.AntMatcherVoter;
-import ar.edu.itba.paw.webapp.security.voter.CampusVoter;
 import ar.edu.itba.paw.webapp.security.service.implementation.CampusUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -94,19 +93,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return bridgeAuthenticationFilter;
     }
 
-    @Bean
-    public AccessDecisionManager accessDecisionManager() {
-        List<AccessDecisionVoter<?>> decisionVoters
-                = Arrays.asList(
-                new WebExpressionVoter(),
-                new RoleVoter(),
-                new AuthenticatedVoter(),
-                courseVoter());
-        return new UnanimousBased(decisionVoters);
-    }
-
-    @Bean
-    public CampusVoter courseVoter() { return new CampusVoter(); }
 
     @Bean
     public AntMatcherVoter antMatcherVoter() { return new AntMatcherVoter();}

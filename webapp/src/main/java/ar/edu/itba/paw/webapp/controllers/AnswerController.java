@@ -5,11 +5,9 @@ import ar.edu.itba.paw.interfaces.AnswerService;
 import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.exception.AnswerNotFoundException;
 import ar.edu.itba.paw.webapp.common.assemblers.AnswerAssembler;
-import ar.edu.itba.paw.webapp.common.mappers.AnswerMapper;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.answer.AnswerCorrectionDto;
 import ar.edu.itba.paw.webapp.dto.answer.AnswerDto;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -56,7 +54,6 @@ public class AnswerController {
         answerService.update(answerId, answer);
         return Response.noContent().build();
     }
-
 
     @DELETE
     @Path("/{answerId}")

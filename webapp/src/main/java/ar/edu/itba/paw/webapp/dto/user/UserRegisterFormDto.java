@@ -13,11 +13,11 @@ public class UserRegisterFormDto {
     private int fileNumber;
 
     @NotBlank
-    @Pattern(regexp = "[a-zA-Z ']+") // Must have at leat one caracter and only letters
+    @Pattern(regexp = "[a-zA-Z ']+") // Must have at least one character and only letters
     private String name;
 
     @NotBlank
-    @Pattern(regexp = "[a-zA-Z ']+") // Must have at leat one caracter and only letters
+    @Pattern(regexp = "[a-zA-Z ']+") // Must have at least one character and only letters
     private String surname;
 
     @NotBlank
@@ -33,7 +33,6 @@ public class UserRegisterFormDto {
     @NotBlank
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
     @Size(min = 8, max = 50)
-    //Minimum eight characters, at least one uppercase letter, one lowercase letter and one number (sourc: https://stackoverflow.com/questions/19605150/regex-for-password-must-contain-at-least-eight-characters-at-least-one-number-a )
     private String password;
 
     public int getFileNumber() {
