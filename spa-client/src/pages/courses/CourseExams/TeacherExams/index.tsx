@@ -16,24 +16,16 @@ import {
 import ExamUnit from "../../../../components/ExamUnit";
 import { useForm } from "react-hook-form";
 import React, { useEffect, useState } from "react";
-import {
-  announcementsService,
-  courseService,
-  examsService,
-} from "../../../../services";
+import { courseService, examsService } from "../../../../services";
 import { renderToast } from "../../../../scripts/renderToast";
 import { useCourseData } from "../../../../components/layouts/CourseLayout";
 import { useNavigate } from "react-router-dom";
-import { usePagination } from "../../../../hooks/usePagination";
-
-// i18next imports
-import { useTranslation } from "react-i18next";
-import "../../../../common/i18n/index";
 import { handleService } from "../../../../scripts/handleService";
 import ExamStatsModel from "../../../../types/ExamStatsModel";
 import LoadableData from "../../../../components/LoadableData";
-import { AnnouncementModel } from "../../../../types";
-
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../../../common/i18n/index";
 //
 
 type FormData = {
@@ -238,6 +230,7 @@ function TeacherExams() {
           {examsStats.length === 0 && <p>{t("TeacherExams.noExams")}</p>}
           {examsStats.map((examData) => (
             <ExamUnit
+              key={examData.exam.examId}
               exam={examData.exam}
               isTeacher={true}
               examsSolved={examData.corrected.length}

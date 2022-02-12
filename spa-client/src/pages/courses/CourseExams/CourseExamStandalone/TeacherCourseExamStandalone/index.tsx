@@ -16,7 +16,7 @@ import { usePagination } from "../../../../../hooks/usePagination";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { handleService } from "../../../../../scripts/handleService";
-import { examsService } from "../../../../../services";
+import { answersService, examsService } from "../../../../../services";
 import { ExamModel } from "../../../../../types";
 import StudentExamUnit from "../../../../../components/StudentExamUnit";
 import LoadableData from "../../../../../components/LoadableData";
@@ -24,6 +24,8 @@ import { getQueryOrDefault, useQuery } from "../../../../../hooks/useQuery";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../../../common/i18n/index";
+import { renderToast } from "../../../../../scripts/renderToast";
+import AnswerModel from "../../../../../types/AnswerModel";
 
 //
 
@@ -70,6 +72,32 @@ function TeacherCourseExamStandalone() {
       );
     }
   }, [examId, currentPage, pageSize, filterBy]);
+
+  function uncorrectExam(id: number) {
+    answersService
+      .correctAnswer(id, undefined, undefined)
+      .then((result) => {
+        if (result.hasFailed() && result.getError().getCode() !== 204) {
+          renderToast(
+            "No se pudo descorregir el examen, intente de nuevo",
+            "error"
+          );
+          return;
+        }
+        renderToast(`👑 Se elimino la correccion del examen`, "success");
+        setAnswers((oldAnswers) =>
+          oldAnswers.map((answer: AnswerModel) =>
+            answer.answerId === id ? { ...answer, score: undefined } : answer
+          )
+        );
+      })
+      .catch(() =>
+        renderToast(
+          "No se pudo descorregir el examen, intente de nuevo",
+          "error"
+        )
+      );
+  }
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
@@ -114,7 +142,11 @@ function TeacherCourseExamStandalone() {
             <>{t("TeacherCourseExamStandalone.noExams")}</>
           )}
           {answers.map((answer) => (
-            <StudentExamUnit key={answer.answerId} answer={answer} />
+            <StudentExamUnit
+              key={answer.answerId}
+              answer={answer}
+              onDelete={uncorrectExam}
+            />
           ))}
         </BigWrapper>
         <PaginationWrapper style={{ alignSelf: "center" }}>
