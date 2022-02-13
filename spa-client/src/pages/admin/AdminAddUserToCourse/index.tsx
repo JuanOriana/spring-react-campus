@@ -130,7 +130,7 @@ function AdminAddUserToCourse() {
     }
     promise
       .then((result) => {
-        if (!result.hasFailed()) {
+        if (!result.hasFailed() || result.getError().getCode() === 204) {
           setUsers((oldUsers) =>
             oldUsers.filter((userIter) => userIter.userId !== user?.userId)
           );
