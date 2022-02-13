@@ -205,6 +205,7 @@ export const TRANSLATIONS_EN = {
         isRequired: "Password field is required",
         length: "Password must have between 8 and 50 characters",
       },
+      repeated: "Username, email and file-number must be unique",
     },
     form: {
       title: "Create new user",

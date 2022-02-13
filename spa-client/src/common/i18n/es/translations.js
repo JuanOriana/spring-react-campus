@@ -206,6 +206,7 @@ export const TRANSLATIONS_ES = {
         isRequired: "La contrasena es requerida",
         length: "El largo de la contrasena debe estar entre 8 y 50 caracteres",
       },
+      repeated: "El nombre de usuario, email y legajo deben ser unicos",
     },
     form: {
       title: "Crear nuevo usuario",

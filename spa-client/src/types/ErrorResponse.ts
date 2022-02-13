@@ -1,10 +1,10 @@
 export default class ErrorResponse {
   private readonly code: number;
-  private readonly descritpion: string;
+  private readonly description: string;
 
   public constructor(code: number, description: string) {
     this.code = code;
-    this.descritpion = description;
+    this.description = description;
   }
 
   public getCode(): number {
@@ -12,6 +12,6 @@ export default class ErrorResponse {
   }
 
   public getDescription(): string {
-    return this.descritpion;
+    return this.description;
   }
 }

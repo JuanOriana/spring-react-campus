@@ -72,6 +72,7 @@ function AdminNewCourse() {
   } = useForm<FormData>({ criteriaMode: "all" });
 
   const onSubmit = handleSubmit((data: FormData) => {
+    setIsCourseDuplicated(false);
     courseService
       .newCourse(
         data.subjectId,
@@ -86,7 +87,9 @@ function AdminNewCourse() {
           renderToast("👑 Curso creado exitosamente!", "success");
           reset();
         } else {
-          renderToast("No se pudo crear el curso, intente de nuevo", "error");
+          if (result.getError().getCode() === 409) setIsCourseDuplicated(true);
+          else
+            renderToast("No se pudo crear el curso, intente de nuevo", "error");
         }
       })
       .catch(() =>

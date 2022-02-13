@@ -31,9 +31,7 @@ type FormData = {
 function AdminNewUser() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [isFileNumberDuplicated, setIsFileNumberDuplicated] = useState(false);
-  const [isUsernameDuplicated, setIsUsernameDuplicated] = useState(false);
-  const [isEmailDuplicated, setIsEmailDuplicated] = useState(false);
+  const [repeatedValues, setRepeatedValues] = useState(false);
   const [nextFileNumber, setNextFileNumber] = useState(0);
 
   useEffect(() => {
@@ -62,6 +60,7 @@ function AdminNewUser() {
         message: t("AdminNewUser.error.passwordsMustMatch"),
       });
     } else {
+      setRepeatedValues(false);
       userService
         .newUser(
           data.fileNumber,
@@ -72,11 +71,23 @@ function AdminNewUser() {
           data.password,
           data.confirmPassword
         )
-        .then(() => renderToast("👑 Usuario creado exitosamente!", "success"))
+        .then((result) => {
+          if (!result.hasFailed()) {
+            renderToast("👑 Usuario creado exitosamente!", "success");
+            reset();
+          } else {
+            if (result.getError().getCode() === 409) {
+              setRepeatedValues(true);
+            } else
+              renderToast(
+                "No se pudo crear el usuario, intente de nuevo",
+                "error"
+              );
+          }
+        })
         .catch(() =>
           renderToast("No se pudo crear el usuario, intente de nuevo", "error")
         );
-      reset();
     }
   });
   return (
@@ -116,11 +127,6 @@ function AdminNewUser() {
         {errors.fileNumber?.type === "min" && (
           <ErrorMessage>
             {t("AdminNewUser.error.fileNumber.positiveInteger")}
-          </ErrorMessage>
-        )}
-        {isFileNumberDuplicated && (
-          <ErrorMessage>
-            {t("AdminNewUser.error.fileNumber.exists")}
           </ErrorMessage>
         )}
         <FormLabel htmlFor="name">{t("AdminNewUser.form.name")}</FormLabel>
@@ -192,9 +198,6 @@ function AdminNewUser() {
         {errors.username?.message && (
           <ErrorMessage> {errors.username?.message} </ErrorMessage>
         )}
-        {isUsernameDuplicated && (
-          <ErrorMessage>{t("AdminNewUser.error.username.exists")}</ErrorMessage>
-        )}
         <FormLabel htmlFor="email">{t("AdminNewUser.form.email")}</FormLabel>
         <FormInput
           type="email"
@@ -215,9 +218,6 @@ function AdminNewUser() {
           <ErrorMessage>
             {t("AdminNewUser.error.email.isRequired")}
           </ErrorMessage>
-        )}
-        {isEmailDuplicated && (
-          <ErrorMessage>{t("AdminNewUser.error.email.exists")}</ErrorMessage>
         )}
         <FormLabel htmlFor="password">
           {t("AdminNewUser.form.password")}
@@ -258,6 +258,9 @@ function AdminNewUser() {
         />
         {errors.confirmPassword?.message && (
           <ErrorMessage> {errors.confirmPassword?.message} </ErrorMessage>
+        )}
+        {repeatedValues && (
+          <ErrorMessage>{t("AdminNewUser.error.repeated")}</ErrorMessage>
         )}
         <FormButton>{t("AdminNewUser.form.createButton")}</FormButton>
       </FormWrapper>
