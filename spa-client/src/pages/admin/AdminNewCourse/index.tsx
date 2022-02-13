@@ -67,6 +67,7 @@ function AdminNewCourse() {
     handleSubmit,
     reset,
     setError,
+    getValues,
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
 
@@ -82,14 +83,14 @@ function AdminNewCourse() {
       )
       .then((result) => {
         if (!result.hasFailed()) {
-          renderToast("👑 Usuario creado exitosamente!", "success");
+          renderToast("👑 Curso creado exitosamente!", "success");
           reset();
         } else {
-          renderToast("No se pudo crear el usuario, intente de nuevo", "error");
+          renderToast("No se pudo crear el curso, intente de nuevo", "error");
         }
       })
       .catch(() =>
-        renderToast("No se pudo crear el usuario, intente de nuevo", "error")
+        renderToast("No se pudo crear el curso, intente de nuevo", "error")
       );
   });
 
@@ -213,10 +214,26 @@ function AdminNewCourse() {
                       type="number"
                       min="8"
                       max="22"
-                      {...register(`endTimes.${index}`, {})}
+                      {...register(`endTimes.${index}`, {
+                        validate: {
+                          isNotBigger: (value) => {
+                            const startValue = parseInt(
+                              getValues(`startTimes.${index}`).toString()
+                            );
+                            return (
+                              (!value && !startValue) || value > startValue
+                            );
+                          },
+                        },
+                      })}
                     />
                     <p>:00</p>
                   </div>
+                  {errors.endTimes && errors.endTimes[index] && (
+                    <ErrorMessage>
+                      La hora de final debe ser mayor la de inicio
+                    </ErrorMessage>
+                  )}
                 </div>
               ))}
             </div>
