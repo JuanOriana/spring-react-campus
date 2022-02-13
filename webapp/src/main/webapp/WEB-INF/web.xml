@@ -57,19 +57,4 @@
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
 
-    <filter>
-        <filter-name>CacheControlFilter</filter-name>
-        <filter-class>ar.edu.itba.paw.webapp.security.api.CacheControlFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>CacheControlFilter</filter-name>
-        <url-pattern>*.jpg</url-pattern>
-        <url-pattern>*.js</url-pattern>
-        <url-pattern>*.png</url-pattern>
-        <url-pattern>*.html</url-pattern>
-        <url-pattern>*.css</url-pattern>
-        <url-pattern>*.ico</url-pattern>
-        <url-pattern>*.gif</url-pattern>
-    </filter-mapping>
-
 </web-app>

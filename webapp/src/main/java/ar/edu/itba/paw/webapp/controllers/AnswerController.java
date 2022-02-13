@@ -18,7 +18,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-@Path("answers")
+@Path("/api/answers")
 @Component
 public class AnswerController {
 

@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.List;
 
 @Controller
-@Path("subjects")
+@Path("/api/subjects")
 public class SubjectController {
 
     @Context

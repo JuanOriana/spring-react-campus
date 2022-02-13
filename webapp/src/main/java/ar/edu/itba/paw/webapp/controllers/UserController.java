@@ -36,7 +36,7 @@ import java.net.URI;
 import java.time.LocalTime;
 import java.util.*;
 
-@Path("users")
+@Path("/api/users")
 @Component
 public class UserController {
 

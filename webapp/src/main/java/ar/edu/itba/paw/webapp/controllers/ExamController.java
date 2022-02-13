@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@Path("exams")
+@Path("/api/exams")
 public class ExamController {
 
     @Context

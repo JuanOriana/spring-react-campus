@@ -18,7 +18,7 @@ import javax.ws.rs.core.*;
 import java.util.List;
 
 @Component
-@Path("/announcements")
+@Path("/api/announcements")
 public class AnnouncementsController {
 
     @Context
