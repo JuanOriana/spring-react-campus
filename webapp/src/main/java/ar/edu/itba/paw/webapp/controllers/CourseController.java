@@ -43,7 +43,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
-@Path("courses")
+@Path("/api/courses")
 public class CourseController {
     @Context
     private UriInfo uriInfo;

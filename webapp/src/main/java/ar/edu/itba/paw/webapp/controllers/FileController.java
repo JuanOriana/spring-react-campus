@@ -27,7 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.List;
 
-@Path("files")
+@Path("/api/files")
 @Component
 public class FileController {
 

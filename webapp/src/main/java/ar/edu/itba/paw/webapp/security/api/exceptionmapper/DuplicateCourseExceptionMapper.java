@@ -7,9 +7,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
+@Provider
 public class DuplicateCourseExceptionMapper implements ExceptionMapper<DuplicateCourseException> {
 
     @Context

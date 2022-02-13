@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
-@Path("/")
+@Path("/api")
 @Component
 public class LandingController {
 
