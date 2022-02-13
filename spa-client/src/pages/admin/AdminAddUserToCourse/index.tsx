@@ -16,13 +16,16 @@ import {
 import { UserColumn, UserContainer, BackImg } from "./styles";
 import { useForm } from "react-hook-form";
 import React, { useEffect, useState } from "react";
+import { userRoles } from "../../../common/constants";
+import { handleService } from "../../../scripts/handleService";
+import { courseService, userService } from "../../../services";
+import { CourseModel, RoleModel, UserModel } from "../../../types";
+import { renderToast } from "../../../scripts/renderToast";
 
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
-import { handleService } from "../../../scripts/handleService";
-import { courseService, userService } from "../../../services";
-import { CourseModel } from "../../../types";
+
 //
 
 type FormData = {
@@ -34,14 +37,14 @@ function AdminAddUserToCourse() {
   const { t } = useTranslation();
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const maxPage = 3;
   const [currentPage, pageSize] = usePagination(10);
+  const [maxPage, setMaxPage] = useState(0);
   const [course, setCourse] = useState<CourseModel | undefined>();
-  const [users, setUsers] = useState(new Array(1));
+  const [users, setUsers] = useState<UserModel[]>(new Array(1));
   const [courseTeachers, setCourseTeachers] = useState(new Array(1));
   const [courseStudents, setCourseStudents] = useState(new Array(1));
   const [courseHelpers, setCourseHelpers] = useState(new Array(1));
-  const [roles, setRoles] = useState(new Array(1));
+  const [roles, setRoles] = useState<RoleModel[]>(new Array(1));
   const [isCourseLoading, setIsCourseLoading] = useState(false);
 
   useEffect(() => {
@@ -87,6 +90,7 @@ function AdminAddUserToCourse() {
         navigate,
         (userData) => {
           setCourseStudents(userData ? userData.getContent() : []);
+          setMaxPage(userData ? userData.getMaxPage() : 1);
         },
         () => {}
       );
@@ -101,14 +105,53 @@ function AdminAddUserToCourse() {
     }
   }, [courseId]);
 
-  const { register, handleSubmit, reset, setError } = useForm<FormData>({
+  const { register, handleSubmit, reset } = useForm<FormData>({
     criteriaMode: "all",
   });
 
   const onSubmit = handleSubmit(({ userId, roleId }: FormData) => {
-    console.log(userId ? userId : users[0].userId);
-    console.log(roleId ? roleId : roles[0].roleId);
-    reset();
+    const userIdFinal: number = userId
+      ? parseInt(userId.toString())
+      : users[0].userId;
+    const roleIdFinal: number = roleId
+      ? parseInt(roleId.toString())
+      : roles[0].roleId;
+    const courseIdFinal: number = parseInt(courseId ? courseId : "-1");
+    const user = users.find((findUser) => {
+      return findUser.userId === userIdFinal;
+    });
+    let promise;
+    if (roleIdFinal === userRoles.STUDENT) {
+      promise = courseService.enrollStudentToCourse(courseIdFinal, userIdFinal);
+    } else if (roleIdFinal === userRoles.TEACHER) {
+      promise = courseService.enrollTeacherToCourse(courseIdFinal, userIdFinal);
+    } else {
+      promise = courseService.enrollHelperToCourse(courseIdFinal, userIdFinal);
+    }
+    promise
+      .then((result) => {
+        if (!result.hasFailed()) {
+          setUsers((oldUsers) =>
+            oldUsers.filter((userIter) => userIter.userId !== user?.userId)
+          );
+          if (roleIdFinal === userRoles.STUDENT) {
+            courseStudents.push(user);
+          } else if (roleIdFinal === userRoles.TEACHER) {
+            courseTeachers.push(user);
+          } else {
+            courseHelpers.push(user);
+          }
+          reset();
+        } else {
+          renderToast(
+            "No se pudo agregar el usuario, intente de nuevo",
+            "error"
+          );
+        }
+      })
+      .catch(() =>
+        renderToast("No se pudo agregar el usuario, intente de nuevo", "error")
+      );
   });
   return (
     <>
