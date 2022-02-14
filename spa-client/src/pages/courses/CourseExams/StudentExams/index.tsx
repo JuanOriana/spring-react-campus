@@ -87,7 +87,7 @@ function StudentExams() {
                 <SectionHeading
                   style={{ fontSize: "20px", marginRight: "10px" }}
                 >
-                  {average}
+                  {average && Math.round(average * 100) / 100}
                 </SectionHeading>
               </div>
               {answerMarks.map((answer: SolvedExamModel) => (

@@ -41,7 +41,6 @@ function TeacherCourseExamStandalone() {
   const [isLoading, setIsLoading] = useState(false);
   const [answers, setAnswers] = useState(new Array(1));
   const [maxPage, setMaxPage] = useState(1);
-  const average = 6.9;
   useEffect(() => {
     if (examId) {
       setIsLoading(true);
@@ -135,9 +134,6 @@ function TeacherCourseExamStandalone() {
               </option>
             </FileSelect>
           </FileQueryContainer>
-          <SectionHeading style={{ marginLeft: "10px" }}>
-            {average}
-          </SectionHeading>
           {answers.length === 0 && (
             <>{t("TeacherCourseExamStandalone.noExams")}</>
           )}

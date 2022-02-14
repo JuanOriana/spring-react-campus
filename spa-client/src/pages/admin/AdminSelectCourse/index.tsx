@@ -69,7 +69,7 @@ function AdminSelectCourse() {
               }
             >
               {courses.map((course) => (
-                <option value={course.courseId}>
+                <option value={course.courseId} key={course.courseId}>
                   {`${course.subject.name}[${course.board}]${course.year}-${course.quarter}Q`}
                 </option>
               ))}

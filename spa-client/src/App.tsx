@@ -80,7 +80,14 @@ function App() {
               </Route>
               <Route path="admin" element={<AdminPortal />} />
             </Route>
-            <Route path="admin" element={<AdminLayout />}>
+            <Route
+              path="admin"
+              element={
+                <RequireAuth>
+                  <AdminLayout />
+                </RequireAuth>
+              }
+            >
               <Route path="user/new" element={<AdminNewUser />} />
               <Route path="course/all" element={<AdminAllCourses />} />
               <Route path="course/select" element={<AdminSelectCourse />} />

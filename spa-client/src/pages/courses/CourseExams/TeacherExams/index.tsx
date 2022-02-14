@@ -242,7 +242,9 @@ function TeacherExams() {
               userCount={
                 examData.corrected.length + examData.notCorrected.length
               }
-              average={examData.average}
+              average={
+                examData.average && Math.round(examData.average * 100) / 100
+              }
               onDelete={onDelete}
             />
           ))}

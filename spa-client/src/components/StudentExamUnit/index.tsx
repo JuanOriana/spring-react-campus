@@ -42,7 +42,7 @@ function StudentExamUnit({ answer, onDelete }: StudentExamUnitProps) {
           </FileName>
         )}
         {answer.deliveredDate && (
-          <FileName>{answer.deliveredDate.toDateString()}</FileName>
+          <FileName>{answer.deliveredDate.toLocaleDateString()}</FileName>
         )}
       </div>
       {answer.score !== 0 && !answer.score && (
