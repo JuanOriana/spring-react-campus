@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.models.exception.UserEnrolledException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.common.assemblers.*;
+import ar.edu.itba.paw.webapp.common.models.ParamLongList;
 import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
 import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.dto.announcement.AnnouncementDto;
@@ -141,16 +142,16 @@ public class CourseController {
     @GET @Path("/{courseId}/files")
     @Produces("application/vnd.campus.api.v1+json")
     public Response getFiles(@PathParam("courseId") Long courseId,
-                             @QueryParam("category-type") List<Long> categoryType,
-                             @QueryParam("extension-type") List<Long> extensionType,
+                             @QueryParam("category-type") ParamLongList categoryType,
+                             @QueryParam("extension-type") ParamLongList extensionType,
                              @QueryParam("query") @DefaultValue("") String query,
                              @QueryParam("order-property") @DefaultValue("date") String orderProperty,
                              @QueryParam("order-direction") @DefaultValue("desc") String orderDirection,
                              @QueryParam("page") @DefaultValue("1") Integer page,
                              @QueryParam("pageSize") @DefaultValue("10") Integer pageSize) {
-        categoryType = categoryType == null ? Collections.emptyList() : categoryType;
-        extensionType = extensionType == null ? Collections.emptyList() : extensionType;
-        CampusPage<FileModel> filePage = fileService.listByCourse(query, extensionType, categoryType,authFacade.getCurrentUserId(),courseId,
+        List<Long> categories = categoryType == null ? Collections.emptyList() : categoryType.getValues();
+        List<Long> extensions = extensionType == null ? Collections.emptyList() : extensionType.getValues();
+        CampusPage<FileModel> filePage = fileService.listByCourse(query, extensions, categories,authFacade.getCurrentUserId(),courseId,
                 page, pageSize, orderDirection, orderProperty);
         if (filePage.isEmpty()) {
             return Response.noContent().build();
