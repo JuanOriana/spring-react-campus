@@ -18,8 +18,15 @@ import { resultFetch } from "../scripts/resultFetch";
 export class UserService {
   private readonly basePath = paths.BASE_URL + paths.USERS;
 
-  public async getUsers(): Promise<Result<PagedContent<UserModel[]>>> {
-    return getPagedFetch<UserModel[]>(this.basePath);
+  public async getUsers(
+    excludeCourseId?: number
+  ): Promise<Result<PagedContent<UserModel[]>>> {
+    const url = new URL(this.basePath);
+    if (typeof excludeCourseId !== "undefined") {
+      url.searchParams.append("directive", "exclude");
+      url.searchParams.append("courseId", excludeCourseId.toString());
+    }
+    return getPagedFetch<UserModel[]>(url.toString());
   }
 
   public async getUserById(userId: number): Promise<Result<UserModel>> {
