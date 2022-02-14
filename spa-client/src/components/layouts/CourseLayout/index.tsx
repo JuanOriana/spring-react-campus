@@ -27,7 +27,7 @@ function CourseLayout() {
       navigate,
       (courseData) => {
         handleService(
-          courseService.getTeachers(parseInt(courseId ? courseId : "-1")),
+          courseService.getPrivileged(parseInt(courseId ? courseId : "-1")),
           navigate,
           (users) => {
             let isTeacher = false;

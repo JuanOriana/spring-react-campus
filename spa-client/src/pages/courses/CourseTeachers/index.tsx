@@ -26,7 +26,7 @@ function CourseTeachers() {
   useEffect(() => {
     setIsLoading(true);
     handleService(
-      courseService.getTeachers(course.courseId),
+      courseService.getPrivileged(course.courseId),
       navigate,
       (teacherData) => {
         setTeachers(teacherData ? teacherData.getContent() : []);

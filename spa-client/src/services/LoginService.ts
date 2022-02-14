@@ -1,6 +1,7 @@
 import { paths } from "../common/constants";
 import { checkError } from "../scripts/ErrorChecker";
 import { ErrorResponse, Result, UserModel } from "../types";
+import { setCookie } from "../scripts/cookies";
 
 export class LoginService {
   public async login(
@@ -10,6 +11,8 @@ export class LoginService {
     const credentials = username + ":" + password;
 
     const hash = btoa(credentials);
+    //TODO: ANALIZE
+    setCookie("basic-token", hash, 7);
     try {
       const response = await fetch(paths.BASE_URL + "/user", {
         method: "GET",

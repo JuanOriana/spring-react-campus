@@ -1,6 +1,7 @@
 import React from "react";
 import { internalAuthProvider } from "../scripts/auth";
 import { UserModel } from "../types";
+import { removeCookie } from "../scripts/cookies";
 
 interface AuthContextType {
   user: UserModel | null;
@@ -41,6 +42,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem("token");
       localStorage.removeItem("isAdmin");
       localStorage.removeItem("rememberMe");
+      //TODO: ANALIZE
+      removeCookie("basic-token");
       callback();
     });
   };
