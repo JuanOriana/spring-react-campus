@@ -32,26 +32,27 @@ function AdminNewUser() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [repeatedValues, setRepeatedValues] = useState(false);
-  const [nextFileNumber, setNextFileNumber] = useState(0);
-
-  useEffect(() => {
-    handleService(
-      userService.getLastFileNumber(),
-      navigate,
-      (fileNumber) => setNextFileNumber(fileNumber),
-      () => {
-        return;
-      }
-    );
-  }, []);
 
   const {
     register,
     handleSubmit,
     reset,
     setError,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
+
+  useEffect(() => {
+    handleService(
+      userService.getLastFileNumber(),
+      navigate,
+      (fileNumberData) =>
+        setValue("fileNumber", fileNumberData.nextFileNumber + 1),
+      () => {
+        return;
+      }
+    );
+  }, []);
 
   const onSubmit = handleSubmit((data: FormData) => {
     if (data.password !== data.confirmPassword) {
@@ -113,7 +114,6 @@ function AdminNewUser() {
           type="number"
           min="0"
           style={{ fontSize: "26px" }}
-          defaultValue={nextFileNumber}
           {...register("fileNumber", {
             required: true,
             min: 0,

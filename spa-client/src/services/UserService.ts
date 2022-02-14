@@ -28,10 +28,15 @@ export class UserService {
     });
   }
 
-  public async getLastFileNumber(): Promise<Result<number>> {
-    return resultFetch<number>(this.basePath + "/file-number/last", {
-      method: "GET",
-    });
+  public async getLastFileNumber(): Promise<
+    Result<{ nextFileNumber: number }>
+  > {
+    return resultFetch<{ nextFileNumber: number }>(
+      this.basePath + "/file-number/last",
+      {
+        method: "GET",
+      }
+    );
   }
 
   public async getUserProfileImage(userId: number): Promise<Result<Blob>> {
