@@ -1,4 +1,8 @@
-import { APPLICATION_V1_JSON_TYPE, paths } from "../common/constants";
+import {
+  APPLICATION_V1_JSON_TYPE,
+  paths,
+  userRoles,
+} from "../common/constants";
 import {
   Result,
   CourseModel,
@@ -49,43 +53,11 @@ export class CourseService {
     return getPagedFetch<CourseModel[]>(url.toString());
   }
 
-  public async enrollHelperToCourse(
-    courseId: number,
-    userId: number
-  ): Promise<Result<PostResponse>> {
-    const helperInfo = { userId: userId };
-
-    return resultFetch<PostResponse>(
-      this.basePath + "/" + courseId + "/helpers",
-      {
-        method: "POST",
-        headers: {},
-        body: helperInfo,
-      }
-    );
-  }
-
   public async getHelpers(
     courseId: number
   ): Promise<Result<PagedContent<UserModel[]>>> {
     return getPagedFetch<UserModel[]>(
       this.basePath + "/" + courseId + "/helpers"
-    );
-  }
-
-  public async enrollTeacherToCourse(
-    courseId: number,
-    userId: number
-  ): Promise<Result<PostResponse>> {
-    const teacherInfo = { userId: userId };
-
-    return resultFetch<PostResponse>(
-      this.basePath + "/" + courseId + "/teachers",
-      {
-        method: "POST",
-        headers: {},
-        body: teacherInfo,
-      }
     );
   }
 
@@ -97,18 +69,26 @@ export class CourseService {
     );
   }
 
-  public async enrollStudentToCourse(
+  public async enrollUserToCourse(
     courseId: number,
-    userId: number
+    userId: number,
+    roleId: number
   ): Promise<Result<PostResponse>> {
-    const studentInfo = { userId: userId };
+    let userPath;
+
+    const userPaths = ["/students", "/teachers", "/helpers"];
+    if (roleId < 1 || roleId > 3) {
+      return Result.failed(new ErrorResponse(422, "Invalid role id")); // TODO: validar que el codigo sea el correcto
+    }
+
+    const userInfo = JSON.stringify({ userId: userId });
 
     return resultFetch<PostResponse>(
-      this.basePath + "/" + courseId + "/students",
+      this.basePath + "/" + courseId + userPaths[roleId - 1],
       {
         method: "POST",
-        headers: {},
-        body: studentInfo,
+        headers: { "Content-Type": APPLICATION_V1_JSON_TYPE },
+        body: userInfo,
       }
     );
   }

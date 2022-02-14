@@ -120,14 +120,8 @@ function AdminAddUserToCourse() {
     const user = users.find((findUser) => {
       return findUser.userId === userIdFinal;
     });
-    let promise;
-    if (roleIdFinal === userRoles.STUDENT) {
-      promise = courseService.enrollStudentToCourse(courseIdFinal, userIdFinal);
-    } else if (roleIdFinal === userRoles.TEACHER) {
-      promise = courseService.enrollTeacherToCourse(courseIdFinal, userIdFinal);
-    } else {
-      promise = courseService.enrollHelperToCourse(courseIdFinal, userIdFinal);
-    }
+    const promise = courseService.enrollUserToCourse(courseIdFinal, userIdFinal,roleIdFinal);
+    
     promise
       .then((result) => {
         if (!result.hasFailed() || result.getError().getCode() === 204) {
