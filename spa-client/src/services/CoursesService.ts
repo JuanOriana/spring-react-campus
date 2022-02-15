@@ -74,8 +74,6 @@ export class CourseService {
     userId: number,
     roleId: number
   ): Promise<Result<PostResponse>> {
-    let userPath;
-
     const userPaths = ["/students", "/teachers", "/helpers"];
     if (roleId < 1 || roleId > 3) {
       return Result.failed(new ErrorResponse(422, "Invalid role id")); // TODO: validar que el codigo sea el correcto
@@ -237,6 +235,12 @@ export class CourseService {
       startTimes: startTimes,
       endTimes: endTimes,
     });
+    for (let index = 0; index < 7; index++) {
+      if (startTimes[index] > endTimes[index])
+        return Result.failed(
+          new ErrorResponse(422, "EndTime must be greater than startime ")
+        ); // TODO: Revisar si el codigo y mensaje es correcto
+    }
 
     return resultFetch<PostResponse>(this.basePath, {
       method: "POST",
