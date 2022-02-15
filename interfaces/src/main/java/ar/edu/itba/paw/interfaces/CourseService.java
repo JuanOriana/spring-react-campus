@@ -61,6 +61,8 @@ public interface CourseService {
      */
     CampusPage<Course> list(Long userId, Integer page, Integer pageSize);
 
+    CampusPage<Course> list(Integer page, Integer pageSize);
+
     /**
      * Gets all the current available courses of a user
      * @param userId of the user to retrieve the courses from

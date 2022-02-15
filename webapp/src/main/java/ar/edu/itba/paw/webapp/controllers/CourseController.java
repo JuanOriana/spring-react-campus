@@ -224,7 +224,6 @@ public class CourseController {
         return Response.ok(new GenericEntity<YearListDto>(new YearListDto(availableYears)){}).build();
     }
 
-    // TODO: Paginate all courses if no year and quarter was sent
     @GET
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourses(@QueryParam("page") @DefaultValue("1")
@@ -236,8 +235,10 @@ public class CourseController {
                                @QueryParam("quarter")
                                        Integer quarter) {
         if(year == null && quarter == null) {
-            List<Course> courses = courseService.list();
-            return Response.ok(new GenericEntity<List<CourseDto>>(courseAssembler.toResources(courses, false)){}).build();
+            CampusPage<Course> courses = courseService.list(page, pageSize);
+            List<CourseDto> courseDtoList = courseAssembler.toResources(courses.getContent(), false);
+            Response.ResponseBuilder builder = Response.ok(new GenericEntity<List<CourseDto>>(courseDtoList){});
+            return PaginationBuilder.build(courses, builder, uriInfo, pageSize);
         }
         year = year == null ? Calendar.getInstance().get(Calendar.YEAR) : year;
         if (quarter == null) {
@@ -325,6 +326,13 @@ public class CourseController {
                 new GenericEntity<List<UserDto>>(userAssembler.toResources(enrolledStudents.getContent(), true)) {
                 });
         return PaginationBuilder.build(enrolledStudents, builder, uriInfo, pageSize);
+    }
+
+    @GET @Path("/{courseId}/privileged")
+    @Produces("application/vnd.campus.api.v1+json")
+    public Response getPrivilegedInCourse(@PathParam("courseId") Long courseId) {
+        List<User> users = new ArrayList<>(courseService.getPrivilegedUsers(courseId).keySet());
+        return Response.ok(new GenericEntity<List<UserDto>>(userAssembler.toResources(users, true)){}).build();
     }
 
     @GET @Path("/{courseId}/exams")

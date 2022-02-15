@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.Subject;
 
 import java.util.List;
@@ -43,5 +44,7 @@ public interface SubjectService {
      * @return list containing all the subjects (if any)
      */
     List<Subject> list();
+
+    CampusPage<Subject> list(Integer page, Integer pageSize);
 
 }

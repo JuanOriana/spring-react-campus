@@ -60,6 +60,10 @@ public interface UserService {
      */
     List<User> list();
 
+    CampusPage<User> list(Integer page, Integer pageSize);
+
+    CampusPage<User> filterByCourse(Long courseId, Integer page, Integer pageSize);
+
     /**
      * Attempts to get user profile image (if any). By default none image is set
      * @param userId unique identifier of the user

@@ -1,19 +1,24 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.SubjectDao;
+import ar.edu.itba.paw.models.CampusPage;
+import ar.edu.itba.paw.models.CampusPageRequest;
 import ar.edu.itba.paw.models.Subject;
+import ar.edu.itba.paw.models.User;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Primary
 @Repository
-public class SubjectDaoJpa implements SubjectDao {
+public class SubjectDaoJpa extends BasePaginationDaoImpl<Subject> implements SubjectDao {
 
     @PersistenceContext
     private EntityManager em;
@@ -50,6 +55,14 @@ public class SubjectDaoJpa implements SubjectDao {
     public List<Subject> list() {
         final TypedQuery<Subject> query = em.createQuery("SELECT s FROM Subject s", Subject.class);
         return query.getResultList();
+    }
+
+    @Override
+    public CampusPage<Subject> list(CampusPageRequest pageRequest) {
+        Map<String, Object> properties = new HashMap<>();
+        String query = "SELECT subjectId FROM subjects";
+        String mappingQuery = "SELECT s FROM Subject s WHERE s.subjectId IN (:ids)";
+        return listBy(properties, query, mappingQuery, pageRequest, Subject.class);
     }
 
 

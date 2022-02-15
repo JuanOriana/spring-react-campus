@@ -73,6 +73,16 @@ public class UserServiceImpl implements UserService {
         return userDao.list();
     }
 
+    @Override
+    public CampusPage<User> list(Integer page, Integer pageSize) {
+        return userDao.list(new CampusPageRequest(page, pageSize));
+    }
+
+    @Override
+    public CampusPage<User> filterByCourse(Long courseId, Integer page, Integer pageSize) {
+        return userDao.filterByCourse(courseId, new CampusPageRequest(page, pageSize));
+    }
+
     @Transactional(readOnly = true)
     @Override
     public Optional<byte[]> getProfileImage(Long userId) {

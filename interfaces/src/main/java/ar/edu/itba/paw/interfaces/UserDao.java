@@ -24,6 +24,10 @@ public interface UserDao {
 
     List<User> list();
 
+    CampusPage<User> filterByCourse(Long courseId, CampusPageRequest pageRequest);
+
+    CampusPage<User> list(CampusPageRequest pageRequest);
+
     Optional<byte[]> getProfileImage(Long userId);
 
     CampusPage<User> getStudentsByCourse(Long courseId, CampusPageRequest pageRequest);

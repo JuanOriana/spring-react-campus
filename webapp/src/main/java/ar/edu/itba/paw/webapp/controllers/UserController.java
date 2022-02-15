@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Path("/api/users")
 @Component
@@ -81,9 +82,27 @@ public class UserController {
 
     @GET
     @Produces("application/vnd.campus.api.v1+json")
-    public Response listUsers() {
-        final List<User> users = userService.list();
-        return Response.ok(new GenericEntity<List<UserDto>>(userAssembler.toResources(users, true)){}).build();
+    public Response listUsers(@QueryParam("directive") String directive,
+                              @QueryParam("courseId") Long courseId,
+                              @QueryParam("page") @DefaultValue("1") Integer page,
+                              @QueryParam("page-size") @DefaultValue("10") Integer pageSize) {
+        if(directive == null && courseId != null || directive != null && courseId == null) {
+            throw new BadRequestException();
+        }
+        if(courseId != null && directive.equals("exclude")) {
+            CampusPage<User> filteredUsers = userService.filterByCourse(courseId, page, pageSize);
+            Response.ResponseBuilder builder = Response.ok(
+                    new GenericEntity<List<UserDto>>(userAssembler.toResources(filteredUsers.getContent(), true)){});
+            return PaginationBuilder.build(filteredUsers, builder, uriInfo, pageSize);
+        }
+
+        CampusPage<User> users = userService.list(page, pageSize);
+        if(users.isEmpty()) {
+            return Response.noContent().build();
+        }
+        Response.ResponseBuilder builder = Response.ok(
+                new GenericEntity<List<UserDto>>(userAssembler.toResources(users.getContent(), true)){});
+        return PaginationBuilder.build(users, builder, uriInfo, pageSize);
     }
 
     @POST

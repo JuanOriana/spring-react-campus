@@ -4,11 +4,6 @@ import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.*;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +78,23 @@ public class UserDaoJpa extends BasePaginationDaoImpl<User> implements UserDao {
     public List<User> list() {
         TypedQuery<User> listUsers = em.createQuery("SELECT u from User u", User.class);
         return listUsers.getResultList();
+    }
+
+    @Override
+    public CampusPage<User> filterByCourse(Long courseId, CampusPageRequest pageRequest) {
+        Map<String, Object> properties = new HashMap<>();
+        String query = "SELECT userId FROM user_to_course WHERE courseId = :courseId";
+        String mappingQuery = "SELECT DISTINCT enrollment.user FROM Enrollment enrollment WHERE enrollment.user.userId NOT IN (:ids)";
+        properties.put("courseId", courseId);
+        return listBy(properties, query, mappingQuery, pageRequest, User.class);
+    }
+
+    @Override
+    public CampusPage<User> list(CampusPageRequest pageRequest) {
+        Map<String, Object> properties = new HashMap<>();
+        String query = "SELECT userId FROM users";
+        String mappingQuery = "SELECT u FROM User u WHERE u.userId IN (:ids)";
+        return listBy(properties, query, mappingQuery, pageRequest, User.class);
     }
 
 

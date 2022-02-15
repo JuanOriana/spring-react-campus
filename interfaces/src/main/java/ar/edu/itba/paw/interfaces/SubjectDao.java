@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.CampusPage;
+import ar.edu.itba.paw.models.CampusPageRequest;
 import ar.edu.itba.paw.models.Subject;
 
 import java.util.List;
@@ -11,4 +13,5 @@ public interface SubjectDao {
     boolean update(Long subjectId, String code, String name);
     boolean delete(Long subjectId);
     List<Subject> list();
+    CampusPage<Subject> list(CampusPageRequest pageRequest);
 }

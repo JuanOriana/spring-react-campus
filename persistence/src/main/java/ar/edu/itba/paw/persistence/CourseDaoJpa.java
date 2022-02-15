@@ -46,6 +46,14 @@ public class CourseDaoJpa extends BasePaginationDaoImpl<Course> implements Cours
     }
 
     @Override
+    public CampusPage<Course> list(CampusPageRequest pageRequest) {
+        Map<String, Object> properties = new HashMap<>();
+        String query = "SELECT courseId FROM courses ORDER BY year DESC, quarter DESC";
+        String mappingQuery = "SELECT c FROM Course c WHERE c.courseId IN (:ids) ORDER BY c.year DESC, c.quarter DESC";
+        return listBy(properties, query, mappingQuery, pageRequest, Course.class);
+    }
+
+    @Override
     public CampusPage<Course> list(Long userId, CampusPageRequest pageRequest) {
         Map<String, Object> properties = new HashMap<>();
         properties.put("userId", userId);
