@@ -1,5 +1,5 @@
 import { announcementsService } from "../../services";
-import { announcement, mockSuccesfulResponse } from "./Mocks";
+import { announcement, mockSuccesfulResponse } from "../Mocks";
 
 
 

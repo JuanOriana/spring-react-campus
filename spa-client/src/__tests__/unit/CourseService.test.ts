@@ -3,7 +3,6 @@
  */
 
 import { courseService } from "../../services";
-import { HeadersMock } from "./HeadersMock";
 import {
   announcement,
   answer,
@@ -13,7 +12,7 @@ import {
   studentRole,
   user1,
   user2,
-} from "./Mocks";
+} from "../Mocks";
 
 test("Should get a course with id=1", () => {
   mockSuccesfulResponse(200, course);
@@ -24,9 +23,9 @@ test("Should get a course with id=1", () => {
 });
 
 test("Should get all courses", () => {
-  const head = new HeadersMock();
-  head.set("x-total-pages", "1");
-  mockSuccesfulResponse(200, [course], head);
+  const headers = new window.Headers();
+  headers.set("x-total-pages", "1");
+  mockSuccesfulResponse(200, [course], headers);
   courseService.getCourses().then((courseResponse) => {
     expect(courseResponse.hasFailed()).toBeFalsy();
     const page = courseResponse.getData().getContent();
@@ -35,9 +34,9 @@ test("Should get all courses", () => {
 });
 
 test("Should get all helpers from course", () => {
-  const head = new HeadersMock();
-  head.set("x-total-pages", "1");
-  mockSuccesfulResponse(200, [user1], head);
+  const headers = new window.Headers();
+  headers.set("x-total-pages", "1");
+  mockSuccesfulResponse(200, [user1], headers);
   courseService.getHelpers(1).then((response) => {
     expect(response.hasFailed()).toBeFalsy();
     const page = response.getData().getContent();
@@ -62,7 +61,7 @@ test("Should not enroll  user to course due to invalid roleid", () => {
 });
 
 test("Should retrieve all students from a course", () => {
-  const headers = new HeadersMock();
+  const headers = new window.Headers();
   headers.set("x-total-pages", "1");
   mockSuccesfulResponse(200, [user1, user2], headers);
   courseService.getStudents(1).then((response) => {
@@ -73,7 +72,7 @@ test("Should retrieve all students from a course", () => {
 });
 
 test("Should get solved exams", () => {
-  const headers = new HeadersMock();
+  const headers = new window.Headers();
   headers.set("x-total-pages", "1");
   mockSuccesfulResponse(200, [examSolved], headers);
 
@@ -103,7 +102,7 @@ test("Should get exams average", () => {
 });
 
 test("Should get answers from course", () => {
-  const headers = new HeadersMock();
+  const headers = new window.Headers();
   headers.set("x-total-pages", "1");
   mockSuccesfulResponse(200, [answer], headers);
 
@@ -124,7 +123,7 @@ test("Should get available years", () => {
 });
 
 test("Should get announcement from course", () => {
-  const headers = new HeadersMock();
+  const headers = new window.Headers();
   headers.set("x-total-pages", "1");
   mockSuccesfulResponse(200, [announcement], headers);
 
@@ -234,13 +233,3 @@ test("Should get roles", () => {
     expect(response.getData()).toBe(studentRole);
   });
 });
-
-// test("Should create a new exam",()=>{
-//     mockSuccesfulResponse(204,{});
-
-//      courseService.newExam(1,"title","content",null, new Date("2022-02-15T15:58:41.837Z"),new Date())
-//      .then(response=>{
-//          expect(response.hasFailed()).toBeTruthy();
-//          expect(response.getError().getCode()).toBe(204);
-//      })
-// });

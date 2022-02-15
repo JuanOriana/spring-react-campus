@@ -7,16 +7,18 @@ import {
   FileModel,
   SolvedExamModel,
   RoleModel,
+  SubjectModel,
 } from "../../types";
-import { HeadersMock } from "./HeadersMock";
 import { LocalStorageMock } from "./LocalStorageMock";
+
+export const subject: SubjectModel = { subjectId: 1, code: "A", name: "PAW" };
 
 export const course: CourseModel = {
   courseId: 1,
   year: 2022,
   quarter: 1,
   board: "BT",
-  subject: { subjectId: 1, code: "A", name: "PAW" },
+  subject: subject,
   courseUrl: "/courses",
 };
 
@@ -58,6 +60,16 @@ export const exam: ExamModel = {
   average: 0,
   url: "url",
 };
+export const examUnfefEndtime: ExamModel = {
+  examId: 1,
+  course: course,
+  startTime: new Date("2022-02-15T14:47:27.306Z"),
+  endTime: undefined,
+  title: "Titulo",
+  description: "Descripcion",
+  average: 0,
+  url: "url",
+};
 
 export const answerFile: FileModel = {
   fileId: 1,
@@ -93,7 +105,7 @@ export const studentRole: RoleModel = {
 export function mockSuccesfulResponse(
   code: number,
   returnBody: any,
-  headers?: HeadersMock
+  headers?: Headers
 ) {
   global.localStorage = new LocalStorageMock();
   return (global.fetch = jest.fn().mockImplementationOnce(() => {
