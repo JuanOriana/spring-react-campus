@@ -70,7 +70,11 @@ function Timetable() {
           const newCourseToColor = new Map<number, string>();
           for (let i = 0; i < 6; i++) {
             for (let j = 0; j < 15; j++) {
-              if (timesData[i] && timesData[i][j]) {
+              if (
+                timesData[i] &&
+                timesData[i][j] &&
+                !newCourseToColor.has(timesData[i][j]!.courseId)
+              ) {
                 newCourseToColor.set(timesData[i][j]!.courseId, colors[maxIdx]);
                 maxIdx = (maxIdx + 1) % colors.length;
               }
@@ -90,47 +94,51 @@ function Timetable() {
       <LoadableData isLoading={isLoading}>
         <div>
           <TimetableLayout>
-            <Days>
-              <th></th>
-              {days.map((day) => (
-                <th key={day}>{t("DaysOfTheWeek." + day)}</th>
-              ))}
-            </Days>
-            {hours.map((hour, hourIdx) => (
-              <tr key={hour}>
-                <Time>{hour}</Time>
-                {courseToColor &&
-                  days.map((day, dayIdx) => {
-                    if (!times || !times[dayIdx] || !times[dayIdx][hourIdx])
-                      return <td key={`${dayIdx}-${hourIdx}`}></td>;
-                    const currentCourse = times[dayIdx][hourIdx];
-                    return (
-                      <td
-                        style={{
-                          background: courseToColor.get(
-                            currentCourse!.courseId
-                          ),
-                          cursor: "pointer",
-                          fontWeight: 700,
-                        }}
-                        data-tooltip={
-                          currentCourse?.subject.code +
-                          " [" +
-                          currentCourse?.board +
-                          "]"
-                        }
-                      >
-                        <Link
+            <tbody>
+              <Days>
+                <th></th>
+                {days.map((day) => (
+                  <th key={day}>{t("DaysOfTheWeek." + day)}</th>
+                ))}
+              </Days>
+              {hours.map((hour, hourIdx) => (
+                <tr key={hour}>
+                  <Time>{hour}</Time>
+                  {courseToColor &&
+                    days.map((day, dayIdx) => {
+                      if (!times || !times[dayIdx] || !times[dayIdx][hourIdx])
+                        return <td key={`${dayIdx}-${hourIdx}`}></td>;
+                      const currentCourse = times[dayIdx][hourIdx];
+                      return (
+                        <td
+                          style={{
+                            background: courseToColor.get(
+                              currentCourse!.courseId
+                            ),
+                            cursor: "pointer",
+                            fontWeight: 700,
+                            textAlign: "center",
+                          }}
+                          data-tooltip={
+                            currentCourse?.subject.code +
+                            " [" +
+                            currentCourse?.board +
+                            "]"
+                          }
                           key={`${dayIdx}-${hourIdx}`}
-                          to={`/course/${currentCourse!.courseId}`}
                         >
-                          {times[dayIdx][hourIdx]?.subject.name}
-                        </Link>
-                      </td>
-                    );
-                  })}
-              </tr>
-            ))}
+                          <Link
+                            key={`${dayIdx}-${hourIdx}`}
+                            to={`/course/${currentCourse!.courseId}`}
+                          >
+                            {times[dayIdx][hourIdx]?.subject.name}
+                          </Link>
+                        </td>
+                      );
+                    })}
+                </tr>
+              ))}
+            </tbody>
           </TimetableLayout>
         </div>
       </LoadableData>
