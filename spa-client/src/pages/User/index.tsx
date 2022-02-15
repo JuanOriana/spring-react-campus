@@ -22,7 +22,7 @@ type FormData = {
 
 function User() {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
   const [reload, setReload] = useState(true);
   const [userImg, setUserImg] = useState<string | undefined>(undefined);
@@ -53,6 +53,8 @@ function User() {
       .then((result) => {
         if (!result.hasFailed()) {
           renderToast("👑 Imagen actualizada exitosamente!", "success");
+          const imgAsUrl = URL.createObjectURL(data.image![0]);
+          setUser({ ...user!, url: imgAsUrl });
           setReload(!reload);
           reset();
         } else {

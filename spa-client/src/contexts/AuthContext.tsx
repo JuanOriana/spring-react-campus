@@ -5,7 +5,7 @@ import { removeCookie } from "../scripts/cookies";
 
 interface AuthContextType {
   user: UserModel | null;
-  setUser: (user: UserModel | null) => void;
+  setUser: React.Dispatch<React.SetStateAction<UserModel | null>>;
   signin: (
     user: UserModel,
     rememberMe: boolean,
