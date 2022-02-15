@@ -105,9 +105,15 @@ export const studentRole: RoleModel = {
 export function mockSuccesfulResponse(
   code: number,
   returnBody: any,
-  headers?: Headers
+  headers?: Headers,
+  cookies?: { name: string; value: string }[]
 ) {
   global.localStorage = new LocalStorageMock();
+  if (typeof cookies !== "undefined") {
+    cookies.forEach((cookie) => {
+      global.localStorage.setItem(cookie.name, cookie.value);
+    });
+  }
   return (global.fetch = jest.fn().mockImplementationOnce(() => {
     return new Promise((resolve, reject) => {
       resolve({

@@ -29,7 +29,9 @@ export class LoginService {
 
       return Result.ok(parsedResponse as UserModel);
     } catch (error: any) {
-      return Result.failed(new ErrorResponse(parseInt(error), error));
+      return Result.failed(
+        new ErrorResponse(parseInt(error.message), error.message)
+      );
     }
   }
 }

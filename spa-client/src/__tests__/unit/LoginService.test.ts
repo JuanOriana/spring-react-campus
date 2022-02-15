@@ -17,7 +17,6 @@ test("Should return a valid token", () => {
 
 test("Should not return a valid token", () => {
   mockSuccesfulResponse(401, user1);
-
   loginService.login("username", "password").then((response) => {
     expect(response.hasFailed()).toBeTruthy();
     expect(response.getError().getCode()).toBe(401);

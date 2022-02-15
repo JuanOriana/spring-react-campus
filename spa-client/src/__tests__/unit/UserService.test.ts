@@ -4,6 +4,7 @@
 
 import { userService } from "../../services";
 import { course, mockSuccesfulResponse, user1, user2 } from "../Mocks";
+import { LocalStorageMock } from "../Mocks/LocalStorageMock";
 
 test("Should get all users", () => {
   const headers = new window.Headers();
