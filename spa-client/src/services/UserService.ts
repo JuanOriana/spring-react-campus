@@ -1,5 +1,5 @@
 import { APPLICATION_V1_JSON_TYPE, paths } from "../common/constants";
-import { getBlobFetch } from "../scripts/getFetch";
+import { getBlobFetch } from "../scripts/getBlobFetch";
 import {
   CourseModel,
   ErrorResponse,
@@ -19,13 +19,16 @@ export class UserService {
   private readonly basePath = paths.BASE_URL + paths.USERS;
 
   public async getUsers(
+    page?: number,
+    pageSize?: number,
     excludeCourseId?: number
   ): Promise<Result<PagedContent<UserModel[]>>> {
-    const url = new URL(this.basePath);
+    const url = pageUrlMaker(this.basePath, page, pageSize);
     if (typeof excludeCourseId !== "undefined") {
       url.searchParams.append("directive", "exclude");
       url.searchParams.append("courseId", excludeCourseId.toString());
     }
+    url;
     return getPagedFetch<UserModel[]>(url.toString());
   }
 

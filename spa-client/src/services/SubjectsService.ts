@@ -2,12 +2,17 @@ import { paths } from "../common/constants";
 import { PagedContent, PostResponse, Result, SubjectModel } from "../types";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { resultFetch } from "../scripts/resultFetch";
+import { pageUrlMaker } from "../scripts/pageUrlMaker";
 
 export class SubjectsService {
   private readonly basePath = paths.BASE_URL + paths.SUBJECTS;
 
-  public async getSubjects(): Promise<Result<PagedContent<SubjectModel[]>>> {
-    return getPagedFetch<SubjectModel[]>(this.basePath);
+  public async getSubjects(
+    page?: number,
+    pageSize?: number
+  ): Promise<Result<PagedContent<SubjectModel[]>>> {
+    let url = pageUrlMaker(this.basePath, page, pageSize);
+    return getPagedFetch<SubjectModel[]>(url.toString());
   }
 
   public async getSubjectById(subjectId: number) {
