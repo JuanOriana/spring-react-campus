@@ -78,7 +78,6 @@ function App() {
                 <Route path="teachers" element={<CourseTeachers />} />
                 <Route path="schedule" element={<CourseSchedule />} />
               </Route>
-              <Route path="admin" element={<AdminPortal />} />
             </Route>
             <Route
               path="admin"
@@ -88,6 +87,7 @@ function App() {
                 </RequireAuth>
               }
             >
+              <Route index element={<AdminPortal />} />
               <Route path="user/new" element={<AdminNewUser />} />
               <Route path="course/all" element={<AdminAllCourses />} />
               <Route path="course/select" element={<AdminSelectCourse />} />
