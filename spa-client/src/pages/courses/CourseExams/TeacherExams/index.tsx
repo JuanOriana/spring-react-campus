@@ -93,6 +93,7 @@ function TeacherExams() {
   });
 
   function onDelete(id: number) {
+    if (!window.confirm("Elminar este examen?")) return;
     examsService
       .deleteExam(id)
       .then(() => {

@@ -109,6 +109,7 @@ function CourseFiles() {
   }, [navigate]);
 
   function onDelete(id: number) {
+    if (!window.confirm("Elminar este archivo?")) return;
     fileService
       .deleteFile(id)
       .then(() => {

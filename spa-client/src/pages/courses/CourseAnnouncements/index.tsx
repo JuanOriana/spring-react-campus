@@ -60,6 +60,7 @@ function CourseAnnouncements() {
   }, [currentPage, pageSize, reload]);
 
   function onDelete(id: number) {
+    if (!window.confirm("Elminar este anuncio?")) return;
     announcementsService
       .deleteAnnouncement(id)
       .then(() => {
