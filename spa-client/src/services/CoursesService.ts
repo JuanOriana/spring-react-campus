@@ -53,6 +53,22 @@ export class CourseService {
     return getPagedFetch<CourseModel[]>(url.toString());
   }
 
+  public async getCoursesUnpaged(
+    batchSize: number
+  ): Promise<Result<CourseModel[]>> {
+    let currentPage = 1;
+    let maxPage = 1;
+    const allResults: CourseModel[] = [];
+    while (currentPage <= maxPage) {
+      const batch = await this.getCourses(currentPage, batchSize);
+      if (batch.hasFailed()) return Result.failed(batch.getError());
+      allResults.push(...batch.getData().getContent());
+      maxPage = batch.getData().getMaxPage();
+      currentPage++;
+    }
+    return Result.ok(allResults);
+  }
+
   public async getHelpers(
     courseId: number
   ): Promise<Result<PagedContent<UserModel[]>>> {

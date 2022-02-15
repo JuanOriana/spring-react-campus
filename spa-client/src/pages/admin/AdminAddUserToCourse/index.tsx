@@ -71,10 +71,10 @@ function AdminAddUserToCourse() {
         () => {}
       );
       handleService(
-        userService.getUsers(courseIdAsInt),
+        userService.getUsersUnpaged(50, courseIdAsInt),
         navigate,
         (userData) => {
-          setUsers(userData ? userData.getContent() : []);
+          setUsers(userData ? userData : []);
         },
         () => {}
       );
@@ -147,13 +147,13 @@ function AdminAddUserToCourse() {
           reset();
         } else {
           renderToast(
-            t('AdminAddUserToCourse.toast.error.userNotAdded'),
+            t("AdminAddUserToCourse.toast.error.userNotAdded"),
             "error"
           );
         }
       })
       .catch(() =>
-        renderToast(t('AdminAddUserToCourse.toast.error.userNotAdded'), "error")
+        renderToast(t("AdminAddUserToCourse.toast.error.userNotAdded"), "error")
       );
   });
   return (

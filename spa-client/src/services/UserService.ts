@@ -28,8 +28,28 @@ export class UserService {
       url.searchParams.append("directive", "exclude");
       url.searchParams.append("courseId", excludeCourseId.toString());
     }
-    url;
     return getPagedFetch<UserModel[]>(url.toString());
+  }
+
+  public async getUsersUnpaged(
+    batchSize: number,
+    excludeCourseId?: number
+  ): Promise<Result<UserModel[]>> {
+    let currentPage = 1;
+    let maxPage = 1;
+    const allResults: UserModel[] = [];
+    while (currentPage <= maxPage) {
+      const batch = await this.getUsers(
+        currentPage,
+        batchSize,
+        excludeCourseId
+      );
+      if (batch.hasFailed()) return Result.failed(batch.getError());
+      allResults.push(...batch.getData().getContent());
+      maxPage = batch.getData().getMaxPage();
+      currentPage++;
+    }
+    return Result.ok(allResults);
   }
 
   public async getUserById(userId: number): Promise<Result<UserModel>> {

@@ -51,10 +51,10 @@ function AdminNewCourse() {
   useEffect(() => {
     setIsLoading(true);
     handleService(
-      subjectsService.getSubjects(),
+      subjectsService.getSubjectsUnpaged(50),
       navigate,
       (subjectData) => {
-        setSubjects(subjectData ? subjectData.getContent() : []);
+        setSubjects(subjectData ? subjectData : []);
       },
       () => {
         setIsLoading(false);
@@ -66,7 +66,6 @@ function AdminNewCourse() {
     register,
     handleSubmit,
     reset,
-    setError,
     getValues,
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
@@ -84,16 +83,18 @@ function AdminNewCourse() {
       )
       .then((result) => {
         if (!result.hasFailed()) {
-          renderToast(t('AdminNewCourse.toast.message.createdCorrectly'), "success");
+          renderToast(
+            t("AdminNewCourse.toast.message.createdCorrectly"),
+            "success"
+          );
           reset();
         } else {
           if (result.getError().getCode() === 409) setIsCourseDuplicated(true);
-          else
-            renderToast(t('AdminNewCourse.toast.error.notCreated'), "error");
+          else renderToast(t("AdminNewCourse.toast.error.notCreated"), "error");
         }
       })
       .catch(() =>
-        renderToast(t('AdminNewCourse.toast.error.notCreated'), "error")
+        renderToast(t("AdminNewCourse.toast.error.notCreated"), "error")
       );
   });
 
@@ -169,6 +170,7 @@ function AdminNewCourse() {
               {t("AdminNewCourse.form.year")}
             </FormLabel>
             <FormInput
+              min={1}
               type="number"
               required
               style={{ fontSize: "26px" }}

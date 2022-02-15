@@ -27,13 +27,11 @@ function AdminSelectCourse() {
   useEffect(() => {
     setIsLoading(true);
     handleService(
-      courseService.getCourses(1, 10),
+      courseService.getCoursesUnpaged(50),
       navigate,
       (coursesData) => {
-        setCourses(coursesData ? coursesData.getContent() : []);
-        setCurrentCourseId(
-          coursesData ? coursesData.getContent()[0].courseId : -1
-        );
+        setCourses(coursesData ? coursesData : []);
+        setCurrentCourseId(coursesData ? coursesData[0].courseId : -1);
       },
       () => {
         setIsLoading(false);

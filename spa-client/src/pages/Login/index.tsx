@@ -72,7 +72,9 @@ function Login() {
             </label>
           </div>
           {/*TODO: MANEJAR ERROR DEL LOGIN ACA! SET ERROR (ver string en internasionalizacion)*/}
-          {invalidCred && <ErrorMessage>{t('Login.error.invalidCredentials')}</ErrorMessage>}
+          {invalidCred && (
+            <ErrorMessage>{t("Login.error.invalidCredentials")}</ErrorMessage>
+          )}
           <LoginButton>{t("Login.form.loginButton")}</LoginButton>
         </LoginWrapper>
       </PageContainer>

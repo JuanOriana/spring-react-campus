@@ -10,7 +10,12 @@ function AdminPortal() {
   const { t } = useTranslation();
   return (
     <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: "100%",
+      }}
     >
       <AdminTitle>{t("AdminPortal.title")}</AdminTitle>
       <div

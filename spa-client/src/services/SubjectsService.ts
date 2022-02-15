@@ -15,6 +15,22 @@ export class SubjectsService {
     return getPagedFetch<SubjectModel[]>(url.toString());
   }
 
+  public async getSubjectsUnpaged(
+    batchSize: number
+  ): Promise<Result<SubjectModel[]>> {
+    let currentPage = 1;
+    let maxPage = 1;
+    const allResults: SubjectModel[] = [];
+    while (currentPage <= maxPage) {
+      const batch = await this.getSubjects(currentPage, batchSize);
+      if (batch.hasFailed()) return Result.failed(batch.getError());
+      allResults.push(...batch.getData().getContent());
+      maxPage = batch.getData().getMaxPage();
+      currentPage++;
+    }
+    return Result.ok(allResults);
+  }
+
   public async getSubjectById(subjectId: number) {
     return resultFetch<SubjectModel>(this.basePath + "/" + subjectId, {
       method: "GET",
