@@ -4,18 +4,19 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
-import ar.edu.itba.paw.webapp.common.assemblers.CourseAssembler;
-import ar.edu.itba.paw.webapp.common.assemblers.RoleAssembler;
-import ar.edu.itba.paw.webapp.common.assemblers.UserAssembler;
-import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
-import ar.edu.itba.paw.webapp.dto.*;
-import ar.edu.itba.paw.webapp.dto.course.CourseDto;
-import ar.edu.itba.paw.webapp.dto.user.UserCourseDto;
-import ar.edu.itba.paw.webapp.dto.user.UserDto;
-import ar.edu.itba.paw.webapp.dto.user.UserRegisterFormDto;
-import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
-import ar.edu.itba.paw.webapp.security.service.AuthFacade;
-import ar.edu.itba.paw.webapp.util.PaginationBuilder;
+import ar.edu.itba.paw.webapp.assemblers.CourseAssembler;
+import ar.edu.itba.paw.webapp.assemblers.RoleAssembler;
+import ar.edu.itba.paw.webapp.assemblers.UserAssembler;
+import ar.edu.itba.paw.webapp.constraints.validators.DtoConstraintValidator;
+import ar.edu.itba.paw.webapp.dtos.*;
+import ar.edu.itba.paw.webapp.dtos.course.CourseDto;
+import ar.edu.itba.paw.webapp.dtos.user.UserCourseDto;
+import ar.edu.itba.paw.webapp.dtos.user.UserDto;
+import ar.edu.itba.paw.webapp.dtos.user.UserRegisterFormDto;
+import ar.edu.itba.paw.webapp.security.api.exceptions.CampusBadRequestException;
+import ar.edu.itba.paw.webapp.security.api.exceptions.DtoValidationException;
+import ar.edu.itba.paw.webapp.security.services.AuthFacade;
+import ar.edu.itba.paw.webapp.utils.PaginationBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
@@ -81,16 +82,36 @@ public class UserController {
 
     @GET
     @Produces("application/vnd.campus.api.v1+json")
-    public Response listUsers() {
-        final List<User> users = userService.list();
-        return Response.ok(new GenericEntity<List<UserDto>>(userAssembler.toResources(users, true)){}).build();
+    public Response listUsers(@QueryParam("directive") String directive,
+                              @QueryParam("courseId") Long courseId,
+                              @QueryParam("page") @DefaultValue("1") Integer page,
+                              @QueryParam("page-size") @DefaultValue("10") Integer pageSize) {
+        if(directive == null && courseId != null) {
+            throw new CampusBadRequestException("Property 'directive' missing");
+        } else if(directive != null && courseId == null) {
+            throw new CampusBadRequestException("Property 'courseId' missing");
+        }
+        if(courseId != null && directive.equals("exclude")) {
+            CampusPage<User> filteredUsers = userService.filterByCourse(courseId, page, pageSize);
+            Response.ResponseBuilder builder = Response.ok(
+                    new GenericEntity<List<UserDto>>(userAssembler.toResources(filteredUsers.getContent(), true)){});
+            return PaginationBuilder.build(filteredUsers, builder, uriInfo, pageSize);
+        }
+
+        CampusPage<User> users = userService.list(page, pageSize);
+        if(users.isEmpty()) {
+            return Response.noContent().build();
+        }
+        Response.ResponseBuilder builder = Response.ok(
+                new GenericEntity<List<UserDto>>(userAssembler.toResources(users.getContent(), true)){});
+        return PaginationBuilder.build(users, builder, uriInfo, pageSize);
     }
 
     @POST
     @Consumes("application/vnd.campus.api.v1+json")
     public Response postUser(@Valid UserRegisterFormDto userRegisterForm) throws DtoValidationException {
         if(userRegisterForm == null) {
-            throw new BadRequestException();
+            throw new CampusBadRequestException("Missing user register body");
         }
         dtoValidator.validate(userRegisterForm, "Invalid Body Request");
         User user = userService.create(userRegisterForm.getFileNumber(), userRegisterForm.getName(), userRegisterForm.getSurname(),

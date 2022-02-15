@@ -69,13 +69,21 @@ export class CourseService {
     );
   }
 
+  public async getPrivileged(
+    courseId: number
+  ): Promise<Result<PagedContent<UserModel[]>>> {
+    return getPagedFetch<UserModel[]>(
+      this.basePath + "/" + courseId + "/privileged"
+    );
+  }
+
   public async enrollUserToCourse(
     courseId: number,
     userId: number,
     roleId: number
   ): Promise<Result<PostResponse>> {
     const userPaths = ["/students", "/teachers", "/helpers"];
-    if (roleId < 1 || roleId > 3) {
+    if (roleId < userRoles.STUDENT || roleId > userRoles.HELPER) {
       return Result.failed(new ErrorResponse(422, "Invalid role id")); // TODO: validar que el codigo sea el correcto
     }
 

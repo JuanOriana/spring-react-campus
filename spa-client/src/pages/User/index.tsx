@@ -22,7 +22,7 @@ type FormData = {
 
 function User() {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
   const [reload, setReload] = useState(true);
   const [userImg, setUserImg] = useState<string | undefined>(undefined);
@@ -52,19 +52,21 @@ function User() {
       .updateUserProfileImage(user ? user.userId : -1, data.image![0])
       .then((result) => {
         if (!result.hasFailed()) {
-          renderToast("👑 Imagen actualizada exitosamente!", "success");
+          renderToast(t('User.toast.message.changedCorrectly'), "success");
+          const imgAsUrl = URL.createObjectURL(data.image![0]);
+          setUser({ ...user!, url: imgAsUrl });
           setReload(!reload);
           reset();
         } else {
           renderToast(
-            "No se pudo actualizar la imagen, intente de nuevo",
+              t('User.toast.error.notChanged'),
             "error"
           );
         }
       })
       .catch(() =>
         renderToast(
-          "No se pudo actualizar la imagen, intente de nuevo",
+            t('User.toast.error.notChanged'),
           "error"
         )
       );

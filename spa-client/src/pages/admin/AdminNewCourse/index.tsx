@@ -84,16 +84,16 @@ function AdminNewCourse() {
       )
       .then((result) => {
         if (!result.hasFailed()) {
-          renderToast("👑 Curso creado exitosamente!", "success");
+          renderToast(t('AdminNewCourse.toast.message.createdCorrectly'), "success");
           reset();
         } else {
           if (result.getError().getCode() === 409) setIsCourseDuplicated(true);
           else
-            renderToast("No se pudo crear el curso, intente de nuevo", "error");
+            renderToast(t('AdminNewCourse.toast.error.notCreated'), "error");
         }
       })
       .catch(() =>
-        renderToast("No se pudo crear el curso, intente de nuevo", "error")
+        renderToast(t('AdminNewCourse.toast.error.notCreated'), "error")
       );
   });
 

@@ -2,9 +2,12 @@ package ar.edu.itba.paw.webapp.security.config;
 
 import ar.edu.itba.paw.webapp.security.api.*;
 import ar.edu.itba.paw.webapp.security.api.basic.BasicAuthenticationProvider;
+import ar.edu.itba.paw.webapp.security.api.handlers.AuthenticationFailureHandler;
+import ar.edu.itba.paw.webapp.security.api.handlers.AuthenticationSuccessHandler;
+import ar.edu.itba.paw.webapp.security.api.handlers.CustomAccessDeniedHandler;
 import ar.edu.itba.paw.webapp.security.api.jwt.JwtAuthenticationProvider;
-import ar.edu.itba.paw.webapp.security.voter.AntMatcherVoter;
-import ar.edu.itba.paw.webapp.security.service.implementation.CampusUserDetailsService;
+import ar.edu.itba.paw.webapp.security.voters.AntMatcherVoter;
+import ar.edu.itba.paw.webapp.security.services.implementation.CampusUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,11 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.AccessDecisionManager;
-import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.vote.AuthenticatedVoter;
-import org.springframework.security.access.vote.RoleVoter;
-import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,16 +25,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CharacterEncodingFilter;
-
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -62,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthenticationFailureHandler authenticationFailureHandler;
 
-    public static final String API_PREFIX = "/api/";
+    public static final String API_PREFIX = "/api";
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -179,9 +174,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(final WebSecurity web) {
         web
            .ignoring()
-                .antMatchers("/");
+                .antMatchers("/")
+                .antMatchers("/index.html");
     }
-
-
-
 }

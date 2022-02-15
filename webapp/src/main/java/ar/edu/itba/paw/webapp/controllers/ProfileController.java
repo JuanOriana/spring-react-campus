@@ -1,8 +1,8 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.webapp.common.assemblers.UserAssembler;
-import ar.edu.itba.paw.webapp.security.service.AuthFacade;
+import ar.edu.itba.paw.webapp.assemblers.UserAssembler;
+import ar.edu.itba.paw.webapp.security.services.AuthFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.ws.rs.GET;

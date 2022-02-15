@@ -74,20 +74,20 @@ function AdminNewUser() {
         )
         .then((result) => {
           if (!result.hasFailed()) {
-            renderToast("👑 Usuario creado exitosamente!", "success");
+            renderToast(t('AdminNewUser.toast.message.createdCorrectly'), "success");
             reset();
           } else {
             if (result.getError().getCode() === 409) {
               setRepeatedValues(true);
             } else
               renderToast(
-                "No se pudo crear el usuario, intente de nuevo",
+                  t('AdminNewUser.toast.error.notCreated'),
                 "error"
               );
           }
         })
         .catch(() =>
-          renderToast("No se pudo crear el usuario, intente de nuevo", "error")
+          renderToast(t('AdminNewUser.toast.error.notCreated'), "error")
         );
     }
   });

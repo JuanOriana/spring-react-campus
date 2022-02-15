@@ -1,8 +1,8 @@
 package ar.edu.itba.paw.webapp.security.api;
 
-import ar.edu.itba.paw.webapp.security.api.model.ApiErrorDetails;
-import ar.edu.itba.paw.webapp.security.api.exception.ExpiredAuthenticationTokenException;
-import ar.edu.itba.paw.webapp.security.api.exception.InvalidAuthenticationTokenException;
+import ar.edu.itba.paw.webapp.security.api.models.ApiErrorDetails;
+import ar.edu.itba.paw.webapp.security.api.exceptions.ExpiredAuthenticationTokenException;
+import ar.edu.itba.paw.webapp.security.api.exceptions.InvalidAuthenticationTokenException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.InsufficientAuthenticationException;

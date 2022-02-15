@@ -299,7 +299,7 @@ function FileSearcher({
             {t("FileSearcher.filteredBy")}
           </FileCheckboxLabel>
           {categoryType!.map((idx) => {
-            if (idx === "-1") return;
+            if (idx === "-1") return false;
             return (
               <FileFilterPill key={idx} red={false}>
                 {categories[idx] &&
@@ -308,7 +308,7 @@ function FileSearcher({
             );
           })}
           {extensionType!.map((idx) => {
-            if (idx === "-1") return;
+            if (idx === "-1") return false;
             return (
               <FileFilterPill key={idx} red={true}>
                 {idx === 0

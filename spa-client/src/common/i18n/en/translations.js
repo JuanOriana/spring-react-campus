@@ -18,6 +18,14 @@ export const TRANSLATIONS_EN = {
     "Ver todos los cursos": "See all courses",
   },
 
+  AnnouncementUnit: {
+    author: "Author: {{name}} {{surname}}",
+    subject: "Subject: {{subjectName}}",
+    alt: {
+      deleteButton: "Delete"
+    },
+  },
+
   BasicPagination: {
     message: "Page {{currentPage}} of {{maxPage}}",
     alt: {
@@ -85,6 +93,7 @@ export const TRANSLATIONS_EN = {
     guide: "Guide",
     bylaws: "Bylaw",
     schedule: "Schedule",
+    other: "Other",
   },
 
   FileUnit: {
@@ -92,6 +101,7 @@ export const TRANSLATIONS_EN = {
       file: "File",
       delete: "Delete",
     },
+    downloads: "Downloads: {{downloads}}",
   },
 
   Footer: "Campus © {{year}} - All rights reserved",
@@ -141,6 +151,11 @@ export const TRANSLATIONS_EN = {
       teachers: "Teachers",
       assistants: "Helpers",
     },
+    toast: {
+      error:{
+        userNotAdded: "User not added, please try again",
+      },
+    },
   },
 
   AdminAllCourses: {
@@ -169,6 +184,14 @@ export const TRANSLATIONS_EN = {
     },
     error: {
       alreadyExist: "This course already exist",
+    },
+    toast:{
+      error:{
+        notCreated: "Course could not be created, please try again"
+      },
+      message:{
+        createdCorrectly: "👑 Course created successfully!",
+      },
     },
   },
 
@@ -218,6 +241,14 @@ export const TRANSLATIONS_EN = {
       confirmPassword: "Confirm password",
       createButton: "Create",
     },
+    toast:{
+      error:{
+        notCreated: "User could not be created, please try again"
+      },
+      message:{
+        createdCorrectly: "👑 User created successfully!",
+      },
+    },
   },
 
   AdminPortal: {
@@ -259,6 +290,19 @@ export const TRANSLATIONS_EN = {
           length: "Content must be grater than 2 characters",
         },
       },
+      alert:{
+        deleteAnnouncement: "Are you sure you want to delete this announcement?",
+      },
+      toast:{
+        error:{
+          notRemoved: "Announcement could not be removed, please try again",
+          notCreated: "Announcement could not be created, please try again"
+        },
+        message:{
+          removedCorrectly: "👑 Announcement removed successfully!",
+          createdCorrectly: "👑 Announcement created successfully!",
+        },
+      },
     },
   },
 
@@ -282,6 +326,14 @@ export const TRANSLATIONS_EN = {
         length: "Comments can not be longer than 50 characters",
       },
     },
+    toast:{
+      error:{
+        notCorrected: "The exam could not be corrected, please try again",
+      },
+      message:{
+        correctedCorrectly: "👑 Exam corrected with {{mark}}",
+      },
+    },
   },
 
   StudentCourseExamStandalone: {
@@ -298,6 +350,14 @@ export const TRANSLATIONS_EN = {
         size: "File must be smaller than 50mb",
       },
     },
+    toast:{
+      error:{
+        notSent: "The exam could not be sent, please try again",
+      },
+      message:{
+        sentCorrectly: "👑 Exam sent successfully!",
+      },
+    },
   },
 
   TeacherCourseExamStandalone: {
@@ -309,13 +369,21 @@ export const TRANSLATIONS_EN = {
     },
     filterButton: "Filter",
     noExams: "No exams that satisfy criteria",
+    toast:{
+      error:{
+        notUndoCorrection: "The exam could not be uncorrected, please try again",
+      },
+      message:{
+        undoCorrectly: "👑 The exam was successfully uncorrected",
+      },
+    },
   },
 
   StudentExams: {
     title: "Exams",
     toDo: "Available exams:",
     noExams: "No exams available",
-    sentExames: "Exams done",
+    sentExams: "Exams done",
   },
 
   TeacherExams: {
@@ -352,6 +420,19 @@ export const TRANSLATIONS_EN = {
     },
     recentExams: "Recent exams",
     noExams: "No exams",
+    toast:{
+      error:{
+        notCreated: "The exam could not be created, please try again",
+        notRemoved: "The exam could not be removed, please try again",
+      },
+      message:{
+        createdCorrectly: "👑 Exam created successfully!",
+        removedCorrectly: "👑 Exam deleted successfully!",
+      },
+    },
+    alert: {
+      deleteExam: "Are you sure you want to delete this exam?",
+    },
   },
 
   CourseFiles: {
@@ -371,6 +452,19 @@ export const TRANSLATIONS_EN = {
     },
     title: "Files",
     noResults: "No results!",
+    toast:{
+      error:{
+        notUploaded: "The file could not be uploaded, please try again",
+        notRemoved: "The file could not be removed, please try again",
+      },
+      message:{
+        uploadedCorrectly: "👑 File uploaded correctly!",
+        removedCorrectly: "👑 File deleted successfully!",
+      },
+    },
+    alert: {
+      deleteFile: "Are you sure you want to delete this file?",
+    },
   },
 
   CourseSchedule: {
@@ -401,6 +495,14 @@ export const TRANSLATIONS_EN = {
         isRequired: "A content is required",
       },
     },
+    toast:{
+      error:{
+        notSent: "The email could not be sent, please try again",
+      },
+      message:{
+        sentCorrectly: "👑 Email sent successfully!",
+      },
+    },
   },
 
   Files: {
@@ -425,12 +527,14 @@ export const TRANSLATIONS_EN = {
         isRequired: "Enter a password",
         badPassword: "Incorrect password",
       },
+      invalidCredentials: "Invalid credentials",
     },
   },
 
   Portal: {
     title: "Courses",
     lastAnnouncements: "Last Announcements",
+    noAnnouncements: "No announcements to see!",
   },
 
   Timetable: {
@@ -451,5 +555,13 @@ export const TRANSLATIONS_EN = {
     usernameTitle: "Username: ",
     emailTitle: "Email: ",
     fileNumberTitle: "File number: ",
+    toast:{
+      error:{
+        notChanged: "The image could not be changed, please try again later",
+      },
+      message:{
+        changedCorrectly: "👑 Image changed successfully!",
+      },
+    },
   },
 };

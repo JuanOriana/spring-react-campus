@@ -25,6 +25,7 @@ import { renderToast } from "../../../scripts/renderToast";
 // i18next imports
 import { useTranslation } from "react-i18next";
 import "../../../common/i18n/index";
+import LoadableData from "../../../components/LoadableData";
 
 //
 
@@ -70,7 +71,7 @@ function AdminAddUserToCourse() {
         () => {}
       );
       handleService(
-        userService.getUsers(),
+        userService.getUsers(courseIdAsInt),
         navigate,
         (userData) => {
           setUsers(userData ? userData.getContent() : []);
@@ -86,15 +87,6 @@ function AdminAddUserToCourse() {
         () => {}
       );
       handleService(
-        courseService.getStudents(courseIdAsInt),
-        navigate,
-        (userData) => {
-          setCourseStudents(userData ? userData.getContent() : []);
-          setMaxPage(userData ? userData.getMaxPage() : 1);
-        },
-        () => {}
-      );
-      handleService(
         courseService.getHelpers(courseIdAsInt),
         navigate,
         (userData) => {
@@ -104,6 +96,19 @@ function AdminAddUserToCourse() {
       );
     }
   }, [courseId]);
+
+  useEffect(() => {
+    courseId &&
+      handleService(
+        courseService.getStudents(parseInt(courseId), currentPage, pageSize),
+        navigate,
+        (userData) => {
+          setCourseStudents(userData ? userData.getContent() : []);
+          setMaxPage(userData ? userData.getMaxPage() : 1);
+        },
+        () => {}
+      );
+  }, [courseId, currentPage, pageSize]);
 
   const { register, handleSubmit, reset } = useForm<FormData>({
     criteriaMode: "all",
@@ -120,8 +125,12 @@ function AdminAddUserToCourse() {
     const user = users.find((findUser) => {
       return findUser.userId === userIdFinal;
     });
-    const promise = courseService.enrollUserToCourse(courseIdFinal, userIdFinal,roleIdFinal);
-    
+    const promise = courseService.enrollUserToCourse(
+      courseIdFinal,
+      userIdFinal,
+      roleIdFinal
+    );
+
     promise
       .then((result) => {
         if (!result.hasFailed() || result.getError().getCode() === 204) {
@@ -138,13 +147,13 @@ function AdminAddUserToCourse() {
           reset();
         } else {
           renderToast(
-            "No se pudo agregar el usuario, intente de nuevo",
+            t('AdminAddUserToCourse.toast.error.userNotAdded'),
             "error"
           );
         }
       })
       .catch(() =>
-        renderToast("No se pudo agregar el usuario, intente de nuevo", "error")
+        renderToast(t('AdminAddUserToCourse.toast.error.userNotAdded'), "error")
       );
   });
   return (
@@ -157,133 +166,135 @@ function AdminAddUserToCourse() {
         style={{ margin: "0px 40px 40px 40px" }}
         onSubmit={onSubmit}
       >
-        <Link
-          to="/admin/course/select"
-          style={{ display: "flex", alignItems: "center" }}
-        >
-          <BackImg
-            src="/images/page-arrow.png"
-            alt={t("AdminAddUserToCourse.alt.backButton")}
-          />
-          <p style={{ fontSize: "22px", fontWeight: "700" }}>
-            {t("AdminAddUserToCourse.backButton")}
-          </p>
-        </Link>
-        <GeneralTitle style={{ color: "#176961", alignSelf: "center" }}>
-          {t("AdminAddUserToCourse.addUserToCourse", {
-            subjectName: course?.subject.name,
-            courseBoard: course?.board,
-          })}
-        </GeneralTitle>
-        <FormLabel htmlFor="userId">
-          {t("AdminAddUserToCourse.form.user")}
-        </FormLabel>
-        <FormSelect style={{ fontSize: "26px" }} {...register("userId", {})}>
-          {users.map((user) => (
-            <option value={user.userId} key={user.userId}>
-              {user.fileNumber} - {user.name} {user.surname}
-            </option>
-          ))}
-        </FormSelect>
-        <FormLabel htmlFor="roleId">
-          {t("AdminAddUserToCourse.form.role.title")}
-        </FormLabel>
-        <FormSelect style={{ fontSize: "26px" }} {...register("roleId", {})}>
-          {roles.map((role) => (
-            <option value={role.roleId} key={role.roleId}>
-              {t("AdminAddUserToCourse.form.role" + role.roleName)}
-            </option>
-          ))}
-        </FormSelect>
-        <FormButton>{t("AdminAddUserToCourse.form.addButton")}</FormButton>
-        {(courseTeachers.length > 0 ||
-          courseStudents.length > 0 ||
-          courseHelpers.length > 0) && (
-          <UserContainer>
-            <UserColumn>
-              <FormText style={{ margin: 0 }}>
-                {t("AdminAddUserToCourse.form.students")}
-              </FormText>
-              <ul>
-                {courseStudents.map((student) => (
-                  <li key={student.userId}>
-                    {student.name} {student.surname}
-                  </li>
-                ))}
-              </ul>
-              {maxPage > 1 && (
-                <PaginationWrapper
-                  style={{
-                    alignSelf: "center",
-                    fontSize: "14px",
-                    marginRight: "25%",
-                  }}
-                >
-                  {currentPage > 1 && (
-                    <Link
-                      to={`/admin/course/${courseId}/enroll?page=${
-                        currentPage - 1
-                      }&pageSize=${pageSize}`}
-                    >
-                      {/*ACHICAR!*/}
-                      <PaginationArrow
-                        xRotated={true}
-                        src="/images/page-arrow.png"
-                        alt={t("BasicPagination.alt.beforePage")}
-                      />
-                    </Link>
-                  )}
-                  {t("BasicPagination.message", {
-                    currentPage: currentPage,
-                    maxPage: maxPage,
-                  })}
-                  {currentPage < maxPage && (
-                    <Link
-                      to={`/admin/course/${courseId}/enroll?page=${
-                        currentPage + 1
-                      }&pageSize=${pageSize}`}
-                    >
-                      <PaginationArrow
-                        src="/images/page-arrow.png"
-                        alt={t("BasicPagination.alt.nextPage")}
-                      />
-                    </Link>
-                  )}
-                </PaginationWrapper>
-              )}
-            </UserColumn>
-            <UserColumn>
-              {courseTeachers.length > 0 && (
-                <>
-                  <FormText style={{ margin: 0 }}>
-                    {t("AdminAddUserToCourse.form.teachers")}
-                  </FormText>
-                  <ul>
-                    {courseTeachers.map((teacher) => (
-                      <li key={teacher.userId}>
-                        {teacher.name} {teacher.surname}
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
-              {courseHelpers.length > 0 && (
-                <>
-                  <FormText style={{ margin: 0 }}>
-                    {t("AdminAddUserToCourse.form.assistants")}
-                  </FormText>
-                  <ul>
-                    {courseHelpers.map((helper) => (
-                      <li key={helper.userId}>
-                        {helper.name} {helper.surname}
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
-            </UserColumn>
-          </UserContainer>
-        )}
+        <LoadableData isLoading={isCourseLoading}>
+          <Link
+            to="/admin/course/select"
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <BackImg
+              src="/images/page-arrow.png"
+              alt={t("AdminAddUserToCourse.alt.backButton")}
+            />
+            <p style={{ fontSize: "22px", fontWeight: "700" }}>
+              {t("AdminAddUserToCourse.backButton")}
+            </p>
+          </Link>
+          <GeneralTitle style={{ color: "#176961", alignSelf: "center" }}>
+            {t("AdminAddUserToCourse.addUserToCourse", {
+              subjectName: course?.subject.name,
+              courseBoard: course?.board,
+            })}
+          </GeneralTitle>
+          <FormLabel htmlFor="userId">
+            {t("AdminAddUserToCourse.form.user")}
+          </FormLabel>
+          <FormSelect style={{ fontSize: "26px" }} {...register("userId", {})}>
+            {users.map((user) => (
+              <option value={user.userId} key={user.userId}>
+                {user.fileNumber} - {user.name} {user.surname}
+              </option>
+            ))}
+          </FormSelect>
+          <FormLabel htmlFor="roleId">
+            {t("AdminAddUserToCourse.form.role.title")}
+          </FormLabel>
+          <FormSelect style={{ fontSize: "26px" }} {...register("roleId", {})}>
+            {roles.map((role) => (
+              <option value={role.roleId} key={role.roleId}>
+                {t("AdminAddUserToCourse.form.role." + role.roleName)}
+              </option>
+            ))}
+          </FormSelect>
+          <FormButton>{t("AdminAddUserToCourse.form.addButton")}</FormButton>
+          {(courseTeachers.length > 0 ||
+            courseStudents.length > 0 ||
+            courseHelpers.length > 0) && (
+            <UserContainer>
+              <UserColumn>
+                <FormText style={{ margin: 0 }}>
+                  {t("AdminAddUserToCourse.form.students")}
+                </FormText>
+                <ul>
+                  {courseStudents.map((student) => (
+                    <li key={student.userId}>
+                      {student.name} {student.surname}
+                    </li>
+                  ))}
+                </ul>
+                {maxPage > 1 && (
+                  <PaginationWrapper
+                    style={{
+                      alignSelf: "center",
+                      fontSize: "14px",
+                      marginRight: "25%",
+                    }}
+                  >
+                    {currentPage > 1 && (
+                      <Link
+                        to={`/admin/course/${courseId}/enroll?page=${
+                          currentPage - 1
+                        }&pageSize=${pageSize}`}
+                      >
+                        {/*ACHICAR!*/}
+                        <PaginationArrow
+                          xRotated={true}
+                          src="/images/page-arrow.png"
+                          alt={t("BasicPagination.alt.beforePage")}
+                        />
+                      </Link>
+                    )}
+                    {t("BasicPagination.message", {
+                      currentPage: currentPage,
+                      maxPage: maxPage,
+                    })}
+                    {currentPage < maxPage && (
+                      <Link
+                        to={`/admin/course/${courseId}/enroll?page=${
+                          currentPage + 1
+                        }&pageSize=${pageSize}`}
+                      >
+                        <PaginationArrow
+                          src="/images/page-arrow.png"
+                          alt={t("BasicPagination.alt.nextPage")}
+                        />
+                      </Link>
+                    )}
+                  </PaginationWrapper>
+                )}
+              </UserColumn>
+              <UserColumn>
+                {courseTeachers.length > 0 && (
+                  <>
+                    <FormText style={{ margin: 0 }}>
+                      {t("AdminAddUserToCourse.form.teachers")}
+                    </FormText>
+                    <ul>
+                      {courseTeachers.map((teacher) => (
+                        <li key={teacher.userId}>
+                          {teacher.name} {teacher.surname}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+                {courseHelpers.length > 0 && (
+                  <>
+                    <FormText style={{ margin: 0 }}>
+                      {t("AdminAddUserToCourse.form.assistants")}
+                    </FormText>
+                    <ul>
+                      {courseHelpers.map((helper) => (
+                        <li key={helper.userId}>
+                          {helper.name} {helper.surname}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </UserColumn>
+            </UserContainer>
+          )}
+        </LoadableData>
       </FormWrapper>
     </>
   );

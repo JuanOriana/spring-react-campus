@@ -1,7 +1,8 @@
 package ar.edu.itba.paw.webapp.security.api.jwt;
 
-import ar.edu.itba.paw.webapp.security.api.model.AuthenticationTokenDetails;
-import ar.edu.itba.paw.webapp.security.service.AuthenticationTokenService;
+import ar.edu.itba.paw.webapp.security.api.models.AuthenticationTokenDetails;
+import ar.edu.itba.paw.webapp.security.api.models.JwtAuthenticationToken;
+import ar.edu.itba.paw.webapp.security.services.AuthenticationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;

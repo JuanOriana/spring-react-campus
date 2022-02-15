@@ -33,11 +33,12 @@ function RequireAuth({ children }: { children: JSX.Element }) {
   const navigate = useNavigate();
   const readUser = localStorage.getItem("user");
   const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const rememberMe = localStorage.getItem("rememberMe") === "true";
   const correctRoute = getCorrectPrivilegeRoute(isAdmin, location);
 
   useEffect(() => {
     if (readUser && readUser !== "")
-      signin(JSON.parse(readUser), () => navigate(correctRoute));
+      signin(JSON.parse(readUser), rememberMe, () => navigate(correctRoute));
   }, []);
 
   if (!user && !readUser) {

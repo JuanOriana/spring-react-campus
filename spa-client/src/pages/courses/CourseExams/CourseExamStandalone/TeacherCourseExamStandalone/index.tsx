@@ -78,12 +78,12 @@ function TeacherCourseExamStandalone() {
       .then((result) => {
         if (result.hasFailed() && result.getError().getCode() !== 204) {
           renderToast(
-            "No se pudo descorregir el examen, intente de nuevo",
+            t('TeacherCourseExamStandalone.toast.error.notUndoCorrection'),
             "error"
           );
           return;
         }
-        renderToast(`👑 Se elimino la correccion del examen`, "success");
+        renderToast(t('TeacherCourseExamStandalone.toast.message.undoCorrectly'), "success");
         setAnswers((oldAnswers) =>
           oldAnswers.map((answer: AnswerModel) =>
             answer.answerId === id ? { ...answer, score: undefined } : answer
@@ -92,7 +92,7 @@ function TeacherCourseExamStandalone() {
       })
       .catch(() =>
         renderToast(
-          "No se pudo descorregir el examen, intente de nuevo",
+            t('TeacherCourseExamStandalone.toast.error.notUndoCorrection'),
           "error"
         )
       );

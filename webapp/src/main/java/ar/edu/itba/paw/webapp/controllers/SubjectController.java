@@ -2,12 +2,13 @@ package ar.edu.itba.paw.webapp.controllers;
 
 
 import ar.edu.itba.paw.interfaces.SubjectService;
+import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.Subject;
 import ar.edu.itba.paw.models.exception.SubjectNotFoundException;
-import ar.edu.itba.paw.webapp.common.assemblers.SubjectAssembler;
-import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
-import ar.edu.itba.paw.webapp.dto.subject.SubjectDto;
-import ar.edu.itba.paw.webapp.dto.subject.SubjectFormDto;
+import ar.edu.itba.paw.webapp.assemblers.SubjectAssembler;
+import ar.edu.itba.paw.webapp.constraints.validators.DtoConstraintValidator;
+import ar.edu.itba.paw.webapp.dtos.subject.SubjectDto;
+import ar.edu.itba.paw.webapp.dtos.subject.SubjectFormDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import javax.validation.Valid;
@@ -34,12 +35,13 @@ public class SubjectController {
 
     @GET
     @Produces("application/vnd.campus.api.v1+json")
-    public Response getSubjects() {
-        List<Subject> subjectList = subjectService.list();
+    public Response getSubjects(@QueryParam("page") @DefaultValue("1") Integer page,
+                                @QueryParam("page-size") @DefaultValue("10") Integer pageSize) {
+        CampusPage<Subject> subjectList = subjectService.list(page, pageSize);
         if (subjectList.isEmpty()){
             return Response.noContent().build();
         }
-        List<SubjectDto> subjects = assembler.toResources(subjectList);
+        List<SubjectDto> subjects = assembler.toResources(subjectList.getContent());
         return Response.ok(new GenericEntity<List<SubjectDto>>(subjects){}).build();
     }
 

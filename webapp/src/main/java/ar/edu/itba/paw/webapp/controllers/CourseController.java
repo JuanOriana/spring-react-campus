@@ -5,23 +5,24 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
 import ar.edu.itba.paw.models.exception.UserEnrolledException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
-import ar.edu.itba.paw.webapp.common.assemblers.*;
-import ar.edu.itba.paw.webapp.common.models.ParamLongList;
-import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
-import ar.edu.itba.paw.webapp.dto.*;
-import ar.edu.itba.paw.webapp.dto.announcement.AnnouncementDto;
-import ar.edu.itba.paw.webapp.dto.announcement.AnnouncementFormDto;
-import ar.edu.itba.paw.webapp.dto.answer.AnswerDto;
-import ar.edu.itba.paw.webapp.dto.course.CourseDto;
-import ar.edu.itba.paw.webapp.dto.course.CourseFormDto;
-import ar.edu.itba.paw.webapp.dto.course.EnrollUserDto;
-import ar.edu.itba.paw.webapp.dto.exam.*;
-import ar.edu.itba.paw.webapp.dto.file.FileModelDto;
-import ar.edu.itba.paw.webapp.dto.user.TimetableDto;
-import ar.edu.itba.paw.webapp.dto.user.UserDto;
-import ar.edu.itba.paw.webapp.security.api.exception.DtoValidationException;
-import ar.edu.itba.paw.webapp.security.service.AuthFacade;
-import ar.edu.itba.paw.webapp.util.PaginationBuilder;
+import ar.edu.itba.paw.webapp.assemblers.*;
+import ar.edu.itba.paw.webapp.models.ParamLongList;
+import ar.edu.itba.paw.webapp.constraints.validators.DtoConstraintValidator;
+import ar.edu.itba.paw.webapp.dtos.*;
+import ar.edu.itba.paw.webapp.dtos.announcement.AnnouncementDto;
+import ar.edu.itba.paw.webapp.dtos.announcement.AnnouncementFormDto;
+import ar.edu.itba.paw.webapp.dtos.answer.AnswerDto;
+import ar.edu.itba.paw.webapp.dtos.course.CourseDto;
+import ar.edu.itba.paw.webapp.dtos.course.CourseFormDto;
+import ar.edu.itba.paw.webapp.dtos.course.EnrollUserDto;
+import ar.edu.itba.paw.webapp.dtos.exam.*;
+import ar.edu.itba.paw.webapp.dtos.file.FileModelDto;
+import ar.edu.itba.paw.webapp.dtos.user.TimetableDto;
+import ar.edu.itba.paw.webapp.dtos.user.UserDto;
+import ar.edu.itba.paw.webapp.security.api.exceptions.CampusBadRequestException;
+import ar.edu.itba.paw.webapp.security.api.exceptions.DtoValidationException;
+import ar.edu.itba.paw.webapp.security.services.AuthFacade;
+import ar.edu.itba.paw.webapp.utils.PaginationBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -224,7 +225,6 @@ public class CourseController {
         return Response.ok(new GenericEntity<YearListDto>(new YearListDto(availableYears)){}).build();
     }
 
-    // TODO: Paginate all courses if no year and quarter was sent
     @GET
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourses(@QueryParam("page") @DefaultValue("1")
@@ -236,8 +236,10 @@ public class CourseController {
                                @QueryParam("quarter")
                                        Integer quarter) {
         if(year == null && quarter == null) {
-            List<Course> courses = courseService.list();
-            return Response.ok(new GenericEntity<List<CourseDto>>(courseAssembler.toResources(courses, false)){}).build();
+            CampusPage<Course> courses = courseService.list(page, pageSize);
+            List<CourseDto> courseDtoList = courseAssembler.toResources(courses.getContent(), false);
+            Response.ResponseBuilder builder = Response.ok(new GenericEntity<List<CourseDto>>(courseDtoList){});
+            return PaginationBuilder.build(courses, builder, uriInfo, pageSize);
         }
         year = year == null ? Calendar.getInstance().get(Calendar.YEAR) : year;
         if (quarter == null) {
@@ -270,7 +272,7 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseById(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
-            throw new BadRequestException();
+            throw new CampusBadRequestException("Property courseId cannot be null");
         }
         Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
         return Response.ok(courseAssembler.toResource(course, true)).build();
@@ -280,7 +282,7 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseTeachers(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
-            throw new BadRequestException();
+            throw new CampusBadRequestException("Property courseId cannot be null");
         }
         List<User> courseTeachers = courseService.getTeachers(courseId);
         if (courseTeachers.isEmpty()) {
@@ -295,7 +297,7 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseHelpers(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
-            throw new BadRequestException();
+            throw new CampusBadRequestException("Property courseId cannot be null");
         }
         List<User> courseHelpers = courseService.getHelpers(courseId);
         if (courseHelpers.isEmpty()) {
@@ -315,7 +317,7 @@ public class CourseController {
                                       @PathParam("courseId")
                                               Long courseId) {
         if (courseId == null) {
-            throw new BadRequestException();
+            throw new CampusBadRequestException("Property courseId cannot be null");
         }
         CampusPage<User> enrolledStudents = userService.getStudentsByCourse(courseId, page, pageSize);
         if (enrolledStudents.isEmpty()) {
@@ -325,6 +327,13 @@ public class CourseController {
                 new GenericEntity<List<UserDto>>(userAssembler.toResources(enrolledStudents.getContent(), true)) {
                 });
         return PaginationBuilder.build(enrolledStudents, builder, uriInfo, pageSize);
+    }
+
+    @GET @Path("/{courseId}/privileged")
+    @Produces("application/vnd.campus.api.v1+json")
+    public Response getPrivilegedInCourse(@PathParam("courseId") Long courseId) {
+        List<User> users = new ArrayList<>(courseService.getPrivilegedUsers(courseId).keySet());
+        return Response.ok(new GenericEntity<List<UserDto>>(userAssembler.toResources(users, true)){}).build();
     }
 
     @GET @Path("/{courseId}/exams")
@@ -346,7 +355,7 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getUserRoleInCourse(@PathParam("courseId") Long courseId) {
         if(courseId == null) {
-            throw new BadRequestException();
+            throw new CampusBadRequestException("Property courseId cannot be null");
         }
         Role role = courseService.getUserRoleInCourse(courseId, authFacade.getCurrentUserId());
         return Response.ok(new GenericEntity<RoleDto>(roleAssembler.toResource(role)){}).build();
@@ -371,7 +380,7 @@ public class CourseController {
                             @FormDataParam("file") FormDataContentDisposition fileMetadata,
                             @FormDataParam("metadata") String examMetadata) throws IOException {
         File file = getFileFromStream(fileStream);
-        if (file.length() == 0 || examMetadata == null) throw new BadRequestException("No file or file metadata was provided");
+        if (file.length() == 0 || examMetadata == null) throw new CampusBadRequestException("No file or file metadata was provided");
         ExamFormDto examForm = objectMapper.readValue(examMetadata, ExamFormDto.class);
         Exam exam = examService.create(courseId, authFacade.getCurrentUserId(), examForm.getTitle(),
                 examForm.getContent(), fileMetadata.getFileName(), IOUtils.toByteArray(fileStream),
@@ -385,7 +394,7 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getResolvedExams(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
-            throw new BadRequestException();
+            throw new CampusBadRequestException("Property courseId cannot be null");
         }
         Long userId = authFacade.getCurrentUserId();
         List<Exam> exams = examService.getResolvedExams(userId, courseId);
@@ -407,7 +416,7 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getUnresolvedExams(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
-            throw new BadRequestException();
+            throw new CampusBadRequestException("Property courseId cannot be null");
         }
         Long userId = authFacade.getCurrentUserId();
         List<Exam> exams = examService.getUnresolvedExams(userId, courseId);
@@ -422,7 +431,7 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseAnswers(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
-            throw new BadRequestException();
+            throw new CampusBadRequestException("Property courseId cannot be null");
         }
         Long userId = authFacade.getCurrentUserId();
         List<Answer> answerList = answerService.getMarks(userId, courseId);
@@ -438,7 +447,7 @@ public class CourseController {
     @Produces("application/vnd.campus.api.v1+json")
     public Response getCourseAverage(@PathParam("courseId") Long courseId) {
         if (courseId == null) {
-            throw new BadRequestException();
+            throw new CampusBadRequestException("Property courseId cannot be null");
         }
         Long userId = authFacade.getCurrentUserId();
         Double average = answerService.getAverageOfUserInCourse(userId, courseId);

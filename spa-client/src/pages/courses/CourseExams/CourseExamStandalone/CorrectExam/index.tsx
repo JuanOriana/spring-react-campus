@@ -77,16 +77,16 @@ function CorrectExam() {
       .then((result) => {
         if (result.hasFailed() && result.getError().getCode() !== 204) {
           renderToast(
-            "No se pudo corregir el examen, intente de nuevo",
+            t('CorrectExam.toast.error.notCorrected'),
             "error"
           );
           return;
         }
-        renderToast(`👑 Se corrigio el examen con ${data.mark}`, "success");
+        renderToast(t('CorrectExam.toast.message.correctedCorrectly', {mark: data.mark}) , "success");
         navigate(`/course/${course.courseId}/exam/${exam?.examId}`);
       })
       .catch(() =>
-        renderToast("No se pudo corregir el examen, intente de nuevo", "error")
+        renderToast(t('CorrectExam.toast.error.notCorrected'), "error")
       );
   });
 

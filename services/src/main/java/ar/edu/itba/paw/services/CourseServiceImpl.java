@@ -91,6 +91,11 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.list(userId, new CampusPageRequest(page, pageSize));
     }
 
+    @Override
+    public CampusPage<Course> list(Integer page, Integer pageSize) {
+        return courseDao.list(new CampusPageRequest(page, pageSize));
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<Course> listCurrent(Long userId) {

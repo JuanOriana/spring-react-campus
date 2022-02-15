@@ -1,11 +1,16 @@
 import React from "react";
 import { internalAuthProvider } from "../scripts/auth";
 import { UserModel } from "../types";
+import { removeCookie } from "../scripts/cookies";
 
 interface AuthContextType {
   user: UserModel | null;
-  setUser: (user: UserModel | null) => void;
-  signin: (user: UserModel, callback: VoidFunction) => void;
+  setUser: React.Dispatch<React.SetStateAction<UserModel | null>>;
+  signin: (
+    user: UserModel,
+    rememberMe: boolean,
+    callback: VoidFunction
+  ) => void;
   signout: (callback: VoidFunction) => void;
 }
 
@@ -14,13 +19,18 @@ const AuthContext = React.createContext<AuthContextType>(null!);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   let [user, setUser] = React.useState<UserModel | null>(null);
 
-  let signin = (newUser: UserModel, callback: VoidFunction) => {
+  let signin = (
+    newUser: UserModel,
+    rememberMe: boolean,
+    callback: VoidFunction
+  ) => {
     return internalAuthProvider.signin(() => {
       setUser(newUser);
       if (!localStorage.getItem("user"))
         localStorage.setItem("user", JSON.stringify(newUser));
       localStorage.setItem("token", newUser.token!);
       localStorage.setItem("isAdmin", newUser.admin ? "true" : "false");
+      localStorage.setItem("rememberMe", rememberMe ? "true" : "false");
       callback();
     });
   };
@@ -31,6 +41,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("isAdmin");
+      localStorage.removeItem("rememberMe");
+      //TODO: ANALIZE
+      removeCookie("basic-token");
       callback();
     });
   };

@@ -7,10 +7,12 @@ import "../../../common/i18n/index";
 //
 
 function AdminPortal() {
-    const { t } = useTranslation();
+  const { t } = useTranslation();
   return (
-    <>
-      <AdminTitle>{t('AdminPortal.title')}</AdminTitle>
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <AdminTitle>{t("AdminPortal.title")}</AdminTitle>
       <div
         style={{
           display: "flex",
@@ -21,19 +23,19 @@ function AdminPortal() {
         }}
       >
         <LinkRedirectionButton to="/admin/user/new">
-            {t('AdminPortal.createNewUserButton')}
+          {t("AdminPortal.createNewUserButton")}
         </LinkRedirectionButton>
         <LinkRedirectionButton to="/admin/course/new">
-            {t('AdminPortal.createNewCourseButton')}
+          {t("AdminPortal.createNewCourseButton")}
         </LinkRedirectionButton>
         <LinkRedirectionButton to="/admin/course/select">
-            {t('AdminPortal.addUserToCourseButton')}
+          {t("AdminPortal.addUserToCourseButton")}
         </LinkRedirectionButton>
         <LinkRedirectionButton to="/admin/course/all">
-            {t('AdminPortal.seeAllCoursesButton')}
+          {t("AdminPortal.seeAllCoursesButton")}
         </LinkRedirectionButton>
       </div>
-    </>
+    </div>
   );
 }
 
