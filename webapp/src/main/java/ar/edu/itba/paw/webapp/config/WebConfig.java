@@ -1,9 +1,8 @@
 package ar.edu.itba.paw.webapp.config;
-import ar.edu.itba.paw.interfaces.ExamService;
-import ar.edu.itba.paw.webapp.common.assemblers.*;
-import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
-import ar.edu.itba.paw.webapp.security.service.AuthFacade;
-import ar.edu.itba.paw.webapp.security.service.implementation.AuthFacadeImpl;
+import ar.edu.itba.paw.webapp.assemblers.*;
+import ar.edu.itba.paw.webapp.constraints.validators.DtoConstraintValidator;
+import ar.edu.itba.paw.webapp.security.services.AuthFacade;
+import ar.edu.itba.paw.webapp.security.services.implementation.AuthFacadeImpl;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -28,9 +27,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 
@@ -51,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    private static final boolean DEV_BUILD = true;
+    private static final boolean DEV_BUILD = false;
     private static boolean isOnDevBuild() {
         return DEV_BUILD;
     }
@@ -82,6 +83,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         return jacksonMessageConverter.getObjectMapper();
     }
 
+    @Bean
+    public ViewResolver viewResolver() {
+        final InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setViewClass(JstlView.class);
+        viewResolver.setPrefix("/WEB-INF/public/");
+        return viewResolver;
+    }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean factoryBean() {
@@ -124,11 +132,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         messageSource.setCacheSeconds((int) TimeUnit.SECONDS.toSeconds(5));
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
         return messageSource;
-    }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
     }
 
     @Bean

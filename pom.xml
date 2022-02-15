@@ -8,6 +8,7 @@
     <packaging>pom</packaging>
     <name>paw-2021b-4</name>
     <properties>
+        <main.basedir>${project.basedir}</main.basedir>
         <org.springframework.version>4.3.22.RELEASE</org.springframework.version>
         <spring-security.version>4.2.11.RELEASE</spring-security.version>
         <org.springframework.hateoas.version>0.25.1.RELEASE</org.springframework.hateoas.version>

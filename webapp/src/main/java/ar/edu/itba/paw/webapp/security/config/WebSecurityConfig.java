@@ -2,9 +2,12 @@ package ar.edu.itba.paw.webapp.security.config;
 
 import ar.edu.itba.paw.webapp.security.api.*;
 import ar.edu.itba.paw.webapp.security.api.basic.BasicAuthenticationProvider;
+import ar.edu.itba.paw.webapp.security.api.handlers.AuthenticationFailureHandler;
+import ar.edu.itba.paw.webapp.security.api.handlers.AuthenticationSuccessHandler;
+import ar.edu.itba.paw.webapp.security.api.handlers.CustomAccessDeniedHandler;
 import ar.edu.itba.paw.webapp.security.api.jwt.JwtAuthenticationProvider;
-import ar.edu.itba.paw.webapp.security.voter.AntMatcherVoter;
-import ar.edu.itba.paw.webapp.security.service.implementation.CampusUserDetailsService;
+import ar.edu.itba.paw.webapp.security.voters.AntMatcherVoter;
+import ar.edu.itba.paw.webapp.security.services.implementation.CampusUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -171,6 +174,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(final WebSecurity web) {
         web
            .ignoring()
-                .antMatchers("/");
+                .antMatchers("/")
+                .antMatchers("/index.html");
     }
 }

@@ -4,10 +4,10 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.AnswerService;
 import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.exception.AnswerNotFoundException;
-import ar.edu.itba.paw.webapp.common.assemblers.AnswerAssembler;
-import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
-import ar.edu.itba.paw.webapp.dto.answer.AnswerCorrectionDto;
-import ar.edu.itba.paw.webapp.dto.answer.AnswerDto;
+import ar.edu.itba.paw.webapp.assemblers.AnswerAssembler;
+import ar.edu.itba.paw.webapp.constraints.validators.DtoConstraintValidator;
+import ar.edu.itba.paw.webapp.dtos.answer.AnswerCorrectionDto;
+import ar.edu.itba.paw.webapp.dtos.answer.AnswerDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

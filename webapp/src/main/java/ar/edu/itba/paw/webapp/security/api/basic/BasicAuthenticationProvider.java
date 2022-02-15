@@ -2,11 +2,11 @@ package ar.edu.itba.paw.webapp.security.api.basic;
 
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.models.exception.UserNotFoundException;
-import ar.edu.itba.paw.webapp.security.api.exception.InvalidUsernamePasswordException;
-import ar.edu.itba.paw.webapp.security.api.model.AuthenticationTokenDetails;
-import ar.edu.itba.paw.webapp.security.api.model.Authority;
-import ar.edu.itba.paw.webapp.security.service.AuthenticationTokenService;
+import ar.edu.itba.paw.webapp.security.api.exceptions.InvalidUsernamePasswordException;
+import ar.edu.itba.paw.webapp.security.api.models.AuthenticationTokenDetails;
+import ar.edu.itba.paw.webapp.security.api.models.Authority;
+import ar.edu.itba.paw.webapp.security.api.models.BasicAuthenticationToken;
+import ar.edu.itba.paw.webapp.security.services.AuthenticationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

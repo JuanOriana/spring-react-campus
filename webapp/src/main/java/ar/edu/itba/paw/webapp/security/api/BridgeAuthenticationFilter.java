@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.security.api;
 
-import ar.edu.itba.paw.webapp.security.api.basic.BasicAuthenticationToken;
-import ar.edu.itba.paw.webapp.security.api.jwt.JwtAuthenticationToken;
+import ar.edu.itba.paw.webapp.security.api.models.BasicAuthenticationToken;
+import ar.edu.itba.paw.webapp.security.api.models.JwtAuthenticationToken;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

@@ -1,19 +1,18 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.AnswerService;
-import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.ExamService;
 import ar.edu.itba.paw.models.Answer;
 import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.Exam;
 import ar.edu.itba.paw.models.exception.ExamNotFoundException;
-import ar.edu.itba.paw.webapp.common.assemblers.AnswerAssembler;
-import ar.edu.itba.paw.webapp.common.assemblers.ExamAssembler;
-import ar.edu.itba.paw.webapp.constraint.validator.DtoConstraintValidator;
-import ar.edu.itba.paw.webapp.dto.answer.AnswerDto;
-import ar.edu.itba.paw.webapp.dto.exam.ExamDto;
-import ar.edu.itba.paw.webapp.security.service.AuthFacade;
-import ar.edu.itba.paw.webapp.util.PaginationBuilder;
+import ar.edu.itba.paw.webapp.assemblers.AnswerAssembler;
+import ar.edu.itba.paw.webapp.assemblers.ExamAssembler;
+import ar.edu.itba.paw.webapp.dtos.answer.AnswerDto;
+import ar.edu.itba.paw.webapp.dtos.exam.ExamDto;
+import ar.edu.itba.paw.webapp.security.api.exceptions.CampusBadRequestException;
+import ar.edu.itba.paw.webapp.security.services.AuthFacade;
+import ar.edu.itba.paw.webapp.utils.PaginationBuilder;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -101,7 +100,7 @@ public class ExamController {
                                  @FormDataParam("file") InputStream fileStream,
                                  @FormDataParam("file") FormDataContentDisposition fileMetadata) throws IOException {
         File file = getFileFromStream(fileStream);
-        if (file.length() == 0) throw new BadRequestException("No file or file metadata was provided");
+        if (file.length() == 0) throw new CampusBadRequestException("No file or file metadata was provided");
         Answer answer = answerService.updateEmptyAnswer(examId, authFacade.getCurrentUserId(), fileMetadata.getFileName(),
                 IOUtils.toByteArray(fileStream), file.length());
         LOGGER.debug("Uploaded answer file {} to exam {}", answer.getAnswerFile().getFileName(), answer.getExam().getExamId());
