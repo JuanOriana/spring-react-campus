@@ -2,6 +2,7 @@ import { paths } from "../common/constants";
 import { checkError } from "../scripts/ErrorChecker";
 import { ErrorResponse, Result, UserModel } from "../types";
 import { setCookie } from "../scripts/cookies";
+import { buffer } from "stream/consumers";
 
 export class LoginService {
   public async login(
@@ -9,8 +10,7 @@ export class LoginService {
     password: string
   ): Promise<Result<UserModel>> {
     const credentials = username + ":" + password;
-
-    const hash = Buffer.from(credentials).toString("base64");
+    const hash = btoa(credentials);
     //TODO: ANALIZE
     setCookie("basic-token", hash, 7);
     try {
@@ -29,9 +29,7 @@ export class LoginService {
 
       return Result.ok(parsedResponse as UserModel);
     } catch (error: any) {
-      return Result.failed(
-        new ErrorResponse(parseInt(error.message), error.message)
-      );
+      return Result.failed(new ErrorResponse(parseInt(error), error));
     }
   }
 }
