@@ -9,7 +9,7 @@ export class LoginService {
   ): Promise<Result<UserModel>> {
     const credentials = username + ":" + password;
 
-    const hash = btoa(credentials);
+    const hash = Buffer.from(credentials).toString("base64");
     try {
       const response = await fetch(paths.BASE_URL + "/user", {
         method: "GET",
@@ -26,7 +26,9 @@ export class LoginService {
 
       return Result.ok(parsedResponse as UserModel);
     } catch (error: any) {
-      return Result.failed(new ErrorResponse(parseInt(error), error));
+      return Result.failed(
+        new ErrorResponse(parseInt(error.message), error.message)
+      );
     }
   }
 }
