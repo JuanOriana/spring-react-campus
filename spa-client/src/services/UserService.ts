@@ -1,4 +1,4 @@
-import { paths } from "../common/constants";
+import { APPLICATION_V1_JSON_TYPE, paths } from "../common/constants";
 import { getBlobFetch } from "../scripts/getFetch";
 import {
   CourseModel,
@@ -91,7 +91,7 @@ export class UserService {
     return resultFetch<PostResponse>(this.basePath, {
       method: "POST",
       headers: {
-        "Content-Type": "application/vnd.campus.api.v1+json",
+        "Content-Type": APPLICATION_V1_JSON_TYPE,
       },
       body: newUser,
     });
@@ -103,6 +103,14 @@ export class UserService {
     title: string,
     content: string
   ) {
+    if (title.length < 1 || content.length < 1) {
+      return Result.failed(
+        new ErrorResponse(
+          422,
+          "Title and content must have more than 1 character"
+        )
+      );
+    }
     const email = JSON.stringify({
       title: title,
       content: content,
@@ -112,7 +120,7 @@ export class UserService {
     return resultFetch<PostResponse>(this.basePath + "/" + userId + "/mail", {
       method: "POST",
       headers: {
-        "Content-Type": "application/vnd.campus.api.v1+json",
+        "Content-Type": APPLICATION_V1_JSON_TYPE,
       },
       body: email,
     });
@@ -130,7 +138,6 @@ export class UserService {
     file: File
   ): Promise<Result<PutResponse>> {
     const formData = new FormData();
-
     formData.append("file", file, file.name);
     return resultFetch<PutResponse>(this.basePath + "/" + userId + "/image", {
       method: "PUT",
