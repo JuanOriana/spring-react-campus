@@ -109,17 +109,17 @@ function CourseFiles() {
   }, [navigate]);
 
   function onDelete(id: number) {
-    if (!window.confirm("Elminar este archivo?")) return;
+    if (!window.confirm(t('CourseFiles.alert.deleteFile'))) return;
     fileService
       .deleteFile(id)
       .then(() => {
-        renderToast("👑 Archivo eliminado exitosamente!", "success");
+        renderToast(t('CourseFiles.toast.message.removedCorrectly'), "success");
         setFiles((oldFiles) =>
           oldFiles.filter((file: FileModel) => file.fileId !== id)
         );
       })
       .catch(() =>
-        renderToast("No se pudo borrar el archivo, intente de nuevo", "error")
+        renderToast(t('CourseFiles.toast.error.notRemoved'), "error")
       );
   }
 
@@ -134,18 +134,18 @@ function CourseFiles() {
       .newFile(course.courseId, data.file[0], data.category ? data.category : 1)
       .then((response) => {
         if (!response.hasFailed()) {
-          renderToast("👑 Archivo creado exitosamente!", "success");
+          renderToast(t('CourseFiles.toast.message.uploadedCorrectly'), "success");
           navigate(
             `/course/${course.courseId}/files?page=1&pageSize=${pageSize}`
           );
           setReload(!reload);
           reset();
         } else {
-          renderToast("No se pudo crear el archivo, intente de nuevo", "error");
+          renderToast(t('CourseFiles.toast.error.notUploaded'), "error");
         }
       })
       .catch(() =>
-        renderToast("No se pudo crear el archivo, intente de nuevo", "error")
+        renderToast(t('CourseFiles.toast.error.notUploaded'), "error")
       );
   });
 

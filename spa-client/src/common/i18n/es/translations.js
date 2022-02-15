@@ -328,6 +328,14 @@ export const TRANSLATIONS_ES = {
           "El largo de los commentarios no puede exceder los 50 caracteres",
       },
     },
+    toast:{
+      error:{
+        notCorrected: "No se pudo corregir el examen, intente de nuevo",
+      },
+      message:{
+        correctedCorrectly: "👑 Se corrigio el examen con {{mark}}",
+      },
+    },
   },
 
   StudentCourseExamStandalone: {
@@ -344,6 +352,14 @@ export const TRANSLATIONS_ES = {
         size: "El archivo debe ser mas chico que 50mb",
       },
     },
+    toast:{
+      error:{
+        notSent: "No se pudo enviar la respuesta, intente de nuevo",
+      },
+      message:{
+        sentCorrectly: "👑 Examen enviado exitosamente!",
+      },
+    },
   },
 
   TeacherCourseExamStandalone: {
@@ -355,6 +371,14 @@ export const TRANSLATIONS_ES = {
     },
     filterButton: "Filtrar",
     noExams: "No hay examenes que cumplan el criterio",
+    toast:{
+      error:{
+        notUndoCorrection: "No se pudo descorregir el examen, intente de nuevo",
+      },
+      message:{
+        undoCorrectly: "👑 Se elimino la correccion del examen",
+      },
+    },
   },
 
   StudentExams: {
@@ -398,6 +422,19 @@ export const TRANSLATIONS_ES = {
     },
     recentExams: "Examenes recientes",
     noExams: "No hay examenes",
+    toast:{
+      error:{
+        notCreated: "No se pudo crear el examen, intente de nuevo",
+        notRemoved: "No se pudo eliminar el examen, intente de nuevo",
+      },
+      message:{
+        createdCorrectly: "👑 Examen creado exitosamente!",
+        removedCorrectly: "👑 Examen eliminado exitosamente!",
+      },
+    },
+    alert: {
+      deleteExam: "Seguro que deseas eliminar este examen?",
+    },
   },
 
   CourseFiles: {
@@ -417,6 +454,19 @@ export const TRANSLATIONS_ES = {
     },
     title: "Archivos",
     noResults: "No hay resultados!",
+    toast:{
+      error:{
+        notUploaded: "No se pudo subir el archivo, intente de nuevo",
+        notRemoved: "No se pudo eliminar el archivo, intente de nuevo",
+      },
+      message:{
+        uploadedCorrectly: "👑 Archivo subido exitosamente!",
+        removedCorrectly: "👑 Archivo eliminado exitosamente!",
+      },
+    },
+    alert: {
+      deleteFile: "Seguro que deseas eliminar este archivo?",
+    },
   },
 
   CourseSchedule: {
@@ -448,6 +498,14 @@ export const TRANSLATIONS_ES = {
         isRequired: "El contenido es requerido",
       },
     },
+    toast:{
+      error:{
+        notSent: "No se pudo enviar el correo, intente de nuevo",
+      },
+      message:{
+        sentCorrectly: "👑 Correo enviado exitosamente!",
+      },
+    },
   },
 
   Files: {
@@ -472,12 +530,14 @@ export const TRANSLATIONS_ES = {
         isRequired: "Ingrese una contraseña",
         badPassword: "Contraseña incorrecta",
       },
+      invalidCredentials: "Credenciales invalidas",
     },
   },
 
   Portal: {
     title: "Cursos",
     lastAnnouncements: "Últimos Anuncios",
+    noAnnouncements: "No hay anuncios!",
   },
 
   Timetable: {
@@ -498,5 +558,13 @@ export const TRANSLATIONS_ES = {
     usernameTitle: "Nombre de usuario: ",
     emailTitle: "Email: ",
     fileNumberTitle: "Legajo: ",
+    toast:{
+      error:{
+        notChanged: "No se pudo actualizar la imagen, intente de nuevo",
+      },
+      message:{
+        changedCorrectly: "👑 Imagen actualizada exitosamente!",
+      },
+    },
   },
 };

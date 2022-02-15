@@ -96,16 +96,16 @@ function StudentCourseExamStandalone() {
       .then((result) => {
         if (result.hasFailed()) {
           renderToast(
-            "No se pudo enviar la respuesta, intente de nuevo",
+            t('StudentCourseExamStandalone.toast.error.notSent'),
             "error"
           );
           return;
         }
         navigate(`/course/${course.courseId}/exams`);
-        renderToast("👑 Examen enviado exitosamente!", "success");
+        renderToast(t('StudentCourseExamStandalone.toast.message.sentCorrectly'), "success");
       })
       .catch(() =>
-        renderToast("No se pudo enviar la respuesta, intente de nuevo", "error")
+        renderToast(t('StudentCourseExamStandalone.toast.error.notSent'), "error")
       );
   });
   return (

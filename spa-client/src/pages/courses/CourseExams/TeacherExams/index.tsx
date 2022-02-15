@@ -78,39 +78,39 @@ function TeacherExams() {
       )
       .then((response) => {
         if (!response.hasFailed()) {
-          renderToast("👑 Examen creado exitosamente!", "success");
+          renderToast(t('TeacherExams.toast.message.createdCorrectly'), "success");
           navigate(`/course/${course.courseId}/exams`);
           setReload(!reload);
           reset();
           reset();
         } else {
-          renderToast("No se pudo crear el examen, intente de nuevo", "error");
+          renderToast(t('TeacherExams.toast.error.notCreated'), "error");
         }
       })
       .catch(() =>
-        renderToast("No se pudo crear el examen, intente de nuevo", "error")
+        renderToast(t('TeacherExams.toast.error.notCreated'), "error")
       );
   });
 
   function onDelete(id: number) {
-    if (!window.confirm("Elminar este examen?")) return;
+    if (!window.confirm(t('TeacherExams.alert.deleteExam'))) return;
     examsService
       .deleteExam(id)
       .then(() => {
-        renderToast("👑 Examen eliminado exitosamente!", "success");
+        renderToast(t('TeacherExams.toast.message.removedCorrectly'), "success");
         setExamsStats((oldExamStats) =>
           oldExamStats.filter((exam: ExamStatsModel) => exam.exam.examId !== id)
         );
       })
       .catch(() =>
-        renderToast("No se pudo borrar el Examen, intente de nuevo", "error")
+        renderToast(t('TeacherExams.toast.error.notRemoved'), "error")
       );
   }
 
   return (
     <>
       <SectionHeading style={{ margin: "0 0 20px 20px" }}>
-        Examenes
+        {t("TeacherExams.title")}
       </SectionHeading>
       <FormWrapper
         reduced={true}

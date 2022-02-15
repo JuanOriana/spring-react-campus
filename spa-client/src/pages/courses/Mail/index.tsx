@@ -53,7 +53,7 @@ function Mail() {
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
     if (!userId) {
-      renderToast("No se pudo enviar el correo, intente de nuevo", "error");
+      renderToast(t('Mail.toast.error.notSent'), "error");
       return;
     }
     //TODO: courseIdFix
@@ -61,14 +61,14 @@ function Mail() {
       .sendEmail(parseInt(userId), 420000000, data.subject, data.content)
       .then((result) => {
         if (!result.hasFailed()) {
-          renderToast("Correo enviado exitosamente!", "success");
+          renderToast(t('Mail.toast.message.sentCorrectly'), "success");
           reset();
         } else {
-          renderToast("No se pudo enviar el correo, intente de nuevo", "error");
+          renderToast(t('Mail.toast.error.notSent'), "error");
         }
       })
       .catch(() =>
-        renderToast("No se pudo enviar el correo, intente de nuevo", "error")
+        renderToast(t('Mail.toast.error.notSent'), "error")
       );
   });
 

@@ -326,6 +326,14 @@ export const TRANSLATIONS_EN = {
         length: "Comments can not be longer than 50 characters",
       },
     },
+    toast:{
+      error:{
+        notCorrected: "The exam could not be corrected, please try again",
+      },
+      message:{
+        correctedCorrectly: "👑 Exam corrected with {{mark}}",
+      },
+    },
   },
 
   StudentCourseExamStandalone: {
@@ -342,6 +350,14 @@ export const TRANSLATIONS_EN = {
         size: "File must be smaller than 50mb",
       },
     },
+    toast:{
+      error:{
+        notSent: "The exam could not be sent, please try again",
+      },
+      message:{
+        sentCorrectly: "👑 Exam sent successfully!",
+      },
+    },
   },
 
   TeacherCourseExamStandalone: {
@@ -353,13 +369,21 @@ export const TRANSLATIONS_EN = {
     },
     filterButton: "Filter",
     noExams: "No exams that satisfy criteria",
+    toast:{
+      error:{
+        notUndoCorrection: "The exam could not be uncorrected, please try again",
+      },
+      message:{
+        undoCorrectly: "👑 The exam was successfully uncorrected",
+      },
+    },
   },
 
   StudentExams: {
     title: "Exams",
     toDo: "Available exams:",
     noExams: "No exams available",
-    sentExames: "Exams done",
+    sentExams: "Exams done",
   },
 
   TeacherExams: {
@@ -396,6 +420,19 @@ export const TRANSLATIONS_EN = {
     },
     recentExams: "Recent exams",
     noExams: "No exams",
+    toast:{
+      error:{
+        notCreated: "The exam could not be created, please try again",
+        notRemoved: "The exam could not be removed, please try again",
+      },
+      message:{
+        createdCorrectly: "👑 Exam created successfully!",
+        removedCorrectly: "👑 Exam deleted successfully!",
+      },
+    },
+    alert: {
+      deleteExam: "Are you sure you want to delete this exam?",
+    },
   },
 
   CourseFiles: {
@@ -415,6 +452,19 @@ export const TRANSLATIONS_EN = {
     },
     title: "Files",
     noResults: "No results!",
+    toast:{
+      error:{
+        notUploaded: "The file could not be uploaded, please try again",
+        notRemoved: "The file could not be removed, please try again",
+      },
+      message:{
+        uploadedCorrectly: "👑 File uploaded correctly!",
+        removedCorrectly: "👑 File deleted successfully!",
+      },
+    },
+    alert: {
+      deleteFile: "Are you sure you want to delete this file?",
+    },
   },
 
   CourseSchedule: {
@@ -445,6 +495,14 @@ export const TRANSLATIONS_EN = {
         isRequired: "A content is required",
       },
     },
+    toast:{
+      error:{
+        notSent: "The email could not be sent, please try again",
+      },
+      message:{
+        sentCorrectly: "👑 Email sent successfully!",
+      },
+    },
   },
 
   Files: {
@@ -469,12 +527,14 @@ export const TRANSLATIONS_EN = {
         isRequired: "Enter a password",
         badPassword: "Incorrect password",
       },
+      invalidCredentials: "Invalid credentials",
     },
   },
 
   Portal: {
     title: "Courses",
     lastAnnouncements: "Last Announcements",
+    noAnnouncements: "No announcements to see!",
   },
 
   Timetable: {
@@ -495,5 +555,13 @@ export const TRANSLATIONS_EN = {
     usernameTitle: "Username: ",
     emailTitle: "Email: ",
     fileNumberTitle: "File number: ",
+    toast:{
+      error:{
+        notChanged: "The image could not be changed, please try again later",
+      },
+      message:{
+        changedCorrectly: "👑 Image changed successfully!",
+      },
+    },
   },
 };
