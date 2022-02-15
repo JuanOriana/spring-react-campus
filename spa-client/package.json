@@ -29,7 +29,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "jest --watch",
     "test:watch": "jest --watch",
     "eject": "react-scripts eject"
   },
@@ -53,6 +53,8 @@
   "devDependencies": {
     "@babel/preset-typescript": "^7.16.7",
     "@types/file-saver": "^2.0.5",
+    "@types/jest": "^27.4.0",
+    "@types/node-fetch": "^2.6.0",
     "jest": "^27.5.1",
     "prettier": "2.5.1"
   }
