@@ -18,6 +18,14 @@ export const TRANSLATIONS_ES = {
     "Ver todos los cursos": "Ver todos los cursos",
   },
 
+  AnnouncementUnit: {
+    author: "Autor: {{name}} {{surname}}",
+    subject: "Materia: {{subjectName}}",
+    alt: {
+      deleteButton: "Borrar"
+    },
+  },
+
   BasicPagination: {
     message: "Pagina {{currentPage}} de {{maxPage}}",
     alt: {
@@ -85,6 +93,7 @@ export const TRANSLATIONS_ES = {
     guide: "Gu\u00EDa",
     bylaws: "Reglamento",
     schedule: "Cronograma",
+    other: "Otra",
   },
 
   FileUnit: {
@@ -92,6 +101,7 @@ export const TRANSLATIONS_ES = {
       file: "Archivo",
       delete: "Borrar",
     },
+    downloads: "Descargas: {{downloads}}",
   },
 
   Footer: "Campus © {{year}} - Todos los derechos reservados",
@@ -141,6 +151,11 @@ export const TRANSLATIONS_ES = {
       teachers: "Profesores",
       assistants: "Ayudantes",
     },
+    toast: {
+      error:{
+        userNotAdded: "No se pudo agregar el usuario, intente de nuevo",
+      },
+    },
   },
 
   AdminAllCourses: {
@@ -169,6 +184,14 @@ export const TRANSLATIONS_ES = {
     },
     error: {
       alreadyExist: "Este curso ya existe",
+    },
+    toast:{
+      error:{
+        notCreated: "No se pudo crear el curso, intente de nuevo"
+      },
+      message:{
+        createdCorrectly: "👑 Curso creado exitosamente!",
+      },
     },
   },
 
@@ -219,6 +242,14 @@ export const TRANSLATIONS_ES = {
       confirmPassword: "Confirmar contrasena",
       createButton: "Crear",
     },
+    toast:{
+      error:{
+        notCreated: "No se pudo crear el usuario, intente de nuevo"
+      },
+      message:{
+        createdCorrectly: "👑 Usuario creado exitosamente!",
+      },
+    },
   },
 
   AdminPortal: {
@@ -258,6 +289,19 @@ export const TRANSLATIONS_ES = {
         content: {
           isRequired: "El anuncio debe tener un contenido",
           length: "El contenido debe tener mas de 2 caracteres de largo",
+        },
+      },
+      alert:{
+        deleteAnnouncement: "Estas seguro que deseas eliminar este anuncio?",
+      },
+      toast:{
+        error:{
+          notRemoved: "No se pudo borrar el anuncio, intente de nuevo",
+          notCreated: "No se pudo crear el anuncio, intente de nuevo"
+        },
+        message:{
+          removedCorrectly: "👑 Anuncio eliminado exitosamente!",
+          createdCorrectly: "👑 Anuncio creado exitosamente!",
         },
       },
     },

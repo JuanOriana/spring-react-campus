@@ -18,6 +18,14 @@ export const TRANSLATIONS_EN = {
     "Ver todos los cursos": "See all courses",
   },
 
+  AnnouncementUnit: {
+    author: "Author: {{name}} {{surname}}",
+    subject: "Subject: {{subjectName}}",
+    alt: {
+      deleteButton: "Delete"
+    },
+  },
+
   BasicPagination: {
     message: "Page {{currentPage}} of {{maxPage}}",
     alt: {
@@ -85,6 +93,7 @@ export const TRANSLATIONS_EN = {
     guide: "Guide",
     bylaws: "Bylaw",
     schedule: "Schedule",
+    other: "Other",
   },
 
   FileUnit: {
@@ -92,6 +101,7 @@ export const TRANSLATIONS_EN = {
       file: "File",
       delete: "Delete",
     },
+    downloads: "Downloads: {{downloads}}",
   },
 
   Footer: "Campus © {{year}} - All rights reserved",
@@ -141,6 +151,11 @@ export const TRANSLATIONS_EN = {
       teachers: "Teachers",
       assistants: "Helpers",
     },
+    toast: {
+      error:{
+        userNotAdded: "User not added, please try again",
+      },
+    },
   },
 
   AdminAllCourses: {
@@ -169,6 +184,14 @@ export const TRANSLATIONS_EN = {
     },
     error: {
       alreadyExist: "This course already exist",
+    },
+    toast:{
+      error:{
+        notCreated: "Course could not be created, please try again"
+      },
+      message:{
+        createdCorrectly: "👑 Course created successfully!",
+      },
     },
   },
 
@@ -218,6 +241,14 @@ export const TRANSLATIONS_EN = {
       confirmPassword: "Confirm password",
       createButton: "Create",
     },
+    toast:{
+      error:{
+        notCreated: "User could not be created, please try again"
+      },
+      message:{
+        createdCorrectly: "👑 User created successfully!",
+      },
+    },
   },
 
   AdminPortal: {
@@ -257,6 +288,19 @@ export const TRANSLATIONS_EN = {
         content: {
           isRequired: "The announcement content can not be empty",
           length: "Content must be grater than 2 characters",
+        },
+      },
+      alert:{
+        deleteAnnouncement: "Are you sure you want to delete this announcement?",
+      },
+      toast:{
+        error:{
+          notRemoved: "Announcement could not be removed, please try again",
+          notCreated: "Announcement could not be created, please try again"
+        },
+        message:{
+          removedCorrectly: "👑 Announcement removed successfully!",
+          createdCorrectly: "👑 Announcement created successfully!",
         },
       },
     },

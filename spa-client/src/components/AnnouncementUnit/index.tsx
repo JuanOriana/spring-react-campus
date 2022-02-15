@@ -9,6 +9,11 @@ import {
 import { Link } from "react-router-dom";
 import { AnnouncementModel } from "../../types";
 
+// i18next imports
+import { useTranslation } from "react-i18next";
+import "../../common/i18n/index";
+//
+
 interface AnnouncementUnitProps {
   isGlobal?: boolean;
   isTeacher?: boolean;
@@ -22,6 +27,7 @@ function AnnouncementUnit({
   announcement,
   onDelete,
 }: AnnouncementUnitProps) {
+    const { t } = useTranslation();
   return (
     <AnnouncementWrapper>
       <AnnouncementHeader>
@@ -36,12 +42,12 @@ function AnnouncementUnit({
             }}
           >
             <p>
-              Autor: {announcement.author?.name} {announcement.author?.surname}
+                {t( 'AnnouncementUnit.author', {name: announcement.author?.name, surname: announcement.author?.surname })}
             </p>
             {isGlobal && (
               <p style={{ fontWeight: 700 }}>
                 <Link to={`/course/${announcement.course.courseId}`}>
-                  Materia: {announcement.course.subject.name}
+                    {t( 'AnnouncementUnit.subject', {subjectName: announcement.course.subject.name})}
                 </Link>
               </p>
             )}
@@ -49,7 +55,7 @@ function AnnouncementUnit({
           {isTeacher && (
             <SmallIcon
               src="/images/trash-red.png"
-              alt="delete"
+              alt={t('AnnouncementUnit.alt.deleteButton')}
               onClick={() => onDelete!(announcement.announcementId)}
             />
           )}

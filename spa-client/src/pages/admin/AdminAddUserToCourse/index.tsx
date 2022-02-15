@@ -147,13 +147,13 @@ function AdminAddUserToCourse() {
           reset();
         } else {
           renderToast(
-            "No se pudo agregar el usuario, intente de nuevo",
+            t('AdminAddUserToCourse.toast.error.userNotAdded'),
             "error"
           );
         }
       })
       .catch(() =>
-        renderToast("No se pudo agregar el usuario, intente de nuevo", "error")
+        renderToast(t('AdminAddUserToCourse.toast.error.userNotAdded'), "error")
       );
   });
   return (
@@ -201,7 +201,7 @@ function AdminAddUserToCourse() {
           <FormSelect style={{ fontSize: "26px" }} {...register("roleId", {})}>
             {roles.map((role) => (
               <option value={role.roleId} key={role.roleId}>
-                {t("AdminAddUserToCourse.form.role" + role.roleName)}
+                {t("AdminAddUserToCourse.form.role." + role.roleName)}
               </option>
             ))}
           </FormSelect>
