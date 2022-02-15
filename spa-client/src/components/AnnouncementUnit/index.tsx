@@ -58,8 +58,8 @@ function AnnouncementUnit({
       <AnnouncementDate>
         {announcement.date.toLocaleDateString()}
       </AnnouncementDate>
-      {announcement?.content.split("\n").map((str) => (
-        <p>{str}</p>
+      {announcement?.content.split("\n").map((str, idx) => (
+        <p key={idx}>{str}</p>
       ))}
     </AnnouncementWrapper>
   );

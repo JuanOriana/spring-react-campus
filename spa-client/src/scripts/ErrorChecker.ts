@@ -3,14 +3,17 @@ import { authedFetch } from "./authedFetch";
 
 export function checkError<RetType>(response: Response): Promise<RetType> {
   //TODO: ANALIZE
-  if (response.status === 401) {
+  if (
+    response.status === 401 &&
+    localStorage.getItem("rememberMe") === "true"
+  ) {
     const basic = getCookie("basic-token");
     if (basic) {
       authedFetch(response.url, {
         headers: { Authorization: `Basic ${basic}` },
       }).then((newResponse) => {
         response = newResponse;
-        const token = response.headers
+        const token = newResponse.headers
           .get("Authorization")
           ?.toString()
           .split(" ")[1];
