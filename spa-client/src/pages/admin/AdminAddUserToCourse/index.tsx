@@ -70,7 +70,7 @@ function AdminAddUserToCourse() {
         () => {}
       );
       handleService(
-        userService.getUsers(),
+        userService.getUsers(courseIdAsInt),
         navigate,
         (userData) => {
           setUsers(userData ? userData.getContent() : []);
@@ -120,8 +120,12 @@ function AdminAddUserToCourse() {
     const user = users.find((findUser) => {
       return findUser.userId === userIdFinal;
     });
-    const promise = courseService.enrollUserToCourse(courseIdFinal, userIdFinal,roleIdFinal);
-    
+    const promise = courseService.enrollUserToCourse(
+      courseIdFinal,
+      userIdFinal,
+      roleIdFinal
+    );
+
     promise
       .then((result) => {
         if (!result.hasFailed() || result.getError().getCode() === 204) {
