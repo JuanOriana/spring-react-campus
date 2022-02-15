@@ -2,16 +2,16 @@ export const TRANSLATIONS_ES = {
   DaysOfTheWeek: {
     Lunes: "Lunes",
     Martes: "Martes",
-    Miercoles: "Miercoles",
+    Miercoles: "Miércoles",
     Jueves: "Jueves",
     Viernes: "Viernes",
-    Sabado: "Sabado",
+    Sabado: "Sábado",
   },
 
   //COMPONENTS
 
   AdminSectionCol: {
-    title: "Administracion del Campus",
+    title: "Administración del Campus",
     "Nuevo usuario": "Nuevo usuario",
     "Nuevo curso": "Nuevo curso",
     "Agregar usuario a curso": "Agregar usuario a curso",
@@ -27,10 +27,10 @@ export const TRANSLATIONS_ES = {
   },
 
   BasicPagination: {
-    message: "Pagina {{currentPage}} de {{maxPage}}",
+    message: "Página {{currentPage}} de {{maxPage}}",
     alt: {
-      nextPage: "Siguiente pagina",
-      beforePage: "Pagina previa",
+      nextPage: "Siguiente página",
+      beforePage: "Página previa",
     },
   },
 
@@ -38,7 +38,7 @@ export const TRANSLATIONS_ES = {
     Anuncios: "Anuncios",
     Profesores: "Profesores",
     Archivos: "Archivos",
-    Examenes: "Examenes",
+    Examenes: "Exámenes",
     Horarios: "Horarios",
   },
 
@@ -77,7 +77,7 @@ export const TRANSLATIONS_ES = {
       other: "Otra",
     },
     category: {
-      title: "Categoria",
+      title: "Categoría",
       all: "Todas",
       other: "Otra",
     },
@@ -86,7 +86,7 @@ export const TRANSLATIONS_ES = {
   },
 
   Category: {
-    practice: "Practica",
+    practice: "Práctica",
     theory: "Teor\u00EDa",
     exam: "Examen",
     final: "Final",
@@ -113,20 +113,20 @@ export const TRANSLATIONS_ES = {
       "/files": "Mis archivos",
       "/timetable": "Mis horarios",
     },
-    logout: "Cerrar sesion",
+    logout: "Cerrar sesión",
   },
 
   StudentExamUnit: {
     alt: {
       check: "corregir",
     },
-    notHandedIn: "No se entrego",
+    notHandedIn: "No se entregó",
   },
 
   ////VIEWS
 
   404: {
-    title: "Error 404!",
+    title: "¡Error 404!",
     backToPortalButton: "Volver al portal",
   },
 
@@ -137,7 +137,7 @@ export const TRANSLATIONS_ES = {
       backButton: "Volver",
     },
     backButton: "Volver",
-    addUserToCourse: "Anadir usuario a {{subjectName}}[{{courseBoard}}]",
+    addUserToCourse: "Añadir usuario a {{subjectName}}[{{courseBoard}}]",
     form: {
       user: "Usuario",
       role: {
@@ -146,30 +146,30 @@ export const TRANSLATIONS_ES = {
         Teacher: "Profesor",
         Assistant: "Ayudante",
       },
-      addButton: "Anadir usuario",
+      addButton: "Añadir usuario",
       students: "Alumnos",
       teachers: "Profesores",
       assistants: "Ayudantes",
     },
     toast: {
       error:{
-        userNotAdded: "No se pudo agregar el usuario, intente de nuevo",
+        userNotAdded: "No se pudo agregar el usuario al curso, por favor intente de nuevo",
       },
     },
   },
 
   AdminAllCourses: {
-    allCoursesFrom: "Todos los cursos del {{year}}/{{quarter}}Q",
+    allCoursesFrom: "Cursos del {{year}}/{{quarter}}Q",
     form: {
-      year: "Ano",
+      year: "Año",
       quarter: "Cuatrimestre",
       searchButton: "Buscar",
     },
     noCourses: "No hay cursos en este cuatrimestre",
     table: {
-      code: "Codigo",
+      code: "Código",
       name: "Nombre",
-      board: "Comision",
+      board: "Comisión",
     },
   },
 
@@ -178,8 +178,8 @@ export const TRANSLATIONS_ES = {
     form: {
       subject: "Materia",
       quarter: "Cuatrimestre",
-      year: "Ano",
-      board: "Comision",
+      year: "Año",
+      board: "Comisión",
       createButton: "Crear",
     },
     error: {
@@ -187,49 +187,49 @@ export const TRANSLATIONS_ES = {
     },
     toast:{
       error:{
-        notCreated: "No se pudo crear el curso, intente de nuevo"
+        notCreated: "No se pudo crear el curso, por favor intente de nuevo"
       },
       message:{
-        createdCorrectly: "👑 Curso creado exitosamente!",
+        createdCorrectly: "👑 ¡Curso creado exitosamente!",
       },
     },
   },
 
   AdminNewUser: {
     error: {
-      passwordsMustMatch: "La contrasenas deben concidir",
+      passwordsMustMatch: "Las contraseñas deben coincidir",
       fileNumber: {
         isRequired: "El legajo es requerido",
-        positiveInteger: "El legajo debe ser un numero positivo",
-        exists: "El legajo ya existe",
+        positiveInteger: "El legajo debe ser un número positivo",
+        exists: "Legajo en uso",
       },
       name: {
-        onlyLetters: "El nombre solo puede tener letras",
+        onlyLetters: "El nombre solo puede contener letras",
         isRequired: "El nombre es requerido",
       },
       surname: {
-        onlyLetters: "El apellido solo puede tener letras",
+        onlyLetters: "El apellido solo puede contener letras",
         isRequired: "El apellido es requerido",
       },
       username: {
-        pattern: "El nombre de usuario solo puede tener letras y numeros",
+        pattern: "El nombre de usuario solo puede contener letras y números",
         isRequired: "El nombre de usuario es requerido",
         length:
-          "El largo del nombre de usuario debe estar entre 6 y 50 caracteres",
-        exists: "El nombre de usuario ya existe",
+            "El largo del nombre de usuario debe estar entre 6 y 50 caracteres",
+        exists: "El nombre de usuario ya esta en uso",
       },
       email: {
         pattern: "El email debe tener un formato valido",
         isRequired: "El email es un campo requerido",
-        exists: "El email ya esta en uso",
+        exists: "El email ya está en uso",
       },
       password: {
         pattern:
-          "La contrasena debe tener una mayuscula, una minsucula y un numero",
-        isRequired: "La contrasena es requerida",
-        length: "El largo de la contrasena debe estar entre 8 y 50 caracteres",
+            "La contraseña debe tener una mayúscula, una minúscula y un número",
+        isRequired: "La contraseña es requerida",
+        length: "El largo de la contraseña debe estar entre 8 y 50 caracteres",
       },
-      repeated: "El nombre de usuario, email y legajo deben ser unicos",
+      repeated: "El nombre de usuario, email y legajo deben ser únicos",
     },
     form: {
       title: "Crear nuevo usuario",
@@ -238,22 +238,22 @@ export const TRANSLATIONS_ES = {
       surname: "Apellido",
       username: "Nombre de usuario",
       email: "Email",
-      password: "Contrasena",
-      confirmPassword: "Confirmar contrasena",
+      password: "Contraseña",
+      confirmPassword: "Confirmar contraseña",
       createButton: "Crear",
     },
     toast:{
       error:{
-        notCreated: "No se pudo crear el usuario, intente de nuevo"
+        notCreated: "No se pudo crear el usuario, por favor intente de nuevo"
       },
       message:{
-        createdCorrectly: "👑 Usuario creado exitosamente!",
+        createdCorrectly: "👑 ¡Usuario creado exitosamente!",
       },
     },
   },
 
   AdminPortal: {
-    title: "Centro de Administracion del Campus",
+    title: "Centro de Administración del Campus",
     createNewUserButton: "Crear nuevo usuario",
     createNewCourseButton: "Crear nuevo curso",
     addUserToCourseButton: "Anadir usuario a curso",
@@ -270,38 +270,38 @@ export const TRANSLATIONS_ES = {
 
   Announcements: {
     title: "Anuncios",
-    noAnnouncements: "No tienes anuncios!",
+    noAnnouncements: "¡Aún no tienes anuncios!",
   },
 
   CourseAnnouncements: {
     teacher: {
       form: {
         title: "Nuevo Anuncio",
-        announcementTitleLabel: "Titulo",
+        announcementTitleLabel: "Título",
         announcementContentLabel: "Contenido",
         announcementCreateButton: "Crear anuncio",
       },
       error: {
         title: {
-          isRequired: "El titulo es requerido",
-          length: "El titulo debe tener entre 2 y 50 caracteres de largo",
+          isRequired: "El título es requerido",
+          length: "El título debe tener entre 2 y 50 caracteres de largo",
         },
         content: {
           isRequired: "El anuncio debe tener un contenido",
-          length: "El contenido debe tener mas de 2 caracteres de largo",
+          length: "El contenido debe tener más de 2 caracteres de largo",
         },
       },
       alert:{
-        deleteAnnouncement: "Estas seguro que deseas eliminar este anuncio?",
+        deleteAnnouncement: "¿Estas seguro que desea eliminar este anuncio?",
       },
       toast:{
         error:{
-          notRemoved: "No se pudo borrar el anuncio, intente de nuevo",
-          notCreated: "No se pudo crear el anuncio, intente de nuevo"
+          notRemoved: "No se pudo borrar el anuncio, por favor intente de nuevo",
+          notCreated: "No se pudo crear el anuncio, por favor intente de nuevo"
         },
         message:{
-          removedCorrectly: "👑 Anuncio eliminado exitosamente!",
-          createdCorrectly: "👑 Anuncio creado exitosamente!",
+          removedCorrectly: "👑 ¡Anuncio eliminado exitosamente!",
+          createdCorrectly: "👑 ¡Anuncio creado exitosamente!",
         },
       },
     },
@@ -310,7 +310,7 @@ export const TRANSLATIONS_ES = {
   CorrectExam: {
     descriptionTitle: "Descripción:",
     solutionTitle: "Solución:",
-    examNotDone: "El examen aun no fue realizado",
+    examNotDone: "El examen no fue realizado aún",
     form: {
       title: "Corregir examen",
       comments: "Comentarios",
@@ -320,20 +320,20 @@ export const TRANSLATIONS_ES = {
     error: {
       grade: {
         isRequired: "La nota no puede ser vacía.",
-        minGrade: "La nota minima es 0",
-        maxGrade: "La nota minima es 10",
+        minGrade: "La nota mínima es 0",
+        maxGrade: "La nota mínima es 10",
       },
       comments: {
         length:
-          "El largo de los commentarios no puede exceder los 50 caracteres",
+            "El largo de los comentarios no puede exceder los 50 caracteres",
       },
     },
     toast:{
       error:{
-        notCorrected: "No se pudo corregir el examen, intente de nuevo",
+        notCorrected: "No se pudo corregir el examen, por favor intente de nuevo",
       },
       message:{
-        correctedCorrectly: "👑 Se corrigio el examen con {{mark}}",
+        correctedCorrectly: "👑 Se corrigió el examen con {{mark}}",
       },
     },
   },
@@ -342,22 +342,22 @@ export const TRANSLATIONS_ES = {
     timeLeft: "Tiempo restante: {{days}}d:{{hours}}h:{{minutes}}m:{{seconds}}s",
     examDescriptionTitle: "Descripción:",
     form: {
-      solutionTitle: "Solucion",
-      cancelSend: "Cancelar envio",
+      solutionTitle: "Solución",
+      cancelSend: "Cancelar envío",
       send: "Enviar",
     },
     error: {
       file: {
         isRequired: "Adjuntar un archivo",
-        size: "El archivo debe ser mas chico que 50mb",
+        size: "El archivo debe ser más chico que 50mb",
       },
     },
     toast:{
       error:{
-        notSent: "No se pudo enviar la respuesta, intente de nuevo",
+        notSent: "No se pudo enviar la respuesta, por favor intente de nuevo",
       },
       message:{
-        sentCorrectly: "👑 Examen enviado exitosamente!",
+        sentCorrectly: "👑 ¡Examen enviado exitosamente!",
       },
     },
   },
@@ -370,29 +370,29 @@ export const TRANSLATIONS_ES = {
       notCorrected: "No corregidos",
     },
     filterButton: "Filtrar",
-    noExams: "No hay examenes que cumplan el criterio",
+    noExams: "No hay exámenes bajo esa categoría",
     toast:{
       error:{
-        notUndoCorrection: "No se pudo descorregir el examen, intente de nuevo",
+        notUndoCorrection: "No se pudo anular la corrección del examen, por favor intente de nuevo",
       },
       message:{
-        undoCorrectly: "👑 Se elimino la correccion del examen",
+        undoCorrectly: "👑 Se eliminó la corrección del examen",
       },
     },
   },
 
   StudentExams: {
-    title: "Examenes",
-    toDo: "Examenes a disponibles:",
-    noExams: "No hay examenes",
-    sentExames: "Examenes enviados",
+    title: "Exámenes",
+    toDo: "Exámenes a disponibles:",
+    noExams: "No hay exámenes",
+    sentExames: "Exámenes enviados",
   },
 
   TeacherExams: {
-    title: "Examenes",
+    title: "Exámenes",
     createExam: "Crear examen",
     form: {
-      examTitle: "Titulo",
+      examTitle: "Título",
       examInstructions: "Instrucciones",
       examFile: "Archivo",
       examStart: "Inicio",
@@ -401,8 +401,8 @@ export const TRANSLATIONS_ES = {
     },
     error: {
       examTitle: {
-        isRequired: "El titulo es requerido",
-        length: "El titulo debe tener entre 2 y 50 caracteres de largo",
+        isRequired: "El título es requerido",
+        length: "El título debe tener entre 2 y 50 caracteres de largo",
       },
       examInstructions: {
         isRequired: "El contenido es requerido",
@@ -410,7 +410,7 @@ export const TRANSLATIONS_ES = {
       },
       examFile: {
         isRequired: "El archivo es requerido",
-        size: "El archivo debe ser mas pequeño que 50mb",
+        size: "El archivo debe ser más pequeño que 50mb",
       },
       examStart: {
         isRequired: "La fecha de inicio es requerida",
@@ -420,20 +420,20 @@ export const TRANSLATIONS_ES = {
         isRequired: "La fecha de final es requerida",
       },
     },
-    recentExams: "Examenes recientes",
-    noExams: "No hay examenes",
+    recentExams: "Exámenes recientes",
+    noExams: "No hay exámenes",
     toast:{
       error:{
-        notCreated: "No se pudo crear el examen, intente de nuevo",
-        notRemoved: "No se pudo eliminar el examen, intente de nuevo",
+        notCreated: "No se pudo crear el examen, por favor intente de nuevo",
+        notRemoved: "No se pudo eliminar el examen, por favor intente de nuevo",
       },
       message:{
-        createdCorrectly: "👑 Examen creado exitosamente!",
-        removedCorrectly: "👑 Examen eliminado exitosamente!",
+        createdCorrectly: "👑 ¡Examen creado exitosamente!",
+        removedCorrectly: "👑 ¡Examen eliminado exitosamente!",
       },
     },
     alert: {
-      deleteExam: "Seguro que deseas eliminar este examen?",
+      deleteExam: "¿Seguro que desea eliminar este examen?",
     },
   },
 
@@ -442,37 +442,37 @@ export const TRANSLATIONS_ES = {
       form: {
         title: "Nuevo archivo",
         file: "Archivo",
-        category: "Categoria",
+        category: "Categoría",
         uploadFileButton: "Subir Archivo",
       },
       error: {
         file: {
           isRequired: "El archivo es requerido",
-          size: "El archivo debe ser mas pequeño que 50mb",
+          size: "El archivo debe ser más pequeño que 50mb",
         },
       },
     },
     title: "Archivos",
-    noResults: "No hay resultados!",
+    noResults: "¡No hay resultados!",
     toast:{
       error:{
-        notUploaded: "No se pudo subir el archivo, intente de nuevo",
-        notRemoved: "No se pudo eliminar el archivo, intente de nuevo",
+        notUploaded: "No se pudo subir el archivo, por favor intente de nuevo",
+        notRemoved: "No se pudo eliminar el archivo, por favor intente de nuevo",
       },
       message:{
-        uploadedCorrectly: "👑 Archivo subido exitosamente!",
-        removedCorrectly: "👑 Archivo eliminado exitosamente!",
+        uploadedCorrectly: "👑 ¡Archivo subido exitosamente!",
+        removedCorrectly: "👑 ¡Archivo eliminado exitosamente!",
       },
     },
     alert: {
-      deleteFile: "Seguro que deseas eliminar este archivo?",
+      deleteFile: "¿Seguro que desea eliminar este archivo?",
     },
   },
 
   CourseSchedule: {
     title: "Horarios",
     subTitle:
-      "Estos son tus horarios de clase, ante cualquier cambio consultar con un profesor autorizado.",
+        "Los horarios de clase son:",
   },
 
   CourseTeachers: {
@@ -485,7 +485,7 @@ export const TRANSLATIONS_ES = {
 
   Mail: {
     form: {
-      title: "Enviar mail a {{name}} {{surname}}",
+      title: "Enviar email a {{name}} {{surname}}",
       subject: "Asunto",
       message: "Contenido",
       sendMailButton: "Enviar",
@@ -500,17 +500,17 @@ export const TRANSLATIONS_ES = {
     },
     toast:{
       error:{
-        notSent: "No se pudo enviar el correo, intente de nuevo",
+        notSent: "No se pudo enviar el correo, por favor intente de nuevo",
       },
       message:{
-        sentCorrectly: "👑 Correo enviado exitosamente!",
+        sentCorrectly: "👑 ¡Correo enviado exitosamente!",
       },
     },
   },
 
   Files: {
     title: "Archivos",
-    noResults: "No hay resultados!",
+    noResults: "¡No hay resultados para la búsqueda!",
   },
 
   Login: {
@@ -530,14 +530,14 @@ export const TRANSLATIONS_ES = {
         isRequired: "Ingrese una contraseña",
         badPassword: "Contraseña incorrecta",
       },
-      invalidCredentials: "Credenciales invalidas",
+      invalidCredentials: "Credenciales inválidas",
     },
   },
 
   Portal: {
     title: "Cursos",
     lastAnnouncements: "Últimos Anuncios",
-    noAnnouncements: "No hay anuncios!",
+    noAnnouncements: "¡No hay anuncios recientes!",
   },
 
   Timetable: {
@@ -552,7 +552,7 @@ export const TRANSLATIONS_ES = {
     error: {
       file: {
         isRequired: "La imagen es requerida",
-        size: "La imagen debe ser mas chica que 5mb",
+        size: "La imagen debe ser menor a 5mb",
       },
     },
     usernameTitle: "Nombre de usuario: ",
@@ -560,10 +560,10 @@ export const TRANSLATIONS_ES = {
     fileNumberTitle: "Legajo: ",
     toast:{
       error:{
-        notChanged: "No se pudo actualizar la imagen, intente de nuevo",
+        notChanged: "No se pudo actualizar la imagen, por favor intente de nuevo",
       },
       message:{
-        changedCorrectly: "👑 Imagen actualizada exitosamente!",
+        changedCorrectly: "👑 ¡Imagen actualizada exitosamente!",
       },
     },
   },
