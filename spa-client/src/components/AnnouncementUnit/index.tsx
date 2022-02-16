@@ -1,10 +1,10 @@
 import React from "react";
 import {
-  AnnouncementDate,
-  AnnouncementHeader,
-  AnnouncementTitle,
-  AnnouncementWrapper,
-  SmallIcon,
+    AnnouncementDate,
+    AnnouncementHeader, AnnouncementSubject,
+    AnnouncementTitle,
+    AnnouncementWrapper,
+    SmallIcon,
 } from "./styles";
 import { Link } from "react-router-dom";
 import { AnnouncementModel } from "../../types";
@@ -47,7 +47,7 @@ function AnnouncementUnit({
             {isGlobal && (
               <p style={{ fontWeight: 700 }}>
                 <Link to={`/course/${announcement.course.courseId}`}>
-                    {t( 'AnnouncementUnit.subject', {subjectName: announcement.course.subject.name})}
+                    <AnnouncementSubject>{announcement.course.subject.name}</AnnouncementSubject>
                 </Link>
               </p>
             )}
