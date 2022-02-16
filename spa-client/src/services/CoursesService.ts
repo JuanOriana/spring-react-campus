@@ -262,7 +262,7 @@ export class CourseService {
       startTimes: startTimes,
       endTimes: endTimes,
     });
-    for (let index = 0; index < 7; index++) {
+    for (let index = 0; index < 6; index++) {
       if (startTimes[index] > endTimes[index])
         return Result.failed(
           new ErrorResponse(422, "EndTime must be greater than startime ")

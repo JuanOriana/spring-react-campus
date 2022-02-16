@@ -51,8 +51,9 @@ function Navbar() {
         userService.getUserProfileImage(user?.userId),
         navigate,
         (userImg) => {
-          const userImgUrl = URL.createObjectURL(userImg);
-          setUserImg(userImgUrl);
+          setUserImg(
+            userImg.size > 0 ? URL.createObjectURL(userImg) : undefined
+          );
         },
         () => {
           return;
