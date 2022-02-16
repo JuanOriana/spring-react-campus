@@ -1,10 +1,11 @@
 import React from "react";
 import {
-    AnnouncementDate,
-    AnnouncementHeader, AnnouncementSubject,
-    AnnouncementTitle,
-    AnnouncementWrapper,
-    SmallIcon,
+  AnnouncementDate,
+  AnnouncementHeader,
+  AnnouncementSubject,
+  AnnouncementTitle,
+  AnnouncementWrapper,
+  SmallIcon,
 } from "./styles";
 import { Link } from "react-router-dom";
 import { AnnouncementModel } from "../../types";
@@ -27,7 +28,7 @@ function AnnouncementUnit({
   announcement,
   onDelete,
 }: AnnouncementUnitProps) {
-    const { t } = useTranslation();
+  const { t } = useTranslation();
   return (
     <AnnouncementWrapper>
       <AnnouncementHeader>
@@ -42,26 +43,31 @@ function AnnouncementUnit({
             }}
           >
             <p>
-                {t( 'AnnouncementUnit.author', {name: announcement.author?.name, surname: announcement.author?.surname })}
+              {t("AnnouncementUnit.author", {
+                name: announcement.author?.name,
+                surname: announcement.author?.surname,
+              })}
             </p>
             {isGlobal && (
-              <p style={{ fontWeight: 700 }}>
+              <div style={{ fontWeight: 700 }}>
                 <Link to={`/course/${announcement.course.courseId}`}>
-                    <AnnouncementSubject>{announcement.course.subject.name}</AnnouncementSubject>
+                  <AnnouncementSubject>
+                    {announcement.course.subject.name}{" "}
+                  </AnnouncementSubject>
                 </Link>
-              </p>
+              </div>
             )}
           </div>
           {isTeacher && (
             <SmallIcon
               src="/images/trash-red.png"
-              alt={t('AnnouncementUnit.alt.deleteButton')}
+              alt={t("AnnouncementUnit.alt.deleteButton")}
               onClick={() => onDelete!(announcement.announcementId)}
             />
           )}
         </div>
       </AnnouncementHeader>
-      <AnnouncementDate>
+      <AnnouncementDate style={{ marginTop: isGlobal ? -10 : 0 }}>
         {announcement.date.toLocaleDateString()}
       </AnnouncementDate>
       {announcement?.content.split("\n").map((str, idx) => (

@@ -66,6 +66,7 @@ function Mail() {
       .then((result) => {
         if (!result.hasFailed()) {
           renderToast(t("Mail.toast.message.sentCorrectly"), "success");
+          navigate(`/course/${courseId}/teachers`);
           reset();
         } else {
           renderToast(t("Mail.toast.error.notSent"), "error");
