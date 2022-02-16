@@ -26,5 +26,4 @@ export class LocalStorageMock {
 }
 
 global.localStorage = new LocalStorageMock();
-
-test("", () => {}); // TODO : Ver como hacer para q esto no se corra pero si que pueda usar la funcion new Local...
+test("", () => {});

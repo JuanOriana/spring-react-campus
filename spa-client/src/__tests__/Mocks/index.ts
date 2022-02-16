@@ -8,6 +8,8 @@ import {
   SolvedExamModel,
   RoleModel,
   SubjectModel,
+  FileExtensionModel,
+  FileCategoryModel,
 } from "../../types";
 import { LocalStorageMock } from "./LocalStorageMock";
 
@@ -71,12 +73,22 @@ export const examUnfefEndtime: ExamModel = {
   url: "url",
 };
 
+export const extensionTxt: FileExtensionModel = {
+  fileExtensionId: 1,
+  fileExtensionName: "txt",
+};
+
+export const extensionPdf: FileExtensionModel = {
+  fileExtensionId: 2,
+  fileExtensionName: "pdf",
+};
+export const categoryTheory: FileCategoryModel = {
+  categoryId: 1,
+  categoryName: "Teoria",
+};
 export const answerFile: FileModel = {
   fileId: 1,
-  extension: {
-    fileExtensionId: 1,
-    fileExtensionName: "txt",
-  },
+  extension: extensionTxt,
   course: course,
   downloads: 1,
 };
@@ -105,15 +117,9 @@ export const studentRole: RoleModel = {
 export function mockSuccesfulResponse(
   code: number,
   returnBody: any,
-  headers?: Headers,
-  cookies?: { name: string; value: string }[]
+  headers?: Headers
 ) {
   global.localStorage = new LocalStorageMock();
-  if (typeof cookies !== "undefined") {
-    cookies.forEach((cookie) => {
-      global.localStorage.setItem(cookie.name, cookie.value);
-    });
-  }
   return (global.fetch = jest.fn().mockImplementationOnce(() => {
     return new Promise((resolve, reject) => {
       resolve({
@@ -127,3 +133,5 @@ export function mockSuccesfulResponse(
     });
   }));
 }
+
+test("", () => {});

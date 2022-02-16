@@ -14,147 +14,150 @@ import {
   user2,
 } from "../Mocks";
 
-test("Should get a course with id=1", () => {
+test("Should get a course with id=1", async () => {
   mockSuccesfulResponse(200, course);
-  courseService.getCourseById(1).then((courseResponse) => {
+  return courseService.getCourseById(1).then((courseResponse) => {
     expect(courseResponse.hasFailed()).toBeFalsy();
     expect(courseResponse.getData()).toStrictEqual(course);
   });
 });
 
-test("Should get all courses", () => {
+test("Should get all courses paged", async () => {
   const headers = new window.Headers();
   headers.set("x-total-pages", "1");
   mockSuccesfulResponse(200, [course], headers);
-  courseService.getCourses().then((courseResponse) => {
+  return courseService.getCoursesUnpaged(1).then((courseResponse) => {
     expect(courseResponse.hasFailed()).toBeFalsy();
-    const page = courseResponse.getData().getContent();
-    expect(page).toStrictEqual([course]);
+    expect(courseResponse.getData()[0]).toStrictEqual(course);
   });
 });
 
-test("Should get all helpers from course", () => {
+test("Should get all helpers from course", async () => {
   const headers = new window.Headers();
   headers.set("x-total-pages", "1");
   mockSuccesfulResponse(200, [user1], headers);
-  courseService.getHelpers(1).then((response) => {
+  return courseService.getHelpers(1).then((response) => {
     expect(response.hasFailed()).toBeFalsy();
     const page = response.getData().getContent();
     expect(page).toStrictEqual([user1]);
   });
 });
 
-test("Should enroll user to course", () => {
+test("Should enroll user to course", async () => {
   mockSuccesfulResponse(204, {});
-  courseService.enrollUserToCourse(1, 1, 1).then((response) => {
+  return courseService.enrollUserToCourse(1, 1, 1).then((response) => {
     expect(response.hasFailed()).toBeTruthy();
     expect(response.getError().getCode()).toBe(204); // In a succesful POST a 204 is expected.
   });
 });
 
-test("Should not enroll  user to course due to invalid roleid", () => {
+test("Should not enroll  user to course due to invalid roleid", async () => {
   mockSuccesfulResponse(204, {});
-  courseService.enrollUserToCourse(1, 1, 0).then((response) => {
+  return courseService.enrollUserToCourse(1, 1, 0).then((response) => {
     expect(response.hasFailed()).toBeTruthy();
     expect(response.getError().getCode()).toBe(422); // In a succesful POST a 204 is expected.
   });
 });
 
-test("Should retrieve all students from a course", () => {
+test("Should retrieve all students from a course", async () => {
   const headers = new window.Headers();
   headers.set("x-total-pages", "1");
   mockSuccesfulResponse(200, [user1, user2], headers);
-  courseService.getStudents(1).then((response) => {
+  return courseService.getStudents(1).then((response) => {
     expect(response.hasFailed()).toBeFalsy();
     const page = response.getData().getContent();
     expect(page[0]).toBe(user1);
   });
 });
 
-test("Should get solved exams", () => {
+test("Should get solved exams", async () => {
   const headers = new window.Headers();
   headers.set("x-total-pages", "1");
   mockSuccesfulResponse(200, [examSolved], headers);
 
-  courseService.getSolvedExams(1).then((response) => {
+  return courseService.getSolvedExams(1).then((response) => {
     expect(response.hasFailed()).toBeFalsy();
     expect(response.getData().getContent().length).toBe(1);
     expect(response.getData().getContent()[0]).toBe(examSolved);
   });
 });
 
-test("Should not get solved exams due to be empty", () => {
+test("Should not get solved exams due to be empty", async () => {
   mockSuccesfulResponse(204, {});
 
-  courseService.getSolvedExams(1).then((response) => {
+  return courseService.getSolvedExams(1).then((response) => {
     expect(response.hasFailed()).toBeTruthy();
     expect(response.getError().getCode()).toBe(204);
   });
 });
 
-test("Should get exams average", () => {
+test("Should get exams average", async () => {
   mockSuccesfulResponse(200, { average: 1 });
 
-  courseService.getExamsAverage(1).then((response) => {
+  return courseService.getExamsAverage(1).then((response) => {
     expect(response.hasFailed()).toBeFalsy();
     expect(response.getData().average).toBe(1);
   });
 });
 
-test("Should get answers from course", () => {
+test("Should get answers from course", async () => {
   const headers = new window.Headers();
   headers.set("x-total-pages", "1");
   mockSuccesfulResponse(200, [answer], headers);
 
-  courseService.getCourseAnswers(1).then((response) => {
+  return courseService.getCourseAnswers(1).then((response) => {
     expect(response.hasFailed()).toBeFalsy();
     expect(response.getData().getContent().length).toBe(1);
     expect(response.getData().getContent()[0]).toBe(answer);
   });
 });
 
-test("Should get available years", () => {
+test("Should get available years", async () => {
   mockSuccesfulResponse(200, { years: [2021, 2022] });
 
-  courseService.getAvailableYears().then((response) => {
+  return courseService.getAvailableYears().then((response) => {
     expect(response.hasFailed()).toBeFalsy();
     expect(response.getData().years.length).toBe(2);
   });
 });
 
-test("Should get announcement from course", () => {
+test("Should get announcement from course", async () => {
   const headers = new window.Headers();
   headers.set("x-total-pages", "1");
   mockSuccesfulResponse(200, [announcement], headers);
 
-  courseService.getAnnouncements(1).then((response) => {
+  return courseService.getAnnouncements(1).then((response) => {
     expect(response.hasFailed()).toBeFalsy();
     expect(response.getData().getContent().length).toBe(1);
     expect(response.getData().getContent()[0]).toBe(announcement);
   });
 });
 
-test("Should create new course", () => {
+test("Should create new course", async () => {
   mockSuccesfulResponse(204, {});
 
-  courseService.newCourse(1, 2, "ADA", 2022, [1], [2]).then((response) => {
-    expect(response.hasFailed()).toBeTruthy();
-    expect(response.getError().getCode()).toBe(204);
-  });
+  return courseService
+    .newCourse(1, 2, "ADA", 2022, [1], [2])
+    .then((response) => {
+      expect(response.hasFailed()).toBeTruthy();
+      expect(response.getError().getCode()).toBe(204);
+    });
 });
 
-test("Should not create new course due to bad startime", () => {
+test("Should not create new course due to bad startime", async () => {
   mockSuccesfulResponse(204, {});
 
-  courseService.newCourse(1, 2, "ADA", 2022, [3], [2]).then((response) => {
-    expect(response.hasFailed()).toBeTruthy();
-    expect(response.getError().getCode()).toBe(422);
-  });
+  return courseService
+    .newCourse(1, 2, "ADA", 2022, [3], [2])
+    .then((response) => {
+      expect(response.hasFailed()).toBeTruthy();
+      expect(response.getError().getCode()).toBe(422);
+    });
 });
 
-test("Should create an announcement", () => {
+test("Should create an announcement", async () => {
   mockSuccesfulResponse(204, {});
-  courseService
+  return courseService
     .newAnnouncement(course.courseId, announcement.title, announcement.content)
     .then((ans) => {
       expect(ans.hasFailed()).toBeTruthy();
@@ -162,10 +165,10 @@ test("Should create an announcement", () => {
     });
 });
 
-test("Should create a new exam", () => {
+test("Should create a new exam", async () => {
   mockSuccesfulResponse(204, {});
 
-  courseService
+  return courseService
     .newExam(
       1,
       "title",
@@ -180,10 +183,10 @@ test("Should create a new exam", () => {
     });
 });
 
-test("Should not create a new exam due to null file", () => {
+test("Should not create a new exam due to null file", async () => {
   mockSuccesfulResponse(204, {});
 
-  courseService
+  return courseService
     .newExam(
       1,
       "title",
@@ -198,10 +201,10 @@ test("Should not create a new exam due to null file", () => {
     });
 });
 
-test("Should not create a new exam due to bad files", () => {
+test("Should not create a new exam due to bad files", async () => {
   mockSuccesfulResponse(204, {});
 
-  courseService
+  return courseService
     .newExam(
       1,
       "title",
@@ -216,19 +219,21 @@ test("Should not create a new exam due to bad files", () => {
     });
 });
 
-test("Should create a new file", () => {
+test("Should create a new file", async () => {
   mockSuccesfulResponse(204, {});
 
-  courseService.newFile(1, new window.File([], ""), 2).then((response) => {
-    expect(response.hasFailed()).toBeTruthy();
-    expect(response.getError().getCode()).toBe(204);
-  });
+  return courseService
+    .newFile(1, new window.File([], ""), 2)
+    .then((response) => {
+      expect(response.hasFailed()).toBeTruthy();
+      expect(response.getError().getCode()).toBe(204);
+    });
 });
 
-test("Should get roles", () => {
+test("Should get roles", async () => {
   mockSuccesfulResponse(200, studentRole);
 
-  courseService.getRole(1).then((response) => {
+  return courseService.getRole(1).then((response) => {
     expect(response.hasFailed()).toBeFalsy();
     expect(response.getData()).toBe(studentRole);
   });
