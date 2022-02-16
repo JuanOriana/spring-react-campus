@@ -67,7 +67,11 @@ function FileUnit({
         )}
       </div>
       <div style={{ display: "flex", alignItems: "center" }}>
-        {!isMinimal && <FileName>{t("FileUnit.downloads", {downloads: file.downloads})}</FileName>}
+        {!isMinimal && (
+          <FileName>
+            {t("FileUnit.downloads", { downloads: file.downloads })}
+          </FileName>
+        )}
         {isTeacher && (
           <MediumIcon
             src="/images/trash.png"
