@@ -6,11 +6,9 @@ export function fileUrlMaker(
   extensionType?: number[],
   query?: string,
   orderProperty?: string,
-  orderDirection?: string,
-  page?: number,
-  pageSize?: number
+  orderDirection?: string
 ): URL {
-  let url = pageUrlMaker(basePath, page, pageSize);
+  let url = new URL(basePath);
   if (categoryType && categoryType.length > 0) {
     url.searchParams.append("category-type", categoryType.toLocaleString());
   }

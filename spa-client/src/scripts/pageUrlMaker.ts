@@ -4,11 +4,11 @@ export function pageUrlMaker(
   pageSize?: number
 ): URL {
   let url = new URL(path);
-  if (typeof page !== "undefined") {
+  if (page) {
     url.searchParams.append("page", page.toString());
   }
 
-  if (typeof pageSize !== "undefined") {
+  if (pageSize) {
     url.searchParams.append("page-size", pageSize.toString());
   }
 
