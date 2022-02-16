@@ -256,7 +256,7 @@ export const TRANSLATIONS_ES = {
     title: "Centro de Administración del Campus",
     createNewUserButton: "Crear nuevo usuario",
     createNewCourseButton: "Crear nuevo curso",
-    addUserToCourseButton: "Anadir usuario a curso",
+    addUserToCourseButton: "Añadir usuario a curso",
     seeAllCoursesButton: "Ver todos los cursos",
   },
 
@@ -379,13 +379,16 @@ export const TRANSLATIONS_ES = {
         undoCorrectly: "👑 Se eliminó la corrección del examen",
       },
     },
+    alert: {
+        undoCorrection: "¿Estas seguro que desea eliminar esta corrección?"
+    },
   },
 
   StudentExams: {
     title: "Exámenes",
     toDo: "Exámenes a disponibles:",
     noExams: "No hay exámenes",
-    sentExames: "Exámenes enviados",
+    sentExams: "Exámenes enviados",
   },
 
   TeacherExams: {

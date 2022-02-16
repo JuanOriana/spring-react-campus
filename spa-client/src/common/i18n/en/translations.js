@@ -377,6 +377,9 @@ export const TRANSLATIONS_EN = {
         undoCorrectly: "👑 The exam was successfully uncorrected",
       },
     },
+    alert: {
+      undoCorrection: "Are you sure you want to delete this exam correction?"
+    },
   },
 
   StudentExams: {
