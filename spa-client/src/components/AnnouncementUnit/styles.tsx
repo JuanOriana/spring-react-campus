@@ -47,3 +47,15 @@ export const SmallIcon = styled.img`
   cursor: pointer;
   margin-left: 10px;
 `;
+
+export const ReadMoreButton = styled.button`
+  font-size: 14px;
+  border: none;
+  background: white;
+  font-style: italic;
+  color: black;
+  padding: 5px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+`;

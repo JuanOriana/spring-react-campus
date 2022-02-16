@@ -24,6 +24,8 @@ export const TRANSLATIONS_ES = {
     alt: {
       deleteButton: "Borrar"
     },
+    readMoreButton: "...leer más",
+    readLessButton: "ocultar",
   },
 
   BasicPagination: {
