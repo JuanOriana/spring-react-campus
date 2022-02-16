@@ -10,17 +10,16 @@ public class MailFormDto {
     @NotNull
     @NotBlank
     @Length(max=8)
-    String title;
+    private String title;
 
     @NotNull
     @NotBlank
     @Length(max=8)
-    String content;
+    private String content;
 
     @Min(1)
     @NotNull
-    private Integer year;
-    Long courseId;
+    private Long courseId;
 
     public Long getCourseId() {
         return courseId;

@@ -27,7 +27,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -49,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    private static final boolean DEV_BUILD = false;
+    private static final boolean DEV_BUILD = true;
     private static boolean isOnDevBuild() {
         return DEV_BUILD;
     }
@@ -84,19 +83,19 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
                 .addResourceHandler("/static/**")
-                    .addResourceLocations("/spa-build/static");
+                    .addResourceLocations("classpath:/spa-build/static");
         registry
                 .addResourceHandler("/*.js")
-                    .addResourceLocations("/spa-build/static/js");
+                    .addResourceLocations("classpath:/spa-build/static/js");
         registry
                 .addResourceHandler("/*.css")
-                .addResourceLocations("/spa-build/static/css");
+                .addResourceLocations("classpath:/spa-build/static/css");
         registry
                 .addResourceHandler("/*.json")
-                    .addResourceLocations("/spa-build");
+                    .addResourceLocations("classpath:/spa-build");
         registry
                 .addResourceHandler("/*.ico")
-                    .addResourceLocations("/spa-build");
+                    .addResourceLocations("classpath:/spa-build");
     }
 
     @Bean
