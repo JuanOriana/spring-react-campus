@@ -28,6 +28,19 @@ export const AnnouncementDate = styled.div`
   margin: 0 0 6px 2px;
 `;
 
+export const AnnouncementSubject = styled.div`
+  font-size: 14px;
+  margin: 5px 0 6px 2px;
+  background-color: #176961; /* Green */
+  border: none;
+  color: white;
+  padding: 5px 16px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 20px 10px 20px 8px;
+  display: inline-block;
+`;
+
 export const SmallIcon = styled.img`
   height: 32px;
   width: 32px;
