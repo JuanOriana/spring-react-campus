@@ -73,6 +73,7 @@ function TeacherCourseExamStandalone() {
   }, [examId, currentPage, pageSize, filterBy]);
 
   function uncorrectExam(id: number) {
+    if (!window.confirm(t('CourseAnnouncements.teacher.alert.deleteAnnouncement'))) return;
     answersService
       .correctAnswer(id, undefined, undefined)
       .then((result) => {
