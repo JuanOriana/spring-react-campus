@@ -251,6 +251,9 @@ export class CourseService {
     startTimes: number[],
     endTimes: number[]
   ): Promise<Result<PostResponse>> {
+    startTimes = startTimes.map((num) => parseInt(num.toString()));
+    endTimes = endTimes.map((num) => parseInt(num.toString()));
+
     const newCourse = JSON.stringify({
       subjectId: subjectId,
       quarter: quarter,
@@ -259,7 +262,7 @@ export class CourseService {
       startTimes: startTimes,
       endTimes: endTimes,
     });
-    for (let index = 0; index < 7; index++) {
+    for (let index = 0; index < 6; index++) {
       if (startTimes[index] > endTimes[index])
         return Result.failed(
           new ErrorResponse(422, "EndTime must be greater than startime ")

@@ -31,7 +31,7 @@ function Mail() {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserModel | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
-  const { userId } = useParams();
+  const { userId, courseId } = useParams();
 
   useEffect(() => {
     setIsLoading(true);
@@ -53,23 +53,25 @@ function Mail() {
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
     if (!userId) {
-      renderToast(t('Mail.toast.error.notSent'), "error");
+      renderToast(t("Mail.toast.error.notSent"), "error");
       return;
     }
-    //TODO: courseIdFix
     userService
-      .sendEmail(parseInt(userId), 420000000, data.subject, data.content)
+      .sendEmail(
+        parseInt(userId),
+        parseInt(courseId!),
+        data.subject,
+        data.content
+      )
       .then((result) => {
         if (!result.hasFailed()) {
-          renderToast(t('Mail.toast.message.sentCorrectly'), "success");
+          renderToast(t("Mail.toast.message.sentCorrectly"), "success");
           reset();
         } else {
-          renderToast(t('Mail.toast.error.notSent'), "error");
+          renderToast(t("Mail.toast.error.notSent"), "error");
         }
       })
-      .catch(() =>
-        renderToast(t('Mail.toast.error.notSent'), "error")
-      );
+      .catch(() => renderToast(t("Mail.toast.error.notSent"), "error"));
   });
 
   return (

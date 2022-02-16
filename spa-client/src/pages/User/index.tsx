@@ -34,7 +34,9 @@ function User() {
         userService.getUserProfileImage(user?.userId),
         navigate,
         (userImg) => {
-          setUserImg(URL.createObjectURL(userImg));
+          setUserImg(
+            userImg.size > 0 ? URL.createObjectURL(userImg) : undefined
+          );
         },
         () => setIsLoadingImg(false)
       );
@@ -52,24 +54,16 @@ function User() {
       .updateUserProfileImage(user ? user.userId : -1, data.image![0])
       .then((result) => {
         if (!result.hasFailed()) {
-          renderToast(t('User.toast.message.changedCorrectly'), "success");
+          renderToast(t("User.toast.message.changedCorrectly"), "success");
           const imgAsUrl = URL.createObjectURL(data.image![0]);
           setUser({ ...user!, url: imgAsUrl });
           setReload(!reload);
           reset();
         } else {
-          renderToast(
-              t('User.toast.error.notChanged'),
-            "error"
-          );
+          renderToast(t("User.toast.error.notChanged"), "error");
         }
       })
-      .catch(() =>
-        renderToast(
-            t('User.toast.error.notChanged'),
-          "error"
-        )
-      );
+      .catch(() => renderToast(t("User.toast.error.notChanged"), "error"));
   });
 
   return (
@@ -87,7 +81,9 @@ function User() {
               {user?.name} {user?.surname}
             </h1>
             <LoadableData isLoading={isLoadingImg}>
-              <UserSectionImg src={userImg!} />
+              <UserSectionImg
+                src={userImg ? userImg : "/images/default-user-image.png"}
+              />
             </LoadableData>
             <form
               encType="multipart/form-data"
