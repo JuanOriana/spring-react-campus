@@ -57,11 +57,13 @@ export class FileService {
       extensionType,
       query,
       orderProperty,
-      orderDirection,
+      orderDirection
+    );
+    const resp = await getPagedFetch<FileModel[]>(
+      url.toString(),
       page,
       pageSize
     );
-    const resp = await getPagedFetch<FileModel[]>(url.toString());
 
     return parseFileResponse(resp);
   }

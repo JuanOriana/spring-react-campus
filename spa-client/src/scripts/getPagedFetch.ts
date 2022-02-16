@@ -1,12 +1,16 @@
 import { ErrorResponse, PagedContent, Result } from "../types";
 import { authedFetch } from "./authedFetch";
 import { checkError } from "./ErrorChecker";
+import { pageUrlMaker } from "./pageUrlMaker";
 
 export async function getPagedFetch<RetType>(
-  url: string
+  url: string,
+  page?: number,
+  pageSize?: number
 ): Promise<Result<PagedContent<RetType>>> {
+  let urlPaged = pageUrlMaker(url, page, pageSize);
   try {
-    const response = await authedFetch(url, {
+    const response = await authedFetch(urlPaged.toString(), {
       method: "GET",
     });
 

@@ -12,7 +12,6 @@ import {
   UserModel,
 } from "../types";
 import { getPagedFetch } from "../scripts/getPagedFetch";
-import { pageUrlMaker } from "../scripts/pageUrlMaker";
 import { resultFetch } from "../scripts/resultFetch";
 
 export class UserService {
@@ -23,12 +22,12 @@ export class UserService {
     pageSize?: number,
     excludeCourseId?: number
   ): Promise<Result<PagedContent<UserModel[]>>> {
-    const url = pageUrlMaker(this.basePath, page, pageSize);
-    if (typeof excludeCourseId !== "undefined") {
+    const url = new URL(this.basePath);
+    if (excludeCourseId) {
       url.searchParams.append("directive", "exclude");
       url.searchParams.append("courseId", excludeCourseId.toString());
     }
-    return getPagedFetch<UserModel[]>(url.toString());
+    return getPagedFetch<UserModel[]>(url.toString(), page, pageSize);
   }
 
   public async getUsersUnpaged(
@@ -78,12 +77,11 @@ export class UserService {
     page?: number,
     pageSize?: number
   ): Promise<Result<PagedContent<UserCourseModel[]>>> {
-    let url = pageUrlMaker(
+    return getPagedFetch<UserCourseModel[]>(
       this.basePath + "/" + userId + "/courses",
       page,
       pageSize
     );
-    return getPagedFetch<UserCourseModel[]>(url.toString());
   }
 
   public async newUser(

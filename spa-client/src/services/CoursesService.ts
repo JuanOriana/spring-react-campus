@@ -18,7 +18,6 @@ import {
 } from "../types";
 import AnswerModel from "../types/AnswerModel";
 import { getPagedFetch } from "../scripts/getPagedFetch";
-import { pageUrlMaker } from "../scripts/pageUrlMaker";
 import { fileUrlMaker } from "../scripts/fileUrlMaker";
 import { resultFetch } from "../scripts/resultFetch";
 import ExamStatsModel from "../types/ExamStatsModel";
@@ -42,12 +41,12 @@ export class CourseService {
     year?: number,
     quarter?: number
   ): Promise<Result<PagedContent<CourseModel[]>>> {
-    let url = pageUrlMaker(this.basePath, page, pageSize);
-    if (typeof year !== "undefined") {
+    let url = new URL(this.basePath);
+    if (year) {
       url.searchParams.append("year", year.toString());
     }
 
-    if (typeof quarter !== "undefined") {
+    if (quarter) {
       url.searchParams.append("quarter", quarter.toString());
     }
     return getPagedFetch<CourseModel[]>(url.toString());
@@ -120,12 +119,11 @@ export class CourseService {
     page?: number,
     pageSize?: number
   ): Promise<Result<PagedContent<UserModel[]>>> {
-    let url = pageUrlMaker(
+    return getPagedFetch<UserModel[]>(
       this.basePath + "/" + courseId + "/students",
       page,
       pageSize
     );
-    return getPagedFetch<UserModel[]>(url.toString());
   }
   public async getExams(courseId: number): Promise<Result<ExamStatsModel[]>> {
     return resultFetch<ExamStatsModel[]>(
@@ -226,12 +224,14 @@ export class CourseService {
       extensionType,
       query,
       orderProperty,
-      orderDirection,
+      orderDirection
+    );
+
+    const resp = await getPagedFetch<FileModel[]>(
+      url.toString(),
       page,
       pageSize
     );
-
-    const resp = await getPagedFetch<FileModel[]>(url.toString());
     return parseFileResponse(resp);
   }
 

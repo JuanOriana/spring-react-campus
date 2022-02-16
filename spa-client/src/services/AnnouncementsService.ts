@@ -1,7 +1,6 @@
 import { paths } from "../common/constants";
 import { AnnouncementModel, PagedContent, Result } from "../types";
 import { getPagedFetch } from "../scripts/getPagedFetch";
-import { pageUrlMaker } from "../scripts/pageUrlMaker";
 import { authedFetch } from "../scripts/authedFetch";
 import { resultFetch } from "../scripts/resultFetch";
 import { parseAnnouncementResponse } from "../scripts/parseAnnouncementResponse";
@@ -12,8 +11,11 @@ export class AnnouncementsService {
     page?: number,
     pageSize?: number
   ): Promise<Result<PagedContent<AnnouncementModel[]>>> {
-    let url = pageUrlMaker(this.basePath, page, pageSize);
-    const resp = await getPagedFetch<AnnouncementModel[]>(url.toString());
+    const resp = await getPagedFetch<AnnouncementModel[]>(
+      this.basePath,
+      page,
+      pageSize
+    );
     return parseAnnouncementResponse(resp);
   }
 
