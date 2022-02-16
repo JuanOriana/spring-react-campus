@@ -251,6 +251,9 @@ export class CourseService {
     startTimes: number[],
     endTimes: number[]
   ): Promise<Result<PostResponse>> {
+    startTimes = startTimes.map((num) => parseInt(num.toString()));
+    endTimes = endTimes.map((num) => parseInt(num.toString()));
+
     const newCourse = JSON.stringify({
       subjectId: subjectId,
       quarter: quarter,
