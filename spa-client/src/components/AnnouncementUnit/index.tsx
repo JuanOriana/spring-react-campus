@@ -35,16 +35,18 @@ function AnnouncementUnit({
     setIsReadMore(!isReadMore);
   };
 
+  const readMoreBound = 580;
+
   const readMore = (content: string) => {
-    const shorten = isReadMore && content.length > 300;
-    const contentFinal = shorten ? content.slice(0, 300) : content;
+    const shorten = isReadMore && content.length > readMoreBound;
+    const contentFinal = shorten ? content.slice(0, readMoreBound) : content;
     return (
       <>
         {contentFinal.split("\n").map((str, idx) => (
           <p key={idx}>{str}</p>
         ))}
         <span>
-          {content.length > 300 && (
+          {content.length > readMoreBound && (
             <ReadMoreButton onClick={toggleReadMore}>
               {t(
                 isReadMore
