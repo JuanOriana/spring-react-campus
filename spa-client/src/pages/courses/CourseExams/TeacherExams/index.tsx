@@ -51,7 +51,7 @@ function TeacherExams() {
       (examStatsData) => setExamsStats(examStatsData ? examStatsData : []),
       () => setIsLoading(false)
     );
-  }, []);
+  }, [reload]);
 
   const [isBefore, setIsBefore] = useState(false);
 
