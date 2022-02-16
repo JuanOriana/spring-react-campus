@@ -23,31 +23,6 @@ interface AnnouncementUnitProps {
   announcement: AnnouncementModel;
 }
 
-const ReadMore = (content: string) => {
-  const { t } = useTranslation();
-  const text = content;
-  const [isReadMore, setIsReadMore] = useState(true);
-  const toggleReadMore = () => {
-    setIsReadMore(!isReadMore);
-  };
-  return (
-    <p>
-      {isReadMore ? text.slice(0, 300) : text}
-      <span onClick={toggleReadMore}>
-        {isReadMore ? (
-          <ReadMoreButton>
-            {t("AnnouncementUnit.readMoreButton")}
-          </ReadMoreButton>
-        ) : (
-          <ReadMoreButton>
-            {t("AnnouncementUnit.readLessButton")}
-          </ReadMoreButton>
-        )}
-      </span>
-    </p>
-  );
-};
-
 function AnnouncementUnit({
   isGlobal,
   isTeacher,
@@ -55,6 +30,34 @@ function AnnouncementUnit({
   onDelete,
 }: AnnouncementUnitProps) {
   const { t } = useTranslation();
+  const [isReadMore, setIsReadMore] = useState(true);
+  const toggleReadMore = () => {
+    setIsReadMore(!isReadMore);
+  };
+
+  const readMore = (content: string) => {
+    const shorten = isReadMore && content.length > 300;
+    const contentFinal = shorten ? content.slice(0, 300) : content;
+    return (
+      <>
+        {contentFinal.split("\n").map((str, idx) => (
+          <p key={idx}>{str}</p>
+        ))}
+        <span>
+          {content.length > 300 && (
+            <ReadMoreButton onClick={toggleReadMore}>
+              {t(
+                isReadMore
+                  ? "AnnouncementUnit.readMoreButton"
+                  : "AnnouncementUnit.readLessButton"
+              )}
+            </ReadMoreButton>
+          )}
+        </span>
+      </>
+    );
+  };
+
   return (
     <AnnouncementWrapper>
       <AnnouncementHeader>
@@ -75,13 +78,13 @@ function AnnouncementUnit({
               })}
             </p>
             {isGlobal && (
-              <p style={{ fontWeight: 700 }}>
+              <div style={{ fontWeight: 700 }}>
                 <Link to={`/course/${announcement.course.courseId}`}>
                   <AnnouncementSubject>
                     {announcement.course.subject.name}
                   </AnnouncementSubject>
                 </Link>
-              </p>
+              </div>
             )}
           </div>
           {isTeacher && (
@@ -96,9 +99,7 @@ function AnnouncementUnit({
       <AnnouncementDate>
         {announcement.date.toLocaleDateString()}
       </AnnouncementDate>
-      {announcement?.content.split("\n").map((str, idx) => (
-        <p key={idx}>{str.length > 300 ? ReadMore(str) : str}</p>
-      ))}
+      {readMore(announcement.content)}
     </AnnouncementWrapper>
   );
 }

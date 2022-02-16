@@ -56,11 +56,11 @@ export const ReadMoreButton = styled.button`
   border: none;
   background: ${({ theme }) => theme.cyanDark};
   font-style: italic;
-  margin-left: 10px;
-  padding: 0px 8px;
+  padding: 0 8px;
   border-radius: 12px 4px 12px 4px;
   text-align: center;
   cursor: pointer;
+  display: inline-block;
 
   &:hover {
     background: ${({ theme }) => theme.cyanLight};
