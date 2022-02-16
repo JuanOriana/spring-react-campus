@@ -39,6 +39,10 @@ export const AnnouncementSubject = styled.div`
   text-decoration: none;
   border-radius: 20px 10px 20px 8px;
   display: inline-block;
+  &:hover {
+    background: ${({ theme }) => theme.cyanDark};
+    transition: ease-in-out 0.2s;
+  }
 `;
 
 export const SmallIcon = styled.img`
@@ -49,13 +53,17 @@ export const SmallIcon = styled.img`
 `;
 
 export const ReadMoreButton = styled.button`
-  font-size: 14px;
   border: none;
-  background: white;
+  background: ${({ theme }) => theme.cyanDark};
   font-style: italic;
-  color: black;
-  padding: 5px 16px;
+  margin-left: 10px;
+  padding: 0px 8px;
+  border-radius: 12px 4px 12px 4px;
   text-align: center;
-  text-decoration: none;
-  display: inline-block;
+  cursor: pointer;
+
+  &:hover {
+    background: ${({ theme }) => theme.cyanLight};
+    transition: ease-in-out 0.2s;
+  }
 `;

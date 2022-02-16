@@ -85,6 +85,7 @@ function Navbar() {
           <UserWrapper>
             <Link to="/user" style={{ display: "flex" }}>
               <UserSectionImg
+                alt={user.username}
                 src={userImg ? userImg : "/images/default-user-image.png"}
                 style={{ width: 32, height: 32, marginRight: 8 }}
               />
