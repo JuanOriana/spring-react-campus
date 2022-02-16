@@ -164,26 +164,28 @@ function AdminAllCourses() {
           {courses.length !== 0 && (
             <>
               <CourseTable>
-                <CourseTableHeader>
-                  <th>{t("AdminAllCourses.table.code")}</th>
-                  <th style={{ width: "300px" }}>
-                    {t("AdminAllCourses.table.name")}
-                  </th>
-                  <th>{t("AdminAllCourses.table.board")}</th>
-                </CourseTableHeader>
-                {courses.map((course: CourseModel) => (
-                  <tr key={course.courseId}>
-                    <td>{course.subject.code} </td>
-                    <td>
-                      <Link
-                        to={`/admin/course/enroll?courseId=${course.courseId}`}
-                      >
-                        {course.subject.name}
-                      </Link>
-                    </td>
-                    <td>{course.board}</td>
-                  </tr>
-                ))}
+                <tbody>
+                  <CourseTableHeader>
+                    <th>{t("AdminAllCourses.table.code")}</th>
+                    <th style={{ width: "300px" }}>
+                      {t("AdminAllCourses.table.name")}
+                    </th>
+                    <th>{t("AdminAllCourses.table.board")}</th>
+                  </CourseTableHeader>
+                  {courses.map((course: CourseModel) => (
+                    <tr key={course.courseId}>
+                      <td>{course.subject.code} </td>
+                      <td>
+                        <Link
+                          to={`/admin/course/enroll?courseId=${course.courseId}`}
+                        >
+                          {course.subject.name}
+                        </Link>
+                      </td>
+                      <td>{course.board}</td>
+                    </tr>
+                  ))}
+                </tbody>
               </CourseTable>
               <PaginationWrapper>
                 {currentPage > 1 && (

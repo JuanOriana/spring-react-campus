@@ -32,6 +32,7 @@ function AdminSelectCourse() {
       (coursesData) => {
         setCourses(coursesData ? coursesData : []);
         setCurrentCourseId(coursesData ? coursesData[0].courseId : -1);
+        console.log(coursesData.map((course) => course.courseId));
       },
       () => {
         setIsLoading(false);
