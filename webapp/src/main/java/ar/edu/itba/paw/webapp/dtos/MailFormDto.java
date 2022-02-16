@@ -1,8 +1,25 @@
 package ar.edu.itba.paw.webapp.dtos;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 public class MailFormDto {
+    @NotNull
+    @NotBlank
+    @Length(max=8)
     String title;
+
+    @NotNull
+    @NotBlank
+    @Length(max=8)
     String content;
+
+    @Min(1)
+    @NotNull
+    private Integer year;
     Long courseId;
 
     public Long getCourseId() {

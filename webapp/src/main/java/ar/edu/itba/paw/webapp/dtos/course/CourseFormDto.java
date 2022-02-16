@@ -7,7 +7,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
 import java.util.List;
 
 public class CourseFormDto {
@@ -31,9 +30,9 @@ public class CourseFormDto {
     @NotNull
     private Integer year;
 
-    private List<Integer> startTimes = Arrays.asList(new Integer[7]);
+    private List<Integer> startTimes;
 
-    private List<Integer> endTimes = Arrays.asList(new Integer[7]);
+    private List<Integer> endTimes;
 
     public static CourseFormDto fromCourse(Course course, List<Integer> startTimes, List<Integer> endTimes){
         if (course == null || startTimes == null || endTimes == null){

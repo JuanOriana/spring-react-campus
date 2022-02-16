@@ -48,10 +48,10 @@ function TeacherExams() {
     handleService(
       courseService.getExams(course.courseId),
       navigate,
-      (examStatsData) => setExamsStats(examStatsData),
+      (examStatsData) => setExamsStats(examStatsData ? examStatsData : []),
       () => setIsLoading(false)
     );
-  }, []);
+  }, [reload]);
 
   const [isBefore, setIsBefore] = useState(false);
 
@@ -78,32 +78,37 @@ function TeacherExams() {
       )
       .then((response) => {
         if (!response.hasFailed()) {
-          renderToast(t('TeacherExams.toast.message.createdCorrectly'), "success");
+          renderToast(
+            t("TeacherExams.toast.message.createdCorrectly"),
+            "success"
+          );
           navigate(`/course/${course.courseId}/exams`);
           setReload(!reload);
           reset();
-          reset();
         } else {
-          renderToast(t('TeacherExams.toast.error.notCreated'), "error");
+          renderToast(t("TeacherExams.toast.error.notCreated"), "error");
         }
       })
       .catch(() =>
-        renderToast(t('TeacherExams.toast.error.notCreated'), "error")
+        renderToast(t("TeacherExams.toast.error.notCreated"), "error")
       );
   });
 
   function onDelete(id: number) {
-    if (!window.confirm(t('TeacherExams.alert.deleteExam'))) return;
+    if (!window.confirm(t("TeacherExams.alert.deleteExam"))) return;
     examsService
       .deleteExam(id)
       .then(() => {
-        renderToast(t('TeacherExams.toast.message.removedCorrectly'), "success");
+        renderToast(
+          t("TeacherExams.toast.message.removedCorrectly"),
+          "success"
+        );
         setExamsStats((oldExamStats) =>
           oldExamStats.filter((exam: ExamStatsModel) => exam.exam.examId !== id)
         );
       })
       .catch(() =>
-        renderToast(t('TeacherExams.toast.error.notRemoved'), "error")
+        renderToast(t("TeacherExams.toast.error.notRemoved"), "error")
       );
   }
 

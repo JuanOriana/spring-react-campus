@@ -109,17 +109,17 @@ function CourseFiles() {
   }, [navigate]);
 
   function onDelete(id: number) {
-    if (!window.confirm(t('CourseFiles.alert.deleteFile'))) return;
+    if (!window.confirm(t("CourseFiles.alert.deleteFile"))) return;
     fileService
       .deleteFile(id)
       .then(() => {
-        renderToast(t('CourseFiles.toast.message.removedCorrectly'), "success");
+        renderToast(t("CourseFiles.toast.message.removedCorrectly"), "success");
         setFiles((oldFiles) =>
           oldFiles.filter((file: FileModel) => file.fileId !== id)
         );
       })
       .catch(() =>
-        renderToast(t('CourseFiles.toast.error.notRemoved'), "error")
+        renderToast(t("CourseFiles.toast.error.notRemoved"), "error")
       );
   }
 
@@ -130,22 +130,26 @@ function CourseFiles() {
     formState: { errors },
   } = useForm<FormData>({ criteriaMode: "all" });
   const onSubmit = handleSubmit((data: FormData) => {
+    console.log(data.file[0]);
     courseService
       .newFile(course.courseId, data.file[0], data.category ? data.category : 1)
       .then((response) => {
         if (!response.hasFailed()) {
-          renderToast(t('CourseFiles.toast.message.uploadedCorrectly'), "success");
+          renderToast(
+            t("CourseFiles.toast.message.uploadedCorrectly"),
+            "success"
+          );
           navigate(
             `/course/${course.courseId}/files?page=1&pageSize=${pageSize}`
           );
           setReload(!reload);
           reset();
         } else {
-          renderToast(t('CourseFiles.toast.error.notUploaded'), "error");
+          renderToast(t("CourseFiles.toast.error.notUploaded"), "error");
         }
       })
       .catch(() =>
-        renderToast(t('CourseFiles.toast.error.notUploaded'), "error")
+        renderToast(t("CourseFiles.toast.error.notUploaded"), "error")
       );
   });
 
