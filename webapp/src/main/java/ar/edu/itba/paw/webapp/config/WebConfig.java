@@ -27,11 +27,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
 
@@ -46,7 +44,6 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @EnableAsync
-@EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan({"ar.edu.itba.paw.webapp.controllers", "ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
@@ -83,12 +80,23 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         return jacksonMessageConverter.getObjectMapper();
     }
 
-    @Bean
-    public ViewResolver viewResolver() {
-        final InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setViewClass(JstlView.class);
-        viewResolver.setPrefix("/WEB-INF/public/");
-        return viewResolver;
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+                .addResourceHandler("/static/**")
+                    .addResourceLocations("/spa-build/static");
+        registry
+                .addResourceHandler("/*.js")
+                    .addResourceLocations("/spa-build/static/js");
+        registry
+                .addResourceHandler("/*.css")
+                .addResourceLocations("/spa-build/static/css");
+        registry
+                .addResourceHandler("/*.json")
+                    .addResourceLocations("/spa-build");
+        registry
+                .addResourceHandler("/*.ico")
+                    .addResourceLocations("/spa-build");
     }
 
     @Bean

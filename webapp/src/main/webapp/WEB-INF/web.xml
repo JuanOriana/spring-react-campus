@@ -68,9 +68,9 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <error-page>
-        <error-code>404</error-code>
-        <location>/index.html</location>
-    </error-page>
+<!--    <error-page>-->
+<!--        <error-code>404</error-code>-->
+<!--        <location>/spa-build/index.html</location>-->
+<!--    </error-page>-->
 
 </web-app>

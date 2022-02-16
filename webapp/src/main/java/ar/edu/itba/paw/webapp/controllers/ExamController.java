@@ -13,6 +13,7 @@ import ar.edu.itba.paw.webapp.dtos.exam.ExamDto;
 import ar.edu.itba.paw.webapp.security.api.exceptions.CampusBadRequestException;
 import ar.edu.itba.paw.webapp.security.services.AuthFacade;
 import ar.edu.itba.paw.webapp.utils.PaginationBuilder;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -102,7 +103,7 @@ public class ExamController {
         File file = getFileFromStream(fileStream);
         if (file.length() == 0) throw new CampusBadRequestException("No file or file metadata was provided");
         Answer answer = answerService.updateEmptyAnswer(examId, authFacade.getCurrentUserId(), fileMetadata.getFileName(),
-                IOUtils.toByteArray(fileStream), file.length());
+                FileUtils.readFileToByteArray(file), file.length());
         LOGGER.debug("Uploaded answer file {} to exam {}", answer.getAnswerFile().getFileName(), answer.getExam().getExamId());
         return Response.ok().build();
     }

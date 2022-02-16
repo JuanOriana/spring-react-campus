@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.exception.CourseNotFoundException;
+import ar.edu.itba.paw.models.exception.SubjectNotFoundException;
 import ar.edu.itba.paw.models.exception.UserEnrolledException;
 import ar.edu.itba.paw.models.exception.UserNotFoundException;
 import ar.edu.itba.paw.webapp.assemblers.*;
@@ -24,6 +25,7 @@ import ar.edu.itba.paw.webapp.security.api.exceptions.DtoValidationException;
 import ar.edu.itba.paw.webapp.security.services.AuthFacade;
 import ar.edu.itba.paw.webapp.utils.PaginationBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -40,6 +42,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,6 +52,9 @@ import java.util.stream.Collectors;
 public class CourseController {
     @Context
     private UriInfo uriInfo;
+
+    @Autowired
+    private SubjectService subjectService;
 
     @Autowired
     private DtoConstraintValidator dtoValidator;
@@ -133,9 +139,9 @@ public class CourseController {
         File file = getFileFromStream(fileStream);
         if (file.length() == 0) throw new BadRequestException("No file was provided");
         Course course = courseService.findById(courseId).orElseThrow(CourseNotFoundException::new);
-        FileModel fileModel = fileService.create(file.length(), fileMetadata.getFileName(), IOUtils.toByteArray(fileStream),
+        FileModel fileModel = fileService.create(file.length(), fileMetadata.getFileName(), FileUtils.readFileToByteArray(file),
                 course, Collections.singletonList(Long.parseLong(category)));
-        URI location = URI.create(uriInfo.getAbsolutePath() + "/" + fileModel.getFileId());
+        URI location = URI.create(uriInfo.getBaseUri() + "/files/" + fileModel.getFileId());
         return Response.created(location).build();
     }
 
@@ -181,6 +187,9 @@ public class CourseController {
             throw new BadRequestException();
         }
         dtoValidator.validate(courseForm, "Invalid body request");
+        if(!subjectService.findById(courseForm.getSubjectId()).isPresent()) {
+            throw new SubjectNotFoundException();
+        }
         Course course = courseService.create(courseForm.getYear(), courseForm.getQuarter(), courseForm.getBoard(),
                 courseForm.getSubjectId(), courseForm.getStartTimes(), courseForm.getEndTimes());
         LOGGER.debug("Created course in year {} in quarter {} of subjectId {} with id {}", courseForm.getYear(),
@@ -383,7 +392,7 @@ public class CourseController {
         if (file.length() == 0 || examMetadata == null) throw new CampusBadRequestException("No file or file metadata was provided");
         ExamFormDto examForm = objectMapper.readValue(examMetadata, ExamFormDto.class);
         Exam exam = examService.create(courseId, authFacade.getCurrentUserId(), examForm.getTitle(),
-                examForm.getContent(), fileMetadata.getFileName(), IOUtils.toByteArray(fileStream),
+                examForm.getContent(), fileMetadata.getFileName(), FileUtils.readFileToByteArray(file),
                 file.length(), LocalDateTime.parse(examForm.getStartTime()), LocalDateTime.parse(examForm.getEndTime()));
         URI location = URI.create(uriInfo.getBaseUri() + "/exams/" + exam.getExamId());
         LOGGER.debug("Created new exam on {}", location);
