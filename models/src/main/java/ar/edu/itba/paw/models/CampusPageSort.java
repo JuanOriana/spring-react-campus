@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models;
 
-import ar.edu.itba.paw.models.exception.PaginationArgumentException;
+
+import ar.edu.itba.paw.models.exception.OrderParamArgumentException;
 
 public class CampusPageSort {
     private final String direction;
@@ -8,7 +9,7 @@ public class CampusPageSort {
 
     public CampusPageSort(String direction, String property) {
         if(!direction.equalsIgnoreCase("asc") && !direction.equalsIgnoreCase("desc"))
-            throw new PaginationArgumentException();
+            throw new OrderParamArgumentException();
         this.direction = direction;
         switch (property.toLowerCase()) {
             case "date":
@@ -21,7 +22,7 @@ public class CampusPageSort {
                 this.property = "fileName";
                 break;
             default:
-                throw new PaginationArgumentException();
+                throw new OrderParamArgumentException();
         }
 
     }
