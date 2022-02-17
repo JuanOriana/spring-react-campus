@@ -80,6 +80,16 @@ function FileSearcher({
     setExtCheckState(initExtCheckState);
   }, [categories, extensions, extensionType, categoryType]);
 
+  function toggleFilters(){
+    setIsAmplified((lastState) => !lastState);
+    const toggler = document.getElementById("filter-toggle");
+    if ( isAmplified && toggler != null){
+      toggler.style.transform="rotate(90deg)";
+    }else if (toggler != null){
+      toggler.style.transform="rotate(-90deg)";
+    }
+  }
+
   return (
     <FileQueryContainer action="">
       <div
@@ -113,7 +123,7 @@ function FileSearcher({
         <PaginationArrow
           src="./images/outline-arrow.png"
           style={{ transform: "rotate(90deg)", marginLeft: "10px" }}
-          onClick={() => setIsAmplified((lastState) => !lastState)}
+          onClick={toggleFilters}
           alt={t("FileSearcher.alt.toggleFilters")}
           id="filter-toggle"
         />
