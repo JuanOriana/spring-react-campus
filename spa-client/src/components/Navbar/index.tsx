@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import type Section from "../../types/Section";
+import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import type Section from '../../types/Section'
 
 import {
   LogoutButton,
@@ -10,15 +10,15 @@ import {
   NavSectionsContainer,
   NavTitle,
   UserWrapper,
-} from "./styles";
-import { useAuth } from "../../contexts/AuthContext";
-import { handleService } from "../../scripts/handleService";
-import { userService } from "../../services";
-import { UserSectionImg } from "../../pages/User/styles";
+} from './styles'
+import { useAuth } from '../../contexts/AuthContext'
+import { handleService } from '../../scripts/handleService'
+import { userService } from '../../services'
+import { UserSectionImg } from '../../pages/User/styles'
 
 // i18next imports
-import { useTranslation } from "react-i18next";
-import "../../common/i18n/index";
+import { useTranslation } from 'react-i18next'
+import '../../common/i18n/index'
 //
 
 Navbar.propTypes = {
@@ -28,22 +28,22 @@ Navbar.propTypes = {
     name: PropTypes.string,
     userId: PropTypes.number,
   }),
-};
+}
 
 function Navbar() {
-  const { t } = useTranslation();
-  let navigate = useNavigate();
-  let location = useLocation();
-  let { user, signout } = useAuth();
-  const [userImg, setUserImg] = useState<string | undefined>(undefined);
+  const { t } = useTranslation()
+  let navigate = useNavigate()
+  let location = useLocation()
+  let { user, signout } = useAuth()
+  const [userImg, setUserImg] = useState<string | undefined>(undefined)
 
-  const pathname = location?.pathname;
+  const pathname = location?.pathname
   const sections: Section[] = [
-    { path: "/portal", name: "Mis cursos" },
-    { path: "/announcements", name: "Mis anuncios" },
-    { path: "/files", name: "Mis archivos" },
-    { path: "/timetable", name: "Mis horarios" },
-  ];
+    { path: '/portal', name: 'Mis cursos' },
+    { path: '/announcements', name: 'Mis anuncios' },
+    { path: '/files', name: 'Mis archivos' },
+    { path: '/timetable', name: 'Mis horarios' },
+  ]
 
   useEffect(() => {
     if (user) {
@@ -53,18 +53,18 @@ function Navbar() {
         (userImg) => {
           setUserImg(
             userImg.size > 0 ? URL.createObjectURL(userImg) : undefined
-          );
+          )
         },
         () => {
-          return;
+          return
         }
-      );
+      )
     }
-  }, [user]);
+  }, [user])
   return (
     <NavContainer>
       <NavTitle>
-        <Link to={user?.admin ? "/admin" : "/portal"}>CAMPUS</Link>
+        <Link to={user?.admin ? '/admin' : '/portal'}>CAMPUS</Link>
       </NavTitle>
       {user && (
         <>
@@ -76,17 +76,17 @@ function Navbar() {
                   key={section.path}
                 >
                   <Link to={section.path}>
-                    {t("Navbar.sections." + section.path)}
+                    {t('Navbar.sections.' + section.path)}
                   </Link>
                 </NavSectionItem>
               ))}
             </NavSectionsContainer>
           )}
           <UserWrapper>
-            <Link to="/user" style={{ display: "flex" }}>
+            <Link to='/user' style={{ display: 'flex' }}>
               <UserSectionImg
                 alt={user.username}
-                src={userImg ? userImg : "/images/default-user-image.png"}
+                src={userImg ? userImg : './images/default-user-image.png'}
                 style={{ width: 32, height: 32, marginRight: 8 }}
               />
               <h4>
@@ -95,19 +95,19 @@ function Navbar() {
             </Link>
             <LogoutButton
               onClick={() => {
-                if (!window.confirm(t('Navbar.alert.confirmLogout'))) return;
-                signout(() => navigate("/"));
+                if (!window.confirm(t('Navbar.alert.confirmLogout'))) return
+                signout(() => navigate('/'))
               }}
             >
-              {" "}
-              {t("Navbar.logout")}
+              {' '}
+              {t('Navbar.logout')}
             </LogoutButton>
           </UserWrapper>
         </>
       )}
-      {!user && <div style={{ width: "120 px" }}></div>}
+      {!user && <div style={{ width: '120 px' }}></div>}
     </NavContainer>
-  );
+  )
 }
 
-export default Navbar;
+export default Navbar
