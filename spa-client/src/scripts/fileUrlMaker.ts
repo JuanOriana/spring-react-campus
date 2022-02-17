@@ -1,5 +1,3 @@
-import { pageUrlMaker } from "./pageUrlMaker";
-
 export function fileUrlMaker(
   basePath: string,
   categoryType?: number[],

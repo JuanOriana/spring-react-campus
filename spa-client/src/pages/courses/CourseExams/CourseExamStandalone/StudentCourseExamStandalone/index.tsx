@@ -36,15 +36,16 @@ function StudentCourseExamStandalone() {
   const [exam, setExam] = useState<ExamModel | undefined>(undefined);
 
   useEffect(() => {
-    handleService(
-      examsService.getExamById(parseInt(examId ? examId : "-1")),
-      navigate,
-      (examData) => {
-        setExam(examData);
-      },
-      () => {}
-    );
-  }, []);
+    examId &&
+      handleService(
+        examsService.getExamById(parseInt(examId ? examId : "-1")),
+        navigate,
+        (examData) => {
+          setExam(examData);
+        },
+        () => {}
+      );
+  }, [examId]);
 
   const calculateTimeLeft = () => {
     let difference = +exam?.endTime! - +new Date();
@@ -96,16 +97,22 @@ function StudentCourseExamStandalone() {
       .then((result) => {
         if (result.hasFailed()) {
           renderToast(
-            t('StudentCourseExamStandalone.toast.error.notSent'),
+            t("StudentCourseExamStandalone.toast.error.notSent"),
             "error"
           );
           return;
         }
         navigate(`/course/${course.courseId}/exams`);
-        renderToast(t('StudentCourseExamStandalone.toast.message.sentCorrectly'), "success");
+        renderToast(
+          t("StudentCourseExamStandalone.toast.message.sentCorrectly"),
+          "success"
+        );
       })
       .catch(() =>
-        renderToast(t('StudentCourseExamStandalone.toast.error.notSent'), "error")
+        renderToast(
+          t("StudentCourseExamStandalone.toast.error.notSent"),
+          "error"
+        )
       );
   });
   return (

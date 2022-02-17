@@ -1,10 +1,8 @@
 import { ErrorResponse, Result } from "../types";
 import { authedFetch } from "./authedFetch";
-import { checkBlobError, checkError } from "./ErrorChecker";
+import { checkBlobError } from "./ErrorChecker";
 
-export async function getBlobFetch<RetType>(
-  url: string
-): Promise<Result<Blob>> {
+export async function getBlobFetch(url: string): Promise<Result<Blob>> {
   try {
     const response = await authedFetch(url, {
       method: "GET",

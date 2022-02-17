@@ -115,7 +115,7 @@ function Portal() {
       <PortalAnnouncements>
         <SectionHeading>{t("Portal.lastAnnouncements")}</SectionHeading>
         <LoadableData isLoading={isAnnouncementLoading} spinnerMultiplier={2}>
-          {announcements.length == 0 && <p>{t('Portal.noAnnouncements')}</p>}
+          {announcements.length === 0 && <p>{t("Portal.noAnnouncements")}</p>}
 
           {announcements.map((announcement) => (
             <AnnouncementUnit

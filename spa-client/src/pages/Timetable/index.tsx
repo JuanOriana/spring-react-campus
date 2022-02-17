@@ -51,11 +51,11 @@ function Timetable() {
   const [courseToColor, setCourseToColor] = useState<
     Map<number, string> | undefined
   >(undefined);
-  let maxIdx = 0;
   const { user } = useAuth();
   const [times, setTimes] = useState<(CourseModel | null)[][]>([[null]]);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
+    let maxIdx = 0;
     setIsLoading(true);
     if (user) {
       handleService(

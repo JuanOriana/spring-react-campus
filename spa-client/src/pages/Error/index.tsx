@@ -16,7 +16,7 @@ function Error() {
   let auth = useAuth();
 
   let error = getQueryOrDefault(query, "code", "404");
-  if (error == "401") {
+  if (error === "401") {
     auth.signout(() => navigate("/"));
   }
   if (error === "NaN") {

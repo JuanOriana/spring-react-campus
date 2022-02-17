@@ -2,7 +2,6 @@ import { paths } from "../common/constants";
 import { checkError } from "../scripts/ErrorChecker";
 import { ErrorResponse, Result, UserModel } from "../types";
 import { setCookie } from "../scripts/cookies";
-import { buffer } from "stream/consumers";
 
 export class LoginService {
   public async login(

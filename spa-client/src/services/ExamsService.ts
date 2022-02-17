@@ -1,11 +1,5 @@
 import { paths } from "../common/constants";
-import {
-  ExamModel,
-  PagedContent,
-  PostResponse,
-  PutResponse,
-  Result,
-} from "../types";
+import { ExamModel, PagedContent, PutResponse, Result } from "../types";
 import AnswerModel from "../types/AnswerModel";
 import { getPagedFetch } from "../scripts/getPagedFetch";
 import { authedFetch } from "../scripts/authedFetch";

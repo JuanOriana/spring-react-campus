@@ -57,14 +57,20 @@ function CourseAnnouncements() {
       },
       () => setIsLoading(false)
     );
-  }, [currentPage, pageSize, reload]);
+  }, [currentPage, pageSize, reload, course.courseId]);
 
   function onDelete(id: number) {
-    if (!window.confirm(t('CourseAnnouncements.teacher.alert.deleteAnnouncement'))) return;
+    if (
+      !window.confirm(t("CourseAnnouncements.teacher.alert.deleteAnnouncement"))
+    )
+      return;
     announcementsService
       .deleteAnnouncement(id)
       .then(() => {
-        renderToast(t('CourseAnnouncements.teacher.toast.message.removedCorrectly'), "success");
+        renderToast(
+          t("CourseAnnouncements.teacher.toast.message.removedCorrectly"),
+          "success"
+        );
         setAnnouncements((oldAnnouncements) =>
           oldAnnouncements.filter(
             (announcement: AnnouncementModel) =>
@@ -73,7 +79,10 @@ function CourseAnnouncements() {
         );
       })
       .catch(() =>
-        renderToast(t('CourseAnnouncements.teacher.toast.error.notRemoved'), "error")
+        renderToast(
+          t("CourseAnnouncements.teacher.toast.error.notRemoved"),
+          "error"
+        )
       );
   }
 
@@ -88,7 +97,10 @@ function CourseAnnouncements() {
     courseService
       .newAnnouncement(course.courseId, data.title, data.content)
       .then(() => {
-        renderToast(t('CourseAnnouncements.teacher.toast.message.createdCorrectly'), "success");
+        renderToast(
+          t("CourseAnnouncements.teacher.toast.message.createdCorrectly"),
+          "success"
+        );
         navigate(
           `/course/${course.courseId}/announcements?page=1&pageSize=${pageSize}`
         );
@@ -96,7 +108,10 @@ function CourseAnnouncements() {
         reset();
       })
       .catch(() =>
-        renderToast(t('CourseAnnouncements.teacher.toast.error.notCreated'), "error")
+        renderToast(
+          t("CourseAnnouncements.teacher.toast.error.notCreated"),
+          "error"
+        )
       );
   });
 
