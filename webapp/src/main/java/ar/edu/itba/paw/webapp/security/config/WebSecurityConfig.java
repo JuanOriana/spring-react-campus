@@ -175,8 +175,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web
            .ignoring()
                 .antMatchers("/")
-                .antMatchers("/spa-build/**")
-                .antMatchers("/spa-build/favicon.ico")
+                .antMatchers("/*.js")
+                .antMatchers("/*.css")
+                .antMatchers("/favicon.ico")
                 .antMatchers("/manifest.json");
     }
 }

@@ -2,7 +2,7 @@
   "name": "spa-client",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "/paw-2021b-4/",
   "dependencies": {
     "@babel/core": "^7.17.2",
     "@babel/preset-env": "^7.16.11",

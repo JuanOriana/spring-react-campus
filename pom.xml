@@ -328,6 +328,11 @@
                 <version>${maven-war-plugin.version}</version>
                 <configuration>
                     <packagingExcludes>**/logback-test.xml</packagingExcludes>
+                    <webResources>
+                        <resource>
+                            <directory>../spa-client/build</directory>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
             <plugin>

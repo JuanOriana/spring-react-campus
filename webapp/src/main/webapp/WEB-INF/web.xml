@@ -29,7 +29,7 @@
 
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/api/*</url-pattern>
     </filter-mapping>
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -48,10 +48,6 @@
             </param-value>
         </init-param>
         <init-param>
-            <param-name>jersey.config.servlet.filter.contextPath</param-name>
-            <param-value>/</param-value>
-        </init-param>
-        <init-param>
             <param-name>jersey.config.server.provider.classnames</param-name>
             <param-value>
                 org.glassfish.jersey.media.multipart.MultiPartFeature,
@@ -68,9 +64,9 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-<!--    <error-page>-->
-<!--        <error-code>404</error-code>-->
-<!--        <location>/index.html</location>-->
-<!--    </error-page>-->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/index.html</location>
+    </error-page>
 
 </web-app>

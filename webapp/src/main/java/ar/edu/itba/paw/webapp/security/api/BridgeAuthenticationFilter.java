@@ -30,7 +30,7 @@ public class BridgeAuthenticationFilter extends AbstractAuthenticationProcessing
     }
 
     public BridgeAuthenticationFilter() {
-        super("/");
+        super("/api/");
     }
 
     @Override

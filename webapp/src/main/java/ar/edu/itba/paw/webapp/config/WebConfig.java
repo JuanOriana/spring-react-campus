@@ -27,7 +27,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
@@ -48,7 +47,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    private static final boolean DEV_BUILD = true;
+    private static final boolean DEV_BUILD = false;
     private static boolean isOnDevBuild() {
         return DEV_BUILD;
     }
@@ -77,25 +76,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
         return jacksonMessageConverter.getObjectMapper();
-    }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-                .addResourceHandler("/static/**")
-                    .addResourceLocations("classpath:/spa-build/static");
-        registry
-                .addResourceHandler("/*.js")
-                    .addResourceLocations("classpath:/spa-build/static/js");
-        registry
-                .addResourceHandler("/*.css")
-                .addResourceLocations("classpath:/spa-build/static/css");
-        registry
-                .addResourceHandler("/*.json")
-                    .addResourceLocations("classpath:/spa-build");
-        registry
-                .addResourceHandler("/*.ico")
-                    .addResourceLocations("classpath:/spa-build");
     }
 
     @Bean
