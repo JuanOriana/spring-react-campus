@@ -99,8 +99,9 @@ function AnnouncementUnit({
         </div>
       </AnnouncementHeader>
       <AnnouncementDate>
-        {announcement.date.toLocaleDateString()}
-      </AnnouncementDate>
+          <img src={ './images/clock.png' } alt={t('AnnouncementUnit.alt.clock')} style={{ width: 16, height: 16, marginRight: 8, verticalAlign: "middle" }}/>
+          {announcement.date.toLocaleDateString()} - {announcement.date.toTimeString().split(' ')[0].substring(0,5)}
+          </AnnouncementDate>
       {readMore(announcement.content)}
     </AnnouncementWrapper>
   );

@@ -22,7 +22,8 @@ export const TRANSLATIONS_EN = {
     author: "Author: {{name}} {{surname}}",
     subject: "Subject: {{subjectName}}",
     alt: {
-      deleteButton: "Delete"
+      deleteButton: "Delete",
+      clock: "Clock",
     },
     readMoreButton: "...read more",
     readLessButton: "hide",
