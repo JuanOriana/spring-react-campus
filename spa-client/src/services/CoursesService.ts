@@ -49,7 +49,7 @@ export class CourseService {
     if (quarter) {
       url.searchParams.append("quarter", quarter.toString());
     }
-    return getPagedFetch<CourseModel[]>(url.toString());
+    return getPagedFetch<CourseModel[]>(url.toString(), page, pageSize);
   }
 
   public async getCoursesUnpaged(
