@@ -263,7 +263,7 @@ function CourseFiles() {
               >
                 <PaginationArrow
                   xRotated={true}
-                  src="/images/page-arrow.png"
+                  src="./images/page-arrow.png"
                   alt={t("BasicPagination.alt.beforePage")}
                 />
               </button>
@@ -283,7 +283,7 @@ function CourseFiles() {
                 style={{ background: "none", border: "none" }}
               >
                 <PaginationArrow
-                  src="/images/page-arrow.png"
+                  src="./images/page-arrow.png"
                   alt={t("BasicPagination.alt.nextPage")}
                 />
               </button>

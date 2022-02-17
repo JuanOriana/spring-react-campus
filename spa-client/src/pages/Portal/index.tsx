@@ -85,7 +85,7 @@ function Portal() {
                 </Link>
                 {courseData.role.roleName !== "Student" && (
                   <img
-                    src="/images/graduation-hat.png"
+                    src="./images/graduation-hat.png"
                     alt="Profesor"
                     style={{ marginLeft: "10px" }}
                     width="28px"

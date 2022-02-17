@@ -65,7 +65,7 @@ function CourseTeachers() {
               {(!userImgs || !userImgs[idx]) && (
                 <TeacherIcon
                   alt={`${teacher.name} ${teacher.surname}`}
-                  src="/images/default-user-image.png"
+                  src="./images/default-user-image.png"
                 />
               )}
               {userImgs && userImgs[idx] && (

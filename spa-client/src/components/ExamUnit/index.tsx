@@ -56,7 +56,7 @@ function ExamUnit({
             to={`../exam/${exam.examId}`}
           >
             <FileImg
-              src="/images/test.png"
+              src="./images/test.png"
               alt={exam.title ? exam.title : `${t("ExamUnit.alt.exam")}`}
             />
             <FileName>{exam.title}</FileName>
@@ -72,7 +72,7 @@ function ExamUnit({
               </FileName>
               {answer!.corrections && (
                 <PaginationArrow
-                  src="/images/outline-arrow.png"
+                  src="./images/outline-arrow.png"
                   style={{ transform: "rotate(90deg)", marginLeft: "10px" }}
                   alt={`${t("ExamUnit.alt.seeCorrections")}`}
                   onClick={() => setShowCorrections((lastVal) => !lastVal)}
@@ -96,7 +96,7 @@ function ExamUnit({
                 })}
               </FileName>
               <MediumIcon
-                src="/images/trash.png"
+                src="./images/trash.png"
                 alt={`${t("ExamUnit.alt.delete")}`}
                 onClick={() => onDelete!(exam.examId)}
               />

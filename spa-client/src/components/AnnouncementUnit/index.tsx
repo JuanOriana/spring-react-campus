@@ -91,7 +91,7 @@ function AnnouncementUnit({
           </div>
           {isTeacher && (
             <SmallIcon
-              src="/images/trash-red.png"
+              src="./images/trash-red.png"
               alt={t("AnnouncementUnit.alt.deleteButton")}
               onClick={() => onDelete!(announcement.announcementId)}
             />

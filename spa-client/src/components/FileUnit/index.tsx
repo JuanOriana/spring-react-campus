@@ -74,7 +74,7 @@ function FileUnit({
         )}
         {isTeacher && (
           <MediumIcon
-            src="/images/trash.png"
+            src="./images/trash.png"
             alt={t("FileUnit.alt.delete")}
             onClick={() => onDelete!(file.fileId)}
           />

@@ -73,18 +73,24 @@ function TeacherCourseExamStandalone() {
   }, [examId, currentPage, pageSize, filterBy]);
 
   function uncorrectExam(id: number) {
-    if (!window.confirm(t('CourseAnnouncements.teacher.alert.deleteAnnouncement'))) return;
+    if (
+      !window.confirm(t("CourseAnnouncements.teacher.alert.deleteAnnouncement"))
+    )
+      return;
     answersService
       .correctAnswer(id, undefined, undefined)
       .then((result) => {
         if (result.hasFailed() && result.getError().getCode() !== 204) {
           renderToast(
-            t('TeacherCourseExamStandalone.toast.error.notUndoCorrection'),
+            t("TeacherCourseExamStandalone.toast.error.notUndoCorrection"),
             "error"
           );
           return;
         }
-        renderToast(t('TeacherCourseExamStandalone.toast.message.undoCorrectly'), "success");
+        renderToast(
+          t("TeacherCourseExamStandalone.toast.message.undoCorrectly"),
+          "success"
+        );
         setAnswers((oldAnswers) =>
           oldAnswers.map((answer: AnswerModel) =>
             answer.answerId === id ? { ...answer, score: undefined } : answer
@@ -93,7 +99,7 @@ function TeacherCourseExamStandalone() {
       })
       .catch(() =>
         renderToast(
-            t('TeacherCourseExamStandalone.toast.error.notUndoCorrection'),
+          t("TeacherCourseExamStandalone.toast.error.notUndoCorrection"),
           "error"
         )
       );
@@ -155,7 +161,7 @@ function TeacherCourseExamStandalone() {
             >
               <PaginationArrow
                 xRotated={true}
-                src="/images/page-arrow.png"
+                src="./images/page-arrow.png"
                 alt={t("BasicPagination.alt.beforePage")}
               />
             </Link>
@@ -171,7 +177,7 @@ function TeacherCourseExamStandalone() {
               }&pageSize=${pageSize}&filter-by=${filterBy}`}
             >
               <PaginationArrow
-                src="/images/page-arrow.png"
+                src="./images/page-arrow.png"
                 alt={t("BasicPagination.alt.nextPage")}
               />
             </Link>

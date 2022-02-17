@@ -24,7 +24,7 @@ function StudentExamUnit({ answer, onDelete }: StudentExamUnitProps) {
     <FileUnitWrapper>
       <div style={{ display: "flex", alignItems: "center" }}>
         <FileImg
-          src="/images/test.png"
+          src="./images/test.png"
           alt={answer.student.name ? answer.student.name : ""}
         />
         <FileName
@@ -51,7 +51,7 @@ function StudentExamUnit({ answer, onDelete }: StudentExamUnitProps) {
           style={{ display: "flex", alignItems: "center" }}
         >
           <MediumIcon
-            src="/images/check.png"
+            src="./images/check.png"
             alt={t("StudentExamUnit.alt.check")}
           />
         </Link>
@@ -62,7 +62,7 @@ function StudentExamUnit({ answer, onDelete }: StudentExamUnitProps) {
           <FileName style={{ marginRight: "10px" }}>{answer.score}</FileName>
           <button style={{ background: "none", border: "none" }} type="button">
             <MediumIcon
-              src="/images/x.png"
+              src="./images/x.png"
               alt={t("StudentExamUnit.alt.check")}
               onClick={() => onDelete!(answer.answerId)}
             />

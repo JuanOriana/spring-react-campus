@@ -196,7 +196,7 @@ function AdminAllCourses() {
                   >
                     <PaginationArrow
                       xRotated={true}
-                      src="/images/page-arrow.png"
+                      src="./images/page-arrow.png"
                       alt={t("BasicPagination.alt.beforePage")}
                     />
                   </Link>
@@ -212,7 +212,7 @@ function AdminAllCourses() {
                     }&pageSize=${pageSize}`}
                   >
                     <PaginationArrow
-                      src="/images/page-arrow.png"
+                      src="./images/page-arrow.png"
                       alt={t("BasicPagination.alt.nextPage")}
                     />
                   </Link>

@@ -36,7 +36,7 @@ function BasicPagination({
         >
           <PaginationArrow
             xRotated={true}
-            src="/images/page-arrow.png"
+            src="./images/page-arrow.png"
             alt={`${t("BasicPagination.alt.beforePage")}`}
           />
         </Link>
@@ -51,7 +51,7 @@ function BasicPagination({
           style={{ alignItems: "center", display: "flex" }}
         >
           <PaginationArrow
-            src="/images/page-arrow.png"
+            src="./images/page-arrow.png"
             alt={`${t("BasicPagination.alt.nextPage")}`}
           />
         </Link>

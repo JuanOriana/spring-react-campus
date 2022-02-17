@@ -172,7 +172,7 @@ function AdminAddUserToCourse() {
             style={{ display: "flex", alignItems: "center" }}
           >
             <BackImg
-              src="/images/page-arrow.png"
+              src="./images/page-arrow.png"
               alt={t("AdminAddUserToCourse.alt.backButton")}
             />
             <p style={{ fontSize: "22px", fontWeight: "700" }}>
@@ -238,7 +238,7 @@ function AdminAddUserToCourse() {
                         {/*ACHICAR!*/}
                         <PaginationArrow
                           xRotated={true}
-                          src="/images/page-arrow.png"
+                          src="./images/page-arrow.png"
                           alt={t("BasicPagination.alt.beforePage")}
                         />
                       </Link>
@@ -254,7 +254,7 @@ function AdminAddUserToCourse() {
                         }&pageSize=${pageSize}`}
                       >
                         <PaginationArrow
-                          src="/images/page-arrow.png"
+                          src="./images/page-arrow.png"
                           alt={t("BasicPagination.alt.nextPage")}
                         />
                       </Link>
