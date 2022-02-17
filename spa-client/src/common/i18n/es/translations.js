@@ -53,6 +53,7 @@ export const TRANSLATIONS_ES = {
     },
     grade: "Nota: {{grade}}",
     correctedOf: "{{examsSolved}} de {{userCount}} corregidos",
+    average: "Promedio: {{average}}"
   },
 
   FileSearcher: {
