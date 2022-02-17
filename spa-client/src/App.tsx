@@ -46,7 +46,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
-        <BrowserRouter>
+        <BrowserRouter basename={process.env.REACT_APP_CONTEXT}>
           <Routes>
             <Route
               path="/"
