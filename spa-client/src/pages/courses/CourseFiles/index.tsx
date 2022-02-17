@@ -250,45 +250,47 @@ function CourseFiles() {
               ))}
             </FileGrid>
           </BigWrapper>
-          <PaginationWrapper style={{ alignSelf: "center" }}>
-            {currentPage > 1 && (
-              <button
-                onClick={() => {
-                  query.set("page", String(currentPage - 1));
-                  navigate(
-                    `/course/${course.courseId}/files?${query.toString()}`
-                  );
-                }}
-                style={{ background: "none", border: "none" }}
-              >
-                <PaginationArrow
-                  xRotated={true}
-                  src="./images/page-arrow.png"
-                  alt={t("BasicPagination.alt.beforePage")}
-                />
-              </button>
-            )}
-            {t("BasicPagination.message", {
-              currentPage: currentPage,
-              maxPage: maxPage,
-            })}
-            {currentPage < maxPage && (
-              <button
-                onClick={() => {
-                  query.set("page", String(currentPage + 1));
-                  navigate(
-                    `/course/${course.courseId}/files?${query.toString()}`
-                  );
-                }}
-                style={{ background: "none", border: "none" }}
-              >
-                <PaginationArrow
-                  src="./images/page-arrow.png"
-                  alt={t("BasicPagination.alt.nextPage")}
-                />
-              </button>
-            )}
-          </PaginationWrapper>
+          {maxPage > 1 && (
+            <PaginationWrapper style={{ alignSelf: "center" }}>
+              {currentPage > 1 && (
+                <button
+                  onClick={() => {
+                    query.set("page", String(currentPage - 1));
+                    navigate(
+                      `/course/${course.courseId}/files?${query.toString()}`
+                    );
+                  }}
+                  style={{ background: "none", border: "none" }}
+                >
+                  <PaginationArrow
+                    xRotated={true}
+                    src="./images/page-arrow.png"
+                    alt={t("BasicPagination.alt.beforePage")}
+                  />
+                </button>
+              )}
+              {t("BasicPagination.message", {
+                currentPage: currentPage,
+                maxPage: maxPage,
+              })}
+              {currentPage < maxPage && (
+                <button
+                  onClick={() => {
+                    query.set("page", String(currentPage + 1));
+                    navigate(
+                      `/course/${course.courseId}/files?${query.toString()}`
+                    );
+                  }}
+                  style={{ background: "none", border: "none" }}
+                >
+                  <PaginationArrow
+                    src="./images/page-arrow.png"
+                    alt={t("BasicPagination.alt.nextPage")}
+                  />
+                </button>
+              )}
+            </PaginationWrapper>
+          )}
         </LoadableData>
       </div>
     </>

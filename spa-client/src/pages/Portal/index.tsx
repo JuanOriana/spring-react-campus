@@ -70,7 +70,6 @@ function Portal() {
       <CoursesContainer>
         <LoadableData isLoading={isCourseLoading} spinnerMultiplier={1}>
           {courses.map((courseData: UserCourseModel) => (
-            // TODO: AGREGAR CHEQUEO DE SI ES CONTENIDO POR CURRENT COURESE O NO Y SI ES ESTUDIANTE O NO
             <Course isOld={false} key={courseData.course.courseId}>
               <CourseName
                 style={{
@@ -102,13 +101,15 @@ function Portal() {
               </CourseName>
             </Course>
           ))}
-          <BasicPagination
-            currentPage={currentPage}
-            pageSize={pageSize}
-            maxPage={maxPage}
-            baseURL={`/portal`}
-            style={{ fontSize: "18px" }}
-          />
+          {maxPage > 1 && (
+            <BasicPagination
+              currentPage={currentPage}
+              pageSize={pageSize}
+              maxPage={maxPage}
+              baseURL={`/portal`}
+              style={{ fontSize: "18px" }}
+            />
+          )}
         </LoadableData>
       </CoursesContainer>
 
