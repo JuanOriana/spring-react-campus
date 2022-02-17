@@ -206,13 +206,14 @@ function CourseAnnouncements() {
               onDelete={onDelete}
             />
           ))}
-
-          <BasicPagination
-            currentPage={currentPage}
-            pageSize={pageSize}
-            maxPage={maxPage}
-            baseURL={`/course/${course.courseId}/announcements`}
-          />
+          {maxPage > 1 && (
+            <BasicPagination
+              currentPage={currentPage}
+              pageSize={pageSize}
+              maxPage={maxPage}
+              baseURL={`/course/${course.courseId}/announcements`}
+            />
+          )}
         </LoadableData>
       </div>
     </>

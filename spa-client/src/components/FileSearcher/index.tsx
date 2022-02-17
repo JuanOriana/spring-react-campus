@@ -112,7 +112,10 @@ function FileSearcher({
         </FormButton>
         <PaginationArrow
           src="./images/outline-arrow.png"
-          style={{ transform: "rotate(90deg)", marginLeft: "10px" }}
+          style={{
+            transform: isAmplified ? "rotate(-90deg)" : "rotate(90deg)",
+            marginLeft: "10px",
+          }}
           onClick={() => setIsAmplified((lastState) => !lastState)}
           alt={t("FileSearcher.alt.toggleFilters")}
           id="filter-toggle"

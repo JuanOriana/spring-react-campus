@@ -52,13 +52,14 @@ function Announcements() {
             isGlobal={true}
           />
         ))}
-
-        <BasicPagination
-          currentPage={currentPage}
-          pageSize={pageSize}
-          maxPage={maxPage}
-          baseURL={"/announcements"}
-        />
+        {maxPage > 1 && (
+          <BasicPagination
+            currentPage={currentPage}
+            pageSize={pageSize}
+            maxPage={maxPage}
+            baseURL={"/announcements"}
+          />
+        )}
       </LoadableData>
     </>
   );
