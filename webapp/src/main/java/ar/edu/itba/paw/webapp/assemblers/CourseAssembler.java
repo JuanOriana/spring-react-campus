@@ -39,7 +39,9 @@ public class CourseAssembler {
             Link fileLink = new Link(
                     new UriTemplate(
                             JaxRsLinkBuilder.linkTo(CourseController.class).slash(entity.getCourseId()).slash("files").toString(),
-                            new TemplateVariables(new TemplateVariable("category-type,extension-type,query,order-property,order-direction,page,page-size", TemplateVariable.VariableType.REQUEST_PARAM))
+                            new TemplateVariables(
+                                    new TemplateVariable("category-type,extension-type,query,order-property,order-direction,page,page-size",
+                                            TemplateVariable.VariableType.REQUEST_PARAM))
                     ), "files"
             );
             links.add(fileLink);

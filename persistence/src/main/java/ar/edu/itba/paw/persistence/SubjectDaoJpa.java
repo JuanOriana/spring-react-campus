@@ -4,7 +4,6 @@ import ar.edu.itba.paw.interfaces.SubjectDao;
 import ar.edu.itba.paw.models.CampusPage;
 import ar.edu.itba.paw.models.CampusPageRequest;
 import ar.edu.itba.paw.models.Subject;
-import ar.edu.itba.paw.models.User;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -60,8 +59,8 @@ public class SubjectDaoJpa extends BasePaginationDaoImpl<Subject> implements Sub
     @Override
     public CampusPage<Subject> list(CampusPageRequest pageRequest) {
         Map<String, Object> properties = new HashMap<>();
-        String query = "SELECT subjectId FROM subjects";
-        String mappingQuery = "SELECT s FROM Subject s WHERE s.subjectId IN (:ids)";
+        String query = "SELECT subjectId FROM subjects ORDER BY subjectId";
+        String mappingQuery = "SELECT s FROM Subject s WHERE s.subjectId IN (:ids) ORDER BY subjectId";
         return listBy(properties, query, mappingQuery, pageRequest, Subject.class);
     }
 
