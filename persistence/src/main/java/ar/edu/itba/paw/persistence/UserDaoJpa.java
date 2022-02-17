@@ -83,8 +83,8 @@ public class UserDaoJpa extends BasePaginationDaoImpl<User> implements UserDao {
     @Override
     public CampusPage<User> filterByCourse(Long courseId, CampusPageRequest pageRequest) {
         Map<String, Object> properties = new HashMap<>();
-        String query = "SELECT userId FROM user_to_course WHERE courseId = :courseId";
-        String mappingQuery = "SELECT DISTINCT enrollment.user FROM Enrollment enrollment WHERE enrollment.user.userId NOT IN (:ids)";
+        String query = "SELECT userId FROM users WHERE isAdmin = false AND userId NOT IN (SELECT userId FROM users NATURAL JOIN user_to_course WHERE courseId = :courseId) ORDER BY fileNumber";
+        String mappingQuery = "SELECT user FROM User user WHERE user.userId IN (:ids) ORDER BY user.fileNumber";
         properties.put("courseId", courseId);
         return listBy(properties, query, mappingQuery, pageRequest, User.class);
     }
@@ -92,8 +92,8 @@ public class UserDaoJpa extends BasePaginationDaoImpl<User> implements UserDao {
     @Override
     public CampusPage<User> list(CampusPageRequest pageRequest) {
         Map<String, Object> properties = new HashMap<>();
-        String query = "SELECT userId FROM users";
-        String mappingQuery = "SELECT u FROM User u WHERE u.userId IN (:ids)";
+        String query = "SELECT userId FROM users ORDER BY filenumber";
+        String mappingQuery = "SELECT u FROM User u WHERE u.userId IN (:ids) ORDER BY u.fileNumber";
         return listBy(properties, query, mappingQuery, pageRequest, User.class);
     }
 
@@ -103,8 +103,8 @@ public class UserDaoJpa extends BasePaginationDaoImpl<User> implements UserDao {
         Map<String, Object> properties = new HashMap<>();
         properties.put("courseId", courseId);
         properties.put("roleId", Roles.STUDENT.getValue());
-        String query = "SELECT userId FROM user_to_course WHERE courseId = :courseId AND roleId = :roleId";
-        String mappingQuery = "SELECT DISTINCT enrollment.user FROM Enrollment enrollment WHERE enrollment.user.userId IN (:ids)";
+        String query = "SELECT userId FROM user_to_course NATURAL JOIN users WHERE courseId = :courseId AND roleId = :roleId ORDER BY filenumber";
+        String mappingQuery = "SELECT u FROM User u WHERE u.userId IN (:ids) ORDER BY u.fileNumber";
         return listBy(properties, query, mappingQuery, pageRequest, User.class);
     }
 
