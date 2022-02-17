@@ -95,6 +95,7 @@ function Navbar() {
             </Link>
             <LogoutButton
               onClick={() => {
+                if (!window.confirm(t('Navbar.alert.confirmLogout'))) return;
                 signout(() => navigate("/"));
               }}
             >

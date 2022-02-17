@@ -116,6 +116,9 @@ export const TRANSLATIONS_EN = {
       "/timetable": "My timetable",
     },
     logout: "Logout",
+    alert: {
+      confirmLogout: "Logout?"
+    },
   },
 
   StudentExamUnit: {
