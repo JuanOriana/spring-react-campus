@@ -55,7 +55,7 @@ test("Should not enroll  user to course due to invalid roleid", async () => {
   mockSuccesfulResponse(204, {});
   return courseService.enrollUserToCourse(1, 1, 0).then((response) => {
     expect(response.hasFailed()).toBeTruthy();
-    expect(response.getError().getCode()).toBe(422); // In a succesful POST a 204 is expected.
+    expect(response.getError().getCode()).toBe(409); // In a succesful POST a 204 is expected.
   });
 });
 
@@ -151,7 +151,7 @@ test("Should not create new course due to bad startime", async () => {
     .newCourse(1, 2, "ADA", 2022, [3], [2])
     .then((response) => {
       expect(response.hasFailed()).toBeTruthy();
-      expect(response.getError().getCode()).toBe(422);
+      expect(response.getError().getCode()).toBe(409);
     });
 });
 
@@ -197,7 +197,7 @@ test("Should not create a new exam due to null file", async () => {
     )
     .then((response) => {
       expect(response.hasFailed()).toBeTruthy();
-      expect(response.getError().getCode()).toBe(422);
+      expect(response.getError().getCode()).toBe(409);
     });
 });
 
@@ -215,7 +215,7 @@ test("Should not create a new exam due to bad files", async () => {
     )
     .then((response) => {
       expect(response.hasFailed()).toBeTruthy();
-      expect(response.getError().getCode()).toBe(422);
+      expect(response.getError().getCode()).toBe(409);
     });
 });
 

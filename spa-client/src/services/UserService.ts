@@ -105,7 +105,7 @@ export class UserService {
 
     if (confirmPassword !== password) {
       return Result.failed(
-        new ErrorResponse(422, "Confirm password must match with password")
+        new ErrorResponse(409, "Confirm password must match with password")
       );
     }
 
@@ -127,7 +127,7 @@ export class UserService {
     if (title.length < 1 || content.length < 1) {
       return Result.failed(
         new ErrorResponse(
-          422,
+          409,
           "Title and content must have more than 1 character"
         )
       );

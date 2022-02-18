@@ -2,7 +2,6 @@ import { getCookie } from "./cookies";
 import { authedFetch } from "./authedFetch";
 
 export function checkError<RetType>(response: Response): Promise<RetType> {
-  //TODO: ANALIZE
   if (
     response.status === 401 &&
     localStorage.getItem("rememberMe") === "true"

@@ -49,7 +49,6 @@ function RequireAuth({ children }: { children: JSX.Element }) {
     return <Navigate to="/login" state={{ from: correctRoute }} replace />;
   }
 
-  //TODO: Might remove because of overhead
   if (getCorrectPrivilegeRoute(isAdmin, location) !== location) {
     return <Navigate to={correctRoute} />;
   }

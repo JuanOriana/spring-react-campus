@@ -83,14 +83,14 @@ test("Should not create a new user due to password not match confirm password", 
     )
     .then((response) => {
       expect(response.hasFailed()).toBeTruthy();
-      expect(response.getError().getCode()).toBe(422);
+      expect(response.getError().getCode()).toBe(409);
     });
 });
 
 test("Should not send email due to empty title and content", async () => {
   return userService.sendEmail(1, 1, "", "").then((response) => {
     expect(response.hasFailed()).toBeTruthy();
-    expect(response.getError().getCode()).toBe(422);
+    expect(response.getError().getCode()).toBe(409);
   });
 });
 
