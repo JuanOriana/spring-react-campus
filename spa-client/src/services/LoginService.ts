@@ -10,7 +10,6 @@ export class LoginService {
   ): Promise<Result<UserModel>> {
     const credentials = username + ":" + password;
     const hash = btoa(credentials);
-    //TODO: ANALIZE
     setCookie("basic-token", hash, 7);
     try {
       const response = await fetch(paths.BASE_URL + "/user", {

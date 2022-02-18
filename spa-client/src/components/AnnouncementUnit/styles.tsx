@@ -25,7 +25,7 @@ export const AnnouncementTitle = styled.h4`
 
 export const AnnouncementDate = styled.div`
   font-size: 14px;
-  margin: 0 0 6px 2px;
+  margin: 0 0 10px 2px;
 `;
 
 export const AnnouncementSubject = styled.div`

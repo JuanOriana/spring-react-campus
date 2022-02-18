@@ -1,4 +1,4 @@
-import { paths } from "../common/constants";
+import { APPLICATION_V1_JSON_TYPE, paths } from "../common/constants";
 import { authedFetch } from "../scripts/authedFetch";
 import { resultFetch } from "../scripts/resultFetch";
 import { PutResponse, Result } from "../types";
@@ -16,8 +16,6 @@ export class AnswersService {
     );
 
     if (resp.hasFailed()) return resp;
-    console.log("ANSWERBYIDE");
-    console.log(resp.getData().deliveredDate);
     const ans = resp.getData().deliveredDate;
     resp.getData().deliveredDate = ans ? new Date(ans) : undefined;
 
@@ -41,7 +39,7 @@ export class AnswersService {
     });
     return resultFetch<PutResponse>(this.basePath + "/" + answerId, {
       method: "PUT",
-      headers: { "Content-Type": "application/vnd.campus.api.v1+json" },
+      headers: { "Content-Type": APPLICATION_V1_JSON_TYPE },
       body: corrections,
     });
   }

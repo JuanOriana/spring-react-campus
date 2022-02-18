@@ -82,7 +82,7 @@ function ExamUnit({
           )}
           {isTeacher && (
             <>
-              <FileName>{average}</FileName>
+              <FileName>{t("ExamUnit.average", {average: average})}</FileName>
               <FileName
                 style={{
                   paddingLeft: "5px",

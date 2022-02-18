@@ -31,6 +31,7 @@ type FormData = {
 function AdminNewUser() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [reload, setReload] = useState(false);
   const [repeatedValues, setRepeatedValues] = useState(false);
 
   const {
@@ -52,7 +53,7 @@ function AdminNewUser() {
         return;
       }
     );
-  }, []);
+  }, [reload]);
 
   const onSubmit = handleSubmit((data: FormData) => {
     if (data.password !== data.confirmPassword) {
@@ -74,6 +75,7 @@ function AdminNewUser() {
         )
         .then((result) => {
           if (!result.hasFailed()) {
+            setReload(reload=>!reload);
             renderToast(t('AdminNewUser.toast.message.createdCorrectly'), "success");
             reset();
           } else {

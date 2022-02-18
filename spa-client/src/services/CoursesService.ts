@@ -99,7 +99,7 @@ export class CourseService {
   ): Promise<Result<PostResponse>> {
     const userPaths = ["/students", "/teachers", "/helpers"];
     if (roleId < userRoles.STUDENT || roleId > userRoles.HELPER) {
-      return Result.failed(new ErrorResponse(422, "Invalid role id")); // TODO: validar que el codigo sea el correcto
+      return Result.failed(new ErrorResponse(409, "Invalid role id"));
     }
 
     const userInfo = JSON.stringify({ userId: userId });
@@ -189,7 +189,6 @@ export class CourseService {
     return parseAnswersResponse(resp);
   }
 
-  //TODO: Ver si este service puede mapear el json sin el type! (cuando podamos correr la api)
   public async getAvailableYears(): Promise<Result<{ years: number[] }>> {
     return resultFetch<{ years: number[] }>(
       this.basePath + "/available-years",
@@ -265,8 +264,8 @@ export class CourseService {
     for (let index = 0; index < 6; index++) {
       if (startTimes[index] > endTimes[index])
         return Result.failed(
-          new ErrorResponse(422, "EndTime must be greater than startime ")
-        ); // TODO: Revisar si el codigo y mensaje es correcto
+          new ErrorResponse(409, "EndTime must be greater than startime ")
+        );
     }
 
     return resultFetch<PostResponse>(this.basePath, {
@@ -305,15 +304,15 @@ export class CourseService {
     endTime: Date
   ): Promise<Result<PostResponse>> {
     if (file === null) {
-      return Result.failed(new ErrorResponse(422, "File field cannot be null"));
+      return Result.failed(new ErrorResponse(409, "File field cannot be null"));
     }
     if (startTime >= endTime) {
       return Result.failed(
         new ErrorResponse(
-          422,
+          409,
           "Starttime cannot be greater or equal than endtime"
         )
-      ); // TODO ver si este status code corresponde
+      );
     }
 
     const newExam = new FormData();
@@ -345,7 +344,7 @@ export class CourseService {
     const formData = new FormData();
 
     if (categoryId === null) {
-      return Result.failed(new ErrorResponse(422, "Category must not be null"));
+      return Result.failed(new ErrorResponse(409, "Category must not be null"));
     }
     formData.append("file", file, file.name);
     formData.append("category", categoryId.toString());

@@ -71,7 +71,7 @@ function Login() {
               {t("Login.form.rememberMe")}
             </label>
           </div>
-          {/*TODO: MANEJAR ERROR DEL LOGIN ACA! SET ERROR (ver string en internasionalizacion)*/}
+          {}
           {invalidCred && (
             <ErrorMessage>{t("Login.error.invalidCredentials")}</ErrorMessage>
           )}
