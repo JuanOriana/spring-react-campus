@@ -283,6 +283,7 @@ export class CourseService {
     const newAnnouncement = JSON.stringify({
       title: title,
       content: content,
+      redirectLink: paths.LOCAL_BASE_URL,
     });
 
     return resultFetch<PostResponse>(
