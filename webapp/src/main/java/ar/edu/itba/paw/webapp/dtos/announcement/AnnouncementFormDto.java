@@ -13,6 +13,17 @@ public class AnnouncementFormDto {
     @Size(min=2)
     private String content;
 
+    @NotNull
+    private String redirectLink;
+
+    public String getRedirectLink() {
+        return redirectLink;
+    }
+
+    public void setRedirectLink(String redirectLink) {
+        this.redirectLink = redirectLink;
+    }
+
     public String getTitle() {
         return title;
     }

@@ -271,7 +271,7 @@ public class CourseController {
                 announcementDto.getContent(),
                 userService.findById(authFacade.getCurrentUserId()).orElseThrow(UserNotFoundException::new),
                 course,
-                uriInfo.getAbsolutePath().toString().replace("courses", "course").replace("/api/", "/"));
+                announcementDto.getRedirectLink());
         URI location = URI.create(uriInfo.getBaseUri() + "announcements/" + announcement.getAnnouncementId());
         LOGGER.debug("Announcement created on: {}", location.getPath());
         return Response.created(location).build();
