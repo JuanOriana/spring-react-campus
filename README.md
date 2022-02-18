@@ -1,76 +1,77 @@
+# spring-react-campus
 
----------------------- MODEL USERS ----------------------
+This is a campus for universities that consist on a multi-module maven project that bundles both frontend (full-fledged SPA client) and backend (API REST) into a single WAR ready to be deployed and run under the same context.
 
-We recommend to use this users for testing.
+## Backend
+### Structure
 
-- TEACHERS:
+The overall project structure (attempts) to follow DDD (Domain Driven Design by Eric Evans):
 
-SOTUYO DODERO, JUAN MARTIN
+<p align="center">
+  <img src="https://i.imgur.com/yGWGA6Q.png" />
+</p>
 
-jsotuyod - Password1
+- interfaces: Declares the contracts for both the `/services` and `/persistence` implementations
+- models: Declares the domain (ORM-based entities for JPA)
+- persistence: Implements the contracts declared over `/interfaces`, it's the link between the database and the application
+- services: Implements the contracts declared over `/interfaces`, it's the link between the controllers and the persistence layer
+- webapp: Implements the API REST endpoints, uses the service layer.
 
-VILLAVERDE, FRANCISCO
+### Dependencies
+The backend utilizes the following plugins/dependencies:
+- Jersey
+- Jax-RS
+- JUnit4 + Mockito
+- Spring 4 + Spring Security
+- Spring HATEOAS + MapStruct
+- Hibernate JPA + PSQL
 
-pacovilla - Password1
+### Functionality
+The backend is an API REST that consists on three main filters that execute in order:
+- Authorization filter (spring-security)
+- Jersey filter (servlet-container)
+- Default spring filter
 
+Every authorized request over `/api/**` passes through the security filter which checks for either the `Basic` or `Bearer` authorization header. In the case the provided header is `Basic` and the credentials are correct, a JWT token is generated and appended in the response as `Authorization: Bearer <generated-token>`
 
-- STUDENT:
+After this, the jersey filter takes over and tries to find the endpoint corresponding to the request, in case it's not found, the request is forwarded to the spring default filter which allows serving static content on which we serve the react `/index.html` as we can see over the [web.xml](https://github.com/Reversive/spring-react-campus/blob/master/webapp/src/main/webapp/WEB-INF/web.xml)
 
-alumnogenerico - PAW2021b4
-GMAIL account for testing emails: paw.campus.student@gmail.com - PAW2021b4
+### Build
 
-jedater - Password1
+To build the project just run (you can opt to skip tests):
+```
+mvn clean install --DskipTests
+```
 
+## Frontend
 
-- ADMIN:
+The frontend uses the following libraries/modules/frameworks:
+- react-typescript
+- react-router
+- i18next
+- jest
 
-adminpampero - Password1
+For standalone dev deployment you can navigate to the `/spa-client` folder and run:
+```
+npm start
+```
+Note: make sure to update the `/src/common/constants/index.js` API base url if you are doing this
 
+To execute the tests run:
+```
+npm test
+```
 
----------------------- ALL USERS ----------------------
+For a production build run:
+```
+npm run build
+```
 
-TEACHER / ASSISTANT USERS:
+### Authors
+- Matias Enrique Pavan [@Reversive](https://github.com/Reversive)
+- Juan Oriana [@JuanOriana](https://github.com/JuanOriana)
+- Tomas Cerdeira [@tomcerdeira](https://github.com/tomcerdeira)
+- Santiago Garcia M. [@santigarciam](https://github.com/santigarciam)
 
-joriana - Password1
-tcerdeira - Password1
-mpavan - Password1
-sangarcia - Password1
-tcerdeira - Password1
-mpavan - Password1
-hmerovich - Password1
-ndonofri - Password1
-jsotuyod - Password1
-hernyleim - Password1
-pacovilla - Password1
-ltorva - Password1
-rramele - Password1
-aariasr - Password1
-britorto - Password1
-magopian - Password1
-
-STUDENT USERS:
-
-ggates - Password1
-fcupito - Password1
-mzucker - Password1
-vlonza - Password1
-tcerdeira - password
-jalvarez - Password1
-lgonza - Password1
-ghopper - Password1
-student - Password1
-mpavan - password
-joriana - password
-molcado - Password1
-swozni - Password1
-ltorva - Password1
-jpeliott - Password1
-grojas - Password1
-britorto - Password1
-jedater - Password1
-alumnogenerico - PAW2021b4
-mmelak - Password1
-ffortan - Password1
-mgarber - Password1
-esjobs - Password1
-sangarcia - password
+### Thanks to
+- Juan Sotuyo [@jsotuyod](https://github.com/jsotuyod)
