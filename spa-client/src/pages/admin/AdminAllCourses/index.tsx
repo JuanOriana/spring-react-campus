@@ -176,9 +176,7 @@ function AdminAllCourses() {
                     <tr key={course.courseId}>
                       <td>{course.subject.code} </td>
                       <td>
-                        <Link
-                          to={`/admin/course/enroll?courseId=${course.courseId}`}
-                        >
+                        <Link to={`/admin/course/${course.courseId}/enroll`}>
                           {course.subject.name}
                         </Link>
                       </td>
