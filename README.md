@@ -5,7 +5,7 @@ This is a campus for universities that consist on a multi-module maven project t
 ## Backend
 ### Structure
 
-The overall project structure (attempts) to follow DDD (Domain Driven Design by Eric Evans):
+The overall project structure follows a model-view-controller (mvc) design pattern:
 
 <p align="center">
   <img src="https://i.imgur.com/yGWGA6Q.png" />
